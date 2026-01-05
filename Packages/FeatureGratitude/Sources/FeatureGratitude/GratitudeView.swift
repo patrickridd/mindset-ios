@@ -14,28 +14,50 @@ public struct GratitudeView: View {
     public init(viewModel: GratitudeViewModel) {
         _viewModel = State(wrappedValue: viewModel)
     }
-    
+
     public var body: some View {
-        VStack(spacing: 20) {
-            Text("Your Mindset")
-                .font(.largeTitle)
-                .bold()
-            
-            if viewModel.isLoading {
-                ProgressView()
-            } else {
-                Text(viewModel.streakDisplay)
-                    .font(.system(size: 60))
+        NavigationStack {
+            VStack(spacing: 30) {
+                // Streak Section
+                VStack {
+                    Text(viewModel.streakDisplay)
+                        .font(.system(size: 80))
+                    Text("DAY STREAK")
+                        .font(.caption)
+                        .fontWeight(.black)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.top, 40)
+                
+                // Input Section
+                VStack(alignment: .leading) {
+                    Text("What are you grateful for?")
+                        .font(.headline)
+                    
+                    TextField("Today I am...", text: $viewModel.entryText, axis: .vertical)
+                        .textFieldStyle(.roundedBorder)
+                        .lineLimit(3...5)
+                }
+                
+                Button {
+                    Task { await viewModel.saveEntry() }
+                } label: {
+                    if viewModel.isLoading {
+                        ProgressView()
+                    } else {
+                        Text("Log Gratitude")
+                            .frame(maxWidth: .infinity)
+                            .bold()
+                    }
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+                .disabled(viewModel.entryText.isEmpty)
+                
+                Spacer()
             }
-            
-            Button("Refresh") {
-                Task { await viewModel.refreshStreak() }
-            }
-            .buttonStyle(.borderedProminent)
-        }
-        .padding()
-        .onAppear {
-            Task { await viewModel.refreshStreak() }
+            .padding()
+            .navigationTitle("Mindset")
         }
     }
 }
@@ -43,7 +65,8 @@ public struct GratitudeView: View {
 #Preview {
     // Build a simple, non-throwing view model for previews
     let streakUseCase = GetStreakUseCase(repository: GratitudeRepositoryStub())
-    let viewModel = GratitudeViewModel(useCase: streakUseCase)
+    let addGratitudeUseCase = AddGratitudeUseCase(repository: GratitudeRepositoryStub())
+    let viewModel = GratitudeViewModel(getStreakUseCase: streakUseCase, addGratitudeUseCase: addGratitudeUseCase)
     GratitudeView(viewModel: viewModel)
 }
 

@@ -12,16 +12,32 @@ import Observation
 @MainActor
 @Observable
 public final class GratitudeViewModel {
-    // 1. Dependencies (Injected via Protocol/UseCase)
     private let getStreakUseCase: GetStreakUseCase
+    private let addGratitudeUseCase: AddGratitudeUseCase // <--- Add this
     
-    // 2. UI State
     public var streakDisplay: String = "0"
+    public var entryText: String = "" // <--- For the TextField
     public var isLoading: Bool = false
-    public var errorMessage: String?
+    public var errorMessage: String? = nil
+
+    public init(getStreakUseCase: GetStreakUseCase, addGratitudeUseCase: AddGratitudeUseCase) {
+        self.getStreakUseCase = getStreakUseCase
+        self.addGratitudeUseCase = addGratitudeUseCase
+    }
     
-    public init(useCase: GetStreakUseCase) {
-        self.getStreakUseCase = useCase
+    public func saveEntry() async {
+        guard !entryText.isEmpty else { return }
+        isLoading = true
+        
+        do {
+            try await addGratitudeUseCase.execute(text: entryText)
+            entryText = "" // Clear the field
+            await refreshStreak() // Update the fire! 🔥
+        } catch {
+            print("Error saving: \(error)")
+        }
+        
+        isLoading = false
     }
     
     // 3. Actions

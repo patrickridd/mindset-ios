@@ -13,7 +13,6 @@ import FeatureGratitude
 
 @main
 struct MindsetApp: App {
-    // 1. Define the container as a singleton or state object
     let container: ModelContainer
     let repository: SwiftDataGratitudeRepository
     let getStreakUseCase: GetStreakUseCase
@@ -40,10 +39,10 @@ struct MindsetApp: App {
 
     var body: some Scene {
         WindowGroup {
-            // 5. Inject everything into the UI
-            GratitudeView(viewModel: GratitudeViewModel(useCase: getStreakUseCase))
+            let addUseCase = AddGratitudeUseCase(repository: repository)
+            let viewModel = GratitudeViewModel(getStreakUseCase: getStreakUseCase, addGratitudeUseCase: addUseCase)
+            GratitudeView(viewModel: viewModel)
         }
-        // 6. Attach the container to the view hierarchy
         .modelContainer(container)
     }
 }
