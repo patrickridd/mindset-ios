@@ -7,51 +7,43 @@
 
 import SwiftUI
 import SwiftData
-import Domain           // For the UseCase
-import Data             // For the Repository Implementation
-import FeatureGratitude // For the View and ViewModel
+import Domain
+import Data
+import FeatureGratitude
 
 @main
-struct mainApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+struct MindsetApp: App {
+    // 1. Define the container as a singleton or state object
+    let container: ModelContainer
+    let repository: SwiftDataGratitudeRepository
+    let getStreakUseCase: GetStreakUseCase
 
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
-
-    // The Composition Root lives here
-    let streakUseCase: GetStreakUseCase
-    
     init() {
-        // 1. Instantiate the plumbing (Data)
-        let repo = SwiftDataGratitudeRepository()
-        
-        // 2. Instantiate the brain (Domain)
-        self.streakUseCase = GetStreakUseCase(repository: repo)
+        do {
+            // 2. Initialize the Schema (from your Data module)
+            let schema = Schema([GratitudeEntryDB.self])
+            let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+            
+            self.container = try ModelContainer(for: schema, configurations: [config])
+            
+            // 3. Create the Repository (injecting the ModelContext)
+            // We use the mainContext for the UI-driven repository
+            self.repository = SwiftDataGratitudeRepository(modelContext: container.mainContext)
+            
+            // 4. Create the Use Case
+            self.getStreakUseCase = GetStreakUseCase(repository: repository)
+            
+        } catch {
+            fatalError("Could not initialize Mindset database: \(error)")
+        }
     }
-    
+
     var body: some Scene {
         WindowGroup {
-            // THE COMPOSITION ROOT:
-            // 1. Create Data implementation
-            let repo = SwiftDataGratitudeRepository()
-            
-            // 2. Create Domain logic
-            let useCase = GetStreakUseCase(repository: repo)
-            
-            // 3. Create Presentation logic
-            let vm = GratitudeViewModel(streakUseCase: useCase)
-            
-            // 4. Return the View from the Feature module
-            GratitudeView(viewModel: vm)
+            // 5. Inject everything into the UI
+            GratitudeView(viewModel: GratitudeViewModel(useCase: getStreakUseCase))
         }
-        .modelContainer(sharedModelContainer)
+        // 6. Attach the container to the view hierarchy
+        .modelContainer(container)
     }
 }
