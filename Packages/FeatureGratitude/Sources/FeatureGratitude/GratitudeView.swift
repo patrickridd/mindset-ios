@@ -19,15 +19,7 @@ public struct GratitudeView: View {
         NavigationStack {
             VStack(spacing: 30) {
                 // Streak Section
-                VStack {
-                    Text(viewModel.streakDisplay)
-                        .font(.system(size: 80))
-                    Text("DAY STREAK")
-                        .font(.caption)
-                        .fontWeight(.black)
-                        .foregroundStyle(.secondary)
-                }
-                .padding(.top, 40)
+                streakHeader
                 
                 // Input Section
                 VStack(alignment: .leading) {
@@ -60,26 +52,60 @@ public struct GratitudeView: View {
             .navigationTitle("Mindset")
         }
     }
+    
+    private var streakHeader: some View {
+        VStack {
+            ZStack {
+                // A subtle background glow
+                Circle()
+                    .fill(Color.orange.opacity(0.1))
+                    .frame(width: 160, height: 160)
+                
+                // The Streak Number
+                VStack(spacing: -5) {
+                    Text(viewModel.streakDisplay)
+                        .font(.system(size: 60, weight: .black, design: .rounded))
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [.orange, .red],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        )
+                    
+                    Text("DAY STREAK")
+                        .font(.caption)
+                        .fontWeight(.black)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .padding(.top, 20)
+        }
+    }
 }
 
-#Preview {
-    // Build a simple, non-throwing view model for previews
-    let streakUseCase = GetStreakUseCase(repository: GratitudeRepositoryStub())
-    let addGratitudeUseCase = AddGratitudeUseCase(repository: GratitudeRepositoryStub())
-    let viewModel = GratitudeViewModel(getStreakUseCase: streakUseCase, addGratitudeUseCase: addGratitudeUseCase)
-    GratitudeView(viewModel: viewModel)
+#Preview("Empty State") {
+    let mockRepo = MockGratitudeRepository(days: 0)
+    let viewModel = GratitudeViewModel(
+        getStreakUseCase: GetStreakUseCase(repository: mockRepo),
+        addGratitudeUseCase: AddGratitudeUseCase(repository: mockRepo)
+    )
+    return GratitudeView(viewModel: viewModel)
 }
 
-private class GratitudeRepositoryStub: GratitudeRepository, @unchecked Sendable {
+#Preview("10 Day Streak") {
+    let mockRepo = MockGratitudeRepository(days: 10)
+    let useCase = GetStreakUseCase(repository: mockRepo)
+    let addUseCase = AddGratitudeUseCase(repository: mockRepo)
     
-    var fetchedEntries: [Domain.GratitudeEntry] = []
-    var savedEntry: Domain.GratitudeEntry?
+    let viewModel = GratitudeViewModel(
+        getStreakUseCase: useCase,
+        addGratitudeUseCase: addUseCase
+    )
     
-    func fetchEntries() async throws -> [Domain.GratitudeEntry] {
-        fetchedEntries
-    }
-    
-    func save(_ entry: Domain.GratitudeEntry) async throws {
-        savedEntry = entry
-    }
+    // Manual trigger for the preview
+    return GratitudeView(viewModel: viewModel)
+        .task {
+            await viewModel.refreshStreak()
+        }
 }

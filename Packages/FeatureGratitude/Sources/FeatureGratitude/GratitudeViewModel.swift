@@ -50,7 +50,7 @@ public final class GratitudeViewModel {
             let streak = try await getStreakUseCase.execute()
             
             // Format for the UI (the "🔥" is a presentation detail!)
-            self.streakDisplay = "\(streak) 🔥"
+            self.streakDisplay = "\(streak)🔥"
             
         } catch {
             self.errorMessage = "Failed to update streak"
