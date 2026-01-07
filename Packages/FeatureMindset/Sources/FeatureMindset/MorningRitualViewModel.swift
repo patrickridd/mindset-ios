@@ -48,6 +48,18 @@ public final class MorningRitualViewModel {
         Task { await fetchYesterdayBridge() }
     }
     
+    /// Determines if the user has provided enough input to move to the next step
+    public var canProceed: Bool {
+        switch currentStep {
+        case .gratitude:
+            return gratitudeText.trimmingCharacters(in: .whitespacesAndNewlines).count >= 3
+        case .goal:
+            return goalText.trimmingCharacters(in: .whitespacesAndNewlines).count >= 3
+        case .affirmation:
+            return affirmationText.trimmingCharacters(in: .whitespacesAndNewlines).count >= 3
+        }
+    }
+
     private func fetchYesterdayBridge() async {
         do {
             self.yesterdayGoal = try await getYesterdayBridgeUseCase.execute()

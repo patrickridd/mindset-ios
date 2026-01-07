@@ -27,24 +27,21 @@ public struct MorningRitualView: View {
                     .padding(.top)
                 
                 TabView(selection: $viewModel.currentStep) {
-                    ritualStep(
-                        title: "What are you grateful for?", 
-                        text: $viewModel.gratitudeText
-                    ).tag(MorningRitualViewModel.RitualStep.gratitude)
-                    
-                    ritualStep(
-                        title: "What is your goal for today?", 
-                        text: $viewModel.goalText
-                    ).tag(MorningRitualViewModel.RitualStep.goal)
-                    
-                    ritualStep(
-                        title: "What is your affirmation?", 
-                        text: $viewModel.affirmationText
-                    ).tag(MorningRitualViewModel.RitualStep.affirmation)
+                    ritualStep(title: "What are you grateful for?", text: $viewModel.gratitudeText)
+                        .tag(MorningRitualViewModel.RitualStep.gratitude)
+                        
+                    ritualStep(title: "What is your goal for today?", text: $viewModel.goalText)
+                        .tag(MorningRitualViewModel.RitualStep.goal)
+
+                    ritualStep(title: "What is your affirmation?", text: $viewModel.affirmationText)
+                        .tag(MorningRitualViewModel.RitualStep.affirmation)
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
-                .animation(.easeInOut, value: viewModel.currentStep)
-                
+                .animation(.default, value: viewModel.canProceed)
+                .sensoryFeedback(.impact(weight: .light), trigger: viewModel.canProceed) { old, new in
+                    new == true // Give a tiny 'click' feel when the swipe is enabled
+                }
+            
                 footerButtons
             }
         }
@@ -56,6 +53,12 @@ public struct MorningRitualView: View {
         .animation(.spring(), value: viewModel.isShowingSuccess)
     }
     
+    private func moveBack() {
+        if let previous = MorningRitualViewModel.RitualStep(rawValue: viewModel.currentStep.rawValue - 1) {
+            viewModel.currentStep = previous
+        }
+    }
+
     // MARK: - Subviews
     
     private func ritualStep(title: String, text: Binding<String>) -> some View {
@@ -84,6 +87,31 @@ public struct MorningRitualView: View {
                 .background(RoundedRectangle(cornerRadius: 15).fill(Color(uiColor: .secondarySystemGroupedBackground)))
                 .padding(.horizontal)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .contentShape(Rectangle()) // Makes the background hittable
+        .gesture(
+            DragGesture().onEnded { value in
+                let threshold: CGFloat = 50
+                
+                // CASE 1: Swiping BACK (Right Swipe -> Positive Width)
+                if value.translation.width > threshold {
+                    withAnimation {
+                        moveBack() // Always allow going back
+                    }
+                }
+                
+                // CASE 2: Swiping FORWARD (Left Swipe -> Negative Width)
+                if value.translation.width < -threshold {
+                    if viewModel.canProceed {
+                        withAnimation {
+                            viewModel.nextStep() // Only allow if valid
+                        }
+                    } else {
+                        // Optional: Trigger a "rejection" haptic here
+                    }
+                }
+            }
+        )
     }
     
     private var ritualProgressBar: some View {
@@ -100,21 +128,43 @@ public struct MorningRitualView: View {
     private var footerButtons: some View {
         VStack {
             if viewModel.currentStep == .affirmation {
-                Button("Complete Ritual") {
+                Button("Complete Mindset") {
                     Task { await viewModel.completeRitual() }
                 }
                 .buttonStyle(.borderedProminent)
-                .tint(.orange)
+                .disabled(!viewModel.canProceed || viewModel.isLoading)
+                .sensoryFeedback(.selection, trigger: viewModel.currentStep)
+                .sensoryFeedback(.impact(weight: .light), trigger: viewModel.canProceed) { old, new in
+                    return new == true // Only vibrate when it BECOMES valid
+                }
             } else {
-                Button("Next") {
-                    withAnimation { viewModel.nextStep() }
+                Button("Next Step") {
+                    withAnimation(.spring()) {
+                        viewModel.nextStep()
+                    }
                 }
                 .buttonStyle(.bordered)
+                // The "Gatekeeper" in action
+                .disabled(!viewModel.canProceed)
+                .opacity(viewModel.canProceed ? 1.0 : 0.5)
+                .sensoryFeedback(.selection, trigger: viewModel.currentStep)
+                .sensoryFeedback(.impact(weight: .light), trigger: viewModel.canProceed) { old, new in
+                    return new == true // Only vibrate when it BECOMES valid
+                }
             }
         }
-        .sensoryFeedback(.success, trigger: viewModel.isShowingSuccess)
         .padding()
-        .disabled(viewModel.isLoading)
+        .animation(.default, value: viewModel.canProceed)
+    }
+
+    private var forwardLockGesture: some Gesture {
+        DragGesture(minimumDistance: 10)
+            .onChanged { value in
+                // Only 'trap' if swiping LEFT (forward)
+                if value.translation.width < 0 {
+                    // The highPriorityGesture is active, blocking the TabView
+                }
+            }
     }
 }
 
