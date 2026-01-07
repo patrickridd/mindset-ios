@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		2187FBA62F0A1E5400C028A9 /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = 2187FBA52F0A1E5400C028A9 /* Domain */; };
 		2187FBA92F0A1E6D00C028A9 /* Data in Frameworks */ = {isa = PBXBuildFile; productRef = 2187FBA82F0A1E6D00C028A9 /* Data */; };
-		2187FBAC2F0A1ED400C028A9 /* FeatureGratitude in Frameworks */ = {isa = PBXBuildFile; productRef = 2187FBAB2F0A1ED400C028A9 /* FeatureGratitude */; };
+		21BA432D2F0DEDEF0013B0C9 /* FeatureMindset in Frameworks */ = {isa = PBXBuildFile; productRef = 21BA432C2F0DEDEF0013B0C9 /* FeatureMindset */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,8 +59,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				2187FBA92F0A1E6D00C028A9 /* Data in Frameworks */,
+				21BA432D2F0DEDEF0013B0C9 /* FeatureMindset in Frameworks */,
 				2187FBA62F0A1E5400C028A9 /* Domain in Frameworks */,
-				2187FBAC2F0A1ED400C028A9 /* FeatureGratitude in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -131,7 +131,7 @@
 			packageProductDependencies = (
 				2187FBA52F0A1E5400C028A9 /* Domain */,
 				2187FBA82F0A1E6D00C028A9 /* Data */,
-				2187FBAB2F0A1ED400C028A9 /* FeatureGratitude */,
+				21BA432C2F0DEDEF0013B0C9 /* FeatureMindset */,
 			);
 			productName = "mindset-ios";
 			productReference = 21DE280D2F08CCB900266CF8 /* mindset-ios.app */;
@@ -218,7 +218,7 @@
 			packageReferences = (
 				2187FBA42F0A1E4C00C028A9 /* XCLocalSwiftPackageReference "Packages/Domain" */,
 				2187FBA72F0A1E6500C028A9 /* XCLocalSwiftPackageReference "Packages/Data" */,
-				2187FBAA2F0A1E9100C028A9 /* XCLocalSwiftPackageReference "Packages/FeatureGratitude" */,
+				21BA432B2F0DEDD70013B0C9 /* XCLocalSwiftPackageReference "Packages/FeatureMindset" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 21DE280E2F08CCB900266CF8 /* Products */;
@@ -617,9 +617,9 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/Data;
 		};
-		2187FBAA2F0A1E9100C028A9 /* XCLocalSwiftPackageReference "Packages/FeatureGratitude" */ = {
+		21BA432B2F0DEDD70013B0C9 /* XCLocalSwiftPackageReference "Packages/FeatureMindset" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = Packages/FeatureGratitude;
+			relativePath = Packages/FeatureMindset;
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -634,10 +634,10 @@
 			package = 2187FBA72F0A1E6500C028A9 /* XCLocalSwiftPackageReference "Packages/Data" */;
 			productName = Data;
 		};
-		2187FBAB2F0A1ED400C028A9 /* FeatureGratitude */ = {
+		21BA432C2F0DEDEF0013B0C9 /* FeatureMindset */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 2187FBAA2F0A1E9100C028A9 /* XCLocalSwiftPackageReference "Packages/FeatureGratitude" */;
-			productName = FeatureGratitude;
+			package = 21BA432B2F0DEDD70013B0C9 /* XCLocalSwiftPackageReference "Packages/FeatureMindset" */;
+			productName = FeatureMindset;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

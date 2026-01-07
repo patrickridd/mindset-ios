@@ -8,9 +8,9 @@
 import Foundation
 
 public struct GetStreakUseCase: Sendable {
-    private let repository: GratitudeRepository
+    private let repository: MindsetRepository
     
-    public init(repository: GratitudeRepository) {
+    public init(repository: MindsetRepository) {
         self.repository = repository
     }
     

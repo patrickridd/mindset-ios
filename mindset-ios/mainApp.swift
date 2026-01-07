@@ -9,39 +9,36 @@ import SwiftUI
 import SwiftData
 import Domain
 import Data
-import FeatureGratitude
+import FeatureMindset
 
 @main
 struct MindsetApp: App {
     let container: ModelContainer
-    let repository: SwiftDataGratitudeRepository
+    let repository: SwiftDataMindsetRepository
     let getStreakUseCase: GetStreakUseCase
 
     init() {
         do {
-            // 2. Initialize the Schema (from your Data module)
-            let schema = Schema([GratitudeEntryDB.self])
+            // Update the schema to use the new MindsetEntryDB
+            let schema = Schema([MindsetEntryDB.self])
             let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
             
             self.container = try ModelContainer(for: schema, configurations: [config])
-            
-            // 3. Create the Repository (injecting the ModelContext)
-            // We use the mainContext for the UI-driven repository
-            self.repository = SwiftDataGratitudeRepository(modelContext: container.mainContext)
-            
-            // 4. Create the Use Case
+            self.repository = SwiftDataMindsetRepository(modelContext: container.mainContext)
             self.getStreakUseCase = GetStreakUseCase(repository: repository)
-            
+
         } catch {
-            fatalError("Could not initialize Mindset database: \(error)")
+            fatalError("Could not initialize database.")
         }
     }
 
     var body: some Scene {
         WindowGroup {
-            let addUseCase = AddGratitudeUseCase(repository: repository)
-            let viewModel = GratitudeViewModel(getStreakUseCase: getStreakUseCase, addGratitudeUseCase: addUseCase)
-            GratitudeView(viewModel: viewModel)
+            let ritualViewModel = MorningRitualViewModel(
+                addMindsetUseCase: AddMindsetUseCase(repository: repository),
+                getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase(repository: repository)
+            )
+            MorningRitualView(viewModel: ritualViewModel)
         }
         .modelContainer(container)
     }
