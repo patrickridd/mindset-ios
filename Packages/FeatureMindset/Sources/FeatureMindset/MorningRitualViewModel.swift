@@ -37,12 +37,17 @@ public final class MorningRitualViewModel {
     public var generatedArchetype: String?
     public var isShowingSuccess: Bool = false
     
+    public var isShowingPaywall: Bool = false
+    private let subscriptionService: SubscriptionService
+    
     public init(
         addMindsetUseCase: AddMindsetUseCase,
-        getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase
+        getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase,
+        subscriptionService: SubscriptionService
     ) {
         self.addMindsetUseCase = addMindsetUseCase
         self.getYesterdayBridgeUseCase = getYesterdayBridgeUseCase
+        self.subscriptionService = subscriptionService
         
         // Fetch the bridge data immediately
         Task { await fetchYesterdayBridge() }
@@ -93,11 +98,20 @@ public final class MorningRitualViewModel {
                 affirmation: affirmationText
             )
             
-            // 3. Trigger Success UI
-            isShowingSuccess = true
+            // 3. The Gate check
+            let isPremium = await subscriptionService.checkSubscriptionStatus()
+            
+            if isPremium {
+                self.isShowingSuccess = true
+            } else {
+                // This triggers the Paywall sheet
+                self.isShowingPaywall = true
+            }
         } catch {
             self.errorMessage = error.localizedDescription
         }
-        isLoading = false
+        defer {
+            isLoading = false
+        }
     }
 }

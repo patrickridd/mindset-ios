@@ -36,7 +36,8 @@ struct MindsetApp: App {
         WindowGroup {
             let ritualViewModel = MorningRitualViewModel(
                 addMindsetUseCase: AddMindsetUseCase(repository: repository),
-                getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase(repository: repository)
+                getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase(repository: repository),
+                subscriptionService: MockSubscriptionService(isPro: true)
             )
             MorningRitualView(viewModel: ritualViewModel)
         }

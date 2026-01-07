@@ -41,13 +41,13 @@ public struct MorningRitualView: View {
                 .sensoryFeedback(.impact(weight: .light), trigger: viewModel.canProceed) { old, new in
                     new == true // Give a tiny 'click' feel when the swipe is enabled
                 }
-            
                 footerButtons
             }
         }
         .fullScreenCover(isPresented: $viewModel.isShowingSuccess) {
             RitualSuccessView(archetype: viewModel.generatedArchetype ?? "The Resilient") {
                 // Handle dismissal (e.g., go back to Dashboard)
+                viewModel.isShowingSuccess = false
             }
         }
         .animation(.spring(), value: viewModel.isShowingSuccess)
@@ -171,11 +171,30 @@ public struct MorningRitualView: View {
 #Preview("Morning Ritual - Day 2") {
     // We create 2 days of data so that "Yesterday" exists
     let mockRepo = MockMindsetRepository(days: 2)
-    
     let viewModel = MorningRitualViewModel(
         addMindsetUseCase: AddMindsetUseCase(repository: mockRepo),
-        getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase(repository: mockRepo)
+        getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase(repository: mockRepo),
+        subscriptionService: MockSubscriptionService()
     )
-    
+    return MorningRitualView(viewModel: viewModel)
+}
+
+#Preview("Free User Flow") {
+    let mockRepo = MockMindsetRepository(days: 0)
+    let viewModel = MorningRitualViewModel(
+        addMindsetUseCase: AddMindsetUseCase(repository: mockRepo),
+        getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase(repository: mockRepo),
+        subscriptionService: MockSubscriptionService(isPro: false)
+    )
+    return MorningRitualView(viewModel: viewModel)
+}
+
+#Preview("Pro User Flow") {
+    let mockRepo = MockMindsetRepository(days: 0)
+    let viewModel = MorningRitualViewModel(
+        addMindsetUseCase: AddMindsetUseCase(repository: mockRepo),
+        getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase(repository: mockRepo),
+        subscriptionService: MockSubscriptionService(isPro: true)
+    )
     return MorningRitualView(viewModel: viewModel)
 }
