@@ -219,6 +219,7 @@
 				2187FBA42F0A1E4C00C028A9 /* XCLocalSwiftPackageReference "Packages/Domain" */,
 				2187FBA72F0A1E6500C028A9 /* XCLocalSwiftPackageReference "Packages/Data" */,
 				21BA432B2F0DEDD70013B0C9 /* XCLocalSwiftPackageReference "Packages/FeatureMindset" */,
+				21A0941C2F0F436F0049D9F4 /* XCLocalSwiftPackageReference "Packages/FeatureSubscription" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 21DE280E2F08CCB900266CF8 /* Products */;
@@ -616,6 +617,10 @@
 		2187FBA72F0A1E6500C028A9 /* XCLocalSwiftPackageReference "Packages/Data" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/Data;
+		};
+		21A0941C2F0F436F0049D9F4 /* XCLocalSwiftPackageReference "Packages/FeatureSubscription" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/FeatureSubscription;
 		};
 		21BA432B2F0DEDD70013B0C9 /* XCLocalSwiftPackageReference "Packages/FeatureMindset" */ = {
 			isa = XCLocalSwiftPackageReference;
