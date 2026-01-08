@@ -10,6 +10,8 @@ import SwiftUI
 public struct PaywallView: View {
     @Environment(\.dismiss) var dismiss
     
+    public init() {}
+    
     public var body: some View {
         ZStack {
             // Background: Subtle Gradient
