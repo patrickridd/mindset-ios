@@ -9,4 +9,9 @@ public struct OnboardingData: Sendable {
     public var goal: String = ""
     public var overwhelmFrequency: String = ""
     // ... other fields
+    
+    public init(goal: String = "", overwhelmFrequency: String = "") {
+        self.goal = goal
+        self.overwhelmFrequency = overwhelmFrequency
+    }
 }
