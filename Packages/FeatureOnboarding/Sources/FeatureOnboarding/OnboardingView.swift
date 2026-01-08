@@ -13,6 +13,8 @@ public struct OnboardingView: View {
     @State private var data = OnboardingData()
     @State private var isCalculating = false // For the "Reveal" transition
     
+    public init() {}
+
     let questions = [
         "What is your primary focus right now?",
         "How often do you feel overwhelmed?",

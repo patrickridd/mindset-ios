@@ -10,6 +10,7 @@
 		213EB3652F0F5C0B00721D70 /* FeatureOnboarding in Frameworks */ = {isa = PBXBuildFile; productRef = 213EB3642F0F5C0B00721D70 /* FeatureOnboarding */; };
 		2187FBA62F0A1E5400C028A9 /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = 2187FBA52F0A1E5400C028A9 /* Domain */; };
 		2187FBA92F0A1E6D00C028A9 /* Data in Frameworks */ = {isa = PBXBuildFile; productRef = 2187FBA82F0A1E6D00C028A9 /* Data */; };
+		21996CD02F0F612F00438DBD /* FeatureNavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 21996CCF2F0F612F00438DBD /* FeatureNavigation */; };
 		21B9DED32F0F5BE6000FA365 /* FeatureSubscription in Frameworks */ = {isa = PBXBuildFile; productRef = 21B9DED22F0F5BE6000FA365 /* FeatureSubscription */; };
 		21BA432D2F0DEDEF0013B0C9 /* FeatureMindset in Frameworks */ = {isa = PBXBuildFile; productRef = 21BA432C2F0DEDEF0013B0C9 /* FeatureMindset */; };
 /* End PBXBuildFile section */
@@ -61,6 +62,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				21B9DED32F0F5BE6000FA365 /* FeatureSubscription in Frameworks */,
+				21996CD02F0F612F00438DBD /* FeatureNavigation in Frameworks */,
 				213EB3652F0F5C0B00721D70 /* FeatureOnboarding in Frameworks */,
 				2187FBA92F0A1E6D00C028A9 /* Data in Frameworks */,
 				21BA432D2F0DEDEF0013B0C9 /* FeatureMindset in Frameworks */,
@@ -138,6 +140,7 @@
 				21BA432C2F0DEDEF0013B0C9 /* FeatureMindset */,
 				21B9DED22F0F5BE6000FA365 /* FeatureSubscription */,
 				213EB3642F0F5C0B00721D70 /* FeatureOnboarding */,
+				21996CCF2F0F612F00438DBD /* FeatureNavigation */,
 			);
 			productName = "mindset-ios";
 			productReference = 21DE280D2F08CCB900266CF8 /* mindset-ios.app */;
@@ -227,6 +230,7 @@
 				21BA432B2F0DEDD70013B0C9 /* XCLocalSwiftPackageReference "Packages/FeatureMindset" */,
 				21A0941C2F0F436F0049D9F4 /* XCLocalSwiftPackageReference "Packages/FeatureSubscription" */,
 				21B9DED12F0F5BDF000FA365 /* XCLocalSwiftPackageReference "Packages/FeatureOnboarding" */,
+				213EB3662F0F611700721D70 /* XCLocalSwiftPackageReference "Packages/FeatureNavigation" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 21DE280E2F08CCB900266CF8 /* Products */;
@@ -617,6 +621,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
+		213EB3662F0F611700721D70 /* XCLocalSwiftPackageReference "Packages/FeatureNavigation" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/FeatureNavigation;
+		};
 		2187FBA42F0A1E4C00C028A9 /* XCLocalSwiftPackageReference "Packages/Domain" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/Domain;
@@ -654,6 +662,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2187FBA72F0A1E6500C028A9 /* XCLocalSwiftPackageReference "Packages/Data" */;
 			productName = Data;
+		};
+		21996CCF2F0F612F00438DBD /* FeatureNavigation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 213EB3662F0F611700721D70 /* XCLocalSwiftPackageReference "Packages/FeatureNavigation" */;
+			productName = FeatureNavigation;
 		};
 		21B9DED22F0F5BE6000FA365 /* FeatureSubscription */ = {
 			isa = XCSwiftPackageProductDependency;
