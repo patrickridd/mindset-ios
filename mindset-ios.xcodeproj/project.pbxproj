@@ -13,6 +13,7 @@
 		21996CD02F0F612F00438DBD /* FeatureNavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 21996CCF2F0F612F00438DBD /* FeatureNavigation */; };
 		21B9DED32F0F5BE6000FA365 /* FeatureSubscription in Frameworks */ = {isa = PBXBuildFile; productRef = 21B9DED22F0F5BE6000FA365 /* FeatureSubscription */; };
 		21BA432D2F0DEDEF0013B0C9 /* FeatureMindset in Frameworks */ = {isa = PBXBuildFile; productRef = 21BA432C2F0DEDEF0013B0C9 /* FeatureMindset */; };
+		21F0B9E02F0F67B1008710CE /* FeatureDashboard in Frameworks */ = {isa = PBXBuildFile; productRef = 21F0B9DF2F0F67B1008710CE /* FeatureDashboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +67,7 @@
 				213EB3652F0F5C0B00721D70 /* FeatureOnboarding in Frameworks */,
 				2187FBA92F0A1E6D00C028A9 /* Data in Frameworks */,
 				21BA432D2F0DEDEF0013B0C9 /* FeatureMindset in Frameworks */,
+				21F0B9E02F0F67B1008710CE /* FeatureDashboard in Frameworks */,
 				2187FBA62F0A1E5400C028A9 /* Domain in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -141,6 +143,7 @@
 				21B9DED22F0F5BE6000FA365 /* FeatureSubscription */,
 				213EB3642F0F5C0B00721D70 /* FeatureOnboarding */,
 				21996CCF2F0F612F00438DBD /* FeatureNavigation */,
+				21F0B9DF2F0F67B1008710CE /* FeatureDashboard */,
 			);
 			productName = "mindset-ios";
 			productReference = 21DE280D2F08CCB900266CF8 /* mindset-ios.app */;
@@ -231,6 +234,7 @@
 				21A0941C2F0F436F0049D9F4 /* XCLocalSwiftPackageReference "Packages/FeatureSubscription" */,
 				21B9DED12F0F5BDF000FA365 /* XCLocalSwiftPackageReference "Packages/FeatureOnboarding" */,
 				213EB3662F0F611700721D70 /* XCLocalSwiftPackageReference "Packages/FeatureNavigation" */,
+				21996CD12F0F678700438DBD /* XCLocalSwiftPackageReference "Packages/FeatureDashboard" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 21DE280E2F08CCB900266CF8 /* Products */;
@@ -633,6 +637,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/Data;
 		};
+		21996CD12F0F678700438DBD /* XCLocalSwiftPackageReference "Packages/FeatureDashboard" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/FeatureDashboard;
+		};
 		21A0941C2F0F436F0049D9F4 /* XCLocalSwiftPackageReference "Packages/FeatureSubscription" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/FeatureSubscription;
@@ -677,6 +685,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 21BA432B2F0DEDD70013B0C9 /* XCLocalSwiftPackageReference "Packages/FeatureMindset" */;
 			productName = FeatureMindset;
+		};
+		21F0B9DF2F0F67B1008710CE /* FeatureDashboard */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 21996CD12F0F678700438DBD /* XCLocalSwiftPackageReference "Packages/FeatureDashboard" */;
+			productName = FeatureDashboard;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
