@@ -16,9 +16,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(path: "/users/patrickridd/documents/xcodeprojects/mindset-ios/packages/domain"),
-        .package(path: "/users/patrickridd/documents/xcodeprojects/mindset-ios/packages/FeatureSubscription"),
-        .package(path: "/users/patrickridd/documents/xcodeprojects/mindset-ios/packages/FeatureOnboarding")
+        .package(path: "/users/patrickridd/documents/xcodeprojects/mindset-ios/packages/domain")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -26,9 +24,7 @@ let package = Package(
         .target(
             name: "FeatureNavigation",
             dependencies: [
-                .product(name: "Domain", package: "Domain"),
-                .product(name: "FeatureSubscription", package: "FeatureSubscription"),
-                .product(name: "FeatureOnboarding", package: "FeatureOnboarding")
+                .product(name: "Domain", package: "Domain")
             ]
         ),
         .testTarget(

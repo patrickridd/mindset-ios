@@ -13,7 +13,11 @@ public struct OnboardingView: View {
     @State private var data = OnboardingData()
     @State private var isCalculating = false // For the "Reveal" transition
     
-    public init() {}
+    var onComplete: () -> Void // The Coordinator will handle this transition
+
+    public init(onComplete: @escaping () -> Void) {
+        self.onComplete = onComplete
+    }
 
     let questions = [
         "What is your primary focus right now?",

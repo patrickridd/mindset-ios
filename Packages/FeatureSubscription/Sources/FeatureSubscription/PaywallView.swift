@@ -10,7 +10,11 @@ import SwiftUI
 public struct PaywallView: View {
     @Environment(\.dismiss) var dismiss
     
-    public init() {}
+    var onPurchase: () -> Void // The Coordinator will handle this transition
+
+    public init(onPurchase: @escaping () -> Void) {
+        self.onPurchase = onPurchase
+    }
     
     public var body: some View {
         ZStack {

@@ -6,28 +6,37 @@
 //
 
 import SwiftUI
-import FeatureOnboarding
-import FeatureSubscription
+import Domain
 
-public struct MainCoordinatorView: View {
+public struct MainCoordinatorView<Onboarding: View, Paywall: View, Dashboard: View>: View {
     @Bindable var coordinator: MainCoordinator
     
-    public init(coordinator: MainCoordinator) {
+    // These are "View Builders" injected from the @main app
+    let onboardingView: () -> Onboarding
+    let paywallView: () -> Paywall
+    let dashboardView: () -> Dashboard
+    
+    public init(
+        coordinator: MainCoordinator,
+        @ViewBuilder onboardingView: @escaping () -> Onboarding,
+        @ViewBuilder paywallView: @escaping () -> Paywall,
+        @ViewBuilder dashboardView: @escaping () -> Dashboard
+    ) {
         self.coordinator = coordinator
+        self.onboardingView = onboardingView
+        self.paywallView = paywallView
+        self.dashboardView = dashboardView
     }
     
     public var body: some View {
         Group {
             switch coordinator.currentState {
             case .onboarding:
-                OnboardingView()
-//                coordinator.onboardingFinished()
+                onboardingView()
             case .paywall:
-                PaywallView()
-//                coordinator.subscriptionPurchased()
+                paywallView()
             case .dashboard:
-//                DashboardView()
-                EmptyView()
+                dashboardView()
             }
         }
         .transition(.opacity.combined(with: .scale)) // Premium feel
