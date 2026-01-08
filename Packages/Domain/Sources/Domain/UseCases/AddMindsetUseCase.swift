@@ -6,8 +6,6 @@
 //
 
 
-// Domain/Sources/Domain/UseCases/AddMindsetUseCase.swift
-
 public struct AddMindsetUseCase: Sendable {
     private let repository: MindsetRepository
     

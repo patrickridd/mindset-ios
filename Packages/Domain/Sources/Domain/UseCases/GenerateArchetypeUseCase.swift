@@ -5,9 +5,6 @@
 //  Created by patrick ridd on 1/6/26.
 //
 
-
-// Domain/Sources/Domain/UseCases/GenerateArchetypeUseCase.swift
-
 public struct GenerateArchetypeUseCase: Sendable {
     public init() {}
     
