@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 import FeatureNavigation
 import FeatureDashboard
 import FeatureOnboarding
@@ -14,16 +15,28 @@ import Data
 
 @main
 struct MindsetApp: App {
-    // 1. Initialize concrete implementations of your Services
-    // In a real app, you'd pull these from a Dependency Container
-    private let subscriptionService = RevenueCatSubscriptionService()
+
+    let container: ModelContainer
     
-    // 2. Initialize the Director (Coordinator)
     @State private var coordinator: MainCoordinator
     
     init() {
-        let coord = MainCoordinator(subscriptionService: subscriptionService)
-        _coordinator = State(initialValue: coord)
+        // Initialize SwiftData
+        do {
+            container = try ModelContainer(for: MindsetEntryDB.self)
+        } catch {
+            fatalError("Could not initialize SwiftData container")
+        }
+        
+        // 2. Inject the SwiftData context into a Repository
+        let persistenceService = SwiftDataMindsetRepository(modelContext: container.mainContext)
+        let subscriptionService = RevenueCatSubscriptionService()
+        
+        // 3. Initialize the Coordinator
+        _coordinator = State(initialValue: MainCoordinator(
+            subscriptionService: subscriptionService,
+            persistenceService: persistenceService // New dependency
+        ))
     }
     
     var body: some Scene {
@@ -36,5 +49,6 @@ struct MindsetApp: App {
                 dashboardView: { DashboardView(onStartRitual: { /* navigate to ritual */ }) }
             )
         }
+        .modelContainer(container)
     }
 }

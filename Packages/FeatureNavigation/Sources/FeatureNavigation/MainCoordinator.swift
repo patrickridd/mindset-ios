@@ -14,11 +14,12 @@ import Domain
 public final class MainCoordinator {
     public var currentState: AppState = .onboarding
     
-    // Dependencies (Injected)
     private let subscriptionService: SubscriptionService
+    private let persistenceService: MindsetRepository
     
-    public init(subscriptionService: SubscriptionService) {
+    public init(subscriptionService: SubscriptionService, persistenceService: MindsetRepository) {
         self.subscriptionService = subscriptionService
+        self.persistenceService = persistenceService
         
         // Initial check: Where should we start?
         Task { await evaluateInitialState() }
