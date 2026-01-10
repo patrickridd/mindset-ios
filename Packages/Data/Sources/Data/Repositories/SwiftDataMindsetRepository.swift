@@ -5,8 +5,6 @@
 //  Created by patrick ridd on 1/6/26.
 //
 
-
-// Data/Sources/Data/Repositories/SwiftDataMindsetRepository.swift
 import Foundation
 import SwiftData
 import Domain
@@ -20,13 +18,13 @@ public final class SwiftDataMindsetRepository: MindsetRepository {
     }
 
     public func fetchEntries() async throws -> [MindsetEntry] {
-        let descriptor = FetchDescriptor<MindsetEntryDB>(sortBy: [SortDescriptor(\.date, order: .reverse)])
+        let descriptor = FetchDescriptor<SDMindsetEntry>(sortBy: [SortDescriptor(\.date, order: .reverse)])
         let dbEntries = try modelContext.fetch(descriptor)
         return dbEntries.map { $0.toDomain() }
     }
 
     public func save(_ entry: MindsetEntry) async throws {
-        let dbEntry = MindsetEntryDB(
+        let dbEntry = SDMindsetEntry(
             id: entry.id,
             date: entry.date,
             gratitudeText: entry.gratitudeText,

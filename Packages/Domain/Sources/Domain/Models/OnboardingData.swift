@@ -8,7 +8,8 @@
 public struct OnboardingData: Sendable {
     public var goal: String = ""
     public var overwhelmFrequency: String = ""
-    // ... other fields
+    public var bestSelfName: String = ""
+    public var primaryGoal: String = ""
     
     public init(goal: String = "", overwhelmFrequency: String = "") {
         self.goal = goal

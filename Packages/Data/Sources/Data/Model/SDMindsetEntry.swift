@@ -1,27 +1,21 @@
 //
-//  MindsetEntryDB.swift
+//  SDMindsetEntry.swift
 //  Data
 //
-//  Created by patrick ridd on 1/6/26.
+//  Created by patrick ridd on 1/9/26.
 //
 
-
-// Data/Sources/Data/Models/MindsetEntryDB.swift
 import Foundation
 import SwiftData
 import Domain
 
 @Model
-public final class MindsetEntryDB {
+public final class SDMindsetEntry {
     @Attribute(.unique) public var id: UUID
     public var date: Date
-    
-    // The Ritual Triple
     public var gratitudeText: String
     public var goalText: String
     public var affirmationText: String
-    
-    // Future-proofing for AI Archetypes
     public var archetypeTag: String?
     public var sentimentScore: Double?
 
@@ -34,8 +28,17 @@ public final class MindsetEntryDB {
         self.archetypeTag = archetypeTag
         self.sentimentScore = sentimentScore
     }
-    
-    // Mapping back to Domain Entity
+
+    public init (_ entry: MindsetEntry) {
+        self.id = entry.id
+        self.date = entry.date
+        self.gratitudeText = entry.gratitudeText
+        self.goalText = entry.goalText
+        self.affirmationText = entry.affirmationText
+        self.archetypeTag = entry.archetypeTag
+        self.sentimentScore = entry.sentimentScore
+    }
+
     public func toDomain() -> MindsetEntry {
         return MindsetEntry(
             id: id,

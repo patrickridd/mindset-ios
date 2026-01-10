@@ -23,7 +23,7 @@ struct MindsetApp: App {
     init() {
         // Initialize SwiftData
         do {
-            container = try ModelContainer(for: MindsetEntryDB.self)
+            container = try ModelContainer(for: SDMindsetEntry.self, SDUserProfile.self)
         } catch {
             fatalError("Could not initialize SwiftData container")
         }
@@ -35,7 +35,7 @@ struct MindsetApp: App {
         // 3. Initialize the Coordinator
         _coordinator = State(initialValue: MainCoordinator(
             subscriptionService: subscriptionService,
-            persistenceService: persistenceService // New dependency
+            persistenceService: persistenceService
         ))
     }
     
