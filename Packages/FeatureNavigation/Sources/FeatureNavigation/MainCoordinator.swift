@@ -15,11 +15,13 @@ public final class MainCoordinator {
     public var currentState: AppState = .onboarding
     
     private let subscriptionService: SubscriptionService
-    private let persistenceService: MindsetRepository
-    
-    public init(subscriptionService: SubscriptionService, persistenceService: MindsetRepository) {
+    private let mindsetRepository: MindsetRepository
+    private let userProfileRepository: UserRepository
+
+    public init(subscriptionService: SubscriptionService, mindsetRepository: MindsetRepository, userRepository: UserRepository) {
         self.subscriptionService = subscriptionService
-        self.persistenceService = persistenceService
+        self.mindsetRepository = mindsetRepository
+        self.userProfileRepository = userRepository
         
         // Initial check: Where should we start?
         Task { await evaluateInitialState() }

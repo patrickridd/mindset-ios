@@ -7,6 +7,7 @@
 
 import Domain
 import SwiftData
+import Foundation
 
 @MainActor
 public final class SwiftDataPersistenceService: PersistenceService {
@@ -45,5 +46,11 @@ public final class SwiftDataPersistenceService: PersistenceService {
         let sdEntry = SDMindsetEntry(entry)
         modelContext.insert(sdEntry)
         try modelContext.save()
+    }
+
+    public func fetchAllMindsetEntries() async throws -> [Domain.MindsetEntry] {
+        let descriptor = FetchDescriptor<SDMindsetEntry>(sortBy: [SortDescriptor(\SDMindsetEntry.date, order: .reverse)])
+        let dbEntries = try modelContext.fetch(descriptor)
+        return dbEntries.map { $0.toDomain() }
     }
 }

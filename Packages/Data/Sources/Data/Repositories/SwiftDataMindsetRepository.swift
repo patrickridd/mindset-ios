@@ -11,29 +11,23 @@ import Domain
 
 @MainActor
 public final class SwiftDataMindsetRepository: MindsetRepository {
-    private let modelContext: ModelContext
+    private let persistence: PersistenceService
 
-    public init(modelContext: ModelContext) {
-        self.modelContext = modelContext
+    public init(persistence: PersistenceService) {
+        self.persistence = persistence
+    }
+
+    public func getLatestEntry() async throws -> MindsetEntry? {
+        // We'll fetch all and get the last one, or add a specific fetch to Persistence
+        let entries = try await persistence.fetchAllMindsetEntries()
+        return entries.sorted(by: { $0.date > $1.date }).first
     }
 
     public func fetchEntries() async throws -> [MindsetEntry] {
-        let descriptor = FetchDescriptor<SDMindsetEntry>(sortBy: [SortDescriptor(\.date, order: .reverse)])
-        let dbEntries = try modelContext.fetch(descriptor)
-        return dbEntries.map { $0.toDomain() }
+        return try await persistence.fetchAllMindsetEntries()
     }
 
     public func save(_ entry: MindsetEntry) async throws {
-        let dbEntry = SDMindsetEntry(
-            id: entry.id,
-            date: entry.date,
-            gratitudeText: entry.gratitudeText,
-            goalText: entry.goalText,
-            affirmationText: entry.affirmationText,
-            archetypeTag: entry.archetypeTag,
-            sentimentScore: entry.sentimentScore
-        )
-        modelContext.insert(dbEntry)
-        try modelContext.save()
+        try await persistence.saveMindsetEntry(entry)
     }
 }

@@ -9,6 +9,7 @@ import Domain
 import Foundation
 
 public final class MockMindsetRepository: MindsetRepository, @unchecked Sendable {
+
     public var mockEntries: [MindsetEntry] = []
 
     public init(days: Int) {
@@ -28,10 +29,14 @@ public final class MockMindsetRepository: MindsetRepository, @unchecked Sendable
     }
 
     public func fetchEntries() async throws -> [MindsetEntry] {
-        return mockEntries
+        mockEntries
     }
 
     public func save(_ entry: MindsetEntry) async throws {
         mockEntries.append(entry)
+    }
+
+    public func getLatestEntry() async throws -> Domain.MindsetEntry? {
+        mockEntries.last
     }
 }

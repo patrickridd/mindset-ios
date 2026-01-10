@@ -11,42 +11,61 @@ import FeatureNavigation
 import FeatureDashboard
 import FeatureOnboarding
 import FeatureSubscription
+import Domain
 import Data
 
 @main
 struct MindsetApp: App {
-
     let container: ModelContainer
+    let persistence: SwiftDataPersistenceService
+    let mindsetRepository: SwiftDataMindsetRepository
+    let userRepository: SwiftDataUserRepository
+    let getStreakUseCase: GetStreakUseCase
     
     @State private var coordinator: MainCoordinator
-    
+
     init() {
-        // Initialize SwiftData
-        do {
-            container = try ModelContainer(for: SDMindsetEntry.self, SDUserProfile.self)
-        } catch {
-            fatalError("Could not initialize SwiftData container")
-        }
+        // 1. Bottom Level: Database
+        container = try! ModelContainer(for: SDUserProfile.self, SDMindsetEntry.self)
         
-        // 2. Inject the SwiftData context into a Repository
-        let persistenceService = SwiftDataMindsetRepository(modelContext: container.mainContext)
-        let subscriptionService = RevenueCatSubscriptionService()
+        // 2. Level 2: Raw Persistence Driver
+        persistence = SwiftDataPersistenceService(modelContext: container.mainContext)
         
-        // 3. Initialize the Coordinator
+        // 3. Level 3: Domain-Specific Repositories
+        mindsetRepository = SwiftDataMindsetRepository(persistence: persistence)
+        userRepository = SwiftDataUserRepository(persistence: persistence)
+        
+        // 4. Level 4: Business Logic (Use Case)
+        getStreakUseCase = GetStreakUseCase(repository: mindsetRepository)
+        
+        // 5. Top Level: Orchestration
+        let subService = RevenueCatSubscriptionService()
         _coordinator = State(initialValue: MainCoordinator(
-            subscriptionService: subscriptionService,
-            persistenceService: persistenceService
+            subscriptionService: subService,
+            mindsetRepository: mindsetRepository,
+            userRepository: userRepository
         ))
     }
-    
+
     var body: some Scene {
         WindowGroup {
-            // 3. The Coordinator View handles the "Physics" of switching screens
+            // 4. Wire the CoordinatorView with the concrete View factories
             MainCoordinatorView(
                 coordinator: coordinator,
-                onboardingView: { OnboardingView(onComplete: { coordinator.onboardingFinished() }) },
-                paywallView: { PaywallView(onPurchase: { coordinator.subscriptionPurchased() }) },
-                dashboardView: { DashboardView(onStartRitual: { /* navigate to ritual */ }) }
+                onboardingView: {
+                    OnboardingView(
+//                        persistenceService: persistenceService,
+                        onComplete: { coordinator.onboardingFinished() }
+                    )
+                },
+                paywallView: {
+                    PaywallView(onPurchase: { coordinator.subscriptionPurchased() })
+                },
+                dashboardView: {
+                    DashboardView(userRepository: userRepository, mindsetRepository: mindsetRepository, getStreakUseCase: getStreakUseCase) {
+                        
+                    }
+                }
             )
         }
         .modelContainer(container)
