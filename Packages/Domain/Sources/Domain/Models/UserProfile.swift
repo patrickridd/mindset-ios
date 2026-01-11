@@ -8,13 +8,31 @@
 import Foundation
 
 public struct UserProfile: Sendable {
-    public let id: String
+    
+    public let id: UUID
     public var bestSelfName: String
     public var primaryGoal: String
-    
-    public init(id: String = "current", bestSelfName: String, primaryGoal: String, createdAt: Date = Date()) {
+    public let createdAt: Date
+    public let overwhelmedFrequency: OverwhelmedFrequency
+
+    public init(
+        id: UUID = UUID(),
+        bestSelfName: String,
+        primaryGoal: String,
+        overwhelmedFrequency: OverwhelmedFrequency,
+        createdAt: Date = Date()
+    ) {
         self.id = id
         self.bestSelfName = bestSelfName
         self.primaryGoal = primaryGoal
+        self.overwhelmedFrequency = overwhelmedFrequency
+        self.createdAt = createdAt
+    }
+    
+    public enum OverwhelmedFrequency: String, Codable, CaseIterable, Sendable {
+        case rarely = "Rarely"
+        case sometimes = "Sometimes"
+        case often = "Often"
+        case always = "Always"
     }
 }

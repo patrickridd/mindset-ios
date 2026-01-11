@@ -60,7 +60,8 @@ public final class OnboardingViewModel {
             // Save to SwiftData via Repository
             let profile = UserProfile(
                 bestSelfName: bestSelfName,
-                primaryGoal: primaryFocus
+                primaryGoal: primaryFocus,
+                overwhelmedFrequency: UserProfile.OverwhelmedFrequency(rawValue: overwhelmFrequency) ?? .sometimes
             )
             try? await userRepository.saveUserProfile(profile)
             

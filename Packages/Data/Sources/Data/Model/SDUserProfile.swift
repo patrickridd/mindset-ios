@@ -7,21 +7,60 @@
 
 import SwiftData
 import Domain
+import Foundation
 
 @Model
 public final class SDUserProfile {
-    @Attribute(.unique) public var id: String
+    @Attribute(.unique) public var id: UUID
     public var bestSelfName: String
     public var primaryGoal: String
+    public var createdAt: Date
+    // SwiftData stores Enums easily if they are String-backed
+    public var overwhelmedFrequency: String
 
-    public init(from domain: UserProfile) {
-        self.id = domain.id
-        self.bestSelfName = domain.bestSelfName
-        self.primaryGoal = domain.primaryGoal
+    public init(
+        id: UUID = UUID(),
+        bestSelfName: String,
+        primaryGoal: String,
+        overwhelmedFrequency: String,
+        createdAt: Date = Date()
+    ) {
+        self.id = id
+        self.bestSelfName = bestSelfName
+        self.primaryGoal = primaryGoal
+        self.overwhelmedFrequency = overwhelmedFrequency
+        self.createdAt = createdAt
     }
 
-    // Convert back to Domain for the UI to use
+    public init(from profile: UserProfile) {
+        self.id = profile.id
+        self.bestSelfName = profile.bestSelfName
+        self.primaryGoal = profile.primaryGoal
+        self.overwhelmedFrequency = profile.overwhelmedFrequency.rawValue
+        self.createdAt = profile.createdAt
+    }
+
+    // MARK: - Mapping
+    
+    /// Converts SwiftData storage model back to the clean Domain struct
     public func toDomain() -> UserProfile {
-        UserProfile(id: id, bestSelfName: bestSelfName, primaryGoal: primaryGoal)
+        return UserProfile(
+            id: id,
+            bestSelfName: bestSelfName,
+            primaryGoal: primaryGoal,
+            overwhelmedFrequency: UserProfile.OverwhelmedFrequency(rawValue: overwhelmedFrequency) ?? .sometimes,
+            createdAt: createdAt
+        )
+    }
+    
+    /// Static helper to create a storage model from a Domain struct
+    public static func fromDomain(_ domain: UserProfile) -> SDUserProfile {
+        return SDUserProfile(
+            id: domain.id,
+            bestSelfName: domain.bestSelfName,
+            primaryGoal: domain.primaryGoal,
+            overwhelmedFrequency: domain.overwhelmedFrequency.rawValue,
+            createdAt: domain.createdAt
+        )
     }
 }
