@@ -10,4 +10,5 @@ public enum AppState {
     case onboarding
     case paywall
     case dashboard
+    case mindset
 }

@@ -33,6 +33,7 @@ struct MindsetApp: App {
     let subscriptionService: SubscriptionService
 
     @State private var coordinator: MainCoordinator
+    private let viewFactory: AppViewFactory
 
     init() {
         // 1. Bottom Level: Database
@@ -51,48 +52,30 @@ struct MindsetApp: App {
         getYesterdayBridgeUseCase = GetYesterdayBridgeUseCase(repository: mindsetRepository)
 
         subscriptionService = RevenueCatSubscriptionService()
-
-        // 5. Top Level: Orchestration
-        let subService = RevenueCatSubscriptionService()
-        _coordinator = State(initialValue: MainCoordinator(
-            subscriptionService: subService,
+        
+        let coord = MainCoordinator(
+            subscriptionService: subscriptionService,
             mindsetRepository: mindsetRepository,
             userRepository: userRepository
-        ))
+        )
+                
+        _coordinator = State(initialValue: coord)
+                
+        // Initialize the factory with all the dependencies it needs to "assemble" views
+        self.viewFactory = AppViewFactory(
+            coordinator: coord,
+            userRepository: userRepository,
+            mindsetRepository: mindsetRepository,
+            getStreakUseCase: getStreakUseCase,
+            addMindsetUseCase: addMindsetUseCase,
+            getYesterdayBridgeUseCase: getYesterdayBridgeUseCase,
+            subscriptionService: subscriptionService
+        )
     }
 
     var body: some Scene {
         WindowGroup {
-            // 4. Wire the CoordinatorView with the concrete View factories
-            MainCoordinatorView(
-                coordinator: coordinator,
-                onboardingView: {
-                    OnboardingView(
-//                        persistenceService: persistenceService,
-                        onComplete: { coordinator.onboardingFinished() }
-                    )
-                },
-                paywallView: {
-                    PaywallView(onPurchase: { coordinator.subscriptionPurchased() })
-                },
-                dashboardView: {
-                    DashboardView(userRepository: userRepository, mindsetRepository: mindsetRepository, getStreakUseCase: getStreakUseCase) {
-                        
-                    }
-                },
-                mindsetView: {
-                    MorningRitualView(
-                            viewModel: MorningRitualViewModel(
-                                addMindsetUseCase: addMindsetUseCase,
-                                getYesterdayBridgeUseCase: getYesterdayBridgeUseCase,
-                                subscriptionService: subscriptionService,
-                                onRitualFinished: { [weak coordinator] in
-                                    coordinator?.onboardingFinished()
-                                }
-                            )
-                        )
-                }
-            )
+            MainCoordinatorView(coordinator: coordinator, factory: viewFactory)
         }
         .modelContainer(container)
     }

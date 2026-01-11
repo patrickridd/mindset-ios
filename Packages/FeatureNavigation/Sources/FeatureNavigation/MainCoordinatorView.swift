@@ -8,40 +8,32 @@
 import SwiftUI
 import Domain
 
-public struct MainCoordinatorView<Onboarding: View, Paywall: View, Dashboard: View, MindsetView: View>: View {
+// FeatureNavigation
+public protocol MainViewFactory {
+    func makeOnboardingView() -> AnyView
+    func makePaywallView() -> AnyView
+    func makeDashboardView() -> AnyView
+    func makeMindsetView() -> AnyView
+}
+
+public struct MainCoordinatorView: View {
     @Bindable var coordinator: MainCoordinator
-    
-    // These are "View Builders" injected from the @main app
-    let onboardingView: () -> Onboarding
-    let paywallView: () -> Paywall
-    let dashboardView: () -> Dashboard
-    let mindsetView: () -> MindsetView
-    
-    public init(
-        coordinator: MainCoordinator,
-        @ViewBuilder onboardingView: @escaping () -> Onboarding,
-        @ViewBuilder paywallView: @escaping () -> Paywall,
-        @ViewBuilder dashboardView: @escaping () -> Dashboard,
-        @ViewBuilder mindsetView: @escaping () -> MindsetView
-    ) {
+    private let factory: MainViewFactory
+
+    public init(coordinator: MainCoordinator, factory: MainViewFactory) {
         self.coordinator = coordinator
-        self.onboardingView = onboardingView
-        self.paywallView = paywallView
-        self.dashboardView = dashboardView
-        self.mindsetView = mindsetView
+        self.factory = factory
     }
-    
+
     public var body: some View {
         Group {
             switch coordinator.currentState {
-            case .onboarding:
-                onboardingView()
-            case .paywall:
-                paywallView()
-            case .dashboard:
-                dashboardView()
+            case .onboarding: factory.makeOnboardingView()
+            case .paywall:    factory.makePaywallView()
+            case .dashboard:  factory.makeDashboardView()
+            case .mindset:    factory.makeMindsetView()
             }
         }
-        .transition(.opacity.combined(with: .scale)) // Premium feel
+        .animation(.default, value: coordinator.currentState)
     }
 }

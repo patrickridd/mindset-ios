@@ -59,6 +59,10 @@ public final class MainCoordinator {
     public func subscriptionPurchased() {
         set(currentState: .dashboard)
     }
+
+    public func startMorningMindset() {
+        set(currentState: .mindset)
+    }
     
     private func set(currentState: AppState) {
         withAnimation { self.currentState = currentState }
