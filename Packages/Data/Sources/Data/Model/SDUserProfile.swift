@@ -32,14 +32,6 @@ public final class SDUserProfile {
         self.createdAt = createdAt
     }
 
-    public init(from profile: UserProfile) {
-        self.id = profile.id
-        self.bestSelfName = profile.bestSelfName
-        self.primaryGoal = profile.primaryGoal
-        self.overwhelmedFrequency = profile.overwhelmedFrequency.rawValue
-        self.createdAt = profile.createdAt
-    }
-
     // MARK: - Mapping
     
     /// Converts SwiftData storage model back to the clean Domain struct

@@ -29,7 +29,7 @@ public final class SwiftDataPersistenceService: PersistenceService {
             existing.primaryGoal = profile.primaryGoal
         } else {
             // Insert new
-            let sdModel = SDUserProfile(from: profile)
+            let sdModel = SDUserProfile.fromDomain(profile)
             modelContext.insert(sdModel)
         }
         try modelContext.save()
