@@ -5,23 +5,33 @@
 //  Created by patrick ridd on 1/2/26.
 //
 
+import Foundation
 import SwiftUI
 import SwiftData
 import FeatureNavigation
 import FeatureDashboard
 import FeatureOnboarding
 import FeatureSubscription
+import FeatureMindset
 import Domain
 import Data
 
 @main
 struct MindsetApp: App {
+    /// Repository/Persistence
     let container: ModelContainer
     let persistence: SwiftDataPersistenceService
     let mindsetRepository: SwiftDataMindsetRepository
     let userRepository: SwiftDataUserRepository
-    let getStreakUseCase: GetStreakUseCase
     
+    /// Use Cases
+    let getStreakUseCase: GetStreakUseCase
+    let addMindsetUseCase: AddMindsetUseCase
+    let getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase
+    
+    /// Services
+    let subscriptionService: SubscriptionService
+
     @State private var coordinator: MainCoordinator
 
     init() {
@@ -37,7 +47,11 @@ struct MindsetApp: App {
         
         // 4. Level 4: Business Logic (Use Case)
         getStreakUseCase = GetStreakUseCase(repository: mindsetRepository)
-        
+        addMindsetUseCase = AddMindsetUseCase(repository: mindsetRepository)
+        getYesterdayBridgeUseCase = GetYesterdayBridgeUseCase(repository: mindsetRepository)
+
+        subscriptionService = RevenueCatSubscriptionService()
+
         // 5. Top Level: Orchestration
         let subService = RevenueCatSubscriptionService()
         _coordinator = State(initialValue: MainCoordinator(
@@ -65,6 +79,18 @@ struct MindsetApp: App {
                     DashboardView(userRepository: userRepository, mindsetRepository: mindsetRepository, getStreakUseCase: getStreakUseCase) {
                         
                     }
+                },
+                mindsetView: {
+                    MorningRitualView(
+                            viewModel: MorningRitualViewModel(
+                                addMindsetUseCase: addMindsetUseCase,
+                                getYesterdayBridgeUseCase: getYesterdayBridgeUseCase,
+                                subscriptionService: subscriptionService,
+                                onRitualFinished: { [weak coordinator] in
+                                    coordinator?.onboardingFinished()
+                                }
+                            )
+                        )
                 }
             )
         }

@@ -8,24 +8,27 @@
 import SwiftUI
 import Domain
 
-public struct MainCoordinatorView<Onboarding: View, Paywall: View, Dashboard: View>: View {
+public struct MainCoordinatorView<Onboarding: View, Paywall: View, Dashboard: View, MindsetView: View>: View {
     @Bindable var coordinator: MainCoordinator
     
     // These are "View Builders" injected from the @main app
     let onboardingView: () -> Onboarding
     let paywallView: () -> Paywall
     let dashboardView: () -> Dashboard
+    let mindsetView: () -> MindsetView
     
     public init(
         coordinator: MainCoordinator,
         @ViewBuilder onboardingView: @escaping () -> Onboarding,
         @ViewBuilder paywallView: @escaping () -> Paywall,
-        @ViewBuilder dashboardView: @escaping () -> Dashboard
+        @ViewBuilder dashboardView: @escaping () -> Dashboard,
+        @ViewBuilder mindsetView: @escaping () -> MindsetView
     ) {
         self.coordinator = coordinator
         self.onboardingView = onboardingView
         self.paywallView = paywallView
         self.dashboardView = dashboardView
+        self.mindsetView = mindsetView
     }
     
     public var body: some View {

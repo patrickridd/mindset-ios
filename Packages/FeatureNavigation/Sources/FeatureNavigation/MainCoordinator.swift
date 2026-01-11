@@ -12,7 +12,7 @@ import Domain
 @Observable
 @MainActor
 public final class MainCoordinator {
-    public var currentState: AppState = .onboarding
+    private(set) var currentState: AppState = .onboarding
     
     private let subscriptionService: SubscriptionService
     private let mindsetRepository: MindsetRepository
@@ -32,28 +32,35 @@ public final class MainCoordinator {
         let isFirstRun = !UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")
         
         if isFirstRun {
-            currentState = .onboarding
+            set(currentState: .onboarding)
             return
         }
         
         // 2. Check Subscription
         let isPro = await subscriptionService.checkSubscriptionStatus()
         if !isPro {
-            currentState = .paywall
+            set(currentState: .paywall)
         } else {
-            currentState = .dashboard
+            set(currentState: .dashboard)
         }
     }
     
     // Navigation Actions
-    @MainActor
+
     public func onboardingFinished() {
         UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
-        withAnimation { currentState = .paywall }
+        set(currentState: .paywall)
+    }
+
+    public func showDashboard() {
+        set(currentState: .dashboard)
+    }
+
+    public func subscriptionPurchased() {
+        set(currentState: .dashboard)
     }
     
-    @MainActor
-    public func subscriptionPurchased() {
-        withAnimation { currentState = .dashboard }
+    private func set(currentState: AppState) {
+        withAnimation { self.currentState = currentState }
     }
 }

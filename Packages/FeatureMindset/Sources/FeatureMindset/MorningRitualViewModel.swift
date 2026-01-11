@@ -16,64 +16,62 @@ public final class MorningRitualViewModel {
         case gratitude, goal, affirmation
     }
     
-    // Current Progress
-    public var currentStep: RitualStep = .gratitude
+    // Dependencies (Injected via Use Cases)
+    private let addMindsetUseCase: AddMindsetUseCase
+    private let getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase
+    private let subscriptionService: SubscriptionService
+    private let generateArchetypeUseCase = GenerateArchetypeUseCase()
     
-    // Input Data
+    // UI State
+    public var currentStep: RitualStep = .gratitude
     public var gratitudeText: String = ""
     public var goalText: String = ""
     public var affirmationText: String = ""
+    public var yesterdayGoal: String?
     
     // Status
     public var isLoading: Bool = false
     public var errorMessage: String?
-    public var yesterdayGoal: String?
-    
-    // UseCases
-    private let addMindsetUseCase: AddMindsetUseCase
-    private let getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase
-    private let generateArchetypeUseCase = GenerateArchetypeUseCase()
-
     public var generatedArchetype: String?
     public var isShowingSuccess: Bool = false
-    
     public var isShowingPaywall: Bool = false
-    private let subscriptionService: SubscriptionService
-    
+
+    public var onRitualFinished: () -> Void
+
     public init(
         addMindsetUseCase: AddMindsetUseCase,
         getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase,
-        subscriptionService: SubscriptionService
+        subscriptionService: SubscriptionService,
+        onRitualFinished: @escaping () -> Void = { }
     ) {
         self.addMindsetUseCase = addMindsetUseCase
         self.getYesterdayBridgeUseCase = getYesterdayBridgeUseCase
         self.subscriptionService = subscriptionService
-        
-        // Fetch the bridge data immediately
+        self.onRitualFinished = onRitualFinished
+
+        // Fetch the bridge data immediately to show "Yesterday you said..."
         Task { await fetchYesterdayBridge() }
     }
     
-    /// Determines if the user has provided enough input to move to the next step
     public var canProceed: Bool {
+        let text: String
         switch currentStep {
-        case .gratitude:
-            return gratitudeText.trimmingCharacters(in: .whitespacesAndNewlines).count >= 3
-        case .goal:
-            return goalText.trimmingCharacters(in: .whitespacesAndNewlines).count >= 3
-        case .affirmation:
-            return affirmationText.trimmingCharacters(in: .whitespacesAndNewlines).count >= 3
+        case .gratitude: text = gratitudeText
+        case .goal: text = goalText
+        case .affirmation: text = affirmationText
         }
+        return text.trimmingCharacters(in: .whitespacesAndNewlines).count >= 3
     }
-
+    
     private func fetchYesterdayBridge() async {
         do {
+            // This UseCase talks to MindsetRepository.getLatestEntry()
             self.yesterdayGoal = try await getYesterdayBridgeUseCase.execute()
         } catch {
             print("Bridge failed: \(error)")
         }
     }
-
-    // Actions
+    
     public func nextStep() {
         if let next = RitualStep(rawValue: currentStep.rawValue + 1) {
             currentStep = next
@@ -91,27 +89,25 @@ public final class MorningRitualViewModel {
         self.generatedArchetype = archetype
         
         do {
-            // 2. Save to Data Layer (including the tag)
+            // 2. Save via UseCase (which maps to our Repository)
             try await addMindsetUseCase.execute(
                 gratitude: gratitudeText,
                 goal: goalText,
-                affirmation: affirmationText
+                affirmation: affirmationText,
+                archetypeTag: archetype
             )
             
-            // 3. The Gate check
+            // 3. Subscription Gate
             let isPremium = await subscriptionService.checkSubscriptionStatus()
             
             if isPremium {
                 self.isShowingSuccess = true
             } else {
-                // This triggers the Paywall sheet
                 self.isShowingPaywall = true
             }
         } catch {
             self.errorMessage = error.localizedDescription
         }
-        defer {
-            isLoading = false
-        }
+        isLoading = false
     }
 }

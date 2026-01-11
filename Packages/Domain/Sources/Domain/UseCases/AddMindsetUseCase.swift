@@ -17,7 +17,8 @@ public struct AddMindsetUseCase: Sendable {
     public func execute(
         gratitude: String,
         goal: String,
-        affirmation: String
+        affirmation: String,
+        archetypeTag: String
     ) async throws {
         // Business Rule: A ritual is only valid if all parts are present
         // This enforces the "Identity" building aspect at the logic level
@@ -28,7 +29,8 @@ public struct AddMindsetUseCase: Sendable {
         let entry = MindsetEntry(
             gratitudeText: gratitude,
             goalText: goal,
-            affirmationText: affirmation
+            affirmationText: affirmation,
+            archetypeTag: archetypeTag
         )
         
         try await repository.save(entry)
