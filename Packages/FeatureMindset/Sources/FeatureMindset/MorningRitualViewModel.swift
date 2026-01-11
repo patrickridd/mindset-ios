@@ -36,18 +36,18 @@ public final class MorningRitualViewModel {
     public var isShowingSuccess: Bool = false
     public var isShowingPaywall: Bool = false
 
-    public var onRitualFinished: () -> Void
+    public var onComplete: () -> Void
 
     public init(
         addMindsetUseCase: AddMindsetUseCase,
         getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase,
         subscriptionService: SubscriptionService,
-        onRitualFinished: @escaping () -> Void = { }
+        onComplete: @escaping () -> Void = { }
     ) {
         self.addMindsetUseCase = addMindsetUseCase
         self.getYesterdayBridgeUseCase = getYesterdayBridgeUseCase
         self.subscriptionService = subscriptionService
-        self.onRitualFinished = onRitualFinished
+        self.onComplete = onComplete
 
         // Fetch the bridge data immediately to show "Yesterday you said..."
         Task { await fetchYesterdayBridge() }

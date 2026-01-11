@@ -9,28 +9,18 @@ import SwiftUI
 import Domain
 
 public struct OnboardingView: View {
-    @State private var currentStep = 0
-    @State private var data = OnboardingData()
-    @State private var isCalculating = false // For the "Reveal" transition
+
+    @State private var viewModel: OnboardingViewModel
     
-    var onComplete: () -> Void // The Coordinator will handle this transition
-
-    public init(onComplete: @escaping () -> Void) {
-        self.onComplete = onComplete
+    public init(viewModel: OnboardingViewModel) {
+        self._viewModel = State(initialValue: viewModel)
     }
-
-    let questions = [
-        "What is your primary focus right now?",
-        "How often do you feel overwhelmed?",
-        "What stops your consistency?",
-        "What's one word for your 'Best Self'?"
-    ]
-
+    
     public var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
             
-            if isCalculating {
+            if viewModel.isCalculating {
                 calculatingView
             } else {
                 questionContent
@@ -41,12 +31,12 @@ public struct OnboardingView: View {
     private var questionContent: some View {
         VStack(spacing: 40) {
             // Progress Bar
-            ProgressView(value: Double(currentStep), total: Double(questions.count))
+            ProgressView(value: Double(viewModel.currentStep), total: Double(viewModel.questions.count))
                 .progressViewStyle(.linear)
                 .tint(.orange)
                 .padding()
 
-            Text(questions[currentStep])
+            Text(viewModel.questions[viewModel.currentStep])
                 .font(.system(size: 28, weight: .medium, design: .serif))
                 .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
@@ -57,7 +47,7 @@ public struct OnboardingView: View {
                 ForEach(["Career", "Health", "Wealth", "Inner Peace"], id: \.self) { option in
                     Button(action: {
                         // nextStep()
-                        currentStep += 1
+                        viewModel.currentStep += 1
                     }) {
                         Text(option)
                             .padding()

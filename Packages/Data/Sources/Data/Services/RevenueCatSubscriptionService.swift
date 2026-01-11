@@ -21,7 +21,7 @@ public final class RevenueCatSubscriptionService: SubscriptionService {
         return false // Default
     }
 
-    public func purchase() async throws -> Bool {
+    public func purchasePro() async throws -> Bool {
         // Trigger RevenueCat UI or custom purchase logic
         return true
     }

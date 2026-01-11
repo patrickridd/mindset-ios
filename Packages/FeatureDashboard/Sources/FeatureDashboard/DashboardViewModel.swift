@@ -20,15 +20,21 @@ public final class DashboardViewModel {
     public var isLoading = false
     public var streakCount = 5
     public var latestEntry: MindsetEntry?
-    
+    public var currentArchetype = "The Architect"
+
+    // Navigation Actions
+    public var onStartMindet: () -> Void
+
     public init(
         userRepository: UserRepository,
         mindsetRepository: MindsetRepository,
-        getStreakUseCase: GetStreakUseCase
+        getStreakUseCase: GetStreakUseCase,
+        onStartMindet: @escaping () -> Void
     ) {
         self.userRepository = userRepository
         self.mindsetRepository = mindsetRepository
         self.getStreakUseCase = getStreakUseCase
+        self.onStartMindet = onStartMindet
     }
 
     @MainActor

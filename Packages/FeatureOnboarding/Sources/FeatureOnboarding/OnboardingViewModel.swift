@@ -2,7 +2,7 @@
 //  OnboardingViewModel.swift
 //  FeatureOnboarding
 //
-//  Created by patrick ridd on 1/9/26.
+//  Created by patrick ridd on 1/11/26.
 //
 
 import Foundation
@@ -10,40 +10,65 @@ import Domain
 import Observation
 
 @Observable
+@MainActor
 public final class OnboardingViewModel {
-    // 1. Dependencies
-    private let persistenceService: PersistenceService
+    private let userRepository: UserRepository
+    public var onboardingFinished: (() -> Void)?
+
+    public var currentStep = 0
+    public var isCalculating = false
     
-    // 2. State
-    public var onboardingData = OnboardingData()
-    public var isCompleting = false
-    
-    public init(persistenceService: PersistenceService) {
-        self.persistenceService = persistenceService
+    // Captured Data
+    public var primaryFocus: String = ""
+    public var overwhelmFrequency: String = ""
+    public var consistencyBlocker: String = ""
+    public var bestSelfName: String = ""
+
+    public init(userRepository: UserRepository, onboardingFinished: (() -> Void)?) {
+        self.userRepository = userRepository
+        self.onboardingFinished = onboardingFinished
     }
-    
-    @MainActor
-    public func finishOnboarding() async {
-        isCompleting = true
-        
-        // 3. Transform OnboardingData into a SwiftData-backed Model
-        // We do this so the Dashboard can find it later.
-        let profile = UserProfile(
-            bestSelfName: onboardingData.bestSelfName,
-            primaryGoal: onboardingData.primaryGoal,
-            createdAt: .now
-        )
-        
-        // 4. Save to SwiftData (via the PersistenceService)
-        do {
-            try await persistenceService.saveUserProfile(profile)
-            
-            // Artificial delay for "Perceived Value" calculation
-            try? await Task.sleep(for: .seconds(2)) 
-        } catch {
-            print("Failed to save onboarding data: \(error)")
+
+    public let questions = [
+        "What is your primary focus right now?",
+        "How often do you feel overwhelmed?",
+        "What stops your consistency?",
+        "What's one word for your 'Best Self'?"
+    ]
+
+    public func selectOption(_ option: String) {
+        // Record data based on step
+        switch currentStep {
+        case 0: primaryFocus = option
+        case 1: overwhelmFrequency = option
+        case 2: consistencyBlocker = option
+        case 3: bestSelfName = option
+        default: break
         }
+
+        if currentStep < questions.count - 1 {
+            currentStep += 1
+        } else {
+            startCalculation()
+        }
+    }
+
+    private func startCalculation() {
+        isCalculating = true
         
-        isCompleting = false
+        Task {
+            // Save to SwiftData via Repository
+            let profile = UserProfile(
+                bestSelfName: bestSelfName,
+                primaryGoal: primaryFocus
+            )
+            try? await userRepository.saveUserProfile(profile)
+            
+            // Artificial delay for "Perceived Value"
+            try? await Task.sleep(for: .seconds(2.5))
+            
+            isCalculating = false
+            onboardingFinished?()
+        }
     }
 }

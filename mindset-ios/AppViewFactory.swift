@@ -23,32 +23,54 @@ struct AppViewFactory: MainViewFactory {
     let subscriptionService: SubscriptionService
 
     func makeOnboardingView() -> AnyView {
-        AnyView(OnboardingView(onComplete: { coordinator.onboardingFinished() }))
+        let viewModel = OnboardingViewModel(
+            userRepository: userRepository,
+            onboardingFinished: {
+                coordinator.showDashboard()
+            })
+        
+        return AnyView(
+            OnboardingView(viewModel: viewModel)
+        )
     }
 
     func makePaywallView() -> AnyView {
-        AnyView(PaywallView(onPurchase: { coordinator.subscriptionPurchased() }))
+        let viewModel = PaywallViewModel(
+            subscriptionService: subscriptionService,
+            onPurchaseFinished: {
+                coordinator.showDashboard()
+            })
+        
+        return AnyView(
+            PaywallView(viewModel: viewModel)
+        )
     }
 
     func makeDashboardView() -> AnyView {
-        AnyView(DashboardView(
+        let viewModel = DashboardViewModel(
             userRepository: userRepository,
             mindsetRepository: mindsetRepository,
             getStreakUseCase: getStreakUseCase,
-            onStartRitual: {
+            onStartMindet: {
                 coordinator.startMorningMindset()
-            }
-        ))
+            })
+        
+        return AnyView(
+            DashboardView(viewModel: viewModel)
+        )
     }
 
     func makeMindsetView() -> AnyView {
         let viewModel = MorningRitualViewModel(
             addMindsetUseCase: addMindsetUseCase,
             getYesterdayBridgeUseCase: getYesterdayBridgeUseCase,
-            subscriptionService: subscriptionService) {
+            subscriptionService: subscriptionService,
+            onComplete: {
                 coordinator.showDashboard()
-            }
-        // Set the completion closure on the VM or View
-        return AnyView(MorningRitualView(viewModel: viewModel))
+            })
+
+        return AnyView(
+            MorningRitualView(viewModel: viewModel)
+        )
     }
 }

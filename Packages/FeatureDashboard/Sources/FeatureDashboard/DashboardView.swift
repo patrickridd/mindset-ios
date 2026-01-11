@@ -9,16 +9,12 @@ import SwiftUI
 import Domain
 
 public struct DashboardView: View {
-    // In a real app, this would come from a ViewModel fetching from Supabase
-    @State private var currentArchetype = "The Architect"
-    
-    @State private var viewModel: DashboardViewModel
-    var onStartRitual: () -> Void
 
-        public init(userRepository: UserRepository, mindsetRepository: MindsetRepository, getStreakUseCase: GetStreakUseCase, onStartRitual: @escaping () -> Void) {
+    @State private var viewModel: DashboardViewModel
+
+        public init(viewModel: DashboardViewModel) {
             // Initialize the ViewModel with the injected service
-            self._viewModel = State(initialValue: DashboardViewModel(userRepository: userRepository, mindsetRepository: mindsetRepository, getStreakUseCase: getStreakUseCase))
-            self.onStartRitual = onStartRitual
+            self._viewModel = State(initialValue: viewModel)
         }
 
         public var body: some View {
@@ -34,7 +30,7 @@ public struct DashboardView: View {
                             
                             Spacer(minLength: 40)
                             
-                            Button(action: onStartRitual) {
+                            Button(action: viewModel.onStartMindet) {
                                 HStack {
                                     Text("Begin Morning Ritual")
                                     Image(systemName: "sparkles")

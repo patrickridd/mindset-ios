@@ -14,4 +14,7 @@ public protocol SubscriptionService: Sendable {
     
     /// Triggers the purchase flow
     func restorePurchases() async throws -> Bool
+    
+    /// Purchase Pro subcription
+    func purchasePro() async throws -> Bool
 }

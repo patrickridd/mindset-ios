@@ -23,4 +23,9 @@ public final class MockSubscriptionService: SubscriptionService, @unchecked Send
     public func restorePurchases() async throws -> Bool {
         return isPro
     }
+    
+    public func purchasePro() async throws -> Bool {
+        isPro = true
+        return isPro
+    }
 }
