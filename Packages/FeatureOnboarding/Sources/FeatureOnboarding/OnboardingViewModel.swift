@@ -74,4 +74,8 @@ public final class OnboardingViewModel {
             onboardingFinished?()
         }
     }
+
+    public func dismiss() {
+        onboardingFinished?()
+    }
 }

@@ -19,11 +19,24 @@ public struct OnboardingView: View {
     public var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
-            
-            if viewModel.isCalculating {
-                calculatingView
-            } else {
-                questionContent
+            VStack(alignment: .center) {
+                Button {
+                    viewModel.dismiss()
+                } label: {
+                    HStack {
+                        Spacer()
+                        Image(systemName: "x.circle.fill")
+                            .resizable()
+                            .frame(width: 32, height: 32)
+                            .padding(.trailing)
+                    }
+                }
+                if viewModel.isCalculating {
+                    calculatingView
+                } else {
+                    questionContent
+                }
+                Spacer()
             }
         }
     }
@@ -46,8 +59,7 @@ public struct OnboardingView: View {
             VStack(spacing: 12) {
                 ForEach(["Career", "Health", "Wealth", "Inner Peace"], id: \.self) { option in
                     Button(action: {
-                        // nextStep()
-                        viewModel.currentStep += 1
+                        viewModel.selectOption(option)
                     }) {
                         Text(option)
                             .padding()
