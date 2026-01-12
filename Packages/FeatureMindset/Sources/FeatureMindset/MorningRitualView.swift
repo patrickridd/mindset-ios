@@ -81,6 +81,24 @@ public struct MorningRitualView: View {
                     .fill(Color(uiColor: .secondarySystemGroupedBackground)))
                 .padding(.horizontal)
                 
+                if viewModel.isAiThinking || viewModel.aiReflection != nil {
+                    AIReflectionCard(
+                        reflection: viewModel.aiReflection,
+                        isThinking: viewModel.isAiThinking
+                    )
+                    .padding(.top)
+                }
+                
+                // Add a button to trigger AI or auto-trigger on "Continue"
+                if !viewModel.isAiThinking && viewModel.aiReflection == nil {
+                    Button("Get Feedback") {
+                        Task { await viewModel.submitCurrentAnswer() }
+                    }
+                    .buttonStyle(.borderless)
+                    .tint(.orange)
+                    .disabled(!viewModel.canProceed)
+                }
+
                 // Science/Coach Tip
                 VStack(alignment: .leading, spacing: 5) {
                     Label("Coach Tip", systemImage: "lightbulb.fill")
@@ -125,18 +143,21 @@ public struct MorningRitualView: View {
     private var footerButtons: some View {
         VStack {
             let isLastStep = viewModel.currentStepIndex == viewModel.prompts.count - 1
-            
+            let checkmark: String = viewModel.canProceed ? "✅" : "☑️"
             Button(action: {
                 withAnimation(.spring()) {
                     viewModel.nextStep()
                 }
             }) {
                 HStack {
-                    Text(isLastStep ? "Complete Ritual" : "Next Step")
-                    Image(systemName: "chevron.right")
+                    Text(isLastStep ? "Complete \(checkmark)" : "Next Step")
+                    if !isLastStep {
+                        Image(systemName:  "chevron.right")
+                    }
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
+                .bold()
             }
             .buttonStyle(.borderedProminent)
             .tint(.orange)

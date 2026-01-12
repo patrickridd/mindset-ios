@@ -18,7 +18,8 @@ public final class MorningRitualViewModel {
     private let userRepository: UserRepository // Needed to get profile for PromptEngine
     private let subscriptionService: SubscriptionService
     private let promptEngine = PromptEngine()
-    
+    private let aiService: AIAnalysisService = MockAIService() // Injected in production
+
     // Dynamic Content
     public var prompts: [MindsetPrompt] = []
     public var currentStepIndex: Int = 0
@@ -31,7 +32,9 @@ public final class MorningRitualViewModel {
     public var yesterdayGoal: String?
     public var isShowingPaywall: Bool = false
     public var onComplete: (() -> Void)?
-
+    public var aiReflection: String?
+    public var isAiThinking: Bool = false
+    
     public init(
         userRepository: UserRepository,
         addMindsetUseCase: AddMindsetUseCase,
@@ -85,6 +88,22 @@ public final class MorningRitualViewModel {
         }
     }
 
+    public func submitCurrentAnswer() async {
+        guard let prompt = currentPrompt, let answer = answers[prompt.id] else { return }
+        
+        isAiThinking = true
+        aiReflection = nil // Reset
+        
+        do {
+            // Call the service we created
+            aiReflection = try await aiService.generateFeedback(for: prompt, answer: answer)
+        } catch {
+            aiReflection = "That's a thoughtful reflection. Keep going!"
+        }
+        
+        isAiThinking = false
+    }
+    
     // MARK: - Completion
     
     public func completeRitual() async {
