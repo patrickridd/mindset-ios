@@ -7,6 +7,7 @@
 
 
 public struct PromptEngine {
+    public init() {}
     public func fetchPrompts(for profile: UserProfile, completedCount: Int) -> [MindsetPrompt] {
         var selectedPrompts: [MindsetPrompt] = []
         

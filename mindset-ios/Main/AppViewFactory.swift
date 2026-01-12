@@ -62,6 +62,7 @@ struct AppViewFactory: MainViewFactory {
 
     func makeMindsetView() -> AnyView {
         let viewModel = MorningRitualViewModel(
+            userRepository: userRepository,
             addMindsetUseCase: addMindsetUseCase,
             getYesterdayBridgeUseCase: getYesterdayBridgeUseCase,
             subscriptionService: subscriptionService,

@@ -17,154 +17,132 @@ public struct MorningRitualView: View {
     
     public var body: some View {
         ZStack {
-            // Background: Subtle Gradient for "Grounding"
             Color(uiColor: .systemGroupedBackground)
                 .ignoresSafeArea()
             
-            VStack {
-                // Progress Indicator
-                 ritualProgressBar
-                    .padding(.top)
-                
-                TabView(selection: $viewModel.currentStep) {
-                    ritualStep(title: "What are you grateful for?", text: $viewModel.gratitudeText)
-                        .tag(MorningRitualViewModel.RitualStep.gratitude)
-                        
-                    ritualStep(title: "What is your goal for today?", text: $viewModel.goalText)
-                        .tag(MorningRitualViewModel.RitualStep.goal)
-
-                    ritualStep(title: "What is your affirmation?", text: $viewModel.affirmationText)
-                        .tag(MorningRitualViewModel.RitualStep.affirmation)
+            if viewModel.isLoading {
+                ProgressView("Preparing your ritual...")
+            } else {
+                VStack {
+                    ritualProgressBar
+                        .padding(.top)
+                    
+                    // The dynamic content area
+                    ritualContent
+                        .animation(.default, value: viewModel.currentStepIndex)
+                    
+                    footerButtons
                 }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-                .animation(.default, value: viewModel.canProceed)
-                .sensoryFeedback(.impact(weight: .light), trigger: viewModel.canProceed) { old, new in
-                    new == true // Give a tiny 'click' feel when the swipe is enabled
-                }
-                footerButtons
             }
         }
-        .fullScreenCover(isPresented: $viewModel.isShowingSuccess) {
-            RitualSuccessView(archetype: viewModel.generatedArchetype ?? "The Resilient") {
-                // Handle dismissal (e.g., go back to Dashboard)
-                viewModel.isShowingSuccess = false
-            }
+        // Bridge the ViewModel paywall state to the View
+        .sheet(isPresented: $viewModel.isShowingPaywall) {
+            // Your PaywallView here
         }
-        .animation(.spring(), value: viewModel.isShowingSuccess)
     }
     
-    private func moveBack() {
-        if let previous = MorningRitualViewModel.RitualStep(rawValue: viewModel.currentStep.rawValue - 1) {
-            viewModel.currentStep = previous
-        }
-    }
-
     // MARK: - Subviews
     
-    private func ritualStep(title: String, text: Binding<String>) -> some View {
-        VStack(spacing: 20) {
-            if let yesterday = viewModel.yesterdayGoal, viewModel.currentStep == .gratitude {
-                VStack(alignment: .leading) {
-                    Text("YESTERDAY'S FOCUS")
+    @ViewBuilder
+    private var ritualContent: some View {
+        if let prompt = viewModel.currentPrompt {
+            VStack(spacing: 24) {
+                // Yesterday Bridge (Only show on first step)
+                if viewModel.currentStepIndex == 0, let yesterday = viewModel.yesterdayGoal {
+                    yesterdayBridge(text: yesterday)
+                }
+                
+                // Prompt Header
+                VStack(spacing: 8) {
+                    Text(prompt.category.displayName.uppercased())
                         .font(.caption2)
-                        .fontWeight(.bold)
+                        .fontWeight(.black)
+                        .tracking(2)
                         .foregroundStyle(.orange)
-                    Text(yesterday)
-                        .font(.subheadline)
-                        .italic()
+                    
+                    Text(prompt.headline)
+                        .font(.system(.title2, design: .serif))
+                        .fontWeight(.bold)
                 }
+                
+                Text(prompt.questionText)
+                    .font(.body)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+                
+                // Input Area
+                TextEditor(text: Binding(
+                    get: { viewModel.answers[prompt.id] ?? "" },
+                    set: { viewModel.answers[prompt.id] = $0 }
+                ))
+                .frame(maxHeight: 200)
                 .padding()
-                .background(Capsule().stroke(Color.orange.opacity(0.3)))
-                .transition(.move(edge: .top).combined(with: .opacity))
-            }
-            
-            Text(title)
-                .font(.system(.title, design: .serif))
-
-            TextEditor(text: text)
-                .frame(height: 150)
-                .padding()
-                .background(RoundedRectangle(cornerRadius: 15).fill(Color(uiColor: .secondarySystemGroupedBackground)))
+                .background(RoundedRectangle(cornerRadius: 15)
+                    .fill(Color(uiColor: .secondarySystemGroupedBackground)))
                 .padding(.horizontal)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .contentShape(Rectangle()) // Makes the background hittable
-        .gesture(
-            DragGesture().onEnded { value in
-                let threshold: CGFloat = 50
                 
-                // CASE 1: Swiping BACK (Right Swipe -> Positive Width)
-                if value.translation.width > threshold {
-                    withAnimation {
-                        moveBack() // Always allow going back
-                    }
+                // Science/Coach Tip
+                VStack(alignment: .leading, spacing: 5) {
+                    Label("Coach Tip", systemImage: "lightbulb.fill")
+                        .font(.caption).bold()
+                        .foregroundStyle(.orange)
+                    Text(prompt.coachTip)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
+                .padding()
+                .background(RoundedRectangle(cornerRadius: 12).fill(Color.orange.opacity(0.1)))
+                .padding(.horizontal)
                 
-                // CASE 2: Swiping FORWARD (Left Swipe -> Negative Width)
-                if value.translation.width < -threshold {
-                    if viewModel.canProceed {
-                        withAnimation {
-                            viewModel.nextStep() // Only allow if valid
-                        }
-                    } else {
-                        // Optional: Trigger a "rejection" haptic here
-                    }
-                }
+                Spacer()
             }
-        )
+            .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading)))
+        }
+    }
+    
+    private func yesterdayBridge(text: String) -> some View {
+        VStack(alignment: .leading) {
+            Text("YESTERDAY'S FOCUS").font(.caption2).bold().foregroundStyle(.orange)
+            Text(text).font(.subheadline).italic()
+        }
+        .padding()
+        .background(Capsule().stroke(Color.orange.opacity(0.3)))
     }
     
     private var ritualProgressBar: some View {
         HStack {
-            ForEach(MorningRitualViewModel.RitualStep.allCases, id: \.self) { step in
+            ForEach(0..<viewModel.prompts.count, id: \.self) { index in
                 Capsule()
-                    .fill(step.rawValue <= viewModel.currentStep.rawValue ? Color.orange : Color.gray.opacity(0.3))
+                    .fill(index <= viewModel.currentStepIndex ? Color.orange : Color.gray.opacity(0.3))
                     .frame(height: 4)
+                    .animation(.spring(), value: viewModel.currentStepIndex)
             }
         }
         .padding(.horizontal)
+        .animation(.spring(duration: 0.4, bounce: 0.3), value: viewModel.currentStepIndex)
     }
     
     private var footerButtons: some View {
         VStack {
-            if viewModel.currentStep == .affirmation {
-                Button("Complete Mindset") {
-                    Task { await viewModel.completeRitual() }
+            let isLastStep = viewModel.currentStepIndex == viewModel.prompts.count - 1
+            
+            Button(action: {
+                withAnimation(.spring()) {
+                    viewModel.nextStep()
                 }
-                .buttonStyle(.borderedProminent)
-                .disabled(!viewModel.canProceed || viewModel.isLoading)
-                .sensoryFeedback(.selection, trigger: viewModel.currentStep)
-                .sensoryFeedback(.impact(weight: .light), trigger: viewModel.canProceed) { old, new in
-                    return new == true // Only vibrate when it BECOMES valid
+            }) {
+                HStack {
+                    Text(isLastStep ? "Complete Ritual" : "Next Step")
+                    Image(systemName: "chevron.right")
                 }
-            } else {
-                Button("Next Step") {
-                    withAnimation(.spring()) {
-                        viewModel.nextStep()
-                    }
-                }
-                .buttonStyle(.bordered)
-                // The "Gatekeeper" in action
-                .disabled(!viewModel.canProceed)
-                .opacity(viewModel.canProceed ? 1.0 : 0.5)
-                .sensoryFeedback(.selection, trigger: viewModel.currentStep)
-                .sensoryFeedback(.impact(weight: .light), trigger: viewModel.canProceed) { old, new in
-                    return new == true // Only vibrate when it BECOMES valid
-                }
+                .frame(maxWidth: .infinity)
+                .padding()
             }
+            .buttonStyle(.borderedProminent)
+            .tint(.orange)
+            .disabled(!viewModel.canProceed)
+            .padding()
         }
-        .padding()
-        .animation(.default, value: viewModel.canProceed)
-    }
-
-    private var forwardLockGesture: some Gesture {
-        DragGesture(minimumDistance: 10)
-            .onChanged { value in
-                // Only 'trap' if swiping LEFT (forward)
-                if value.translation.width < 0 {
-                    // The highPriorityGesture is active, blocking the TabView
-                }
-            }
     }
 }
 
@@ -172,6 +150,7 @@ public struct MorningRitualView: View {
     // We create 2 days of data so that "Yesterday" exists
     let mockRepo = MockMindsetRepository(days: 2)
     let viewModel = MorningRitualViewModel(
+        userRepository: MockUserRepository(),
         addMindsetUseCase: AddMindsetUseCase(repository: mockRepo),
         getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase(repository: mockRepo),
         subscriptionService: MockSubscriptionService()
@@ -182,6 +161,7 @@ public struct MorningRitualView: View {
 #Preview("Free User Flow") {
     let mockRepo = MockMindsetRepository(days: 0)
     let viewModel = MorningRitualViewModel(
+        userRepository: MockUserRepository(),
         addMindsetUseCase: AddMindsetUseCase(repository: mockRepo),
         getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase(repository: mockRepo),
         subscriptionService: MockSubscriptionService(isPro: false)
@@ -192,6 +172,7 @@ public struct MorningRitualView: View {
 #Preview("Pro User Flow") {
     let mockRepo = MockMindsetRepository(days: 0)
     let viewModel = MorningRitualViewModel(
+        userRepository: MockUserRepository(),
         addMindsetUseCase: AddMindsetUseCase(repository: mockRepo),
         getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase(repository: mockRepo),
         subscriptionService: MockSubscriptionService(isPro: true)

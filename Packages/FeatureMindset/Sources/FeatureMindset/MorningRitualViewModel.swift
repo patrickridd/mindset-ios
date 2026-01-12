@@ -12,101 +12,103 @@ import Observation
 @MainActor
 @Observable
 public final class MorningRitualViewModel {
-    public enum RitualStep: Int, CaseIterable {
-        case gratitude, goal, affirmation
-    }
-    
-    // Dependencies (Injected via Use Cases)
+    // Dependencies
     private let addMindsetUseCase: AddMindsetUseCase
     private let getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase
+    private let userRepository: UserRepository // Needed to get profile for PromptEngine
     private let subscriptionService: SubscriptionService
-    private let generateArchetypeUseCase = GenerateArchetypeUseCase()
+    private let promptEngine = PromptEngine()
+    
+    // Dynamic Content
+    public var prompts: [MindsetPrompt] = []
+    public var currentStepIndex: Int = 0
+    
+    // User Answers (Keyed by Prompt ID)
+    public var answers: [String: String] = [:]
     
     // UI State
-    public var currentStep: RitualStep = .gratitude
-    public var gratitudeText: String = ""
-    public var goalText: String = ""
-    public var affirmationText: String = ""
-    public var yesterdayGoal: String?
-    
-    // Status
     public var isLoading: Bool = false
-    public var errorMessage: String?
-    public var generatedArchetype: String?
-    public var isShowingSuccess: Bool = false
+    public var yesterdayGoal: String?
     public var isShowingPaywall: Bool = false
-
-    public var onComplete: () -> Void
+    public var onComplete: (() -> Void)?
 
     public init(
+        userRepository: UserRepository,
         addMindsetUseCase: AddMindsetUseCase,
         getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase,
         subscriptionService: SubscriptionService,
-        onComplete: @escaping () -> Void = { }
+        onComplete: (() -> Void)? = nil
     ) {
+        self.userRepository = userRepository
         self.addMindsetUseCase = addMindsetUseCase
         self.getYesterdayBridgeUseCase = getYesterdayBridgeUseCase
         self.subscriptionService = subscriptionService
         self.onComplete = onComplete
+        
+        Task { await prepareRitual() }
+    }
 
-        // Fetch the bridge data immediately to show "Yesterday you said..."
-        Task { await fetchYesterdayBridge() }
-    }
-    
-    public var canProceed: Bool {
-        let text: String
-        switch currentStep {
-        case .gratitude: text = gratitudeText
-        case .goal: text = goalText
-        case .affirmation: text = affirmationText
-        }
-        return text.trimmingCharacters(in: .whitespacesAndNewlines).count >= 3
-    }
-    
-    private func fetchYesterdayBridge() async {
+    private func prepareRitual() async {
+        isLoading = true
         do {
-            // This UseCase talks to MindsetRepository.getLatestEntry()
+            // 1. Get the Profile to customize prompts
+            if let profile = try await userRepository.fetchUserProfile() {
+                // 2. Engine decides which science-backed prompts to show
+                self.prompts = promptEngine.fetchPrompts(for: profile, completedCount: 0)
+            }
+            
+            // 3. Get the "Yesterday Bridge"
             self.yesterdayGoal = try await getYesterdayBridgeUseCase.execute()
         } catch {
-            print("Bridge failed: \(error)")
+            print("Setup failed: \(error)")
         }
+        isLoading = false
     }
+
+    // MARK: - Navigation Logic
     
+    public var currentPrompt: MindsetPrompt? {
+        guard currentStepIndex < prompts.count else { return nil }
+        return prompts[currentStepIndex]
+    }
+
+    public var canProceed: Bool {
+        guard let currentId = currentPrompt?.id else { return false }
+        return (answers[currentId]?.count ?? 0) >= 3
+    }
+
     public func nextStep() {
-        if let next = RitualStep(rawValue: currentStep.rawValue + 1) {
-            currentStep = next
+        if currentStepIndex < prompts.count - 1 {
+            currentStepIndex += 1
+        } else {
+            Task { await completeRitual() }
         }
     }
+
+    // MARK: - Completion
     
     public func completeRitual() async {
         isLoading = true
         
-        // 1. Generate the Identity
-        let archetype = generateArchetypeUseCase.execute(
-            gratitude: gratitudeText,
-            goal: goalText
-        )
-        self.generatedArchetype = archetype
-        
+        // In the next phase, we'll iterate 'answers' and send them to the AI
+        // For now, we save the primary entry
         do {
-            // 2. Save via UseCase (which maps to our Repository)
             try await addMindsetUseCase.execute(
-                gratitude: gratitudeText,
-                goal: goalText,
-                affirmation: affirmationText,
-                archetypeTag: archetype
+                // We'll map your answers dictionary to the save call
+                gratitude: answers.values.first ?? "",
+                goal: "",
+                affirmation: "",
+                archetypeTag: "The Explorer"
             )
             
-            // 3. Subscription Gate
             let isPremium = await subscriptionService.checkSubscriptionStatus()
-            
             if isPremium {
-                self.isShowingSuccess = true
+                onComplete?()
             } else {
-                self.isShowingPaywall = true
+                isShowingPaywall = true
             }
         } catch {
-            self.errorMessage = error.localizedDescription
+            print("Save failed: \(error)")
         }
         isLoading = false
     }
