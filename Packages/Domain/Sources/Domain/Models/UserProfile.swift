@@ -17,13 +17,13 @@ public struct UserProfile: Sendable {
 
     public init(
         id: UUID = UUID(),
-        bestSelfName: String,
+        userName: String,
         primaryGoal: String,
         overwhelmedFrequency: OverwhelmedFrequency,
         createdAt: Date = Date()
     ) {
         self.id = id
-        self.bestSelfName = bestSelfName
+        self.bestSelfName = userName
         self.primaryGoal = primaryGoal
         self.overwhelmedFrequency = overwhelmedFrequency
         self.createdAt = createdAt

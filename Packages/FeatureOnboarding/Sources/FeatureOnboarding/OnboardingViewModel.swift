@@ -22,7 +22,7 @@ public final class OnboardingViewModel {
     public var primaryFocus: String = ""
     public var overwhelmFrequency: String = ""
     public var consistencyBlocker: String = ""
-    public var bestSelfName: String = ""
+    public var userName: String = ""
 
     public init(userRepository: UserRepository, onboardingFinished: (() -> Void)?) {
         self.userRepository = userRepository
@@ -42,7 +42,7 @@ public final class OnboardingViewModel {
         case 0: primaryFocus = option
         case 1: overwhelmFrequency = option
         case 2: consistencyBlocker = option
-        case 3: bestSelfName = option
+        case 3: userName = option
         default: break
         }
 
@@ -59,9 +59,11 @@ public final class OnboardingViewModel {
         Task {
             // Save to SwiftData via Repository
             let profile = UserProfile(
-                bestSelfName: bestSelfName,
+                id: UUID(),
+                userName: userName,
                 primaryGoal: primaryFocus,
-                overwhelmedFrequency: UserProfile.OverwhelmedFrequency(rawValue: overwhelmFrequency) ?? .sometimes
+                overwhelmedFrequency: UserProfile.OverwhelmedFrequency(rawValue: overwhelmFrequency) ?? .sometimes,
+                createdAt: .now,
             )
             try? await userRepository.saveUserProfile(profile)
             

@@ -38,7 +38,7 @@ public final class SDUserProfile {
     public func toDomain() -> UserProfile {
         return UserProfile(
             id: id,
-            bestSelfName: bestSelfName,
+            userName: bestSelfName,
             primaryGoal: primaryGoal,
             overwhelmedFrequency: UserProfile.OverwhelmedFrequency(rawValue: overwhelmedFrequency) ?? .sometimes,
             createdAt: createdAt
