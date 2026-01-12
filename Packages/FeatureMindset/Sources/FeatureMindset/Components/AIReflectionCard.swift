@@ -74,3 +74,11 @@ struct ShimmerModifier: ViewModifier {
             .mask(content)
     }
 }
+
+#Preview("AI Thinking") {
+    AIReflectionCard(reflection: "That is a good thought", isThinking: true)
+}
+
+#Preview("AI Thought") {
+    AIReflectionCard(reflection: "That is a great thought!", isThinking: false)
+}

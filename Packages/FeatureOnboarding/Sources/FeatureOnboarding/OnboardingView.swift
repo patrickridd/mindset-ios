@@ -85,3 +85,9 @@ public struct OnboardingView: View {
             }
         }
 }
+
+#Preview {
+    let viewModel = OnboardingViewModel(userRepository: MockUserRepository()) {
+    }
+    return OnboardingView(viewModel: viewModel)
+}
