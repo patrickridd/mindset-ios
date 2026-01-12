@@ -60,7 +60,7 @@ public struct DashboardView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 // Use the data from Onboarding!
-                Text(viewModel.userProfile?.bestSelfName ?? "Visionary")
+                Text(viewModel.userProfile?.userName ?? "Visionary")
                     .font(.largeTitle.bold())
             }
         }
@@ -102,4 +102,16 @@ public struct DashboardView: View {
         .background(Color(uiColor: .secondarySystemGroupedBackground))
         .cornerRadius(16)
     }
+}
+
+#Preview {
+    let mindSetReposoitory = MockMindsetRepository(days: 1)
+    let viewModel = DashboardViewModel(
+        userRepository: MockUserRepository(),
+        mindsetRepository: mindSetReposoitory,
+        getStreakUseCase: GetStreakUseCase(repository: mindSetReposoitory)
+    ) {
+        
+    }
+    return DashboardView(viewModel: viewModel)
 }

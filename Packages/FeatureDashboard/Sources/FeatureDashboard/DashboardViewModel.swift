@@ -10,6 +10,7 @@ import Domain
 import Observation
 
 @Observable
+@MainActor
 public final class DashboardViewModel {
     private let userRepository: UserRepository // For the Name/Goal
     private let mindsetRepository: MindsetRepository // For the Streak/History
@@ -37,7 +38,6 @@ public final class DashboardViewModel {
         self.onStartMindet = onStartMindet
     }
 
-    @MainActor
     public func loadDashboardData() async {
         isLoading = true
         do {

@@ -49,7 +49,7 @@ public final class SDUserProfile {
     public static func fromDomain(_ domain: UserProfile) -> SDUserProfile {
         return SDUserProfile(
             id: domain.id,
-            bestSelfName: domain.bestSelfName,
+            bestSelfName: domain.userName,
             primaryGoal: domain.primaryGoal,
             overwhelmedFrequency: domain.overwhelmedFrequency.rawValue,
             createdAt: domain.createdAt

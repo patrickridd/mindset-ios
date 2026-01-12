@@ -5,6 +5,7 @@
 //  Created by patrick ridd on 1/7/26.
 //
 
+import Domain
 import SwiftUI
 
 public struct PaywallView: View {
@@ -104,4 +105,12 @@ public struct PaywallView: View {
             }
         }
     }
+}
+
+#Preview {
+    let viewModel = PaywallViewModel(subscriptionService: MockSubscriptionService()
+    ) {
+        
+    }
+    return PaywallView(viewModel: viewModel)
 }

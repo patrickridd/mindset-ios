@@ -10,7 +10,7 @@ import Foundation
 public struct UserProfile: Sendable {
     
     public let id: UUID
-    public var bestSelfName: String
+    public var userName: String
     public var primaryGoal: String
     public let createdAt: Date
     public let overwhelmedFrequency: OverwhelmedFrequency
@@ -23,7 +23,7 @@ public struct UserProfile: Sendable {
         createdAt: Date = Date()
     ) {
         self.id = id
-        self.bestSelfName = userName
+        self.userName = userName
         self.primaryGoal = primaryGoal
         self.overwhelmedFrequency = overwhelmedFrequency
         self.createdAt = createdAt

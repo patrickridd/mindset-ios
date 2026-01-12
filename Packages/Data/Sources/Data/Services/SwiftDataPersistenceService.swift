@@ -25,7 +25,7 @@ public final class SwiftDataPersistenceService: PersistenceService {
         
         if let existing {
             // Update existing
-            existing.bestSelfName = profile.bestSelfName
+            existing.bestSelfName = profile.userName
             existing.primaryGoal = profile.primaryGoal
         } else {
             // Insert new
