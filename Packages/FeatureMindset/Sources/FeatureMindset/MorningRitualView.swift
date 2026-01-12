@@ -20,25 +20,38 @@ public struct MorningRitualView: View {
             Color(uiColor: .systemGroupedBackground)
                 .ignoresSafeArea()
             
-            if viewModel.isLoading {
-                ProgressView("Preparing your ritual...")
-            } else {
-                VStack {
-                    ritualProgressBar
-                        .padding(.top)
-                    
-                    // The dynamic content area
-                    ritualContent
-                        .animation(.default, value: viewModel.currentStepIndex)
-                    
-                    footerButtons
+            VStack(spacing: 0) {
+                // 1. Static Progress Bar (Stays at the top)
+                ritualProgressBar
+                    .padding(.vertical)
+
+                // 2. Scrollable Content
+                ScrollViewReader { proxy in
+                    ScrollView(.vertical, showsIndicators: false) {
+                        VStack(spacing: 24) {
+                            ritualContent
+                            
+                            // This empty space ensures we can scroll high enough
+                            // to see the AI card above the keyboard
+                            Color.clear.frame(height: 100)
+                                .id("bottom-spacer")
+                        }
+                        .padding(.horizontal)
+                    }
+                    .onChange(of: viewModel.isAiThinking) { _, thinking in
+                        if thinking {
+                            withAnimation { proxy.scrollTo("bottom-spacer", anchor: .bottom) }
+                        }
+                    }
                 }
+                
+                // 3. Sticky Footer Button
+                footerButtons
+                    .background(Color(uiColor: .systemGroupedBackground)) // Cover content behind
             }
         }
-        // Bridge the ViewModel paywall state to the View
-        .sheet(isPresented: $viewModel.isShowingPaywall) {
-            // Your PaywallView here
-        }
+        // This allows the keyboard to push the view up properly
+        .ignoresSafeArea(.keyboard, edges: .bottom)
     }
     
     // MARK: - Subviews
@@ -71,15 +84,7 @@ public struct MorningRitualView: View {
                     .padding(.horizontal)
                 
                 // Input Area
-                TextEditor(text: Binding(
-                    get: { viewModel.answers[prompt.id] ?? "" },
-                    set: { viewModel.answers[prompt.id] = $0 }
-                ))
-                .frame(maxHeight: 200)
-                .padding()
-                .background(RoundedRectangle(cornerRadius: 15)
-                    .fill(Color(uiColor: .secondarySystemGroupedBackground)))
-                .padding(.horizontal)
+                textEditor(promptId: prompt.id)
                 
                 if viewModel.isAiThinking || viewModel.aiReflection != nil {
                     AIReflectionCard(
@@ -116,6 +121,16 @@ public struct MorningRitualView: View {
             }
             .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading)))
         }
+    }
+
+    func textEditor(promptId: String) -> some View {
+        TextEditor(text: Binding(
+            get: { viewModel.answers[promptId] ?? "" },
+            set: { viewModel.answers[promptId] = $0 }
+        ))
+        .frame(minHeight: 150, maxHeight: .infinity)
+        .padding(8)
+        .background(RoundedRectangle(cornerRadius: 15).fill(Color(uiColor: .secondarySystemGroupedBackground)))
     }
     
     private func yesterdayBridge(text: String) -> some View {
