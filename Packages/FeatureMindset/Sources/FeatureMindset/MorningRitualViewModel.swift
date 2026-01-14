@@ -15,25 +15,30 @@ public final class MorningRitualViewModel {
     // Dependencies
     private let addMindsetUseCase: AddMindsetUseCase
     private let getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase
-    private let userRepository: UserRepository // Needed to get profile for PromptEngine
+    private let userRepository: UserRepository
     private let subscriptionService: SubscriptionService
     private let promptEngine = PromptEngine()
-    private let aiService: AIAnalysisService = MockAIService() // Injected in production
+    private let aiService: AIAnalysisService = MockAIService()
 
     // Dynamic Content
     public var prompts: [MindsetPrompt] = []
     public var currentStepIndex: Int = 0
     
-    // User Answers (Keyed by Prompt ID)
+    // User Answers & AI Reflections (Keyed by Prompt ID)
     public var answers: [String: String] = [:]
+    public var reflections: [String: String] = [:] // Store reflections per prompt
     
     // UI State
     public var isLoading: Bool = false
     public var yesterdayGoal: String?
     public var isShowingPaywall: Bool = false
     public var onComplete: (() -> Void)?
-    public var aiReflection: String?
+    
     public var isAiThinking: Bool = false
+    public var currentAiReflection: String? {
+        guard let id = currentPrompt?.id else { return nil }
+        return reflections[id]
+    }
     
     public init(
         userRepository: UserRepository,
@@ -54,13 +59,9 @@ public final class MorningRitualViewModel {
     private func prepareRitual() async {
         isLoading = true
         do {
-            // 1. Get the Profile to customize prompts
             if let profile = try await userRepository.fetchUserProfile() {
-                // 2. Engine decides which science-backed prompts to show
                 self.prompts = promptEngine.fetchPrompts(for: profile, completedCount: 0)
             }
-            
-            // 3. Get the "Yesterday Bridge"
             self.yesterdayGoal = try await getYesterdayBridgeUseCase.execute()
         } catch {
             print("Setup failed: \(error)")
@@ -92,13 +93,12 @@ public final class MorningRitualViewModel {
         guard let prompt = currentPrompt, let answer = answers[prompt.id] else { return }
         
         isAiThinking = true
-        aiReflection = nil // Reset
         
         do {
-            // Call the service we created
-            aiReflection = try await aiService.generateFeedback(for: prompt, answer: answer)
+            let reflection = try await aiService.generateFeedback(for: prompt, answer: answer)
+            reflections[prompt.id] = reflection // Save reflection for this specific prompt
         } catch {
-            aiReflection = "That's a thoughtful reflection. Keep going!"
+            reflections[prompt.id] = "That's a thoughtful reflection. Keep going!"
         }
         
         isAiThinking = false
@@ -109,16 +109,27 @@ public final class MorningRitualViewModel {
     public func completeRitual() async {
         isLoading = true
         
-        // In the next phase, we'll iterate 'answers' and send them to the AI
-        // For now, we save the primary entry
         do {
-            try await addMindsetUseCase.execute(
-                // We'll map your answers dictionary to the save call
-                gratitude: answers.values.first ?? "",
-                goal: "",
-                affirmation: "",
-                archetypeTag: "The Explorer"
+            // 1. Map current answers and reflections into PromptResponse objects
+            let responses = prompts.compactMap { prompt -> PromptResponse? in
+                guard let answer = answers[prompt.id] else { return nil }
+                return PromptResponse(
+                    promptId: prompt.id,
+                    category: prompt.category,
+                    userText: answer,
+                    aiReflection: reflections[prompt.id]
+                )
+            }
+            
+            // 2. Create the Parent MindsetEntry
+            let entry = MindsetEntry(
+                responses: responses,
+                archetypeTag: "The Explorer", // This can be calculated by a UseCase later
+                sentimentScore: 0.8 // This can be calculated by AI later
             )
+            
+            // 3. Execute with the new dynamic entry
+            try await addMindsetUseCase.execute(entry: entry)
             
             let isPremium = await subscriptionService.checkSubscriptionStatus()
             if isPremium {

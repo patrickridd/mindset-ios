@@ -13,41 +13,37 @@ import Domain
 public final class SDMindsetEntry {
     @Attribute(.unique) public var id: UUID
     public var date: Date
-    public var gratitudeText: String
-    public var goalText: String
-    public var affirmationText: String
     public var archetypeTag: String?
     public var sentimentScore: Double?
-
-    public init(id: UUID, date: Date, gratitudeText: String, goalText: String, affirmationText: String, archetypeTag: String? = nil, sentimentScore: Double? = nil) {
+    
+    // Relationship: One Entry has many Responses
+    @Relationship(deleteRule: .cascade)
+    public var responses: [SDPromptResponse] = []
+    
+    public init(id: UUID = UUID(), date: Date = Date(), responses: [SDPromptResponse] = [], archetypeTag: String? = nil, sentimentScore: Double? = nil) {
         self.id = id
         self.date = date
-        self.gratitudeText = gratitudeText
-        self.goalText = goalText
-        self.affirmationText = affirmationText
         self.archetypeTag = archetypeTag
         self.sentimentScore = sentimentScore
     }
-
-    public init (_ entry: MindsetEntry) {
-        self.id = entry.id
-        self.date = entry.date
-        self.gratitudeText = entry.gratitudeText
-        self.goalText = entry.goalText
-        self.affirmationText = entry.affirmationText
-        self.archetypeTag = entry.archetypeTag
-        self.sentimentScore = entry.sentimentScore
-    }
-
+    
     public func toDomain() -> MindsetEntry {
-        return MindsetEntry(
+        MindsetEntry(
             id: id,
             date: date,
-            gratitudeText: gratitudeText,
-            goalText: goalText,
-            affirmationText: affirmationText,
+            responses: responses.map { $0.toDomain() },
             archetypeTag: archetypeTag,
             sentimentScore: sentimentScore
+        )
+    }
+
+    public static func fromDomain(_ mindsetEntry: MindsetEntry) -> SDMindsetEntry {
+        SDMindsetEntry(
+            id: mindsetEntry.id,
+            date: mindsetEntry.date,
+            responses: mindsetEntry.responses.map { SDPromptResponse.fromDomain($0) },
+            archetypeTag: mindsetEntry.archetypeTag,
+            sentimentScore: mindsetEntry.sentimentScore
         )
     }
 }

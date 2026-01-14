@@ -21,23 +21,23 @@ public struct MorningRitualView: View {
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
-                // 1. Static Progress Bar (Stays at the top)
+                // 1. Static Progress Bar
                 ritualProgressBar
                     .padding(.vertical)
 
-                // 2. Scrollable Content
+                // 2. Scrollable Content Area
                 ScrollViewReader { proxy in
                     ScrollView(.vertical, showsIndicators: false) {
                         VStack(spacing: 24) {
                             ritualContent
                             
-                            // This empty space ensures we can scroll high enough
-                            // to see the AI card above the keyboard
-                            Color.clear.frame(height: 100)
+                            // Bottom anchor for keyboard scrolling
+                            Color.clear.frame(height: 20)
                                 .id("bottom-spacer")
                         }
                         .padding(.horizontal)
                     }
+                    // Auto-scroll when AI starts thinking or provides a reflection
                     .onChange(of: viewModel.isAiThinking) { _, thinking in
                         if thinking {
                             withAnimation { proxy.scrollTo("bottom-spacer", anchor: .bottom) }
@@ -47,10 +47,9 @@ public struct MorningRitualView: View {
                 
                 // 3. Sticky Footer Button
                 footerButtons
-                    .background(Color(uiColor: .systemGroupedBackground)) // Cover content behind
+                    .background(Color(uiColor: .systemGroupedBackground).shadow(radius: 2, y: -2))
             }
         }
-        // This allows the keyboard to push the view up properly
         .ignoresSafeArea(.keyboard, edges: .bottom)
     }
     
@@ -60,7 +59,7 @@ public struct MorningRitualView: View {
     private var ritualContent: some View {
         if let prompt = viewModel.currentPrompt {
             VStack(spacing: 24) {
-                // Yesterday Bridge (Only show on first step)
+                // Yesterday Bridge
                 if viewModel.currentStepIndex == 0, let yesterday = viewModel.yesterdayGoal {
                     yesterdayBridge(text: yesterday)
                 }
@@ -86,57 +85,69 @@ public struct MorningRitualView: View {
                 // Input Area
                 textEditor(promptId: prompt.id)
                 
-                if viewModel.isAiThinking || viewModel.aiReflection != nil {
+                // AI Section (Pulls from currentAiReflection computed property)
+                if viewModel.isAiThinking || viewModel.currentAiReflection != nil {
                     AIReflectionCard(
-                        reflection: viewModel.aiReflection,
+                        reflection: viewModel.currentAiReflection,
                         isThinking: viewModel.isAiThinking
                     )
                     .padding(.top)
                 }
                 
-                // Add a button to trigger AI or auto-trigger on "Continue"
-                if !viewModel.isAiThinking && viewModel.aiReflection == nil {
-                    Button("Get Feedback") {
+                // Feedback Trigger
+                if !viewModel.isAiThinking && viewModel.currentAiReflection == nil {
+                    Button(action: {
                         Task { await viewModel.submitCurrentAnswer() }
+                    }) {
+                        Label("Get AI Reflection", systemImage: "sparkles")
+                            .font(.subheadline).bold()
                     }
                     .buttonStyle(.borderless)
                     .tint(.orange)
                     .disabled(!viewModel.canProceed)
                 }
 
-                // Science/Coach Tip
-                VStack(alignment: .leading, spacing: 5) {
-                    Label("Coach Tip", systemImage: "lightbulb.fill")
-                        .font(.caption).bold()
-                        .foregroundStyle(.orange)
-                    Text(prompt.coachTip)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                .padding()
-                .background(RoundedRectangle(cornerRadius: 12).fill(Color.orange.opacity(0.1)))
-                .padding(.horizontal)
+                // Coach Tip
+                coachTipView(tip: prompt.coachTip)
                 
-                Spacer()
+                Spacer(minLength: 50)
             }
+            // Transition for "Duolingo" slide effect
+            .id(prompt.id)
             .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading)))
         }
     }
 
-    func textEditor(promptId: String) -> some View {
+    private func textEditor(promptId: String) -> some View {
         TextEditor(text: Binding(
             get: { viewModel.answers[promptId] ?? "" },
             set: { viewModel.answers[promptId] = $0 }
         ))
-        .frame(minHeight: 150, maxHeight: .infinity)
-        .padding(8)
+        // Fixed height prevents the "shrinking" issue when keyboard appears
+        .frame(minHeight: 120)
+        .padding(12)
         .background(RoundedRectangle(cornerRadius: 15).fill(Color(uiColor: .secondarySystemGroupedBackground)))
+        .overlay(RoundedRectangle(cornerRadius: 15).stroke(Color.orange.opacity(0.1), lineWidth: 1))
+    }
+    
+    private func coachTipView(tip: String) -> some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Label("Coach Tip", systemImage: "lightbulb.fill")
+                .font(.caption).bold()
+                .foregroundStyle(.orange)
+            Text(tip)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(RoundedRectangle(cornerRadius: 12).fill(Color.orange.opacity(0.05)))
     }
     
     private func yesterdayBridge(text: String) -> some View {
         VStack(alignment: .leading) {
             Text("YESTERDAY'S FOCUS").font(.caption2).bold().foregroundStyle(.orange)
-            Text(text).font(.subheadline).italic()
+            Text(text).font(.subheadline).italic().lineLimit(2)
         }
         .padding()
         .background(Capsule().stroke(Color.orange.opacity(0.3)))
@@ -148,7 +159,6 @@ public struct MorningRitualView: View {
                 Capsule()
                     .fill(index <= viewModel.currentStepIndex ? Color.orange : Color.gray.opacity(0.3))
                     .frame(height: 4)
-                    .animation(.spring(), value: viewModel.currentStepIndex)
             }
         }
         .padding(.horizontal)
@@ -159,15 +169,16 @@ public struct MorningRitualView: View {
         VStack {
             let isLastStep = viewModel.currentStepIndex == viewModel.prompts.count - 1
             let checkmark: String = viewModel.canProceed ? "✅" : "☑️"
+            
             Button(action: {
                 withAnimation(.spring()) {
                     viewModel.nextStep()
                 }
             }) {
                 HStack {
-                    Text(isLastStep ? "Complete \(checkmark)" : "Next Step")
+                    Text(isLastStep ? "Complete \(checkmark)" : "Continue")
                     if !isLastStep {
-                        Image(systemName:  "chevron.right")
+                        Image(systemName: "chevron.right")
                     }
                 }
                 .frame(maxWidth: .infinity)
@@ -176,42 +187,8 @@ public struct MorningRitualView: View {
             }
             .buttonStyle(.borderedProminent)
             .tint(.orange)
-            .disabled(!viewModel.canProceed)
+            .disabled(!viewModel.canProceed || viewModel.isAiThinking)
             .padding()
         }
     }
-}
-
-#Preview("Morning Ritual - Day 2") {
-    // We create 2 days of data so that "Yesterday" exists
-    let mockRepo = MockMindsetRepository(days: 2)
-    let viewModel = MorningRitualViewModel(
-        userRepository: MockUserRepository(),
-        addMindsetUseCase: AddMindsetUseCase(repository: mockRepo),
-        getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase(repository: mockRepo),
-        subscriptionService: MockSubscriptionService()
-    )
-    return MorningRitualView(viewModel: viewModel)
-}
-
-#Preview("Free User Flow") {
-    let mockRepo = MockMindsetRepository(days: 0)
-    let viewModel = MorningRitualViewModel(
-        userRepository: MockUserRepository(),
-        addMindsetUseCase: AddMindsetUseCase(repository: mockRepo),
-        getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase(repository: mockRepo),
-        subscriptionService: MockSubscriptionService(isPro: false)
-    )
-    return MorningRitualView(viewModel: viewModel)
-}
-
-#Preview("Pro User Flow") {
-    let mockRepo = MockMindsetRepository(days: 0)
-    let viewModel = MorningRitualViewModel(
-        userRepository: MockUserRepository(),
-        addMindsetUseCase: AddMindsetUseCase(repository: mockRepo),
-        getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase(repository: mockRepo),
-        subscriptionService: MockSubscriptionService(isPro: true)
-    )
-    return MorningRitualView(viewModel: viewModel)
 }

@@ -43,7 +43,7 @@ public final class SwiftDataPersistenceService: PersistenceService {
 
     public func saveMindsetEntry(_ entry: Domain.MindsetEntry) async throws {
         // Map and save the daily ritual
-        let sdEntry = SDMindsetEntry(entry)
+        let sdEntry = SDMindsetEntry.fromDomain(entry)
         modelContext.insert(sdEntry)
         try modelContext.save()
     }

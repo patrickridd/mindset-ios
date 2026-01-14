@@ -20,10 +20,9 @@ public final class MockMindsetRepository: MindsetRepository, @unchecked Sendable
             return MindsetEntry(
                 id: UUID(),
                 date: date,
-                gratitudeText: "I'm grateful for the progress on my app during day \(i).",
-                goalText: "Complete the \(i == 1 ? "Yesterday Bridge" : "Data Layer refactor").",
-                affirmationText: "I am becoming a world-class architect.",
-                archetypeTag: i > 5 ? "The Architect" : "The Student"
+                responses: [],
+                archetypeTag: i > 5 ? "The Architect" : "The Student",
+                sentimentScore: nil
             )
         }
     }
