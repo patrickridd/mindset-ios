@@ -11,4 +11,5 @@ public enum AppState {
     case paywall
     case dashboard
     case mindset
+    case ritualSuccess
 }

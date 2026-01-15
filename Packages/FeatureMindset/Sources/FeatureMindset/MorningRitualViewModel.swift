@@ -35,6 +35,10 @@ public final class MorningRitualViewModel {
     public var onComplete: (() -> Void)?
     
     public var isAiThinking: Bool = false
+    public var earnedXP: Int = 0
+    public var generatedArchetype: String = "The Explorer"
+    public var isShowingSuccess: Bool = false
+
     public var currentAiReflection: String? {
         guard let id = currentPrompt?.id else { return nil }
         return reflections[id]
@@ -92,6 +96,7 @@ public final class MorningRitualViewModel {
     public func submitCurrentAnswer() async {
         guard let prompt = currentPrompt, let answer = answers[prompt.id] else { return }
         
+        HapticManager.impact(.medium) // Feel the "Submit"
         isAiThinking = true
         
         do {
@@ -100,18 +105,18 @@ public final class MorningRitualViewModel {
         } catch {
             reflections[prompt.id] = "That's a thoughtful reflection. Keep going!"
         }
-        
+        HapticManager.notification(.success)
         isAiThinking = false
     }
     
     // MARK: - Completion
-    
+
     public func completeRitual() async {
         isLoading = true
         
         do {
             // 1. Map current answers and reflections into PromptResponse objects
-            let responses = prompts.compactMap { prompt -> PromptResponse? in
+            let currentResponses = prompts.compactMap { prompt -> PromptResponse? in
                 guard let answer = answers[prompt.id] else { return nil }
                 return PromptResponse(
                     promptId: prompt.id,
@@ -121,25 +126,45 @@ public final class MorningRitualViewModel {
                 )
             }
             
-            // 2. Create the Parent MindsetEntry
+            // 2. Calculate Gamification Data
+            // Sum XP based on categories used in this session
+            self.earnedXP = currentResponses.reduce(0) { $0 + $1.category.xpValue }
+            
+            // Determine Archetype by finding the most frequent category performed
+            let categoryCounts = currentResponses.reduce(into: [:]) { counts, res in
+                counts[res.category, default: 0] += 1
+            }
+            
+            if let primaryCategory = categoryCounts.max(by: { $0.value < $1.value })?.key {
+                self.generatedArchetype = "The \(primaryCategory.displayName)"
+            }
+            
+            // 3. Create and Save the Parent MindsetEntry
             let entry = MindsetEntry(
-                responses: responses,
-                archetypeTag: "The Explorer", // This can be calculated by a UseCase later
-                sentimentScore: 0.8 // This can be calculated by AI later
+                responses: currentResponses,
+                archetypeTag: self.generatedArchetype,
+                sentimentScore: 0.8 // In production, this would come from an AI sentiment analysis call
             )
             
-            // 3. Execute with the new dynamic entry
             try await addMindsetUseCase.execute(entry: entry)
             
+            // 4. Handle Subscription Gate and Navigation
             let isPremium = await subscriptionService.checkSubscriptionStatus()
+            
             if isPremium {
+                // Pro users go straight to the Success Celebration
+                self.isShowingSuccess = true
                 onComplete?()
             } else {
-                isShowingPaywall = true
+                // Free users see the Paywall first
+                self.isShowingPaywall = true
+                onComplete?()
             }
+            
         } catch {
             print("Save failed: \(error)")
         }
+        
         isLoading = false
     }
 }

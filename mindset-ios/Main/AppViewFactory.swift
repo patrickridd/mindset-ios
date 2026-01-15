@@ -67,11 +67,17 @@ struct AppViewFactory: MainViewFactory {
             getYesterdayBridgeUseCase: getYesterdayBridgeUseCase,
             subscriptionService: subscriptionService,
             onComplete: {
-                coordinator.showDashboard()
+                coordinator.showRitualSuccess()
             })
 
         return AnyView(
             MorningRitualView(viewModel: viewModel)
         )
+    }
+
+    func makeRitualSuccessView() -> AnyView {
+        AnyView(RitualSuccessView(archetype: "Stoic", xpEarned: 100) {
+            coordinator.showDashboard()
+        })
     }
 }

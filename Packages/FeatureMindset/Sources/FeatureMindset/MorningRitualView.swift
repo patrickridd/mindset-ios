@@ -17,6 +17,7 @@ public struct MorningRitualView: View {
     
     public var body: some View {
         ZStack {
+            // Background stays behind everything
             Color(uiColor: .systemGroupedBackground)
                 .ignoresSafeArea()
             
@@ -31,28 +32,47 @@ public struct MorningRitualView: View {
                         VStack(spacing: 24) {
                             ritualContent
                             
-                            // Bottom anchor for keyboard scrolling
+                            // Use a specific ID for the spacer to scroll to
                             Color.clear.frame(height: 20)
                                 .id("bottom-spacer")
                         }
                         .padding(.horizontal)
                     }
-                    // Auto-scroll when AI starts thinking or provides a reflection
                     .onChange(of: viewModel.isAiThinking) { _, thinking in
                         if thinking {
-                            withAnimation { proxy.scrollTo("bottom-spacer", anchor: .bottom) }
+                            // Delay slightly to allow keyboard/AI card to animate in
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                withAnimation { proxy.scrollTo("bottom-spacer", anchor: .bottom) }
+                            }
                         }
                     }
                 }
-                
-                // 3. Sticky Footer Button
+                .scrollDismissesKeyboard(.interactively)
+                // 3. Sticky Footer
+                // Removing .ignoresSafeArea from the ZStack lets the keyboard
+                // push this specific VStack up automatically.
                 footerButtons
-                    .background(Color(uiColor: .systemGroupedBackground).shadow(radius: 2, y: -2))
+                    .background(
+                        Rectangle()
+                            .fill(.ultraThinMaterial)
+                            .shadow(color: .black.opacity(0.05), radius: 5, y: -5)
+                    )
             }
         }
-        .ignoresSafeArea(.keyboard, edges: .bottom)
+        // We removed .ignoresSafeArea(.keyboard) here so the footer buttons
+        // "ride" on top of the keyboard naturally.
+        .fullScreenCover(isPresented: $viewModel.isShowingSuccess) {
+            RitualSuccessView(
+                archetype: viewModel.generatedArchetype,
+                xpEarned: viewModel.earnedXP,
+                onDismiss: {
+                    viewModel.isShowingSuccess = false
+                    viewModel.onComplete?()
+                }
+            )
+        }
     }
-    
+
     // MARK: - Subviews
     
     @ViewBuilder

@@ -14,6 +14,7 @@ public protocol MainViewFactory {
     func makePaywallView() -> AnyView
     func makeDashboardView() -> AnyView
     func makeMindsetView() -> AnyView
+    func makeRitualSuccessView() -> AnyView
 }
 
 public struct MainCoordinatorView: View {
@@ -32,6 +33,7 @@ public struct MainCoordinatorView: View {
             case .paywall:    factory.makePaywallView()
             case .dashboard:  factory.makeDashboardView()
             case .mindset:    factory.makeMindsetView()
+            case .ritualSuccess: factory.makeRitualSuccessView()
             }
         }
         .animation(.default, value: coordinator.currentState)

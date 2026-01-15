@@ -63,6 +63,14 @@ public final class MainCoordinator {
     public func startMorningMindset() {
         set(currentState: .mindset)
     }
+
+    public func showPaywall() {
+        set(currentState: .paywall)
+    }
+
+    public func showRitualSuccess() {
+        set(currentState: .ritualSuccess)
+    }
     
     private func set(currentState: AppState) {
         withAnimation { self.currentState = currentState }
