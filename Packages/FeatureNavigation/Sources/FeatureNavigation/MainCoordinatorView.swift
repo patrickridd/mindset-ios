@@ -26,34 +26,25 @@ public struct MainCoordinatorView: View {
     }
 
     public var body: some View {
-        NavigationStack {
-            VStack {
-                switch coordinator.currentState {
-                case .onboarding:
-                    factory.makeOnboardingView()
-                case .dashboard:
-                    factory.makeDashboardView()
-                case .mindset:
-                    factory.makeMindsetView()
-                default:
-                    EmptyView()
-                }
-            }
-            .fullScreenCover(isPresented: Binding(
-                get: {
-                    if case .ritualSuccess = coordinator.currentState { return true }
-                    return false
-                },
-                set: { _ in }
-            )) {
-                if case .ritualSuccess(let archetype, let xp) = coordinator.currentState {
-                    factory.makeRitualSuccessView(archetype: archetype, xp: xp)
-                }
-            }
-            .sheet(isPresented: Binding(get: { coordinator.currentState == .paywall}, set: { _ in })) {
-                factory.makePaywallView()
+        ZStack {
+            // Root Layer
+            switch coordinator.rootState {
+            case .onboarding: factory.makeOnboardingView()
+            case .dashboard:  factory.makeDashboardView()
+            case .mindset:    factory.makeMindsetView()
             }
         }
-        .animation(.default, value: coordinator.currentState)
+        // Sheet Layer
+        .sheet(item: $coordinator.sheetState) { state in
+            switch state {
+            case .paywall:
+                factory.makePaywallView()
+            case .ritualSuccess(let archetype, let xp):
+                // We use fullScreenCover for this normally,
+                // but this is how you'd switch within a sheet
+                factory.makeRitualSuccessView(archetype: archetype, xp: xp)
+            }
+        }
+        .animation(.default, value: coordinator.rootState)
     }
 }

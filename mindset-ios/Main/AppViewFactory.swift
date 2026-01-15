@@ -39,8 +39,8 @@ struct AppViewFactory: MainViewFactory {
             subscriptionService: subscriptionService,
             onPurchaseFinished: {
                 coordinator.showDashboard()
+                coordinator.dismissSheet()
             })
-        
         return AnyView(
             PaywallView(viewModel: viewModel)
         )
@@ -83,6 +83,7 @@ struct AppViewFactory: MainViewFactory {
     func makeRitualSuccessView(archetype: String, xp: Int) -> AnyView {
         AnyView(RitualSuccessView(archetype: archetype, xpEarned: xp) {
             coordinator.showDashboard()
+            coordinator.dismissSheet()
         })
     }
 }

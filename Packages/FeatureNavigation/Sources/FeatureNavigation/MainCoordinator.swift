@@ -12,8 +12,30 @@ import Domain
 @Observable
 @MainActor
 public final class MainCoordinator {
-    private(set) var currentState: AppState = .onboarding
     
+    // Exclusive primary screens
+    public enum RootState {
+        case onboarding
+        case dashboard
+        case mindset
+    }
+    
+    // Modals and Overlays (Identifiable for SwiftUI item-based presentation)
+    public enum SheetState: Identifiable {
+        case paywall
+        case ritualSuccess(archetype: String, xp: Int)
+        
+        public var id: String {
+            switch self {
+            case .paywall: return "paywall"
+            case .ritualSuccess(let a, let x): return "success-\(a)-\(x)"
+            }
+        }
+    }
+
+    private(set) var rootState: RootState = .onboarding
+    public var sheetState: SheetState?
+
     private let subscriptionService: SubscriptionService
     private let mindsetRepository: MindsetRepository
     private let userProfileRepository: UserRepository
@@ -32,16 +54,16 @@ public final class MainCoordinator {
         let isFirstRun = !UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")
         
         if isFirstRun {
-            set(currentState: .onboarding)
+            set(rootState: .onboarding)
             return
-        }
-        
-        // 2. Check Subscription
-        let isPro = await subscriptionService.checkSubscriptionStatus()
-        if !isPro {
-            set(currentState: .paywall)
         } else {
-            set(currentState: .dashboard)
+            set(rootState: .dashboard)
+        }
+
+        let isPro = await subscriptionService.checkSubscriptionStatus()
+
+        if !isPro {
+            set(sheetState: .paywall)
         }
     }
     
@@ -49,30 +71,38 @@ public final class MainCoordinator {
 
     public func onboardingFinished() {
         UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
-        set(currentState: .paywall)
+        set(sheetState: .paywall)
     }
 
     public func showDashboard() {
-        set(currentState: .dashboard)
+        set(rootState: .dashboard)
     }
 
     public func subscriptionPurchased() {
-        set(currentState: .dashboard)
+        set(rootState: .dashboard)
     }
 
     public func startMorningMindset() {
-        set(currentState: .mindset)
+        set(rootState: .mindset)
     }
 
     public func showPaywall() {
-        set(currentState: .paywall)
+        set(sheetState: .paywall)
     }
 
     public func showRitualSuccess(archetype: String, xp: Int) {
-        set(currentState: .ritualSuccess(archetype: archetype, xp: xp))
+        set(sheetState: .ritualSuccess(archetype: archetype, xp: xp))
     }
-    
-    private func set(currentState: AppState) {
-        withAnimation { self.currentState = currentState }
+
+    public func dismissSheet() {
+        set(sheetState: nil)
+    }
+
+    private func set(rootState: RootState) {
+        withAnimation { self.rootState = rootState }
+    }
+
+    private func set(sheetState: SheetState?) {
+        withAnimation { self.sheetState = sheetState }
     }
 }
