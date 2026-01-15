@@ -8,7 +8,7 @@
 
 import Domain
 
-public final class SwiftDataUserRepository: UserRepository {
+public final class SDUserRepository: UserRepository {
     private let persistence: PersistenceService
 
     public init(persistence: PersistenceService) {

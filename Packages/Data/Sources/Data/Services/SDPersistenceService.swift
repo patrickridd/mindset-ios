@@ -10,7 +10,7 @@ import SwiftData
 import Foundation
 
 @MainActor
-public final class SwiftDataPersistenceService: PersistenceService {
+public final class SDPersistenceService: PersistenceService {
 
     private let modelContext: ModelContext
 

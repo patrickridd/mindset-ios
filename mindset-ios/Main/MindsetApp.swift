@@ -20,9 +20,9 @@ import Data
 struct MindsetApp: App {
     /// Repository/Persistence
     let container: ModelContainer
-    let persistence: SwiftDataPersistenceService
+    let persistence: SDPersistenceService
     let mindsetRepository: SwiftDataMindsetRepository
-    let userRepository: SwiftDataUserRepository
+    let userRepository: SDUserRepository
     
     /// Use Cases
     let getStreakUseCase: GetStreakUseCase
@@ -40,11 +40,11 @@ struct MindsetApp: App {
         container = try! ModelContainer(for: SDUserProfile.self, SDMindsetEntry.self)
         
         // 2. Level 2: Raw Persistence Driver
-        persistence = SwiftDataPersistenceService(modelContext: container.mainContext)
+        persistence = SDPersistenceService(modelContext: container.mainContext)
         
         // 3. Level 3: Domain-Specific Repositories
         mindsetRepository = SwiftDataMindsetRepository(persistence: persistence)
-        userRepository = SwiftDataUserRepository(persistence: persistence)
+        userRepository = SDUserRepository(persistence: persistence)
         
         // 4. Level 4: Business Logic (Use Case)
         getStreakUseCase = GetStreakUseCase(repository: mindsetRepository)
