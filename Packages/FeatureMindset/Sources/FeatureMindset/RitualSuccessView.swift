@@ -5,8 +5,9 @@
 //  Created by patrick ridd on 1/13/26.
 //
 
-import SwiftUI
+import Core
 import Domain
+import SwiftUI
 
 public struct RitualSuccessView: View {
     let archetype: String
@@ -99,17 +100,5 @@ public struct RitualSuccessView: View {
                 }
             }
         }
-    }
-}
-
-public enum HapticManager {
-    public static func notification(_ type: UINotificationFeedbackGenerator.FeedbackType) {
-        let generator = UINotificationFeedbackGenerator()
-        generator.notificationOccurred(type)
-    }
-    
-    public static func impact(_ style: UIImpactFeedbackGenerator.FeedbackStyle) {
-        let generator = UIImpactFeedbackGenerator(style: style)
-        generator.impactOccurred()
     }
 }

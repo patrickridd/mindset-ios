@@ -5,8 +5,9 @@
 //  Created by patrick ridd on 1/6/26.
 //
 
-import Foundation
+import Core
 import Domain
+import Foundation
 import Observation
 
 @MainActor
