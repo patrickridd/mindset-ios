@@ -25,38 +25,51 @@ public struct MorningRitualView: View {
                 // 1. Static Progress Bar
                 ritualProgressBar
                     .padding(.vertical)
-
-                // 2. Scrollable Content Area
-                ScrollViewReader { proxy in
-                    ScrollView(.vertical, showsIndicators: false) {
-                        VStack(spacing: 24) {
-                            ritualContent
-                            
-                            // Use a specific ID for the spacer to scroll to
-                            Color.clear.frame(height: 20)
-                                .id("bottom-spacer")
+                
+                if viewModel.isLoading {
+                    Spacer()
+                    ProgressView("Fetching your prompts...")
+                    Spacer()
+                } else if viewModel.prompts.isEmpty {
+                    Spacer()
+                    ContentUnavailableView(
+                        "No Prompts Found",
+                        systemImage: "exclamationmark.triangle",
+                        description: Text("Try restarting the ritual or check your profile settings.")
+                    )
+                    Spacer()
+                } else {
+                    ScrollViewReader { proxy in
+                        ScrollView(.vertical, showsIndicators: false) {
+                            VStack(spacing: 24) {
+                                ritualContent
+                                
+                                // Use a specific ID for the spacer to scroll to
+                                Color.clear.frame(height: 20)
+                                    .id("bottom-spacer")
+                            }
+                            .padding(.horizontal)
                         }
-                        .padding(.horizontal)
-                    }
-                    .onChange(of: viewModel.isAiThinking) { _, thinking in
-                        if thinking {
-                            // Delay slightly to allow keyboard/AI card to animate in
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                withAnimation { proxy.scrollTo("bottom-spacer", anchor: .bottom) }
+                        .onChange(of: viewModel.isAiThinking) { _, thinking in
+                            if thinking {
+                                // Delay slightly to allow keyboard/AI card to animate in
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                    withAnimation { proxy.scrollTo("bottom-spacer", anchor: .bottom) }
+                                }
                             }
                         }
                     }
+                    .scrollDismissesKeyboard(.interactively)
+                    // 3. Sticky Footer
+                    // Removing .ignoresSafeArea from the ZStack lets the keyboard
+                    // push this specific VStack up automatically.
+                    footerButtons
+                        .background(
+                            Rectangle()
+                                .fill(.ultraThinMaterial)
+                                .shadow(color: .black.opacity(0.05), radius: 5, y: -5)
+                        )
                 }
-                .scrollDismissesKeyboard(.interactively)
-                // 3. Sticky Footer
-                // Removing .ignoresSafeArea from the ZStack lets the keyboard
-                // push this specific VStack up automatically.
-                footerButtons
-                    .background(
-                        Rectangle()
-                            .fill(.ultraThinMaterial)
-                            .shadow(color: .black.opacity(0.05), radius: 5, y: -5)
-                    )
             }
         }
         // We removed .ignoresSafeArea(.keyboard) here so the footer buttons

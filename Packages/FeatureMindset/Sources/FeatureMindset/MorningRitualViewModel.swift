@@ -69,12 +69,18 @@ public final class MorningRitualViewModel {
     private func prepareRitual() async {
         isLoading = true
         do {
-            if let profile = try await userRepository.fetchUserProfile() {
-                self.prompts = promptEngine.fetchPrompts(for: profile, completedCount: 0)
-            }
+            // 1. Fetch the profile (this might be nil)
+            let profile = try await userRepository.fetchUserProfile()
+            
+            // 2. The Engine now handles nil by providing standard science-backed prompts
+            self.prompts = promptEngine.fetchPrompts(for: profile, completedCount: 0)
+            
+            // 3. Get the "Yesterday Bridge"
             self.yesterdayGoal = try await getYesterdayBridgeUseCase.execute()
         } catch {
             print("Setup failed: \(error)")
+            // Safety fallback if the fetch itself throws an error
+            self.prompts = promptEngine.fetchPrompts(for: nil, completedCount: 0)
         }
         isLoading = false
     }
