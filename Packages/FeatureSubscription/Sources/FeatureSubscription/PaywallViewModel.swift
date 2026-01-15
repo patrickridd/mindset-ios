@@ -39,4 +39,7 @@ public final class PaywallViewModel {
         }
     }
 
+    func closeButtonTapped() {
+        onPurchaseFinished?()
+    }
 }

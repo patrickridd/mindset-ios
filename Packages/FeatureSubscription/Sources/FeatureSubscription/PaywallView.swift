@@ -9,7 +9,6 @@ import Domain
 import SwiftUI
 
 public struct PaywallView: View {
-    @Environment(\.dismiss) var dismiss
     @State private var viewModel: PaywallViewModel
     
     public init(viewModel: PaywallViewModel) {
@@ -34,7 +33,7 @@ public struct PaywallView: View {
             // ... Header and Feature List remain the same ...
             // Close Button
             HStack {
-                Button(action: { dismiss() }) {
+                Button(action: { viewModel.closeButtonTapped() }) {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundStyle(.white.opacity(0.5))
                         .font(.title2)
