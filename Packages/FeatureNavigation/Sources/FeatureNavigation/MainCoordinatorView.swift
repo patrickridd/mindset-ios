@@ -26,18 +26,32 @@ public struct MainCoordinatorView: View {
     }
 
     public var body: some View {
-        Group {
-            switch coordinator.currentState {
-            case .onboarding:
-                factory.makeOnboardingView()
-            case .paywall:
+        NavigationStack {
+            VStack {
+                switch coordinator.currentState {
+                case .onboarding:
+                    factory.makeOnboardingView()
+                case .dashboard:
+                    factory.makeDashboardView()
+                case .mindset:
+                    factory.makeMindsetView()
+                default:
+                    EmptyView()
+                }
+            }
+            .fullScreenCover(isPresented: Binding(
+                get: {
+                    if case .ritualSuccess = coordinator.currentState { return true }
+                    return false
+                },
+                set: { _ in }
+            )) {
+                if case .ritualSuccess(let archetype, let xp) = coordinator.currentState {
+                    factory.makeRitualSuccessView(archetype: archetype, xp: xp)
+                }
+            }
+            .sheet(isPresented: Binding(get: { coordinator.currentState == .paywall}, set: { _ in })) {
                 factory.makePaywallView()
-            case .dashboard:
-                factory.makeDashboardView()
-            case .mindset:
-                factory.makeMindsetView()
-            case .ritualSuccess(let archeType, let xp):
-                factory.makeRitualSuccessView(archetype: archeType, xp: xp)
             }
         }
         .animation(.default, value: coordinator.currentState)
