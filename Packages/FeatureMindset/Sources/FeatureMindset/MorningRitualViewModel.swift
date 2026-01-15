@@ -33,7 +33,7 @@ public final class MorningRitualViewModel {
     public var isLoading: Bool = false
     public var yesterdayGoal: String?
     public var isShowingPaywall: Bool = false
-    public var onComplete: (() -> Void)?
+    public var onNavigate: ((NavigationState) -> Void)?
     
     public var isAiThinking: Bool = false
     public var earnedXP: Int = 0
@@ -45,18 +45,23 @@ public final class MorningRitualViewModel {
         return reflections[id]
     }
     
+    public enum NavigationState {
+        case success(archetype: String, xp: Int)
+        case paywall
+    }
+
     public init(
         userRepository: UserRepository,
         addMindsetUseCase: AddMindsetUseCase,
         getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase,
         subscriptionService: SubscriptionService,
-        onComplete: (() -> Void)? = nil
+        onNavigate: ((NavigationState) -> Void)?
     ) {
         self.userRepository = userRepository
         self.addMindsetUseCase = addMindsetUseCase
         self.getYesterdayBridgeUseCase = getYesterdayBridgeUseCase
         self.subscriptionService = subscriptionService
-        self.onComplete = onComplete
+        self.onNavigate = onNavigate
         
         Task { await prepareRitual() }
     }
@@ -153,13 +158,9 @@ public final class MorningRitualViewModel {
             let isPremium = await subscriptionService.checkSubscriptionStatus()
             
             if isPremium {
-                // Pro users go straight to the Success Celebration
-                self.isShowingSuccess = true
-                onComplete?()
+                onNavigate?(.success(archetype: generatedArchetype, xp: earnedXP))
             } else {
-                // Free users see the Paywall first
-                self.isShowingPaywall = true
-                onComplete?()
+                onNavigate?(.paywall)
             }
             
         } catch {

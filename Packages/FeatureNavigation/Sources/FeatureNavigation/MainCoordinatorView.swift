@@ -8,13 +8,12 @@
 import SwiftUI
 import Domain
 
-// FeatureNavigation
 public protocol MainViewFactory {
     func makeOnboardingView() -> AnyView
     func makePaywallView() -> AnyView
     func makeDashboardView() -> AnyView
     func makeMindsetView() -> AnyView
-    func makeRitualSuccessView() -> AnyView
+    func makeRitualSuccessView(archetype: String, xp: Int) -> AnyView
 }
 
 public struct MainCoordinatorView: View {
@@ -29,11 +28,16 @@ public struct MainCoordinatorView: View {
     public var body: some View {
         Group {
             switch coordinator.currentState {
-            case .onboarding: factory.makeOnboardingView()
-            case .paywall:    factory.makePaywallView()
-            case .dashboard:  factory.makeDashboardView()
-            case .mindset:    factory.makeMindsetView()
-            case .ritualSuccess: factory.makeRitualSuccessView()
+            case .onboarding:
+                factory.makeOnboardingView()
+            case .paywall:
+                factory.makePaywallView()
+            case .dashboard:
+                factory.makeDashboardView()
+            case .mindset:
+                factory.makeMindsetView()
+            case .ritualSuccess(let archeType, let xp):
+                factory.makeRitualSuccessView(archetype: archeType, xp: xp)
             }
         }
         .animation(.default, value: coordinator.currentState)

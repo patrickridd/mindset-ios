@@ -66,8 +66,13 @@ struct AppViewFactory: MainViewFactory {
             addMindsetUseCase: addMindsetUseCase,
             getYesterdayBridgeUseCase: getYesterdayBridgeUseCase,
             subscriptionService: subscriptionService,
-            onComplete: {
-                coordinator.showRitualSuccess()
+            onNavigate: { state in
+                switch state {
+                case .success(let archetype, let xp):
+                    coordinator.showRitualSuccess(archetype: archetype, xp: xp)
+                case .paywall:
+                    coordinator.showPaywall()
+                }
             })
 
         return AnyView(
@@ -75,8 +80,8 @@ struct AppViewFactory: MainViewFactory {
         )
     }
 
-    func makeRitualSuccessView() -> AnyView {
-        AnyView(RitualSuccessView(archetype: "Stoic", xpEarned: 100) {
+    func makeRitualSuccessView(archetype: String, xp: Int) -> AnyView {
+        AnyView(RitualSuccessView(archetype: archetype, xpEarned: xp) {
             coordinator.showDashboard()
         })
     }

@@ -68,8 +68,8 @@ public final class MainCoordinator {
         set(currentState: .paywall)
     }
 
-    public func showRitualSuccess() {
-        set(currentState: .ritualSuccess)
+    public func showRitualSuccess(archetype: String, xp: Int) {
+        set(currentState: .ritualSuccess(archetype: archetype, xp: xp))
     }
     
     private func set(currentState: AppState) {

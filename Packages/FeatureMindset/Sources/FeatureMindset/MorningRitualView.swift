@@ -61,16 +61,6 @@ public struct MorningRitualView: View {
         }
         // We removed .ignoresSafeArea(.keyboard) here so the footer buttons
         // "ride" on top of the keyboard naturally.
-        .fullScreenCover(isPresented: $viewModel.isShowingSuccess) {
-            RitualSuccessView(
-                archetype: viewModel.generatedArchetype,
-                xpEarned: viewModel.earnedXP,
-                onDismiss: {
-                    viewModel.isShowingSuccess = false
-                    viewModel.onComplete?()
-                }
-            )
-        }
     }
 
     // MARK: - Subviews
