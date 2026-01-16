@@ -44,13 +44,15 @@ public final class SDPromptResponse {
         )
     }
     
-    public static func fromDomain(_ domain: PromptResponse) -> SDPromptResponse {
-        SDPromptResponse(
+    public static func fromDomain(_ domain: PromptResponse, with entry: SDMindsetEntry) -> SDPromptResponse {
+        let response = SDPromptResponse(
             id: domain.id,
             promptId: domain.promptId,
             categoryValue: domain.category.rawValue,
             userText: domain.userText,
             aiReflection: domain.aiReflection
         )
+        response.entry = entry
+        return response
     }
 }

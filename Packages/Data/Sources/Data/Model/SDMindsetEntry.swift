@@ -38,12 +38,25 @@ public final class SDMindsetEntry {
     }
 
     public static func fromDomain(_ mindsetEntry: MindsetEntry) -> SDMindsetEntry {
-        SDMindsetEntry(
+        let sdEntry = SDMindsetEntry(
             id: mindsetEntry.id,
             date: mindsetEntry.date,
-            responses: mindsetEntry.responses.map { SDPromptResponse.fromDomain($0) },
+            responses: [],
             archetypeTag: mindsetEntry.archetypeTag,
             sentimentScore: mindsetEntry.sentimentScore
         )
+        
+        let sdResponses = mindsetEntry.responses.map { response in
+            let newResponse = SDPromptResponse(
+                promptId: response.promptId,
+                categoryValue: response.category.rawValue,
+                userText: response.userText,
+                aiReflection: response.aiReflection
+            )
+            newResponse.entry = sdEntry // Set the inverse relationship
+            return newResponse
+        }
+        sdEntry.responses = sdResponses
+        return sdEntry
     }
 }
