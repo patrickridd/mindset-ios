@@ -20,60 +20,64 @@ public struct MorningRitualView: View {
             // Background stays behind everything
             Color(uiColor: .systemGroupedBackground)
                 .ignoresSafeArea()
-            
-            VStack(spacing: 0) {
-                // 1. Static Progress Bar
-                ritualProgressBar
-                    .padding(.vertical)
-                
-                if viewModel.isLoading {
-                    Spacer()
-                    ProgressView("Fetching your prompts...")
-                    Spacer()
-                } else if viewModel.prompts.isEmpty {
-                    Spacer()
-                    ContentUnavailableView(
-                        "No Prompts Found",
-                        systemImage: "exclamationmark.triangle",
-                        description: Text("Try restarting the ritual or check your profile settings.")
-                    )
-                    Spacer()
-                } else {
-                    ScrollViewReader { proxy in
-                        ScrollView(.vertical, showsIndicators: false) {
-                            VStack(spacing: 24) {
-                                ritualContent
-                                
-                                // Use a specific ID for the spacer to scroll to
-                                Color.clear.frame(height: 20)
-                                    .id("bottom-spacer")
+            if viewModel.isLoading {
+                Spacer()
+                ProgressView("Designing your ritual...")
+                    .tint(.orange)
+                Spacer()
+            } else {
+                VStack(spacing: 0) {
+                    // 1. Static Progress Bar
+                    ritualProgressBar
+                        .padding(.vertical)
+                    
+                    if viewModel.isLoading {
+                        Spacer()
+                        ProgressView("Fetching your prompts...")
+                        Spacer()
+                    } else if viewModel.prompts.isEmpty {
+                        Spacer()
+                        ContentUnavailableView(
+                            "No Prompts Found",
+                            systemImage: "exclamationmark.triangle",
+                            description: Text("Try restarting the ritual or check your profile settings.")
+                        )
+                        Spacer()
+                    } else {
+                        ScrollViewReader { proxy in
+                            ScrollView(.vertical, showsIndicators: false) {
+                                VStack(spacing: 24) {
+                                    ritualContent
+                                    
+                                    // Use a specific ID for the spacer to scroll to
+                                    Color.clear.frame(height: 20)
+                                        .id("bottom-spacer")
+                                }
+                                .padding(.horizontal)
                             }
-                            .padding(.horizontal)
-                        }
-                        .onChange(of: viewModel.isAiThinking) { _, thinking in
-                            if thinking {
-                                // Delay slightly to allow keyboard/AI card to animate in
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                    withAnimation { proxy.scrollTo("bottom-spacer", anchor: .bottom) }
+                            .onChange(of: viewModel.isAiThinking) { _, thinking in
+                                if thinking {
+                                    // Delay slightly to allow keyboard/AI card to animate in
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                        withAnimation { proxy.scrollTo("bottom-spacer", anchor: .bottom) }
+                                    }
                                 }
                             }
                         }
+                        .scrollDismissesKeyboard(.interactively)
+                        // 3. Sticky Footer
+                        // Removing .ignoresSafeArea from the ZStack lets the keyboard
+                        // push this specific VStack up automatically.
+                        footerButtons
+                            .background(
+                                Rectangle()
+                                    .fill(.ultraThinMaterial)
+                                    .shadow(color: .black.opacity(0.05), radius: 5, y: -5)
+                            )
                     }
-                    .scrollDismissesKeyboard(.interactively)
-                    // 3. Sticky Footer
-                    // Removing .ignoresSafeArea from the ZStack lets the keyboard
-                    // push this specific VStack up automatically.
-                    footerButtons
-                        .background(
-                            Rectangle()
-                                .fill(.ultraThinMaterial)
-                                .shadow(color: .black.opacity(0.05), radius: 5, y: -5)
-                        )
                 }
             }
         }
-        // We removed .ignoresSafeArea(.keyboard) here so the footer buttons
-        // "ride" on top of the keyboard naturally.
     }
 
     // MARK: - Subviews
@@ -190,28 +194,38 @@ public struct MorningRitualView: View {
     
     private var footerButtons: some View {
         VStack {
-            let isLastStep = viewModel.currentStepIndex == viewModel.prompts.count - 1
-            let checkmark: String = viewModel.canProceed ? "✅" : "☑️"
-            
-            Button(action: {
-                withAnimation(.spring()) {
-                    viewModel.nextStep()
-                }
-            }) {
-                HStack {
-                    Text(isLastStep ? "Complete \(checkmark)" : "Continue")
-                    if !isLastStep {
-                        Image(systemName: "chevron.right")
+            // Guard against empty prompts to avoid index out of bounds
+            if !viewModel.prompts.isEmpty {
+                let isLastStep = viewModel.currentStepIndex == viewModel.prompts.count - 1
+                let checkmark: String = viewModel.canProceed ? "✅" : "☑️"
+                
+                Button(action: {
+                    withAnimation(.spring()) {
+                        viewModel.nextStep()
                     }
+                }) {
+                    HStack(spacing: 10) {
+                        if viewModel.isAiThinking {
+                            ProgressView()
+                                .tint(.white)
+                        }
+                        
+                        Text(viewModel.isAiThinking ? "Analyzing..." : (isLastStep ? "Complete \(checkmark)" : "Continue"))
+                            .bold()
+                        
+                        if !isLastStep && !viewModel.isAiThinking {
+                            Image(systemName: "chevron.right")
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
                 }
-                .frame(maxWidth: .infinity)
+                .buttonStyle(.borderedProminent)
+                .tint(.orange)
+                // Disable if AI is thinking, if validation fails, or if still loading data
+                .disabled(!viewModel.canProceed || viewModel.isAiThinking || viewModel.isLoading)
                 .padding()
-                .bold()
             }
-            .buttonStyle(.borderedProminent)
-            .tint(.orange)
-            .disabled(!viewModel.canProceed || viewModel.isAiThinking)
-            .padding()
         }
     }
 }

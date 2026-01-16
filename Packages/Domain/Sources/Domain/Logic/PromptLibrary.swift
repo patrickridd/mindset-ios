@@ -56,6 +56,36 @@ public struct PromptLibrary {
                 coachTip: "This isn't meant to be morbid; it's a tool to cut through the 'noise' and find your true signals.",
                 scientificRationale: "Reduces anxiety over trivialities and clarifies life values."
             )
+        ],
+        .gratitude: [
+            MindsetPrompt(
+                id: "gratitude_01",
+                category: .gratitude,
+                headline: "The Gratitude Scan",
+                questionText: "What are three small things that went well in the last 24 hours?",
+                coachTip: "Specificity is key. Instead of 'family', think 'the way my son laughed at breakfast'.",
+                scientificRationale: "Scanning for the positive rewires the brain's default mode network."
+            )
+        ],
+        .stoic: [
+            MindsetPrompt(
+                id: "stoic_01",
+                category: .stoic,
+                headline: "The Circle of Control",
+                questionText: "What is one thing you are currently worried about that is actually outside of your control?",
+                coachTip: "Acknowledge the worry, then consciously decide to put your energy into an action you *can* control.",
+                scientificRationale: "Reduces anxiety by narrowing focus to self-agency."
+            )
+        ],
+        .futureSelf: [
+            MindsetPrompt(
+                id: "future_01",
+                category: .futureSelf,
+                headline: "The Intention Bridge",
+                questionText: "If you could only accomplish one thing today to feel proud of yourself, what would it be?",
+                coachTip: "Choose the 'frog'—the task you're most likely to procrastinate on.",
+                scientificRationale: "Increases self-efficacy and goal attainment through mental contrasting."
+            )
         ]
     ]
 }

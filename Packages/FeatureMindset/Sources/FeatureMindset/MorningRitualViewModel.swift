@@ -68,19 +68,24 @@ public final class MorningRitualViewModel {
 
     private func prepareRitual() async {
         isLoading = true
+        // Reset local state for a fresh start
+        self.currentStepIndex = 0
+        self.answers = [:]
+        self.reflections = [:]
+        
         do {
-            // 1. Fetch the profile (this might be nil)
             let profile = try await userRepository.fetchUserProfile()
             
-            // 2. The Engine now handles nil by providing standard science-backed prompts
-            self.prompts = promptEngine.fetchPrompts(for: profile, completedCount: 0)
+            // Ensure we pass the actual completedCount if you have it, or 0 for now
+            let newPrompts = promptEngine.fetchPrompts(for: profile, completedCount: 0)
             
-            // 3. Get the "Yesterday Bridge"
+            // Assigning to self.prompts triggers the UI update
+            self.prompts = newPrompts
+            
             let bridgeResult = try await getYesterdayBridgeUseCase.execute()
             self.yesterdayGoal = bridgeResult ?? "Yesterday was a great start. Ready to go again?"
         } catch {
             print("Setup failed: \(error)")
-            // Safety fallback if the fetch itself throws an error
             self.prompts = promptEngine.fetchPrompts(for: nil, completedCount: 0)
         }
         isLoading = false
@@ -89,7 +94,7 @@ public final class MorningRitualViewModel {
     // MARK: - Navigation Logic
     
     public var currentPrompt: MindsetPrompt? {
-        guard currentStepIndex < prompts.count else { return nil }
+        guard !prompts.isEmpty, currentStepIndex < prompts.count else { return nil }
         return prompts[currentStepIndex]
     }
 
