@@ -76,7 +76,8 @@ public final class MorningRitualViewModel {
             self.prompts = promptEngine.fetchPrompts(for: profile, completedCount: 0)
             
             // 3. Get the "Yesterday Bridge"
-            self.yesterdayGoal = try await getYesterdayBridgeUseCase.execute()
+            let bridgeResult = try await getYesterdayBridgeUseCase.execute()
+            self.yesterdayGoal = bridgeResult ?? "Yesterday was a great start. Ready to go again?"
         } catch {
             print("Setup failed: \(error)")
             // Safety fallback if the fetch itself throws an error

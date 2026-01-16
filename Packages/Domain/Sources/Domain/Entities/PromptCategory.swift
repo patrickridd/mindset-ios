@@ -52,4 +52,9 @@ public enum PromptCategory: String, Codable, CaseIterable, Sendable {
             return 25 // These require deep visualization/writing
         }
     }
+
+    /// Returns true if the category represents a forward-looking goal or intention
+    public var isGoalOriented: Bool {
+        self == .futureSelf || self == .bestPossibleSelf
+    }
 }

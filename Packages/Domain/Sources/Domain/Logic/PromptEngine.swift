@@ -19,7 +19,7 @@ public struct PromptEngine {
             categories = resolveCategories(for: profile)
         } else {
             // Default categories for new/missing users
-            categories = [.gratitude, .bestPossibleSelf, .stoic]
+            categories = [.gratitude, .bestPossibleSelf, .stoic, .futureSelf]
         }
         
         // 2. Select prompts from the Library
@@ -44,7 +44,7 @@ public struct PromptEngine {
     
     private func resolveCategories(for profile: UserProfile) -> [PromptCategory] {
         if profile.overwhelmedFrequency == .often {
-            return [.savoring, .gratitude, .stoic]
+            return [.savoring, .gratitude, .stoic, .futureSelf]
         } else {
             return [.bestPossibleSelf, .kindness, .signatureStrength]
         }
@@ -63,7 +63,7 @@ public struct PromptEngine {
             ),
             MindsetPrompt(
                 id: "fb_future",
-                category: .bestPossibleSelf,
+                category: .futureSelf,
                 headline: "Intentionality",
                 questionText: "What is your main focus for the next few hours?",
                 coachTip: "Defining a focus reduces cognitive load and anxiety.",

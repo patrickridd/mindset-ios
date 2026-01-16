@@ -18,11 +18,8 @@ public struct GetYesterdayBridgeUseCase: Sendable {
     public func execute() async throws -> String? {
         let latest = try await repository.fetchLatestEntry()
         
-        // Find the first response that was a "Goal" or "Future Self"
-        // This makes the 'Bridge' dynamic!
-        let yesterdayGoal = latest?.responses.first(where: {
-            $0.category == .futureSelf || $0.category == .bestPossibleSelf
-        })
+        // Clean, readable, and easy to expand later
+        let yesterdayGoal = latest?.responses.first(where: { $0.category.isGoalOriented })
         
         return yesterdayGoal?.userText
     }
