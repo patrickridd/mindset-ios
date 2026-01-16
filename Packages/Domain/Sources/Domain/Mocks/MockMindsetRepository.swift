@@ -33,11 +33,11 @@ public final class MockMindsetRepository: MindsetRepository, @unchecked Sendable
         mockEntries
     }
 
-    public func save(_ entry: MindsetEntry) async throws {
+    public func addEntry(_ entry: MindsetEntry) async throws {
         mockEntries.append(entry)
     }
 
-    public func getLatestEntry() async throws -> Domain.MindsetEntry? {
+    public func fetchLatestEntry() async throws -> Domain.MindsetEntry? {
         mockEntries.last
     }
 }

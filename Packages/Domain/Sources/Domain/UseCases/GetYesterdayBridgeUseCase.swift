@@ -16,7 +16,7 @@ public struct GetYesterdayBridgeUseCase: Sendable {
     }
     
     public func execute() async throws -> String? {
-        let latest = try await repository.getLatestEntry()
+        let latest = try await repository.fetchLatestEntry()
         
         // Find the first response that was a "Goal" or "Future Self"
         // This makes the 'Bridge' dynamic!

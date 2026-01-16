@@ -21,7 +21,7 @@ struct MindsetApp: App {
     /// Repository/Persistence
     let container: ModelContainer
     let persistence: SDPersistenceService
-    let mindsetRepository: SwiftDataMindsetRepository
+    let mindsetRepository: SDMindsetRepository
     let userRepository: SDUserRepository
     
     /// Use Cases
@@ -43,7 +43,7 @@ struct MindsetApp: App {
         persistence = SDPersistenceService(modelContext: container.mainContext)
         
         // 3. Level 3: Domain-Specific Repositories
-        mindsetRepository = SwiftDataMindsetRepository(persistence: persistence)
+        mindsetRepository = SDMindsetRepository(persistence: persistence)
         userRepository = SDUserRepository(persistence: persistence)
         
         // 4. Level 4: Business Logic (Use Case)

@@ -43,7 +43,7 @@ public final class DashboardViewModel {
         do {
             // Fetch the identity we saved during onboarding
             self.userProfile = try await userRepository.fetchUserProfile()
-            self.latestEntry = try await mindsetRepository.getLatestEntry()
+            self.latestEntry = try await mindsetRepository.fetchLatestEntry()
             self.streakCount = try await getStreakUseCase.execute()
         } catch {
             print("Dashboard load failed: \(error)")

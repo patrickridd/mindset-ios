@@ -21,6 +21,6 @@ public struct AddMindsetUseCase: Sendable {
             throw DomainError.incompleteRitual
         }
         
-        try await repository.save(entry)
+        try await repository.addEntry(entry)
     }
 }

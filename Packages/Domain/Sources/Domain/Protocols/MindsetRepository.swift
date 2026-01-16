@@ -6,7 +6,7 @@
 //
 
 public protocol MindsetRepository: Sendable {
-    func getLatestEntry() async throws -> MindsetEntry?
+    func fetchLatestEntry() async throws -> MindsetEntry?
     func fetchEntries() async throws -> [MindsetEntry]
-    func save(_ entry: MindsetEntry) async throws
+    func addEntry(_ entry: MindsetEntry) async throws
 }
