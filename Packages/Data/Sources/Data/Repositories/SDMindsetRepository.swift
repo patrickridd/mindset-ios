@@ -21,7 +21,7 @@ public final class SDMindsetRepository: MindsetRepository {
         try await persistence.fetchAllMindsetEntries().first
     }
 
-    public func fetchEntries() async throws -> [MindsetEntry] {
+    public func fetchAllEntries() async throws -> [MindsetEntry] {
         return try await persistence.fetchAllMindsetEntries()
     }
 

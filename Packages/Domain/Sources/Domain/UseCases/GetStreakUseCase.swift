@@ -15,7 +15,9 @@ public struct GetStreakUseCase: Sendable {
     }
     
     public func execute(relativeTo now: Date = Date()) async throws -> Int {
-        let entries = try await repository.fetchEntries()
+        // Match the naming convention we used in SDMindsetRepository
+        let entries = try await repository.fetchAllEntries()
+        
         return calculateStreak(
             from: entries.map { $0.date },
             relativeTo: now
@@ -25,22 +27,22 @@ public struct GetStreakUseCase: Sendable {
     private func calculateStreak(from dates: [Date], relativeTo now: Date) -> Int {
         guard !dates.isEmpty else { return 0 }
         
-        // 1. Sort dates descending (newest first) and remove time components
         let calendar = Calendar.current
+        
+        // 1. Sort dates and remove time components
         let sortedDates = dates
             .map { calendar.startOfDay(for: $0) }
-            .sorted(by: >)
         
-        // 2. Remove duplicates (if user made two entries in one day)
+        // 2. Unique dates, newest first
         let uniqueDates = Array(Set(sortedDates)).sorted(by: >)
         
-        let today = calendar.startOfDay(for: Date())
-        let yesterday = calendar.date(byAdding: .day, value: -1, to: today)!
+        // FIX: Use 'now' instead of 'Date()' for testing and consistency
+        let referenceToday = calendar.startOfDay(for: now)
+        let referenceYesterday = calendar.date(byAdding: .day, value: -1, to: referenceToday)!
         
         // 3. Check if the streak is still "active"
-        // (Last entry must be today or yesterday)
         guard let mostRecent = uniqueDates.first,
-              mostRecent == today || mostRecent == yesterday else {
+              mostRecent == referenceToday || mostRecent == referenceYesterday else {
             return 0
         }
         
@@ -51,10 +53,8 @@ public struct GetStreakUseCase: Sendable {
         for date in uniqueDates {
             if date == currentDateToCheck {
                 streak += 1
-                // Move our target to the previous day
                 currentDateToCheck = calendar.date(byAdding: .day, value: -1, to: currentDateToCheck)!
             } else {
-                // We hit a gap!
                 break
             }
         }

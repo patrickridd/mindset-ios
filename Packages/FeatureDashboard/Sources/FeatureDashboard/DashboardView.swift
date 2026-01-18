@@ -85,12 +85,25 @@ public struct DashboardView: View {
         }
     
     private var statsGrid: some View {
-        HStack {
-            statBox(title: "Streak", value: "\(viewModel.streakCount) Days", icon: "flame.fill", color: .orange)
-            statBox(title: "Rituals", value: "12 Total", icon: "checkmark.circle.fill", color: .green)
+        HStack(spacing: 15) {
+            statBox(
+                title: "Streak",
+                value: "\(viewModel.streakCount) Days",
+                icon: "flame.fill",
+                // Only light up the flame if they have an active streak
+                color: viewModel.streakCount > 0 ? .orange : .secondary
+            )
+            
+            statBox(
+                title: "Rituals",
+                // Replace hardcoded "12" with the real count from your repository
+                value: "\(viewModel.totalRituals) Total",
+                icon: "checkmark.circle.fill",
+                color: .green
+            )
         }
     }
-    
+
     private func statBox(title: String, value: String, icon: String, color: Color) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Image(systemName: icon).foregroundStyle(color)

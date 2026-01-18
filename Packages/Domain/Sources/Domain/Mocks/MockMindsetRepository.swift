@@ -29,7 +29,7 @@ public final class MockMindsetRepository: MindsetRepository, @unchecked Sendable
         }
     }
 
-    public func fetchEntries() async throws -> [MindsetEntry] {
+    public func fetchAllEntries() async throws -> [MindsetEntry] {
         mockEntries
     }
 
