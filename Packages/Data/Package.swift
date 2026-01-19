@@ -16,7 +16,8 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(path: "/users/patrickridd/documents/xcodeprojects/mindset-ios/packages/domain")
+        .package(path: "/users/patrickridd/documents/xcodeprojects/mindset-ios/packages/domain"),
+        .package(url: "https://github.com/google/generative-ai-swift", from: "0.5.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -24,8 +25,8 @@ let package = Package(
         .target(
             name: "Data",
             dependencies: [
-                .product(name: "Domain", package: "Domain")
-            ]
+                .product(name: "Domain", package: "Domain"),
+                .product(name: "GoogleGenerativeAI", package: "generative-ai-swift")            ]
         ),
         .testTarget(
             name: "DataTests",
