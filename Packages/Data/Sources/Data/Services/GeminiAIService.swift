@@ -5,10 +5,9 @@
 //  Created by patrick ridd on 1/18/26.
 //
 
-
-import GoogleGenerativeAI
 import Domain
 import Foundation
+@preconcurrency import GoogleGenerativeAI
 
 public final class GeminiAIService: AIAnalysisService, @unchecked Sendable {
     private let model: GenerativeModel
