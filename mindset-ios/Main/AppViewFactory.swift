@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Data
 import Domain
 import FeatureOnboarding
 import FeatureSubscription
@@ -21,7 +22,7 @@ struct AppViewFactory: MainViewFactory {
     let addMindsetUseCase: AddMindsetUseCase
     let getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase
     let subscriptionService: SubscriptionService
-
+    
     func makeOnboardingView() -> AnyView {
         let viewModel = OnboardingViewModel(
             userRepository: userRepository,
@@ -61,11 +62,14 @@ struct AppViewFactory: MainViewFactory {
     }
 
     func makeMindsetView() -> AnyView {
+        let apiKey = AppConfig.geminiAPIKey
+        let aiService = GeminiAIService(apiKey: apiKey)
         let viewModel = MorningRitualViewModel(
             userRepository: userRepository,
             addMindsetUseCase: addMindsetUseCase,
             getYesterdayBridgeUseCase: getYesterdayBridgeUseCase,
             subscriptionService: subscriptionService,
+            aiService: aiService,
             onNavigate: { state in
                 switch state {
                 case .success(let archetype, let xp):

@@ -14,6 +14,7 @@
 		21B9DED32F0F5BE6000FA365 /* FeatureSubscription in Frameworks */ = {isa = PBXBuildFile; productRef = 21B9DED22F0F5BE6000FA365 /* FeatureSubscription */; };
 		21BA432D2F0DEDEF0013B0C9 /* FeatureMindset in Frameworks */ = {isa = PBXBuildFile; productRef = 21BA432C2F0DEDEF0013B0C9 /* FeatureMindset */; };
 		21CE7A062F18866F00178A6F /* Core in Frameworks */ = {isa = PBXBuildFile; productRef = 21CE7A052F18866F00178A6F /* Core */; };
+		21CE7A0B2F1DE4E300178A6F /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 21CE7A0A2F1DE4E300178A6F /* Config.xcconfig */; };
 		21F0B9E02F0F67B1008710CE /* FeatureDashboard in Frameworks */ = {isa = PBXBuildFile; productRef = 21F0B9DF2F0F67B1008710CE /* FeatureDashboard */; };
 /* End PBXBuildFile section */
 
@@ -35,10 +36,21 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		21CE7A0A2F1DE4E300178A6F /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		21DE280D2F08CCB900266CF8 /* mindset-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "mindset-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		21DE281C2F08CCBA00266CF8 /* mindset-iosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "mindset-iosTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		21DE28262F08CCBA00266CF8 /* mindset-iosUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "mindset-iosUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		21CE7A092F1DE23F00178A6F /* Exceptions for "mindset-ios" folder in "mindset-ios" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 21DE280C2F08CCB900266CF8 /* mindset-ios */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		215073D72F08DA74003D1225 /* mindset-iosUITests */ = {
@@ -48,6 +60,9 @@
 		};
 		21DE280F2F08CCB900266CF8 /* mindset-ios */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				21CE7A092F1DE23F00178A6F /* Exceptions for "mindset-ios" folder in "mindset-ios" target */,
+			);
 			path = "mindset-ios";
 			sourceTree = "<group>";
 		};
@@ -99,6 +114,7 @@
 				215073D72F08DA74003D1225 /* mindset-iosUITests */,
 				21DE28392F08CD8200266CF8 /* Frameworks */,
 				21DE280E2F08CCB900266CF8 /* Products */,
+				21CE7A0A2F1DE4E300178A6F /* Config.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -239,6 +255,7 @@
 				213EB3662F0F611700721D70 /* XCLocalSwiftPackageReference "Packages/FeatureNavigation" */,
 				21996CD12F0F678700438DBD /* XCLocalSwiftPackageReference "Packages/FeatureDashboard" */,
 				21F0B9E42F188648008710CE /* XCLocalSwiftPackageReference "Packages/Core" */,
+				21CE7A072F1DDE8500178A6F /* XCRemoteSwiftPackageReference "generative-ai-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 21DE280E2F08CCB900266CF8 /* Products */;
@@ -257,6 +274,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				21CE7A0B2F1DE4E300178A6F /* Config.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -316,6 +334,7 @@
 /* Begin XCBuildConfiguration section */
 		21DE282E2F08CCBA00266CF8 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 21CE7A0A2F1DE4E300178A6F /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -380,6 +399,7 @@
 		};
 		21DE282F2F08CCBA00266CF8 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 21CE7A0A2F1DE4E300178A6F /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -446,6 +466,7 @@
 				DEVELOPMENT_TEAM = 93224DXRHZ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "mindset-ios/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Mindset+";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -472,6 +493,7 @@
 		};
 		21DE28322F08CCBA00266CF8 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 21CE7A0A2F1DE4E300178A6F /* Config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -481,6 +503,7 @@
 				DEVELOPMENT_TEAM = 93224DXRHZ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "mindset-ios/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Mindset+";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -664,6 +687,17 @@
 			relativePath = Packages/Core;
 		};
 /* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		21CE7A072F1DDE8500178A6F /* XCRemoteSwiftPackageReference "generative-ai-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/generative-ai-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.5.6;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		213EB3642F0F5C0B00721D70 /* FeatureOnboarding */ = {

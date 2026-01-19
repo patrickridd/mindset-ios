@@ -19,7 +19,7 @@ public final class MorningRitualViewModel {
     private let userRepository: UserRepository
     private let subscriptionService: SubscriptionService
     private let promptEngine = PromptEngine()
-    private let aiService: AIAnalysisService = MockAIService()
+    private let aiService: AIAnalysisService
 
     // Dynamic Content
     public var prompts: [MindsetPrompt] = []
@@ -39,7 +39,7 @@ public final class MorningRitualViewModel {
     public var earnedXP: Int = 0
     public var generatedArchetype: String = "The Explorer"
     public var isShowingSuccess: Bool = false
-
+    
     public var currentAiReflection: String? {
         guard let id = currentPrompt?.id else { return nil }
         return reflections[id]
@@ -55,12 +55,14 @@ public final class MorningRitualViewModel {
         addMindsetUseCase: AddMindsetUseCase,
         getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase,
         subscriptionService: SubscriptionService,
+        aiService: AIAnalysisService,
         onNavigate: ((NavigationState) -> Void)?
     ) {
         self.userRepository = userRepository
         self.addMindsetUseCase = addMindsetUseCase
         self.getYesterdayBridgeUseCase = getYesterdayBridgeUseCase
         self.subscriptionService = subscriptionService
+        self.aiService = aiService
         self.onNavigate = onNavigate
         
         Task { await prepareRitual() }
