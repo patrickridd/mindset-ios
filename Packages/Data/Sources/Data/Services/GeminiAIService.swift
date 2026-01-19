@@ -15,7 +15,7 @@ public final class GeminiAIService: AIAnalysisService, @unchecked Sendable {
 
     public init(apiKey: String) {
         // 'flash' is optimized for speed and efficiency in chat/reflection apps
-        self.model = GenerativeModel(name: "gemini-1.5-flash", apiKey: apiKey)
+        self.model = GenerativeModel(name: "gemini-2.0-flash", apiKey: apiKey)
     }
 
     public func generateFeedback(for prompt: MindsetPrompt, answer: String) async throws -> String {
