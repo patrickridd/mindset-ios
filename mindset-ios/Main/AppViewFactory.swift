@@ -13,6 +13,7 @@ import FeatureSubscription
 import FeatureDashboard
 import FeatureMindset
 import FeatureNavigation
+import FeatureHistory
 
 struct AppViewFactory: MainViewFactory {
     let coordinator: MainCoordinator
@@ -27,7 +28,7 @@ struct AppViewFactory: MainViewFactory {
         let viewModel = OnboardingViewModel(
             userRepository: userRepository,
             onboardingFinished: {
-                coordinator.showDashboard()
+                coordinator.showHomeView()
             })
         
         return AnyView(
@@ -39,7 +40,7 @@ struct AppViewFactory: MainViewFactory {
         let viewModel = PaywallViewModel(
             subscriptionService: subscriptionService,
             onPurchaseFinished: {
-                coordinator.showDashboard()
+                coordinator.showHomeView()
                 coordinator.dismissSheet()
             })
         return AnyView(
@@ -47,8 +48,8 @@ struct AppViewFactory: MainViewFactory {
         )
     }
 
-    func makeDashboardView() -> AnyView {
-        let viewModel = DashboardViewModel(
+    func makeHomeView() -> AnyView {
+        let dashboardViewModel = DashboardViewModel(
             userRepository: userRepository,
             mindsetRepository: mindsetRepository,
             getStreakUseCase: getStreakUseCase,
@@ -56,8 +57,12 @@ struct AppViewFactory: MainViewFactory {
                 coordinator.startMorningMindset()
             })
         
-        return AnyView(
-            DashboardView(viewModel: viewModel)
+        let historyViewModel = MindsetHistoryViewModel(repository: mindsetRepository)
+
+        return AnyView(MainTabView(
+            coordinator: coordinator,
+            dashboardView: AnyView(DashboardView(viewModel: dashboardViewModel)),
+            historyView: AnyView(MindsetHistoryView(viewModel: historyViewModel)))
         )
     }
 
@@ -86,7 +91,7 @@ struct AppViewFactory: MainViewFactory {
 
     func makeRitualSuccessView(archetype: String, xp: Int) -> AnyView {
         AnyView(RitualSuccessView(archetype: archetype, xpEarned: xp) {
-            coordinator.showDashboard()
+            coordinator.showHomeView()
             coordinator.dismissSheet()
         })
     }

@@ -16,7 +16,7 @@ public final class MainCoordinator {
     // Exclusive primary screens
     public enum RootState {
         case onboarding
-        case dashboard
+        case home
         case mindset
     }
     
@@ -33,9 +33,15 @@ public final class MainCoordinator {
         }
     }
 
+    public enum Tab {
+        case dashboard
+        case history
+    }
+
     private(set) var rootState: RootState = .onboarding
     public var sheetState: SheetState?
-
+    public var selectedTab: Tab = .dashboard
+    
     private let subscriptionService: SubscriptionService
     private let mindsetRepository: MindsetRepository
     private let userProfileRepository: UserRepository
@@ -57,7 +63,7 @@ public final class MainCoordinator {
             set(rootState: .onboarding)
             return
         } else {
-            set(rootState: .dashboard)
+            set(rootState: .home)
         }
 
         let isPro = await subscriptionService.checkSubscriptionStatus()
@@ -74,12 +80,12 @@ public final class MainCoordinator {
         set(sheetState: .paywall)
     }
 
-    public func showDashboard() {
-        set(rootState: .dashboard)
+    public func showHomeView() {
+        set(rootState: .home)
     }
 
     public func subscriptionPurchased() {
-        set(rootState: .dashboard)
+        set(rootState: .home)
     }
 
     public func startMorningMindset() {

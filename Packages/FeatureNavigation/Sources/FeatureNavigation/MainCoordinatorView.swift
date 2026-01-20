@@ -11,7 +11,7 @@ import Domain
 public protocol MainViewFactory {
     func makeOnboardingView() -> AnyView
     func makePaywallView() -> AnyView
-    func makeDashboardView() -> AnyView
+    func makeHomeView() -> AnyView
     func makeMindsetView() -> AnyView
     func makeRitualSuccessView(archetype: String, xp: Int) -> AnyView
 }
@@ -30,7 +30,7 @@ public struct MainCoordinatorView: View {
             // Root Layer
             switch coordinator.rootState {
             case .onboarding: factory.makeOnboardingView()
-            case .dashboard:  factory.makeDashboardView()
+            case .home:  factory.makeHomeView()
             case .mindset:    factory.makeMindsetView()
             }
         }
