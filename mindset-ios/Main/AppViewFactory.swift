@@ -55,6 +55,8 @@ struct AppViewFactory: MainViewFactory {
             getStreakUseCase: getStreakUseCase,
             onStartMindet: {
                 coordinator.startMorningMindset()
+            }, onSeeHistory: {
+                coordinator.set(tab: .history)
             })
         
         let historyViewModel = MindsetHistoryViewModel(repository: mindsetRepository)

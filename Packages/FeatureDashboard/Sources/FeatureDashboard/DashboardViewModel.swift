@@ -31,18 +31,21 @@ public final class DashboardViewModel {
     }
 
     // Navigation Actions
-    public var onStartMindet: () -> Void
+    private var onStartMindet: () -> Void
+    private let onSeeHistory: () -> Void
 
     public init(
         userRepository: UserRepository,
         mindsetRepository: MindsetRepository,
         getStreakUseCase: GetStreakUseCase,
-        onStartMindet: @escaping () -> Void
+        onStartMindet: @escaping () -> Void,
+        onSeeHistory: @escaping () -> Void
     ) {
         self.userRepository = userRepository
         self.mindsetRepository = mindsetRepository
         self.getStreakUseCase = getStreakUseCase
         self.onStartMindet = onStartMindet
+        self.onSeeHistory = onSeeHistory
     }
 
     public func loadDashboardData() async {
@@ -71,5 +74,13 @@ public final class DashboardViewModel {
         }
         
         isLoading = false
+    }
+
+    func startMindsetButtonTapped() {
+        onStartMindet()
+    }
+
+    func seeHistoryBoxTapped() {
+        onSeeHistory()
     }
 }

@@ -30,7 +30,7 @@ public struct DashboardView: View {
                             
                             Spacer(minLength: 40)
                             
-                            Button(action: viewModel.onStartMindet) {
+                            Button(action: viewModel.startMindsetButtonTapped) {
                                 HStack {
                                     Text("Begin Morning Ritual")
                                     Image(systemName: "sparkles")
@@ -100,7 +100,9 @@ public struct DashboardView: View {
                 value: "\(viewModel.totalRituals) Total",
                 icon: "checkmark.circle.fill",
                 color: .green
-            )
+            ).onTapGesture {
+                viewModel.seeHistoryBoxTapped()
+            }
         }
     }
 
@@ -122,9 +124,8 @@ public struct DashboardView: View {
     let viewModel = DashboardViewModel(
         userRepository: MockUserRepository(),
         mindsetRepository: mindSetReposoitory,
-        getStreakUseCase: GetStreakUseCase(repository: mindSetReposoitory)
-    ) {
-        
-    }
+        getStreakUseCase: GetStreakUseCase(repository: mindSetReposoitory),
+        onStartMindet: {},
+        onSeeHistory: {})
     return DashboardView(viewModel: viewModel)
 }
