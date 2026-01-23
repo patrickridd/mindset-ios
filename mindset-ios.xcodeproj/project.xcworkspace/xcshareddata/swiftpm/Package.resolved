@@ -1,5 +1,5 @@
 {
-  "originHash" : "ff49e323c389123be42e460d5e0aafdb1753a696d10e76da2e7b80d5f3d7dbc9",
+  "originHash" : "c5d921b2e9098cfafeb9a6bbc1c6ae75a929dc0ad3ef5e70a08c9ecf7145afa3",
   "pins" : [
     {
       "identity" : "generative-ai-swift",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "44b8ce120425f9cf53ca756f3434ca2c2696f8bd",
         "version" : "0.5.6"
+      }
+    },
+    {
+      "identity" : "inject",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/krzysztofzablocki/Inject.git",
+      "state" : {
+        "revision" : "728c56639ecb3df441d51d5bc6747329afabcfc9",
+        "version" : "1.5.2"
       }
     }
   ],
