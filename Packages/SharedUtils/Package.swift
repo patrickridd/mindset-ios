@@ -4,35 +4,29 @@
 import PackageDescription
 
 let package = Package(
-    name: "FeatureDashboard",
-    platforms: [
-        .iOS(.v17)
-    ],
+    name: "SharedUtils",
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "FeatureDashboard",
-            targets: ["FeatureDashboard"]
+            name: "SharedUtils",
+            targets: ["SharedUtils"]
         ),
     ],
     dependencies: [
-        .package(path: "/users/patrickridd/documents/xcodeprojects/mindset-ios/packages/domain"),
-        .package(path: "/users/patrickridd/documents/xcodeprojects/mindset-ios/packages/sharedutils")
-
+        .package(url: "https://github.com/krzysztofzablocki/Inject.git", from: "1.2.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "FeatureDashboard",
+            name: "SharedUtils",
             dependencies: [
-                .product(name: "Domain", package: "Domain"),
-                .product(name: "SharedUtils", package: "SharedUtils")
+                .product(name: "Inject", package: "Inject")
             ]
         ),
         .testTarget(
-            name: "FeatureDashboardTests",
-            dependencies: ["FeatureDashboard"]
+            name: "SharedUtilsTests",
+            dependencies: ["SharedUtils"]
         ),
     ]
 )
