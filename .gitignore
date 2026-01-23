@@ -63,3 +63,7 @@ fastlane/test_output
 
 # Config
 Config.xcconfig
+
+buildServer.json
+.build/
+DerivedData/
