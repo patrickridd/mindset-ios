@@ -92,6 +92,10 @@ public final class MainCoordinator {
         set(rootState: .mindset)
     }
 
+    public func set(tab: Tab) {
+        selectedTab = tab
+    }
+
     public func showPaywall() {
         set(sheetState: .paywall)
     }
