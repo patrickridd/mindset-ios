@@ -5,10 +5,15 @@
 //  Created by patrick ridd on 1/7/26.
 //
 
+import SharedUtils
 import SwiftUI
 import Domain
 
 public struct DashboardView: View {
+
+    #if DEBUG
+    @ObserveInjection var inject
+    #endif
 
     @State private var viewModel: DashboardViewModel
 
@@ -52,6 +57,9 @@ public struct DashboardView: View {
                     await viewModel.loadDashboardData()
                 }
             }
+            #if DEBUG
+            .enableInjection()
+            #endif
         }
         
         private var headerSection: some View {
