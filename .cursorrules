@@ -1,0 +1,22 @@
+# Swift & iOS Rules
+- Always use Swift 6 / Swift 2026 idioms.
+- Prefer `@Observable` over `ObservableObject`.
+- Use `Group` or `Section` in SwiftUI to avoid deeply nested view hierarchies.
+- When creating new Views, include:
+    ```swift
+    #if DEBUG
+    @ObserveInjection var inject
+    #endif
+    // ... at end of body:
+    .enableInjection()
+    ```
+
+# Modularization Rules
+- Business logic belongs in `Domain`.
+- API and Persistence belong in `Data`.
+- Views belong in `Feature[Name]` modules.
+- Never import a Feature module into another Feature module (use the Coordinator).
+
+# AI Rules
+- Use `gemini-2.0-flash` for all AIService calls.
+- Ensure API keys are never hardcoded; suggest `Secrets.plist` or Environment Variables.
