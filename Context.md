@@ -43,3 +43,8 @@
 - **Provider:** Google Gemini 2.0 Flash.
 - **Service:** `GeminiAIService`.
 - **Security:** Do NOT hardcode API Keys. Use `ProcessInfo.processInfo.environment` or a secure `Config.plist` that is gitignored.
+
+## 10. Configuration & Secrets (AppConfig)
+- **Method:** Build-time injection via .xcconfig -> Info.plist.
+- **Access:** `AppConfig.geminiAPIKey`.
+- **Git Safety:** Config.config file is gitignored; contains the source `GEMINI_API_KEY`.
