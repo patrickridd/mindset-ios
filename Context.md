@@ -12,32 +12,36 @@
 - **Navigation:** Coordinator Pattern.
 
 ## 3. Critical Build Configurations
-- **Hot Reload:** InjectionIII is configured.
-- **Flags:** - Other Linker Flags: `-Wl,-interposable`
-  - Other Swift Flags: `-Xfrontend -disable-batch-mode`, `-Xfrontend -interposable`
+- **Hot Reload:** InjectionIII is configured (must use GitHub version, NOT App Store version).
+- **Flags:**
+  - Other Linker Flags: `-Wl,-interposable`
+  - Other Swift Flags: `-Xfrontend -disable-batch-mode -enable-bare-slash-regex`
   - User-Defined: `SWIFT_MODULE_CACHE_PATH` points to `$(DERIVED_DATA_DIR)/ModuleCache.noindex`
-- **Known Issue:** InjectionIII may fail with "cannot get default cache directory"; prioritize building features over fixing this if it stalls development.
+- **Note:** The `-Xfrontend -interposable` flag does NOT work (unknown argument error). Only the linker flag `-Wl,-interposable` is needed.
 
 ## 4. Current Task
 - Implementing `GeminiAIService` in the Data module.
 - Setting up the Dashboard to display AI-generated insights.
 
 ## 5. Build Configuration
-- **Hot Reload:** InjectionIII via `-Xlinker -interposable`.
-- **Note:** If build fails with `unknown argument`, ensure flags are split into separate lines in Xcode Build Settings or use `-Wl,-interposable`.
+- **Hot Reload:** InjectionIII via `-Wl,-interposable` in Other Linker Flags.
+- **Note:** Do NOT use `-Xfrontend -interposable` (causes unknown argument error). The linker flag alone is sufficient.
 
 ## 6. Build Troubleshooting
-- **Error:** "Driver threw unknown argument: -interposable"
-- **Solution:** Use `-Wl,-interposable` in Other Linker Flags and `-Xfrontend -interposable` in Other Swift Flags.
+- **Error:** "Unknown argument: '-interposable'"
+- **Solution:** Do NOT use `-Xfrontend -interposable` in Swift Flags. Only use `-Wl,-interposable` in Other Linker Flags.
+- **Error:** "cannot get default cache directory" during hot reload
+- **Solution:** Use the GitHub version of InjectionIII (not the App Store version). The App Store version runs in a sandbox that prevents access to the Swift compiler's cache directories. Download from: https://github.com/johnno1962/InjectionIII/releases
 
 ## 7. Project Location
 - **Root Path:** ~/Developer/mindset-ios/
 - **Note:** Always ensure terminal commands are run from this root to maintain Git and InjectionIII connectivity.
 
 ## 8. Hot Reload Stability (2026 Update)
-- **Flag Fix:** Use `-Xfrontend=-disable-batch-mode` or `-driver-batch-count 1` to avoid Driver errors.
-- **Cache Fix:** User-Defined `MODULE_CACHE_PATH` must be set to `$(DERIVED_DATA_DIR)/ModuleCache.noindex`.
-- **Permission:** InjectionIII REQUIRES "Full Disk Access" to resolve compiler cache crashes.
+- **App Version:** Use the GitHub release of InjectionIII (https://github.com/johnno1962/InjectionIII/releases), NOT the App Store version. The App Store version's sandbox causes "cannot get default cache directory" errors.
+- **Flag Fix:** Use `-Xfrontend -disable-batch-mode` in Other Swift Flags.
+- **Cache Fix:** User-Defined `SWIFT_MODULE_CACHE_PATH` set to `$(DERIVED_DATA_DIR)/ModuleCache.noindex`.
+- **Permission:** InjectionIII REQUIRES "Full Disk Access" in System Settings > Privacy & Security.
 
 ## 9. AI Integration
 - **Provider:** Google Gemini 2.0 Flash.
