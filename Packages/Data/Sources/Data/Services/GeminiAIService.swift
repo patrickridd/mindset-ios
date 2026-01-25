@@ -8,6 +8,7 @@
 import Domain
 import Foundation
 @preconcurrency import GoogleGenerativeAI
+import SharedUtils
 
 public final class GeminiAIService: AIAnalysisService, @unchecked Sendable {
     private let model: GenerativeModel
@@ -18,6 +19,7 @@ public final class GeminiAIService: AIAnalysisService, @unchecked Sendable {
     }
 
     public func generateFeedback(for prompt: MindsetPrompt, answer: String) async throws -> String {
+        DebugLogger.shared.add("🤖 Sending history to Gemini 2.0 Flash...")
         // We provide a "System Instruction" to keep Gemini in 'Coach Mode'
         let systemPrompt = """
         You are a high-performance mindset coach. 
@@ -31,6 +33,8 @@ public final class GeminiAIService: AIAnalysisService, @unchecked Sendable {
         
         let response = try await model.generateContent(systemPrompt)
         
+        DebugLogger.shared.add("✅ Received: \(response.text?.prefix(50) ?? "Empty")...")
+
         guard let text = response.text else {
             throw NSError(domain: "GeminiError", code: 0, userInfo: [NSLocalizedDescriptionKey: "No response text"])
         }

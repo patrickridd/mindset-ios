@@ -16,9 +16,8 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(path: "/users/patrickridd/documents/xcodeprojects/mindset-ios/packages/domain"),
-        .package(path: "/users/patrickridd/documents/xcodeprojects/mindset-ios/packages/sharedutils")
-
+        .package(path: "../Domain"),
+        .package(path: "../SharedUtils"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.

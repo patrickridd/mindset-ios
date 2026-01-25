@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import SharedUI
 import SwiftData
 import FeatureNavigation
 import FeatureDashboard
@@ -76,6 +77,7 @@ struct MindsetApp: App {
     var body: some Scene {
         WindowGroup {
             MainCoordinatorView(coordinator: coordinator, factory: viewFactory)
+                .withDebugOverlay()
         }
         .modelContainer(container)
     }

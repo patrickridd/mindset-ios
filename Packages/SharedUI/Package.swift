@@ -4,36 +4,32 @@
 import PackageDescription
 
 let package = Package(
-    name: "Data",
+    name: "SharedUI",
     platforms: [
         .iOS(.v17)
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "Data",
-            targets: ["Data"]
+            name: "SharedUI",
+            targets: ["SharedUI"]
         ),
     ],
     dependencies: [
-        .package(path: "../Domain"),
         .package(path: "../SharedUtils"),
-        .package(url: "https://github.com/google/generative-ai-swift", from: "0.5.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "Data",
+            name: "SharedUI",
             dependencies: [
-                .product(name: "Domain", package: "Domain"),
-                .product(name: "SharedUtils", package: "SharedUtils"),
-                .product(name: "GoogleGenerativeAI", package: "generative-ai-swift")
+                .product(name: "SharedUtils", package: "SharedUtils")
             ]
         ),
         .testTarget(
-            name: "DataTests",
-            dependencies: ["Data"]
+            name: "SharedUITests",
+            dependencies: ["SharedUI"]
         ),
     ]
 )

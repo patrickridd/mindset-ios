@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2134C6C22F26A14700CB6D8B /* SharedUI in Frameworks */ = {isa = PBXBuildFile; productRef = 2134C6C12F26A14700CB6D8B /* SharedUI */; };
 		213EB3652F0F5C0B00721D70 /* FeatureOnboarding in Frameworks */ = {isa = PBXBuildFile; productRef = 213EB3642F0F5C0B00721D70 /* FeatureOnboarding */; };
 		2187FBA62F0A1E5400C028A9 /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = 2187FBA52F0A1E5400C028A9 /* Domain */; };
 		2187FBA92F0A1E6D00C028A9 /* Data in Frameworks */ = {isa = PBXBuildFile; productRef = 2187FBA82F0A1E6D00C028A9 /* Data */; };
@@ -88,6 +89,7 @@
 				2198ED922F232D0100C41E8E /* SharedUtils in Frameworks */,
 				21CE7A062F18866F00178A6F /* Core in Frameworks */,
 				21AAACCD2F1DEF3600BFF7D4 /* FeatureHistory in Frameworks */,
+				2134C6C22F26A14700CB6D8B /* SharedUI in Frameworks */,
 				21F0B9E02F0F67B1008710CE /* FeatureDashboard in Frameworks */,
 				2187FBA62F0A1E5400C028A9 /* Domain in Frameworks */,
 			);
@@ -169,6 +171,7 @@
 				21CE7A052F18866F00178A6F /* Core */,
 				21AAACCC2F1DEF3600BFF7D4 /* FeatureHistory */,
 				2198ED912F232D0100C41E8E /* SharedUtils */,
+				2134C6C12F26A14700CB6D8B /* SharedUI */,
 			);
 			productName = "mindset-ios";
 			productReference = 21DE280D2F08CCB900266CF8 /* mindset-ios.app */;
@@ -264,6 +267,7 @@
 				21CE7A072F1DDE8500178A6F /* XCRemoteSwiftPackageReference "generative-ai-swift" */,
 				21CE7A0C2F1DEEFF00178A6F /* XCLocalSwiftPackageReference "Packages/FeatureHistory" */,
 				2198ED902F232C8D00C41E8E /* XCLocalSwiftPackageReference "Packages/SharedUtils" */,
+				215C9FBF2F269F2100AE535F /* XCLocalSwiftPackageReference "Packages/SharedUI" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 21DE280E2F08CCB900266CF8 /* Products */;
@@ -482,6 +486,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -523,6 +528,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -674,6 +680,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/FeatureNavigation;
 		};
+		215C9FBF2F269F2100AE535F /* XCLocalSwiftPackageReference "Packages/SharedUI" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/SharedUI;
+		};
 		2187FBA42F0A1E4C00C028A9 /* XCLocalSwiftPackageReference "Packages/Domain" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/Domain;
@@ -724,6 +734,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		2134C6C12F26A14700CB6D8B /* SharedUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 215C9FBF2F269F2100AE535F /* XCLocalSwiftPackageReference "Packages/SharedUI" */;
+			productName = SharedUI;
+		};
 		213EB3642F0F5C0B00721D70 /* FeatureOnboarding */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 21B9DED12F0F5BDF000FA365 /* XCLocalSwiftPackageReference "Packages/FeatureOnboarding" */;
