@@ -1,8 +1,6 @@
 //
 //  HapticManager.swift
-//  Core
-//
-//  Created by patrick ridd on 1/14/26.
+//  SharedUtils
 //
 
 import UIKit
@@ -13,7 +11,7 @@ public enum HapticManager {
         let generator = UINotificationFeedbackGenerator()
         generator.notificationOccurred(type)
     }
-    
+
     public static func impact(_ style: UIImpactFeedbackGenerator.FeedbackStyle) {
         let generator = UIImpactFeedbackGenerator(style: style)
         generator.impactOccurred()

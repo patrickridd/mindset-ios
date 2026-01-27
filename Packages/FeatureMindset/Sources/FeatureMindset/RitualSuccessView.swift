@@ -5,8 +5,8 @@
 //  Created by patrick ridd on 1/13/26.
 //
 
-import Core
 import Domain
+import SharedUtils
 import SwiftUI
 
 public struct RitualSuccessView: View {
