@@ -1,8 +1,17 @@
 # Project: Mindset Ritual App (MLP)
 
+## 0. Codebase Map (Where Things Live)
+- **App entry:** `mindset-ios/Main/MindsetApp.swift` — composes container, repos, use cases, `MainCoordinator`, and `AppViewFactory`.
+- **Navigation:** `FeatureNavigation` — `MainCoordinator`, `MainCoordinatorView`, `MainTabView`. Only the app and coordinator import Feature modules; Features never import each other.
+- **Package dependency direction:** App → Feature* + Domain + Data. Domain has no dependency on Data or Feature. Data depends only on Domain (protocols). Feature modules depend on Domain (+ Data when needed) and optionally SharedUI/SharedUtils.
+- **Domain** (`Packages/Domain`): Entities, Models, Protocols, UseCases, Logic (PromptEngine, PromptLibrary), Services (AIAnalysisService), Mocks, Errors. Pure business logic; no UI, no framework types for persistence.
+- **Data** (`Packages/Data`): `SD*` types — Repositories (SDMindsetRepository, SDUserRepository), Services (GeminiAIService, SDPersistenceService, RevenueCatSubscriptionService), Model (SDMindsetEntry, SDPromptResponse, SDUserProfile), AppConfig.
+- **Feature modules:** FeatureDashboard, FeatureHistory, FeatureMindset, FeatureOnboarding, FeatureSubscription — each has View(s) and ViewModel(s). FeatureMindset has Components (e.g. AIReflectionCard) and Mocks for previews.
+- **Shared:** SharedUI (DebugOverlay), SharedUtils (DebugLogger, HapticManager, InjectionBootstrap).
+
 ## 1. Goal & Vision
-- **Objective:** Reach $10k MRR by providing premium AI-driven gamified Stoic reflections. Think Duolingo version of a gratitude journal and other positive psychology practices.  
-- **Vibe:** Minimalist, premium, focused, and high-performance.
+- **Objective:** Reach $10k MRR by providing premium AI-driven daily Gratitude and Stoic reflections. Think Duolingo version of a gratitude journal and other positive psychology practices. 
+- **Vibe:** Positive, habit-forming, premium, focused, and high-performance.
 
 ## 2. Tech Stack (2026 Standards)
 - **UI:** SwiftUI (latest) using `@Observable` and `Swift Concurrency`.
