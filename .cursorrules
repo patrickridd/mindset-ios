@@ -17,6 +17,13 @@
 - Views belong in `Feature[Name]` modules.
 - Never import a Feature module into another Feature module (use the Coordinator).
 
+# Naming & Conventions
+- Data layer types use `SD` prefix (e.g. `SDMindsetEntry`, `SDMindsetRepository`, `SDPersistenceService`). Domain and Feature modules do not use this prefix.
+- New screens/flows: add a Feature module, then register in `FeatureNavigation` (MainCoordinator) and app `AppViewFactory`; never import one Feature into another.
+
 # AI Rules
 - Use `gemini-2.0-flash` for all AIService calls.
 - Ensure API keys are never hardcoded; suggest `Secrets.plist` or Environment Variables.
+
+# Scoping (for complex changes)
+- Prefer one package or one use case/flow per Composer request. For multi-file edits, name the target files or modules so changes stay predictable and reviewable.
