@@ -33,7 +33,7 @@ public final class GeminiAIService: AIAnalysisService, @unchecked Sendable {
         
         let response = try await model.generateContent(systemPrompt)
         
-        DebugLogger.shared.add("✅ Received: \(response.text?.prefix(50) ?? "Empty")...")
+        DebugLogger.shared.add("✅ Received: \(response.text ?? "Empty")")
 
         guard let text = response.text else {
             throw NSError(domain: "GeminiError", code: 0, userInfo: [NSLocalizedDescriptionKey: "No response text"])

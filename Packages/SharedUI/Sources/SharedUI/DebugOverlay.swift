@@ -5,7 +5,6 @@
 //  Created by patrick ridd on 1/25/26.
 //
 
-
 import SwiftUI
 import SharedUtils
 
@@ -32,24 +31,26 @@ public struct DebugOverlay: ViewModifier {
                             .shadow(radius: 2)
                     }
                 }
-                
+
                 if isExpanded {
                     ScrollView {
-                        LazyVStack(alignment: .leading, spacing: 6) {
+                        LazyVStack(alignment: .leading, spacing: 8) {
                             ForEach(logger.logs, id: \.self) { log in
                                 Text(log)
-                                    .lineLimit(0)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .lineLimit(100)
+                                    .multilineTextAlignment(.leading)
                                     .font(.system(size: 10, design: .monospaced))
                                     .foregroundColor(.primary)
                                     .padding(6)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
                                     .background(Color.primary.opacity(0.05))
                                     .cornerRadius(4)
+                                    .frame(maxHeight: 200)
                             }
                         }
                         .padding(8)
                     }
-                    .frame(height: 250)
+                    .frame(maxHeight: 200)
                     .background(.ultraThinMaterial)
                     .cornerRadius(16)
                     .transition(.move(edge: .top).combined(with: .opacity))
