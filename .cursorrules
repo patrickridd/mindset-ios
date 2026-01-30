@@ -29,4 +29,4 @@
 - Prefer one package or one use case/flow per Composer request. For multi-file edits, name the target files or modules so changes stay predictable and reviewable.
 
 # UI Rules
-- Implement Apple's "Liquid Glass" for existing and new UI
+- Implement Apple's "Liquid Glass" for existing and new UI https://developer.apple.com/documentation/TechnologyOverviews/liquid-glass

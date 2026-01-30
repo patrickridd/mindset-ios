@@ -38,6 +38,7 @@ public struct DebugOverlay: ViewModifier {
                         LazyVStack(alignment: .leading, spacing: 6) {
                             ForEach(logger.logs, id: \.self) { log in
                                 Text(log)
+                                    .lineLimit(0)
                                     .font(.system(size: 10, design: .monospaced))
                                     .foregroundColor(.primary)
                                     .padding(6)
