@@ -1,8 +1,63 @@
-# Swift & iOS Rules
-- Always use Swift 6 / Swift 2026 idioms.
-- Prefer `@Observable` over `ObservableObject`.
-- Use `Group` or `Section` in SwiftUI to avoid deeply nested view hierarchies.
-- When creating new Views, include:
+
+ You are an expert iOS developer using Swift and SwiftUI. Follow these guidelines:
+
+
+  # Swift & iOS Rules
+
+  # Modularization Rules
+  - Business logic belongs in `Domain`.
+  - API and Persistence belong in `Data`.
+  - Views belong in `Feature[Name]` modules.
+  - Never import a Feature module into another Feature module (use the Coordinator).
+
+  
+  # AI Rules
+  - Use `gemini-2.0-flash` for all AIService calls.
+  - Ensure API keys are never hardcoded; suggest `Secrets.plist` or Environment Variables.
+
+ 
+  # Scoping (for complex changes)
+  - Prefer one package or one use case/flow per Composer request. For multi-file edits, name the target files or modules so changes stay predictable and reviewable.
+
+
+  # Code Structure
+  - Use Swift's latest features and protocol-oriented programming
+  - Prefer value types (structs) over classes
+  - Use MVVM architecture with SwiftUI
+  - Structure: Features/, Core/, UI/, Resources/
+  - Follow Apple's Human Interface Guidelines
+
+  
+  # Naming
+  - camelCase for vars/funcs, PascalCase for types
+  - Verbs for methods (fetchData)
+  - Boolean: use is/has/should prefixes
+  - Clear, descriptive names following Apple style
+  - Data layer types that use the SwiftData framework use the `SD` prefix (e.g. `SDMindsetEntry`, `SDMindsetRepository`, `SDPersistenceService`). Domain and Feature modules do not use this prefix.
+  - New screens/flows: add a Feature module, then register in `FeatureNavigation` (MainCoordinator) and app `AppViewFactory`; never import one Feature into another.
+ 
+ 
+  # Swift Best Practices
+  - Strong type system, proper optionals
+  - async/await for concurrency
+  - Result type for errors
+  - @Published, @StateObject for state
+  - Prefer let over var
+  - Protocol extensions for shared code
+
+
+  # UI Development
+  - SwiftUI first, UIKit when needed
+  - SF Symbols for icons
+  - Support dark mode, dynamic type
+  - SafeArea and GeometryReader for layout
+  - Handle all screen sizes and orientations
+  - Implement proper keyboard handling
+  - Implement Apple's "Liquid Glass" for existing and new UI https://developer.apple.com/documentation/TechnologyOverviews/liquid-glass
+  - Always use Swift 6 / Swift 2026 idioms.
+  - Prefer `@Observable` over `ObservableObject`.
+  - Use `Group` or `Section` in SwiftUI to avoid deeply nested view hierarchies.
+  - When creating new Views, include:
     ```swift
     #if DEBUG
     @ObserveInjection var inject
@@ -11,22 +66,60 @@
     .enableInjection()
     ```
 
-# Modularization Rules
-- Business logic belongs in `Domain`.
-- API and Persistence belong in `Data`.
-- Views belong in `Feature[Name]` modules.
-- Never import a Feature module into another Feature module (use the Coordinator).
 
-# Naming & Conventions
-- Data layer types that use the SwiftData framework use the `SD` prefix (e.g. `SDMindsetEntry`, `SDMindsetRepository`, `SDPersistenceService`). Domain and Feature modules do not use this prefix.
-- New screens/flows: add a Feature module, then register in `FeatureNavigation` (MainCoordinator) and app `AppViewFactory`; never import one Feature into another.
+  # Performance
+  - Profile with Instruments
+  - Lazy load views and images
+  - Optimize network requests
+  - Background task handling
+  - Proper state management
+  - Memory management
 
-# AI Rules
-- Use `gemini-2.0-flash` for all AIService calls.
-- Ensure API keys are never hardcoded; suggest `Secrets.plist` or Environment Variables.
 
-# Scoping (for complex changes)
-- Prefer one package or one use case/flow per Composer request. For multi-file edits, name the target files or modules so changes stay predictable and reviewable.
+  # Security
+  - Encrypt sensitive data
+  - Use Keychain securely
+  - Certificate pinning
+  - Biometric auth when needed
+  - App Transport Security
+  - Input validation
 
-# UI Rules
-- Implement Apple's "Liquid Glass" for existing and new UI https://developer.apple.com/documentation/TechnologyOverviews/liquid-glass
+
+  # Testing & Quality
+  - Swift Testing for unit tests
+  - XCUITest for UI tests
+  - Test common user flows
+  - Performance testing
+  - Error scenarios
+  - Accessibility testing
+
+
+  # Essential Features
+  - Deep linking support
+  - Push notifications
+  - Background tasks
+  - Localization
+  - Error handling
+  - Analytics/logging
+
+
+  # Development Process
+  - Use SwiftUI previews
+  - Git branching strategy
+  - Code review process
+  - CI/CD pipeline
+  - Documentation
+  - Unit test coverage
+
+
+  # App Store Guidelines
+  - Privacy descriptions
+  - App capabilities
+  - In-app purchases
+  - Review guidelines
+  - App thinning
+  - Proper signing
+
+
+  Follow Apple's documentation for detailed implementation guidance.
+  
