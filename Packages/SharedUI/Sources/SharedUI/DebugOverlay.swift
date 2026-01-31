@@ -16,50 +16,56 @@ public struct DebugOverlay: ViewModifier {
     
     public func body(content: Content) -> some View {
         #if DEBUG
-        ZStack {
-            content
-            
-            VStack {
-                HStack {
-                    Spacer()
-                    Button(action: { withAnimation(.spring()) { isExpanded.toggle() } }) {
-                        Label(isExpanded ? "Close" : "Debug", systemImage: "terminal")
-                            .font(.caption2.bold())
-                            .padding(8)
-                            .background(.ultraThinMaterial)
-                            .clipShape(Capsule())
-                            .shadow(radius: 2)
+        content
+            .overlay(alignment: .topLeading) {
+                // Keep trigger below status bar (no ignoresSafeArea) so touches are delivered
+                VStack(alignment: .leading, spacing: 0) {
+                    Button(action: { withAnimation(.spring(response: 0.35)) { isExpanded.toggle() } }) {
+                        Image(systemName: isExpanded ? "xmark.circle.fill" : "terminal.fill")
+                            .font(.system(size: 12, weight: .medium))
+                            .symbolRenderingMode(.hierarchical)
+                            .foregroundStyle(.secondary)
+                            .frame(width: 28, height: 28)
+                            .background(.ultraThinMaterial, in: Circle())
+                            .contentShape(Circle())
                     }
-                }
+                    .buttonStyle(.plain)
+                    .frame(minWidth: 44, minHeight: 44)
 
-                if isExpanded {
-                    ScrollView {
-                        LazyVStack(alignment: .leading, spacing: 8) {
-                            ForEach(logger.logs, id: \.self) { log in
-                                Text(log)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .lineLimit(100)
-                                    .multilineTextAlignment(.leading)
-                                    .font(.system(size: 10, design: .monospaced))
-                                    .foregroundColor(.primary)
-                                    .padding(6)
-                                    .background(Color.primary.opacity(0.05))
-                                    .cornerRadius(4)
-                                    .frame(maxHeight: 200)
+                    if isExpanded {
+                        ScrollView {
+                            LazyVStack(alignment: .leading, spacing: 8) {
+                                ForEach(logger.logs, id: \.self) { log in
+                                    Text(log)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .lineLimit(100)
+                                        .multilineTextAlignment(.leading)
+                                        .font(.system(size: 10, design: .monospaced))
+                                        .foregroundColor(.primary)
+                                        .padding(6)
+                                        .background(Color.primary.opacity(0.05))
+                                        .cornerRadius(4)
+                                        .frame(maxHeight: 200)
+                                }
                             }
+                            .padding(8)
                         }
-                        .padding(8)
+                        .frame(maxHeight: 200)
+                        .frame(maxWidth: 320)
+                        .background(.ultraThinMaterial)
+                        .cornerRadius(12)
+                        .padding(.top, 4)
+                        .padding(.leading, 0)
+                        .transition(.asymmetric(
+                            insertion: .opacity.combined(with: .move(edge: .top)),
+                            removal: .opacity.combined(with: .move(edge: .top))
+                        ))
                     }
-                    .frame(maxHeight: 200)
-                    .background(.ultraThinMaterial)
-                    .cornerRadius(16)
-                    .transition(.move(edge: .top).combined(with: .opacity))
                 }
-                Spacer()
+                .padding(.leading, UIScreen.main.bounds.width/2 - 8)
+                .padding(.top, -16)
+                .allowsHitTesting(true)
             }
-            .padding(.horizontal)
-            .padding(.top, 60) // Stay clear of the Dynamic Island
-        }
         #else
         content
         #endif
