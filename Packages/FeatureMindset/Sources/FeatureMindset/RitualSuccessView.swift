@@ -85,7 +85,7 @@ public struct RitualSuccessView: View {
         }
         .onAppear {
             // 1. Success Thud
-            HapticManager.notification(.success)
+            HapticManager.success()
             
             // 2. XP Bar "Ticking"
             withAnimation(.easeOut(duration: 1.5).delay(0.5)) {
@@ -95,7 +95,7 @@ public struct RitualSuccessView: View {
             // Simulate ticking haptics during animation
             Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
                 if progress < 0.75 {
-                    HapticManager.impact(.light)
+                    HapticManager.tick()
                 } else {
                     timer.invalidate()
                 }

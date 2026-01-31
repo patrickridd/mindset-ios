@@ -126,6 +126,15 @@ Use `MindsetColors`, `MindsetFonts`, and `MindsetLayout` from SharedUI for all F
 
 **Spacing:** `spacing4`–`spacing40` (VStack/HStack) • **Padding:** `paddingSmall` (8), `paddingMedium` (12), `paddingStandard` (16), `paddingLarge` (20), `paddingCard` (25), `paddingScreenHorizontal` (30) • **Corner radius:** `radiusSmall` (4), `radiusStandard` (12), `radiusButton` (14), `radiusCard` (16), `radiusCardLarge` (20), `radiusIdentityCard` (24) • **Dimensions:** `progressBarHeight`, `buttonHeight`, `iconSmall`, `iconLarge`, `heroCircleSize`, `textEditorMinHeight` • **Other:** `borderWidth`, `shadowRadius`, `glowBlurRadius`
 
+### Haptics (SharedUtils HapticManager)
+
+Use the **semantic** APIs for consistency. Prefer these over raw `impact(_:)` / `notification(_:)`:
+
+- **`HapticManager.selection()`** — User picks one option (onboarding choice, list row, segment).
+- **`HapticManager.action()`** — Primary action (submit, continue, complete step).
+- **`HapticManager.success()`** — Flow or task completed (ritual done, onboarding done).
+- **`HapticManager.tick()`** — Light repeated feedback (progress/XP bar tick).
+
 ## 14. Configuration & Secrets (AppConfig)
 - **Method:** Build-time injection via .xcconfig -> Info.plist.
 - **Access:** `AppConfig.geminiAPIKey`.

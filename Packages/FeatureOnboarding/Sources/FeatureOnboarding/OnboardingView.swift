@@ -86,7 +86,7 @@ public struct OnboardingView: View {
             VStack(spacing: MindsetLayout.spacing12) {
                 ForEach(question.options, id: \.self) { option in
                     Button {
-                        HapticManager.impact(.medium)
+                        HapticManager.selection()
                         withAnimation(.easeInOut(duration: 0.35)) {
                             viewModel.selectOption(option)
                         }

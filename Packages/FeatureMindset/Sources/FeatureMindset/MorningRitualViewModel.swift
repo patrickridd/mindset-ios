@@ -109,7 +109,7 @@ public final class MorningRitualViewModel {
     public func submitCurrentAnswer() async {
         guard let prompt = currentPrompt, let answer = answers[prompt.id] else { return }
         
-        HapticManager.impact(.medium) // Feel the "Submit"
+        HapticManager.action()
         isAiThinking = true
         
         do {
@@ -118,7 +118,7 @@ public final class MorningRitualViewModel {
         } catch {
             reflections[prompt.id] = "That's a thoughtful reflection. Keep going!"
         }
-        HapticManager.notification(.success)
+        HapticManager.success()
         isAiThinking = false
     }
     
