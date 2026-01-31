@@ -27,7 +27,7 @@ public struct MorningRitualView: View {
                     .tint(MindsetColors.accentOrange)
                 Spacer()
             } else {
-                VStack(spacing: 0) {
+                VStack(spacing: MindsetLayout.spacing12) {
                     MindsetCloseButton(action: { viewModel.dismiss() })
 
                     // 1. Progress Bar (shared MindsetProgressBar)
@@ -37,7 +37,6 @@ public struct MorningRitualView: View {
                             : Double(viewModel.currentStepIndex + 1) / Double(viewModel.prompts.count)
                     )
                     .animation(.easeInOut(duration: 0.35), value: viewModel.currentStepIndex)
-                    .padding(.vertical)
                     .padding(.horizontal)
                     .frame(maxWidth: .infinity)
                     
