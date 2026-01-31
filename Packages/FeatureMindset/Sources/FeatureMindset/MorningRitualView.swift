@@ -28,9 +28,16 @@ public struct MorningRitualView: View {
                 Spacer()
             } else {
                 VStack(spacing: 0) {
-                    // 1. Static Progress Bar
-                    ritualProgressBar
-                        .padding(.vertical)
+                    // 1. Progress Bar (shared MindsetProgressBar)
+                    MindsetProgressBar(
+                        progress: viewModel.prompts.isEmpty
+                            ? 0
+                            : Double(viewModel.currentStepIndex + 1) / Double(viewModel.prompts.count)
+                    )
+                    .animation(.easeInOut(duration: 0.35), value: viewModel.currentStepIndex)
+                    .padding(.vertical)
+                    .padding(.horizontal)
+                    .frame(maxWidth: .infinity)
                     
                     if viewModel.isLoading {
                         Spacer()
@@ -172,18 +179,6 @@ public struct MorningRitualView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(RoundedRectangle(cornerRadius: MindsetLayout.radiusStandard).fill(MindsetColors.accentOrangeSoft))
         .overlay(RoundedRectangle(cornerRadius: MindsetLayout.radiusStandard).stroke(MindsetColors.stoicSlateSoft, lineWidth: MindsetLayout.borderWidth))
-    }
-    
-    private var ritualProgressBar: some View {
-        HStack {
-            ForEach(0..<viewModel.prompts.count, id: \.self) { index in
-                Capsule()
-                    .fill(index <= viewModel.currentStepIndex ? MindsetColors.accentOrange : MindsetColors.progressInactive)
-                    .frame(height: MindsetLayout.progressBarHeight)
-            }
-        }
-        .padding(.horizontal)
-        .animation(.spring(duration: 0.4, bounce: 0.3), value: viewModel.currentStepIndex)
     }
     
     private var footerButtons: some View {

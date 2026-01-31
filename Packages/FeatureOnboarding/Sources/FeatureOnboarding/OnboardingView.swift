@@ -51,7 +51,7 @@ public struct OnboardingView: View {
                 }
                 .buttonStyle(.plain)
 
-                OnboardingProgressBar(
+                MindsetProgressBar(
                     progress: viewModel.isCalculating
                         ? 1.0
                         : (viewModel.currentStep == 0 ? 0 : Double(viewModel.currentStep) / Double(viewModel.questions.count))
@@ -117,33 +117,6 @@ public struct OnboardingView: View {
                 removal: .move(edge: .leading).combined(with: .opacity)
             )
         )
-    }
-}
-
-// MARK: - Onboarding Progress Bar (custom gradient fill)
-
-private struct OnboardingProgressBar: View {
-    let progress: Double
-
-    var body: some View {
-        GeometryReader { geometry in
-            ZStack(alignment: .leading) {
-                RoundedRectangle(cornerRadius: MindsetLayout.radiusSmall)
-                    .fill(MindsetColors.fillSubtle)
-                    .frame(height: MindsetLayout.progressBarHeight)
-
-                RoundedRectangle(cornerRadius: MindsetLayout.radiusSmall)
-                    .fill(
-                        LinearGradient(
-                            colors: [MindsetColors.accentCoral, MindsetColors.accentOrange],
-                            startPoint: .leading,
-                            endPoint: .trailing
-                        )
-                    )
-                    .frame(width: max(0, geometry.size.width * progress), height: MindsetLayout.progressBarHeight)
-            }
-        }
-        .frame(height: MindsetLayout.progressBarHeight)
     }
 }
 
