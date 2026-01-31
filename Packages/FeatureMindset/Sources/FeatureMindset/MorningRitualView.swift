@@ -156,7 +156,7 @@ public struct MorningRitualView: View {
         .frame(minHeight: 120)
         .padding(12)
         .background(RoundedRectangle(cornerRadius: 15).fill(MindsetColors.backgroundSecondary))
-        .overlay(RoundedRectangle(cornerRadius: 15).stroke(MindsetColors.borderAccent.opacity(0.2), lineWidth: 1))
+        .overlay(RoundedRectangle(cornerRadius: 15).stroke(MindsetColors.stoicSlateSoft, lineWidth: 1))
     }
     
     private func coachTipView(tip: String) -> some View {
@@ -171,6 +171,7 @@ public struct MorningRitualView: View {
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(RoundedRectangle(cornerRadius: 12).fill(MindsetColors.accentOrangeSoft))
+        .overlay(RoundedRectangle(cornerRadius: 12).stroke(MindsetColors.stoicSlateSoft, lineWidth: 1))
     }
     
     private var ritualProgressBar: some View {

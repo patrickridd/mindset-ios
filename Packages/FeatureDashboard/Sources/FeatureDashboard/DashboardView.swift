@@ -104,7 +104,7 @@ public struct DashboardView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Capsule().stroke(MindsetColors.borderAccent.opacity(0.6)))
+        .background(Capsule().stroke(MindsetColors.stoicSlateSoft))
     }
     
     private var statsGrid: some View {

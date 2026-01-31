@@ -157,7 +157,7 @@ private struct CalculatingView: View {
         HStack(spacing: 8) {
             Image(systemName: isComplete ? "checkmark.circle.fill" : "circle.dotted")
                 .font(MindsetFonts.callout)
-                .foregroundStyle(isComplete ? MindsetColors.successGreen : MindsetColors.textMuted)
+                .foregroundStyle(isComplete ? MindsetColors.successEmerald : MindsetColors.textMuted)
 
             Text(text)
                 .foregroundStyle(isComplete ? MindsetColors.textSecondary : MindsetColors.textMuted)

@@ -39,7 +39,7 @@ struct AIReflectionCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 16))
-        .overlay(RoundedRectangle(cornerRadius: 16).stroke(MindsetColors.borderAccent.opacity(0.4), lineWidth: 1))
+        .overlay(RoundedRectangle(cornerRadius: 16).stroke(MindsetColors.stoicSlateSoft, lineWidth: 1))
     }
 }
 

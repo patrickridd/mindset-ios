@@ -56,13 +56,13 @@ public struct RitualSuccessView: View {
                 HStack {
                     Text("Daily Progress")
                     Spacer()
-                    Text("+\(xpEarned) XP").bold().foregroundStyle(MindsetColors.accentOrange)
+                    Text("+\(xpEarned) XP").bold().foregroundStyle(MindsetColors.achievementGold)
                 }
                 .font(MindsetFonts.footnote)
                 .padding(.horizontal)
                 
                 ProgressView(value: progress, total: 100)
-                    .tint(MindsetColors.accentOrange)
+                    .tint(MindsetColors.achievementGold)
                     .scaleEffect(x: 1, y: 2, anchor: .center)
                     .padding(.horizontal)
             }

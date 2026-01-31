@@ -67,13 +67,29 @@ public enum MindsetColors {
     /// Coral gradient start — softer than pure orange
     public static let accentCoral = Color(red: 1.0, green: 0.55, blue: 0.35)
 
-    // MARK: - Success & Calm
+    // MARK: - Success & Growth
 
-    /// Success green — growth, accomplishment, "what went well"
+    /// Success green — bright, growth, accomplishment
     public static let successGreen = Color(red: 0.21, green: 0.87, blue: 0.5)
+
+    /// Primary success — emerald, rich and premium (checkmarks, completion)
+    public static let successEmerald = Color(red: 0.18, green: 0.65, blue: 0.46)
 
     /// Calm teal — low-arousal positivity (optional for reflective screens)
     public static let calmTeal = Color(red: 0.3, green: 0.7, blue: 0.65)
+
+    // MARK: - Stoic Accent
+
+    /// Slate — "Fortress" feel: borders, reflective content, memento mori
+    public static let stoicSlate = Color(red: 0.4, green: 0.42, blue: 0.47)
+
+    /// Softer slate for fills and subtle borders
+    public static let stoicSlateSoft = Color(red: 0.4, green: 0.42, blue: 0.47).opacity(0.3)
+
+    // MARK: - Achievement
+
+    /// Gold — achievement, value, milestone moments (XP, badges)
+    public static let achievementGold = Color(red: 0.78, green: 0.6, blue: 0.2)
 
     // MARK: - UI Elements
 
