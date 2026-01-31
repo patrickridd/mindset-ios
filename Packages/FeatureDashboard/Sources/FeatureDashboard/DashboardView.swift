@@ -44,7 +44,7 @@ public struct DashboardView: View {
                                     Text("Begin Morning Ritual")
                                     Image(systemName: "sparkles")
                                 }
-                                .font(.headline)
+                                .font(MindsetFonts.button)
                                 .foregroundStyle(MindsetColors.textOnAccent)
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 60)
@@ -69,11 +69,11 @@ public struct DashboardView: View {
         private var headerSection: some View {
             VStack(alignment: .leading) {
                 Text("Good Morning,")
-                    .font(.subheadline)
+                    .font(MindsetFonts.subheadline)
                     .foregroundStyle(MindsetColors.textSecondaryAdaptive)
                 // Use the data from Onboarding!
                 Text(viewModel.userProfile?.userName ?? "Visionary")
-                    .font(.largeTitle.bold())
+                    .font(MindsetFonts.screenTitle)
                     .foregroundStyle(MindsetColors.textPrimaryAdaptive)
             }
         }
@@ -81,12 +81,12 @@ public struct DashboardView: View {
         private var identityCard: some View {
             VStack(alignment: .leading, spacing: 15) {
                 Text("CURRENT GOAL")
-                    .font(.caption2.bold())
+                    .font(MindsetFonts.labelUppercase)
                     .tracking(1)
                     .foregroundStyle(MindsetColors.textSecondary)
                 
                 Text(viewModel.userProfile?.primaryGoal ?? "Calibrate Your Mindset")
-                    .font(.title2.bold())
+                    .font(MindsetFonts.promptHeadline)
                     .foregroundStyle(MindsetColors.textPrimary)
             }
             .padding(25)
@@ -99,8 +99,8 @@ public struct DashboardView: View {
     
     private func yesterdayBridge(text: String) -> some View {
         VStack(alignment: .leading) {
-            Text("YESTERDAY'S FOCUS").font(.caption2).bold().foregroundStyle(MindsetColors.accentOrange)
-            Text(text).font(.subheadline).italic().foregroundStyle(MindsetColors.textPrimaryAdaptive).lineLimit(nil)
+            Text("YESTERDAY'S FOCUS").font(MindsetFonts.labelUppercase).foregroundStyle(MindsetColors.accentOrange)
+            Text(text).font(MindsetFonts.subheadline).italic().foregroundStyle(MindsetColors.textPrimaryAdaptive).lineLimit(nil)
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -132,8 +132,8 @@ public struct DashboardView: View {
     private func statBox(title: String, value: String, icon: String, color: Color) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Image(systemName: icon).foregroundStyle(color)
-            Text(value).font(.headline).foregroundStyle(MindsetColors.textPrimaryAdaptive)
-            Text(title).font(.caption).foregroundStyle(MindsetColors.textSecondaryAdaptive)
+            Text(value).font(MindsetFonts.statValue).foregroundStyle(MindsetColors.textPrimaryAdaptive)
+            Text(title).font(MindsetFonts.caption).foregroundStyle(MindsetColors.textSecondaryAdaptive)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()

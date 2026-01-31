@@ -79,7 +79,7 @@ public struct OnboardingView: View {
                 .padding()
 
             Text(question.questionText)
-                .font(.system(size: 28, weight: .medium, design: .serif))
+                .font(MindsetFonts.displayHeadline)
                 .foregroundStyle(MindsetColors.textPrimary)
                 .multilineTextAlignment(.center)
                 .padding()
@@ -90,7 +90,7 @@ public struct OnboardingView: View {
                         viewModel.selectOption(option)
                     } label: {
                         Text(option)
-                            .font(.body.weight(.medium))
+                            .font(MindsetFonts.bodyMedium)
                             .padding(.vertical, 16)
                             .frame(maxWidth: .infinity)
                             .background(
@@ -141,7 +141,7 @@ private struct CalculatingView: View {
             }
 
             Text("Building your Identity Profile...")
-                .font(.headline)
+                .font(MindsetFonts.button)
                 .foregroundStyle(MindsetColors.textSecondary)
 
             VStack(alignment: .leading, spacing: 10) {
@@ -149,14 +149,14 @@ private struct CalculatingView: View {
                 checklistRow("Calibrating Archetypes", isComplete: true)
                 checklistRow("Setting up Yesterday Bridge", isComplete: false)
             }
-            .font(.caption)
+            .font(MindsetFonts.caption)
         }
     }
 
     private func checklistRow(_ text: String, isComplete: Bool) -> some View {
         HStack(spacing: 8) {
             Image(systemName: isComplete ? "checkmark.circle.fill" : "circle.dotted")
-                .font(.callout)
+                .font(MindsetFonts.callout)
                 .foregroundStyle(isComplete ? MindsetColors.successGreen : MindsetColors.textMuted)
 
             Text(text)

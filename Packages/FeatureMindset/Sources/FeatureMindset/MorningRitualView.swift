@@ -90,19 +90,17 @@ public struct MorningRitualView: View {
                 // Prompt Header
                 VStack(spacing: 8) {
                     Text(prompt.category.displayName.uppercased())
-                        .font(.caption2)
-                        .fontWeight(.black)
+                        .font(MindsetFonts.label)
                         .tracking(2)
                         .foregroundStyle(MindsetColors.labelAccent)
                     
                     Text(prompt.headline)
-                        .font(.system(.title2, design: .serif))
-                        .fontWeight(.bold)
+                        .font(MindsetFonts.promptHeadline)
                         .foregroundStyle(MindsetColors.textPrimaryAdaptive)
                 }
                 
                 Text(prompt.questionText)
-                    .font(.body)
+                    .font(MindsetFonts.promptQuestion)
                     .foregroundStyle(MindsetColors.textPrimaryAdaptive)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
@@ -125,7 +123,7 @@ public struct MorningRitualView: View {
                         Task { await viewModel.submitCurrentAnswer() }
                     }) {
                         Label("Get AI Reflection", systemImage: "sparkles")
-                            .font(.subheadline).bold()
+                            .font(MindsetFonts.subheadline.weight(.bold))
                             .foregroundStyle(viewModel.canProceed ? MindsetColors.labelAccent : MindsetColors.textDisabled)
                             .padding(.horizontal, 16)
                             .padding(.vertical, 10)
@@ -164,10 +162,10 @@ public struct MorningRitualView: View {
     private func coachTipView(tip: String) -> some View {
         VStack(alignment: .leading, spacing: 5) {
             Label("Coach Tip", systemImage: "lightbulb.fill")
-                .font(.caption).bold()
+                .font(MindsetFonts.captionBold)
                 .foregroundStyle(MindsetColors.labelAccent)
             Text(tip)
-                .font(.caption)
+                .font(MindsetFonts.caption)
                 .foregroundStyle(MindsetColors.textSecondaryAdaptive)
         }
         .padding()

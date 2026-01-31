@@ -43,12 +43,12 @@ public struct RitualSuccessView: View {
             // 2. Archetype Reveal
             VStack(spacing: 8) {
                 Text("TODAY'S IDENTITY")
-                    .font(.caption2).bold().tracking(2)
+                    .font(MindsetFonts.labelUppercase)
+                    .tracking(2)
                     .foregroundStyle(.secondary)
                 
                 Text(archetype)
-                    .font(.system(.largeTitle, design: .serif))
-                    .bold()
+                    .font(MindsetFonts.displayLarge)
             }
             
             // 3. XP Bar
@@ -58,7 +58,7 @@ public struct RitualSuccessView: View {
                     Spacer()
                     Text("+\(xpEarned) XP").bold().foregroundStyle(MindsetColors.accentOrange)
                 }
-                .font(.footnote)
+                .font(MindsetFonts.footnote)
                 .padding(.horizontal)
                 
                 ProgressView(value: progress, total: 100)

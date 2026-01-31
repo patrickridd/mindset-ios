@@ -44,7 +44,7 @@ public struct PaywallView: View {
                 Button(action: { viewModel.closeButtonTapped() }) {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundStyle(MindsetColors.textMuted)
-                        .font(.title2)
+                        .font(MindsetFonts.title2)
                 }
                 Spacer()
             }
@@ -53,13 +53,12 @@ public struct PaywallView: View {
             // Header
             VStack(spacing: 10) {
                 Text("MINDSET PRO")
-                    .font(.caption)
-                    .fontWeight(.black)
+                    .font(MindsetFonts.labelUppercase)
                     .tracking(3)
                     .foregroundStyle(MindsetColors.accentOrange)
                 
                 Text("Unlock Your Full Potential")
-                    .font(.system(size: 34, weight: .bold, design: .serif))
+                    .font(MindsetFonts.displayLarge)
                     .foregroundStyle(MindsetColors.textPrimary)
                     .multilineTextAlignment(.center)
             }
@@ -80,7 +79,7 @@ public struct PaywallView: View {
             VStack(spacing: 15) {
                 Button(action: { Task { try await viewModel.purchase() } }) {
                     Text("Start 7-Day Free Trial")
-                        .font(.headline)
+                        .font(MindsetFonts.button)
                         .foregroundStyle(.black)
                         .frame(maxWidth: .infinity)
                         .frame(height: 60)
@@ -88,7 +87,7 @@ public struct PaywallView: View {
                 }
 
                 Text("Then $9.99/month. Cancel anytime.")
-                    .font(.caption)
+                    .font(MindsetFonts.caption)
                     .foregroundStyle(MindsetColors.textSecondary)
             }
             .padding(.horizontal, 30)
@@ -100,10 +99,10 @@ public struct PaywallView: View {
         HStack(alignment: .top, spacing: 15) {
             Image(systemName: icon)
                 .foregroundStyle(MindsetColors.accentOrange)
-                .font(.title3)
+                .font(MindsetFonts.featureTitle)
             VStack(alignment: .leading, spacing: 4) {
-                Text(title).fontWeight(.bold).foregroundStyle(MindsetColors.textPrimary)
-                Text(sub).font(.footnote).foregroundStyle(MindsetColors.textSecondary)
+                Text(title).font(MindsetFonts.featureTitle).fontWeight(.bold).foregroundStyle(MindsetColors.textPrimary)
+                Text(sub).font(MindsetFonts.footnote).foregroundStyle(MindsetColors.textSecondary)
             }
         }
     }

@@ -17,7 +17,7 @@ struct AIReflectionCard: View {
                 Image(systemName: "sparkles")
                     .foregroundStyle(MindsetColors.accentOrange)
                 Text("AI REFLECTION")
-                    .font(.caption2).bold()
+                    .font(MindsetFonts.labelUppercase)
                     .tracking(1)
             }
             
@@ -30,7 +30,7 @@ struct AIReflectionCard: View {
                 .shimmer() // We'll add this modifier below
             } else if let reflection = reflection {
                 Text(reflection)
-                    .font(.subheadline)
+                    .font(MindsetFonts.subheadline)
                     .fixedSize(horizontal: false, vertical: true)
                     .transition(.opacity.combined(with: .move(edge: .bottom)))
             }
