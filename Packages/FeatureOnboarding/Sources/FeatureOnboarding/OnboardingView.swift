@@ -36,20 +36,7 @@ public struct OnboardingView: View {
             .ignoresSafeArea()
 
             VStack(alignment: .center) {
-                Button {
-                    viewModel.dismiss()
-                } label: {
-                    HStack {
-                        Spacer()
-                        Image(systemName: "xmark.circle.fill")
-                            .resizable()
-                            .frame(width: MindsetLayout.iconSmall, height: MindsetLayout.iconSmall)
-                            .symbolRenderingMode(.hierarchical)
-                            .foregroundStyle(MindsetColors.textSecondary)
-                            .padding(.trailing)
-                    }
-                }
-                .buttonStyle(.plain)
+                MindsetCloseButton(action: { viewModel.dismiss() })
 
                 MindsetProgressBar(
                     progress: viewModel.isCalculating
