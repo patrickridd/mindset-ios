@@ -12,7 +12,7 @@ struct AIReflectionCard: View {
     let isThinking: Bool
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: MindsetLayout.spacing12) {
             HStack {
                 Image(systemName: "sparkles")
                     .foregroundStyle(MindsetColors.accentOrange)
@@ -23,9 +23,9 @@ struct AIReflectionCard: View {
             
             if isThinking {
                 // Shimmering placeholder logic
-                VStack(alignment: .leading, spacing: 8) {
-                    RoundedRectangle(cornerRadius: 4).fill(.gray.opacity(0.2)).frame(height: 12)
-                    RoundedRectangle(cornerRadius: 4).fill(.gray.opacity(0.2)).frame(height: 12).padding(.trailing, 40)
+                VStack(alignment: .leading, spacing: MindsetLayout.spacing8) {
+                    RoundedRectangle(cornerRadius: MindsetLayout.radiusSmall).fill(.gray.opacity(0.2)).frame(height: MindsetLayout.spacing12)
+                    RoundedRectangle(cornerRadius: MindsetLayout.radiusSmall).fill(.gray.opacity(0.2)).frame(height: MindsetLayout.spacing12).padding(.trailing, MindsetLayout.spacing40)
                 }
                 .shimmer() // We'll add this modifier below
             } else if let reflection = reflection {
@@ -38,8 +38,8 @@ struct AIReflectionCard: View {
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(.ultraThinMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-        .overlay(RoundedRectangle(cornerRadius: 16).stroke(MindsetColors.stoicSlateSoft, lineWidth: 1))
+        .clipShape(RoundedRectangle(cornerRadius: MindsetLayout.radiusCard))
+        .overlay(RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).stroke(MindsetColors.stoicSlateSoft, lineWidth: MindsetLayout.borderWidth))
     }
 }
 

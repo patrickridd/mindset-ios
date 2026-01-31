@@ -57,8 +57,9 @@
   # Design System (SharedUI)
   - **Colors:** Always use `MindsetColors` from SharedUI. Never use raw `Color.orange`, `Color.green`, `.white`, etc. Use semantic tokens: `backgroundGrouped`, `textPrimaryAdaptive`, `accentOrange`, `successGreen`, `stoicSlateSoft`, `achievementGold`, etc.
   - **Fonts:** Always use `MindsetFonts` from SharedUI. Never use raw `.font(.headline)` or `.font(.caption)`. Use semantic tokens: `displayHeadline`, `promptHeadline`, `body`, `label`, `button`, etc.
-  - Feature modules must add SharedUI as a dependency to use MindsetColors and MindsetFonts.
-  - See `Packages/SharedUI/Sources/SharedUI/MindsetColors.swift` and `MindsetFonts.swift` for full token lists. See `Context.md` §13 for usage summary.
+  - **Layout:** Always use `MindsetLayout` from SharedUI for spacing, padding, corner radius, and dimensions. Never use magic numbers (e.g. `spacing: 12`, `.padding(25)`, `cornerRadius: 16`). Use tokens: `MindsetLayout.spacing12`, `MindsetLayout.paddingCard`, `MindsetLayout.radiusCard`, `MindsetLayout.buttonHeight`, etc.
+  - Feature modules must add SharedUI as a dependency to use MindsetColors, MindsetFonts, and MindsetLayout.
+  - See `Packages/SharedUI/Sources/SharedUI/MindsetColors.swift`, `MindsetFonts.swift`, and `MindsetLayout.swift` for full token lists. See `Context.md` §13 for usage summary.
 
   # UI Development
   - SwiftUI first, UIKit when needed

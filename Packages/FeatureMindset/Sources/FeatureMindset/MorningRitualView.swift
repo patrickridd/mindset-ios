@@ -47,11 +47,11 @@ public struct MorningRitualView: View {
                     } else {
                         ScrollViewReader { proxy in
                             ScrollView(.vertical, showsIndicators: false) {
-                                VStack(spacing: 24) {
+                                VStack(spacing: MindsetLayout.spacing24) {
                                     ritualContent
                                     
                                     // Use a specific ID for the spacer to scroll to
-                                    Color.clear.frame(height: 20)
+                                    Color.clear.frame(height: MindsetLayout.bottomSpacerHeight)
                                         .id("bottom-spacer")
                                 }
                                 .padding(.horizontal)
@@ -73,7 +73,7 @@ public struct MorningRitualView: View {
                             .background(
                                 Rectangle()
                                     .fill(.ultraThinMaterial)
-                                    .shadow(color: .black.opacity(0.05), radius: 5, y: -5)
+                                    .shadow(color: .black.opacity(0.05), radius: MindsetLayout.shadowRadius, y: MindsetLayout.shadowY)
                             )
                     }
                 }
@@ -86,9 +86,9 @@ public struct MorningRitualView: View {
     @ViewBuilder
     private var ritualContent: some View {
         if let prompt = viewModel.currentPrompt {
-            VStack(spacing: 24) {
+            VStack(spacing: MindsetLayout.spacing24) {
                 // Prompt Header
-                VStack(spacing: 8) {
+                VStack(spacing: MindsetLayout.spacing8) {
                     Text(prompt.category.displayName.uppercased())
                         .font(MindsetFonts.label)
                         .tracking(2)
@@ -125,10 +125,10 @@ public struct MorningRitualView: View {
                         Label("Get AI Reflection", systemImage: "sparkles")
                             .font(MindsetFonts.subheadline.weight(.bold))
                             .foregroundStyle(viewModel.canProceed ? MindsetColors.labelAccent : MindsetColors.textDisabled)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 10)
+                            .padding(.horizontal, MindsetLayout.paddingStandard)
+                            .padding(.vertical, MindsetLayout.spacing10)
                             .background(
-                                RoundedRectangle(cornerRadius: 12)
+                                RoundedRectangle(cornerRadius: MindsetLayout.radiusStandard)
                                     .fill(viewModel.canProceed ? MindsetColors.accentOrangeSoft : Color.clear)
                             )
                     }
@@ -139,7 +139,7 @@ public struct MorningRitualView: View {
                 // Coach Tip
                 coachTipView(tip: prompt.coachTip)
                 
-                Spacer(minLength: 50)
+                Spacer(minLength: MindsetLayout.spacerBottomMinLength)
             }
             // Transition for "Duolingo" slide effect
             .id(prompt.id)
@@ -153,14 +153,14 @@ public struct MorningRitualView: View {
             set: { viewModel.answers[promptId] = $0 }
         ))
         // Fixed height prevents the "shrinking" issue when keyboard appears
-        .frame(minHeight: 120)
-        .padding(12)
-        .background(RoundedRectangle(cornerRadius: 15).fill(MindsetColors.backgroundSecondary))
-        .overlay(RoundedRectangle(cornerRadius: 15).stroke(MindsetColors.stoicSlateSoft, lineWidth: 1))
+        .frame(minHeight: MindsetLayout.textEditorMinHeight)
+        .padding(MindsetLayout.paddingMedium)
+        .background(RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).fill(MindsetColors.backgroundSecondary))
+        .overlay(RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).stroke(MindsetColors.stoicSlateSoft, lineWidth: MindsetLayout.borderWidth))
     }
     
     private func coachTipView(tip: String) -> some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: MindsetLayout.spacing5) {
             Label("Coach Tip", systemImage: "lightbulb.fill")
                 .font(MindsetFonts.captionBold)
                 .foregroundStyle(MindsetColors.labelAccent)
@@ -170,8 +170,8 @@ public struct MorningRitualView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(RoundedRectangle(cornerRadius: 12).fill(MindsetColors.accentOrangeSoft))
-        .overlay(RoundedRectangle(cornerRadius: 12).stroke(MindsetColors.stoicSlateSoft, lineWidth: 1))
+        .background(RoundedRectangle(cornerRadius: MindsetLayout.radiusStandard).fill(MindsetColors.accentOrangeSoft))
+        .overlay(RoundedRectangle(cornerRadius: MindsetLayout.radiusStandard).stroke(MindsetColors.stoicSlateSoft, lineWidth: MindsetLayout.borderWidth))
     }
     
     private var ritualProgressBar: some View {
@@ -179,7 +179,7 @@ public struct MorningRitualView: View {
             ForEach(0..<viewModel.prompts.count, id: \.self) { index in
                 Capsule()
                     .fill(index <= viewModel.currentStepIndex ? MindsetColors.accentOrange : MindsetColors.progressInactive)
-                    .frame(height: 4)
+                    .frame(height: MindsetLayout.progressBarHeight)
             }
         }
         .padding(.horizontal)
@@ -201,7 +201,7 @@ public struct MorningRitualView: View {
                         viewModel.nextStep()
                     }
                 }) {
-                    HStack(spacing: 10) {
+                    HStack(spacing: MindsetLayout.spacing10) {
                         if isAnalyzing {
                             ProgressView()
                                 .tint(.white)
@@ -218,7 +218,7 @@ public struct MorningRitualView: View {
                     .foregroundStyle(showEnabledStyle ? MindsetColors.textOnAccent : MindsetColors.textDisabled)
                     .padding()
                     .background(
-                        RoundedRectangle(cornerRadius: 14)
+                        RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
                             .fill(showEnabledStyle ? MindsetColors.accentOrange : MindsetColors.buttonDisabledBackground)
                     )
                 }

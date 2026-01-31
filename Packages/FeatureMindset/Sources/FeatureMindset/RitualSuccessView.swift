@@ -24,24 +24,24 @@ public struct RitualSuccessView: View {
     }
 
     public var body: some View {
-        VStack(spacing: 30) {
+        VStack(spacing: MindsetLayout.spacing30) {
             Spacer()
             
             // 1. Hero Icon
             ZStack {
                 Circle()
                     .fill(MindsetColors.accentOrangeSoft)
-                    .frame(width: 160, height: 160)
+                    .frame(width: MindsetLayout.heroCircleSize, height: MindsetLayout.heroCircleSize)
                 
                 Image(systemName: "figure.mindful")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 80)
+                    .frame(width: MindsetLayout.iconLarge)
                     .foregroundStyle(MindsetColors.accentOrange)
             }
             
             // 2. Archetype Reveal
-            VStack(spacing: 8) {
+            VStack(spacing: MindsetLayout.spacing8) {
                 Text("TODAY'S IDENTITY")
                     .font(MindsetFonts.labelUppercase)
                     .tracking(2)
@@ -52,7 +52,7 @@ public struct RitualSuccessView: View {
             }
             
             // 3. XP Bar
-            VStack(spacing: 12) {
+            VStack(spacing: MindsetLayout.spacing12) {
                 HStack {
                     Text("Daily Progress")
                     Spacer()
@@ -67,7 +67,7 @@ public struct RitualSuccessView: View {
                     .padding(.horizontal)
             }
             .padding()
-            .background(RoundedRectangle(cornerRadius: 20).fill(MindsetColors.backgroundSecondary))
+            .background(RoundedRectangle(cornerRadius: MindsetLayout.radiusCardLarge).fill(MindsetColors.backgroundSecondary))
             .padding(.horizontal)
 
             Spacer()

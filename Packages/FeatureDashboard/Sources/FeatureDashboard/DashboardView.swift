@@ -26,7 +26,7 @@ public struct DashboardView: View {
         public var body: some View {
             NavigationStack {
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 25) {
+                    VStack(alignment: .leading, spacing: MindsetLayout.spacing25) {
                         if viewModel.isLoading {
                             ProgressView().padding()
                         } else {
@@ -37,7 +37,7 @@ public struct DashboardView: View {
                             }
                             statsGrid
                             
-                            Spacer(minLength: 40)
+                            Spacer(minLength: MindsetLayout.spacerMinLength)
                             
                             Button(action: viewModel.startMindsetButtonTapped) {
                                 HStack {
@@ -47,7 +47,7 @@ public struct DashboardView: View {
                                 .font(MindsetFonts.button)
                                 .foregroundStyle(MindsetColors.textOnAccent)
                                 .frame(maxWidth: .infinity)
-                                .frame(height: 60)
+                                .frame(height: MindsetLayout.buttonHeight)
                                 .background(Capsule().fill(MindsetColors.accentOrange))
                             }
                             .padding(.horizontal)
@@ -79,7 +79,7 @@ public struct DashboardView: View {
         }
         
         private var identityCard: some View {
-            VStack(alignment: .leading, spacing: 15) {
+            VStack(alignment: .leading, spacing: MindsetLayout.spacing15) {
                 Text("CURRENT GOAL")
                     .font(MindsetFonts.labelUppercase)
                     .tracking(1)
@@ -89,10 +89,10 @@ public struct DashboardView: View {
                     .font(MindsetFonts.promptHeadline)
                     .foregroundStyle(MindsetColors.textPrimary)
             }
-            .padding(25)
+            .padding(MindsetLayout.paddingCard)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(
-                RoundedRectangle(cornerRadius: 24)
+                RoundedRectangle(cornerRadius: MindsetLayout.radiusIdentityCard)
                     .fill(LinearGradient(colors: [MindsetColors.accentCoral, MindsetColors.accentOrange], startPoint: .topLeading, endPoint: .bottomTrailing))
             )
         }
@@ -108,7 +108,7 @@ public struct DashboardView: View {
     }
     
     private var statsGrid: some View {
-        HStack(spacing: 15) {
+        HStack(spacing: MindsetLayout.spacing15) {
             statBox(
                 title: "Streak",
                 value: "\(viewModel.streakCount) Days",
@@ -130,7 +130,7 @@ public struct DashboardView: View {
     }
 
     private func statBox(title: String, value: String, icon: String, color: Color) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: MindsetLayout.spacing10) {
             Image(systemName: icon).foregroundStyle(color)
             Text(value).font(MindsetFonts.statValue).foregroundStyle(MindsetColors.textPrimaryAdaptive)
             Text(title).font(MindsetFonts.caption).foregroundStyle(MindsetColors.textSecondaryAdaptive)
@@ -138,7 +138,7 @@ public struct DashboardView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .background(MindsetColors.backgroundSecondary)
-        .cornerRadius(16)
+        .cornerRadius(MindsetLayout.radiusCard)
     }
 }
 

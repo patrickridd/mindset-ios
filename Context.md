@@ -7,7 +7,7 @@
 - **Domain** (`Packages/Domain`): Entities, Models, Protocols, UseCases, Logic (PromptEngine, PromptLibrary), Services (AIAnalysisService), Mocks, Errors. Pure business logic; no UI, no framework types for persistence.
 - **Data** (`Packages/Data`): `SD*` types — Repositories (SDMindsetRepository, SDUserRepository), Services (GeminiAIService, SDPersistenceService, RevenueCatSubscriptionService), Model (SDMindsetEntry, SDPromptResponse, SDUserProfile), AppConfig.
 - **Feature modules:** FeatureDashboard, FeatureHistory, FeatureMindset, FeatureOnboarding, FeatureSubscription — each has View(s) and ViewModel(s). FeatureMindset has Components (e.g. AIReflectionCard) and Mocks for previews.
-- **Shared:** SharedUI (MindsetColors, MindsetFonts, DebugOverlay), SharedUtils (DebugLogger, HapticManager, InjectionBootstrap).
+- **Shared:** SharedUI (MindsetColors, MindsetFonts, MindsetLayout, DebugOverlay), SharedUtils (DebugLogger, HapticManager, InjectionBootstrap).
 
 ## 1. Goal & Vision
 - **Objective:** Reach $10k MRR by providing premium AI-driven daily Gratitude and Stoic reflections.
@@ -104,7 +104,7 @@
 
 ## 13. Design System (SharedUI)
 
-Use `MindsetColors` and `MindsetFonts` from SharedUI for all Feature views. Never use raw `Color.orange`, `Color.green`, `.font(.headline)` etc. — use semantic tokens for consistency and easy theme updates.
+Use `MindsetColors`, `MindsetFonts`, and `MindsetLayout` from SharedUI for all Feature views. Never use raw colors, fonts, or magic numbers — use semantic tokens for consistency and easy theme updates.
 
 ### MindsetColors
 
@@ -121,6 +121,10 @@ Use `MindsetColors` and `MindsetFonts` from SharedUI for all Feature views. Neve
 ### MindsetFonts
 
 **Display (serif):** `displayHeadline`, `displayLarge`, `promptHeadline` • **Body (sans):** `body`, `promptQuestion`, `bodyMedium`, `subheadline`, `footnote`, `callout` • **Labels:** `label`, `labelUppercase`, `caption`, `captionBold` • **UI:** `button`, `featureTitle`, `title2`, `screenTitle`, `statValue`
+
+### MindsetLayout
+
+**Spacing:** `spacing4`–`spacing40` (VStack/HStack) • **Padding:** `paddingSmall` (8), `paddingMedium` (12), `paddingStandard` (16), `paddingLarge` (20), `paddingCard` (25), `paddingScreenHorizontal` (30) • **Corner radius:** `radiusSmall` (4), `radiusStandard` (12), `radiusButton` (14), `radiusCard` (16), `radiusCardLarge` (20), `radiusIdentityCard` (24) • **Dimensions:** `progressBarHeight`, `buttonHeight`, `iconSmall`, `iconLarge`, `heroCircleSize`, `textEditorMinHeight` • **Other:** `borderWidth`, `shadowRadius`, `glowBlurRadius`
 
 ## 14. Configuration & Secrets (AppConfig)
 - **Method:** Build-time injection via .xcconfig -> Info.plist.

@@ -37,7 +37,7 @@ public struct PaywallView: View {
     }
 
     private var content: some View {
-        VStack(spacing: 25) {
+        VStack(spacing: MindsetLayout.spacing25) {
             // ... Header and Feature List remain the same ...
             // Close Button
             HStack {
@@ -51,7 +51,7 @@ public struct PaywallView: View {
             .padding(.horizontal)
             
             // Header
-            VStack(spacing: 10) {
+            VStack(spacing: MindsetLayout.spacing10) {
                 Text("MINDSET PRO")
                     .font(MindsetFonts.labelUppercase)
                     .tracking(3)
@@ -64,25 +64,25 @@ public struct PaywallView: View {
             }
             
             // Feature List
-            VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: MindsetLayout.spacing20) {
                 featureRow(icon: "sparkles", title: "Daily Identity Archetypes", sub: "Personalized insights based on your ritual.")
                 featureRow(icon: "clock.arrow.2.circlepath", title: "The Yesterday Bridge", sub: "Connect today's goals with yesterday's wins.")
                 featureRow(icon: "cloud.fill", title: "Cross-Platform Sync", sub: "Access your journey on iOS and Android.")
             }
             .padding()
-            .background(RoundedRectangle(cornerRadius: 20).fill(MindsetColors.fillSubtle))
+            .background(RoundedRectangle(cornerRadius: MindsetLayout.radiusCardLarge).fill(MindsetColors.fillSubtle))
             .padding(.horizontal)
             
             Spacer()
             
             // Call to Action
-            VStack(spacing: 15) {
+            VStack(spacing: MindsetLayout.spacing15) {
                 Button(action: { Task { try await viewModel.purchase() } }) {
                     Text("Start 7-Day Free Trial")
                         .font(MindsetFonts.button)
                         .foregroundStyle(.black)
                         .frame(maxWidth: .infinity)
-                        .frame(height: 60)
+                        .frame(height: MindsetLayout.buttonHeight)
                         .background(Capsule().fill(MindsetColors.accentOrange))
                 }
 
@@ -90,17 +90,17 @@ public struct PaywallView: View {
                     .font(MindsetFonts.caption)
                     .foregroundStyle(MindsetColors.textSecondary)
             }
-            .padding(.horizontal, 30)
-            .padding(.bottom, 20)
+            .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
+            .padding(.bottom, MindsetLayout.paddingLarge)
         }
     }
     
     private func featureRow(icon: String, title: String, sub: String) -> some View {
-        HStack(alignment: .top, spacing: 15) {
+        HStack(alignment: .top, spacing: MindsetLayout.spacing15) {
             Image(systemName: icon)
                 .foregroundStyle(MindsetColors.accentOrange)
                 .font(MindsetFonts.featureTitle)
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: MindsetLayout.spacing4) {
                 Text(title).font(MindsetFonts.featureTitle).fontWeight(.bold).foregroundStyle(MindsetColors.textPrimary)
                 Text(sub).font(MindsetFonts.footnote).foregroundStyle(MindsetColors.textSecondary)
             }

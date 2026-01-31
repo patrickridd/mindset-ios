@@ -43,7 +43,7 @@ public struct OnboardingView: View {
                         Spacer()
                         Image(systemName: "xmark.circle.fill")
                             .resizable()
-                            .frame(width: 32, height: 32)
+                            .frame(width: MindsetLayout.iconSmall, height: MindsetLayout.iconSmall)
                             .symbolRenderingMode(.hierarchical)
                             .foregroundStyle(MindsetColors.textSecondary)
                             .padding(.trailing)
@@ -66,7 +66,7 @@ public struct OnboardingView: View {
 
     private var questionContent: some View {
         let question = viewModel.questions[viewModel.currentStep]
-        return VStack(spacing: 40) {
+        return VStack(spacing: MindsetLayout.spacing40) {
             ProgressView(value: Double(viewModel.currentStep + 1), total: Double(viewModel.questions.count))
                 .progressViewStyle(.linear)
                 .tint(
@@ -84,29 +84,29 @@ public struct OnboardingView: View {
                 .multilineTextAlignment(.center)
                 .padding()
 
-            VStack(spacing: 12) {
+            VStack(spacing: MindsetLayout.spacing12) {
                 ForEach(question.options, id: \.self) { option in
                     Button {
                         viewModel.selectOption(option)
                     } label: {
                         Text(option)
                             .font(MindsetFonts.bodyMedium)
-                            .padding(.vertical, 16)
+                            .padding(.vertical, MindsetLayout.paddingStandard)
                             .frame(maxWidth: .infinity)
                             .background(
-                                RoundedRectangle(cornerRadius: 12)
+                                RoundedRectangle(cornerRadius: MindsetLayout.radiusStandard)
                                     .fill(MindsetColors.fillSubtle)
                             )
                             .overlay(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(MindsetColors.borderSubtle, lineWidth: 1)
+                                RoundedRectangle(cornerRadius: MindsetLayout.radiusStandard)
+                                    .stroke(MindsetColors.borderSubtle, lineWidth: MindsetLayout.borderWidth)
                             )
                             .foregroundStyle(MindsetColors.textPrimary)
                     }
                     .buttonStyle(OptionButtonStyle())
                 }
             }
-            .padding(.horizontal, 30)
+            .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
         }
     }
 }
@@ -127,13 +127,13 @@ private struct CalculatingView: View {
     @State private var isPulsing = false
 
     var body: some View {
-        VStack(spacing: 30) {
+        VStack(spacing: MindsetLayout.spacing30) {
             ZStack {
                 // Subtle glow behind spinner
                 Circle()
                     .fill(MindsetColors.accentOrange.opacity(0.15))
-                    .frame(width: 80, height: 80)
-                    .blur(radius: 20)
+                    .frame(width: MindsetLayout.iconLarge, height: MindsetLayout.iconLarge)
+                    .blur(radius: MindsetLayout.glowBlurRadius)
 
                 ProgressView()
                     .tint(MindsetColors.accentOrange)
@@ -144,7 +144,7 @@ private struct CalculatingView: View {
                 .font(MindsetFonts.button)
                 .foregroundStyle(MindsetColors.textSecondary)
 
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: MindsetLayout.spacing10) {
                 checklistRow("Analyzing goals", isComplete: true)
                 checklistRow("Calibrating Archetypes", isComplete: true)
                 checklistRow("Setting up Yesterday Bridge", isComplete: false)
@@ -154,7 +154,7 @@ private struct CalculatingView: View {
     }
 
     private func checklistRow(_ text: String, isComplete: Bool) -> some View {
-        HStack(spacing: 8) {
+        HStack(spacing: MindsetLayout.spacing8) {
             Image(systemName: isComplete ? "checkmark.circle.fill" : "circle.dotted")
                 .font(MindsetFonts.callout)
                 .foregroundStyle(isComplete ? MindsetColors.successEmerald : MindsetColors.textMuted)

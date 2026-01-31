@@ -36,7 +36,7 @@ public struct MindsetHistoryView: View {
     }
     
     private func historyRow(for entry: MindsetEntry) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: MindsetLayout.spacing12) {
             HStack {
                 Text(entry.date.formatted(date: .abbreviated, time: .omitted))
                     .font(MindsetFonts.captionBold)
@@ -44,8 +44,8 @@ public struct MindsetHistoryView: View {
                 Spacer()
                 Text(entry.archetypeTag ?? "")
                     .font(MindsetFonts.label)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
+                    .padding(.horizontal, MindsetLayout.paddingSmall)
+                    .padding(.vertical, MindsetLayout.spacing4)
                     .background(Capsule().fill(MindsetColors.accentOrangeSoft))
                     .foregroundStyle(MindsetColors.accentOrange)
             }
@@ -59,7 +59,7 @@ public struct MindsetHistoryView: View {
                     .lineLimit(2)
             }
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, MindsetLayout.paddingSmall)
     }
 }
 
