@@ -49,14 +49,23 @@
 | **Gamification** | XP, archetype building, weekly summaries, animations, haptics, sound |
 | **Engagement** | Progress visualization (Zen garden / dashboard representation) |
 
-## 4. Tech Stack (2026 Standards)
+## 4. Onboarding & Auth Flow (Product Decision)
+
+**Order: Quiz first, login after.**
+
+- User completes the 5-question quiz and sees "Building your Identity Profile..." (investment, no friction).
+- Login (Sign in with Apple / optional email) is requested *after* the quiz, as the bridge to save their profile and unlock the app.
+- Paywall follows login: Quiz → Login → Paywall → Main App.
+- Rationale: Duolingo-style value-first, lower drop-off, stronger conversion moment when users are already invested.
+
+## 5. Tech Stack (2026 Standards)
 - **UI:** SwiftUI (latest) using `@Observable` and `Swift Concurrency`.
 - **AI:** Gemini 2.0 Flash (`GoogleGenerativeAI`).
 - **Data:** SwiftData for persistence.
 - **Architecture:** Modular (Domain, Data, Feature modules).
 - **Navigation:** Coordinator Pattern.
 
-## 5. Critical Build Configurations
+## 6. Critical Build Configurations
 - **Hot Reload:** InjectionIII is configured (must use GitHub version, NOT App Store version).
 - **Flags:**
   - Other Linker Flags: `-Wl,-interposable`
@@ -64,36 +73,36 @@
   - User-Defined: `SWIFT_MODULE_CACHE_PATH` points to `$(DERIVED_DATA_DIR)/ModuleCache.noindex`
 - **Note:** The `-Xfrontend -interposable` flag does NOT work (unknown argument error). Only the linker flag `-Wl,-interposable` is needed.
 
-## 6. Current Task
+## 7. Current Task
 - Implementing `GeminiAIService` in the Data module.
 - Setting up the Dashboard to display AI-generated insights.
 
-## 7. Build Configuration
+## 8. Build Configuration
 - **Hot Reload:** InjectionIII via `-Wl,-interposable` in Other Linker Flags.
 - **Note:** Do NOT use `-Xfrontend -interposable` (causes unknown argument error). The linker flag alone is sufficient.
 
-## 8. Build Troubleshooting
+## 9. Build Troubleshooting
 - **Error:** "Unknown argument: '-interposable'"
 - **Solution:** Do NOT use `-Xfrontend -interposable` in Swift Flags. Only use `-Wl,-interposable` in Other Linker Flags.
 - **Error:** "cannot get default cache directory" during hot reload
 - **Solution:** Use the GitHub version of InjectionIII (not the App Store version). The App Store version runs in a sandbox that prevents access to the Swift compiler's cache directories. Download from: https://github.com/johnno1962/InjectionIII/releases
 
-## 9. Project Location
+## 10. Project Location
 - **Root Path:** ~/Developer/mindset-ios/
 - **Note:** Always ensure terminal commands are run from this root to maintain Git and InjectionIII connectivity.
 
-## 10. Hot Reload Stability (2026 Update)
+## 11. Hot Reload Stability (2026 Update)
 - **App Version:** Use the GitHub release of InjectionIII (https://github.com/johnno1962/InjectionIII/releases), NOT the App Store version. The App Store version's sandbox causes "cannot get default cache directory" errors.
 - **Flag Fix:** Use `-Xfrontend -disable-batch-mode` in Other Swift Flags.
 - **Cache Fix:** User-Defined `SWIFT_MODULE_CACHE_PATH` set to `$(DERIVED_DATA_DIR)/ModuleCache.noindex`.
 - **Permission:** InjectionIII REQUIRES "Full Disk Access" in System Settings > Privacy & Security.
 
-## 11. AI Integration
+## 12. AI Integration
 - **Provider:** Google Gemini 2.0 Flash.
 - **Service:** `GeminiAIService`.
 - **Security:** Do NOT hardcode API Keys. Use `ProcessInfo.processInfo.environment` or a secure `Config.plist` that is gitignored.
 
-## 12. Configuration & Secrets (AppConfig)
+## 13. Configuration & Secrets (AppConfig)
 - **Method:** Build-time injection via .xcconfig -> Info.plist.
 - **Access:** `AppConfig.geminiAPIKey`.
 - **Git Safety:** Config.config file is gitignored; contains the source `GEMINI_API_KEY`.
