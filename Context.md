@@ -126,6 +126,10 @@ Use `MindsetColors`, `MindsetFonts`, and `MindsetLayout` from SharedUI for all F
 
 **Spacing:** `spacing4`–`spacing40` (VStack/HStack) • **Padding:** `paddingSmall` (8), `paddingMedium` (12), `paddingStandard` (16), `paddingLarge` (20), `paddingCard` (25), `paddingScreenHorizontal` (30) • **Corner radius:** `radiusSmall` (4), `radiusStandard` (12), `radiusButton` (14), `radiusCard` (16), `radiusCardLarge` (20), `radiusIdentityCard` (24) • **Dimensions:** `progressBarHeight`, `buttonHeight`, `iconSmall`, `iconLarge`, `heroCircleSize`, `textEditorMinHeight` • **Other:** `borderWidth`, `shadowRadius`, `glowBlurRadius`
 
+### DismissButton (SharedUI)
+
+Use **`DismissButton(action: { ... })`** from SharedUI for closing/dismissing modals and full-screen flows (e.g. onboarding, morning ritual). It renders a top-right X with design-system styling; pass your dismiss callback (e.g. `viewModel.dismiss()` or coordinator callback) so behavior stays consistent across the app.
+
 ### Haptics (SharedUtils HapticManager)
 
 Use the **semantic** APIs for consistency. Prefer these over raw `impact(_:)` / `notification(_:)`:
