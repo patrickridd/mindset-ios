@@ -86,11 +86,6 @@ public struct MorningRitualView: View {
     private var ritualContent: some View {
         if let prompt = viewModel.currentPrompt {
             VStack(spacing: 24) {
-                // Yesterday Bridge
-                if viewModel.currentStepIndex == 0, let yesterday = viewModel.yesterdayGoal {
-                    yesterdayBridge(text: yesterday)
-                }
-                
                 // Prompt Header
                 VStack(spacing: 8) {
                     Text(prompt.category.displayName.uppercased())
@@ -169,15 +164,6 @@ public struct MorningRitualView: View {
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(RoundedRectangle(cornerRadius: 12).fill(Color.orange.opacity(0.05)))
-    }
-    
-    private func yesterdayBridge(text: String) -> some View {
-        VStack(alignment: .leading) {
-            Text("YESTERDAY'S FOCUS").font(.caption2).bold().foregroundStyle(.orange)
-            Text(text).font(.subheadline).italic().lineLimit(2)
-        }
-        .padding()
-        .background(Capsule().stroke(Color.orange.opacity(0.3)))
     }
     
     private var ritualProgressBar: some View {

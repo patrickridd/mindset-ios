@@ -31,6 +31,9 @@ public struct DashboardView: View {
                         } else {
                             headerSection
                             identityCard
+                            if let yesterday = viewModel.yesterdayGoal {
+                                yesterdayBridge(text: yesterday)
+                            }
                             statsGrid
                             
                             Spacer(minLength: 40)
@@ -92,6 +95,16 @@ public struct DashboardView: View {
             )
         }
     
+    private func yesterdayBridge(text: String) -> some View {
+        VStack(alignment: .leading) {
+            Text("YESTERDAY'S FOCUS").font(.caption2).bold().foregroundStyle(.orange)
+            Text(text).font(.subheadline).italic().lineLimit(nil)
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Capsule().stroke(Color.orange.opacity(0.3)))
+    }
+    
     private var statsGrid: some View {
         HStack(spacing: 15) {
             statBox(
@@ -133,6 +146,7 @@ public struct DashboardView: View {
         userRepository: MockUserRepository(),
         mindsetRepository: mindSetReposoitory,
         getStreakUseCase: GetStreakUseCase(repository: mindSetReposoitory),
+        getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase(repository: mindSetReposoitory),
         onStartMindet: {},
         onSeeHistory: {})
     return DashboardView(viewModel: viewModel)

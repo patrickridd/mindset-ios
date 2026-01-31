@@ -15,7 +15,6 @@ import Observation
 public final class MorningRitualViewModel {
     // Dependencies
     private let addMindsetUseCase: AddMindsetUseCase
-    private let getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase
     private let userRepository: UserRepository
     private let subscriptionService: SubscriptionService
     private let promptEngine = PromptEngine()
@@ -31,7 +30,6 @@ public final class MorningRitualViewModel {
     
     // UI State
     public var isLoading: Bool = false
-    public var yesterdayGoal: String?
     public var isShowingPaywall: Bool = false
     public var onNavigate: ((NavigationState) -> Void)?
     
@@ -53,14 +51,12 @@ public final class MorningRitualViewModel {
     public init(
         userRepository: UserRepository,
         addMindsetUseCase: AddMindsetUseCase,
-        getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase,
         subscriptionService: SubscriptionService,
         aiService: AIAnalysisService,
         onNavigate: ((NavigationState) -> Void)?
     ) {
         self.userRepository = userRepository
         self.addMindsetUseCase = addMindsetUseCase
-        self.getYesterdayBridgeUseCase = getYesterdayBridgeUseCase
         self.subscriptionService = subscriptionService
         self.aiService = aiService
         self.onNavigate = onNavigate
@@ -83,9 +79,6 @@ public final class MorningRitualViewModel {
             
             // Assigning to self.prompts triggers the UI update
             self.prompts = newPrompts
-            
-            let bridgeResult = try await getYesterdayBridgeUseCase.execute()
-            self.yesterdayGoal = bridgeResult ?? "Yesterday was a great start. Ready to go again?"
         } catch {
             print("Setup failed: \(error)")
             self.prompts = promptEngine.fetchPrompts(for: nil, completedCount: 0)

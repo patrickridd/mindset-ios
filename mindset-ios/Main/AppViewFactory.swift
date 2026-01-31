@@ -53,6 +53,7 @@ struct AppViewFactory: MainViewFactory {
             userRepository: userRepository,
             mindsetRepository: mindsetRepository,
             getStreakUseCase: getStreakUseCase,
+            getYesterdayBridgeUseCase: getYesterdayBridgeUseCase,
             onStartMindet: {
                 coordinator.startMorningMindset()
             }, onSeeHistory: {
@@ -74,7 +75,6 @@ struct AppViewFactory: MainViewFactory {
         let viewModel = MorningRitualViewModel(
             userRepository: userRepository,
             addMindsetUseCase: addMindsetUseCase,
-            getYesterdayBridgeUseCase: getYesterdayBridgeUseCase,
             subscriptionService: subscriptionService,
             aiService: aiService,
             onNavigate: { state in

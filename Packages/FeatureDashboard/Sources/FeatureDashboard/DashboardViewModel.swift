@@ -16,9 +16,11 @@ public final class DashboardViewModel {
     private let userRepository: UserRepository
     private let mindsetRepository: MindsetRepository
     private let getStreakUseCase: GetStreakUseCase
+    private let getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase
     
     // UI State
     public var userProfile: UserProfile?
+    public var yesterdayGoal: String?
     public var recentEntries: [MindsetEntry] = []
     public var isLoading = false
     public var streakCount: Int = 0 // Initialized to 0, fetched from UseCase
@@ -38,12 +40,14 @@ public final class DashboardViewModel {
         userRepository: UserRepository,
         mindsetRepository: MindsetRepository,
         getStreakUseCase: GetStreakUseCase,
+        getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase,
         onStartMindet: @escaping () -> Void,
         onSeeHistory: @escaping () -> Void
     ) {
         self.userRepository = userRepository
         self.mindsetRepository = mindsetRepository
         self.getStreakUseCase = getStreakUseCase
+        self.getYesterdayBridgeUseCase = getYesterdayBridgeUseCase
         self.onStartMindet = onStartMindet
         self.onSeeHistory = onSeeHistory
     }
@@ -67,6 +71,10 @@ public final class DashboardViewModel {
             // 4. Calculate the current streak using our dedicated UseCase
             // This handles the "today vs yesterday" logic automatically
             self.streakCount = try await getStreakUseCase.execute()
+            
+            // 5. Fetch Yesterday Bridge (last goal-oriented response)
+            let bridgeResult = try await getYesterdayBridgeUseCase.execute()
+            self.yesterdayGoal = bridgeResult ?? "Yesterday was a great start. Ready to go again?"
             
         } catch {
             print("Dashboard load failed: \(error)")
