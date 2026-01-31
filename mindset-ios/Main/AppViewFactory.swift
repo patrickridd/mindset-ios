@@ -21,7 +21,7 @@ struct AppViewFactory: MainViewFactory {
     let mindsetRepository: MindsetRepository
     let getStreakUseCase: GetStreakUseCase
     let addMindsetUseCase: AddMindsetUseCase
-    let getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase
+    let getYesterdayGoalUseCase: GetYesterdayGoalUseCase
     let subscriptionService: SubscriptionService
     
     func makeOnboardingView() -> AnyView {
@@ -53,7 +53,7 @@ struct AppViewFactory: MainViewFactory {
             userRepository: userRepository,
             mindsetRepository: mindsetRepository,
             getStreakUseCase: getStreakUseCase,
-            getYesterdayBridgeUseCase: getYesterdayBridgeUseCase,
+            getYesterdayGoalUseCase: getYesterdayGoalUseCase,
             onStartMindet: {
                 coordinator.startMorningMindset()
             }, onSeeHistory: {

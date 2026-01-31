@@ -1,5 +1,5 @@
 //
-//  GetYesterdayBridgeUseCase.swift
+//  GetYesterdayGoalUseCase.swift
 //  Domain
 //
 //  Created by patrick ridd on 1/6/26.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct GetYesterdayBridgeUseCase: Sendable {
+public struct GetYesterdayGoalUseCase: Sendable {
     private let repository: MindsetRepository
     
     public init(repository: MindsetRepository) {

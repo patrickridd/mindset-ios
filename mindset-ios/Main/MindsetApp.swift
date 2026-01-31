@@ -28,7 +28,7 @@ struct MindsetApp: App {
     /// Use Cases
     let getStreakUseCase: GetStreakUseCase
     let addMindsetUseCase: AddMindsetUseCase
-    let getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase
+    let getYesterdayGoalUseCase: GetYesterdayGoalUseCase
     
     /// Services
     let subscriptionService: SubscriptionService
@@ -50,7 +50,7 @@ struct MindsetApp: App {
         // 4. Level 4: Business Logic (Use Case)
         getStreakUseCase = GetStreakUseCase(repository: mindsetRepository)
         addMindsetUseCase = AddMindsetUseCase(repository: mindsetRepository)
-        getYesterdayBridgeUseCase = GetYesterdayBridgeUseCase(repository: mindsetRepository)
+        getYesterdayGoalUseCase = GetYesterdayGoalUseCase(repository: mindsetRepository)
 
         subscriptionService = RevenueCatSubscriptionService()
         
@@ -69,7 +69,7 @@ struct MindsetApp: App {
             mindsetRepository: mindsetRepository,
             getStreakUseCase: getStreakUseCase,
             addMindsetUseCase: addMindsetUseCase,
-            getYesterdayBridgeUseCase: getYesterdayBridgeUseCase,
+            getYesterdayGoalUseCase: getYesterdayGoalUseCase,
             subscriptionService: subscriptionService
         )
     }

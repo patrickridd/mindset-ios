@@ -146,7 +146,7 @@ public struct DashboardView: View {
         userRepository: MockUserRepository(),
         mindsetRepository: mindSetReposoitory,
         getStreakUseCase: GetStreakUseCase(repository: mindSetReposoitory),
-        getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase(repository: mindSetReposoitory),
+        getYesterdayGoalUseCase: GetYesterdayGoalUseCase(repository: mindSetReposoitory),
         onStartMindet: {},
         onSeeHistory: {})
     return DashboardView(viewModel: viewModel)

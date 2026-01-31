@@ -16,7 +16,7 @@ public final class DashboardViewModel {
     private let userRepository: UserRepository
     private let mindsetRepository: MindsetRepository
     private let getStreakUseCase: GetStreakUseCase
-    private let getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase
+    private let getYesterdayGoalUseCase: GetYesterdayGoalUseCase
     
     // UI State
     public var userProfile: UserProfile?
@@ -40,14 +40,14 @@ public final class DashboardViewModel {
         userRepository: UserRepository,
         mindsetRepository: MindsetRepository,
         getStreakUseCase: GetStreakUseCase,
-        getYesterdayBridgeUseCase: GetYesterdayBridgeUseCase,
+        getYesterdayGoalUseCase: GetYesterdayGoalUseCase,
         onStartMindet: @escaping () -> Void,
         onSeeHistory: @escaping () -> Void
     ) {
         self.userRepository = userRepository
         self.mindsetRepository = mindsetRepository
         self.getStreakUseCase = getStreakUseCase
-        self.getYesterdayBridgeUseCase = getYesterdayBridgeUseCase
+        self.getYesterdayGoalUseCase = getYesterdayGoalUseCase
         self.onStartMindet = onStartMindet
         self.onSeeHistory = onSeeHistory
     }
@@ -73,7 +73,7 @@ public final class DashboardViewModel {
             self.streakCount = try await getStreakUseCase.execute()
             
             // 5. Fetch Yesterday Bridge (last goal-oriented response)
-            let bridgeResult = try await getYesterdayBridgeUseCase.execute()
+            let bridgeResult = try await getYesterdayGoalUseCase.execute()
             self.yesterdayGoal = bridgeResult ?? "Yesterday was a great start. Ready to go again?"
             
         } catch {
