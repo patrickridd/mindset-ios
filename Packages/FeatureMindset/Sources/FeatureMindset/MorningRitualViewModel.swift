@@ -37,7 +37,8 @@ public final class MorningRitualViewModel {
     public var earnedXP: Int = 0
     public var generatedArchetype: String = "The Explorer"
     public var isShowingSuccess: Bool = false
-    
+    private var onDismiss: (() -> Void)?
+
     public var currentAiReflection: String? {
         guard let id = currentPrompt?.id else { return nil }
         return reflections[id]
@@ -53,15 +54,21 @@ public final class MorningRitualViewModel {
         addMindsetUseCase: AddMindsetUseCase,
         subscriptionService: SubscriptionService,
         aiService: AIAnalysisService,
-        onNavigate: ((NavigationState) -> Void)?
+        onNavigate: ((NavigationState) -> Void)?,
+        onDismiss: (() -> Void)? = nil
     ) {
         self.userRepository = userRepository
         self.addMindsetUseCase = addMindsetUseCase
         self.subscriptionService = subscriptionService
         self.aiService = aiService
         self.onNavigate = onNavigate
-        
+        self.onDismiss = onDismiss
+
         Task { await prepareRitual() }
+    }
+
+    public func dismiss() {
+        onDismiss?()
     }
 
     private func prepareRitual() async {

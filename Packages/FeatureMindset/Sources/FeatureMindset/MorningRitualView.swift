@@ -28,6 +28,22 @@ public struct MorningRitualView: View {
                 Spacer()
             } else {
                 VStack(spacing: 0) {
+                    // Dismiss button (top right, above progress bar)
+                    Button {
+                        viewModel.dismiss()
+                    } label: {
+                        HStack {
+                            Spacer()
+                            Image(systemName: "xmark.circle.fill")
+                                .resizable()
+                                .frame(width: MindsetLayout.iconSmall, height: MindsetLayout.iconSmall)
+                                .symbolRenderingMode(.hierarchical)
+                                .foregroundStyle(MindsetColors.textSecondary)
+                                .padding(.trailing)
+                        }
+                    }
+                    .buttonStyle(.plain)
+
                     // 1. Progress Bar (shared MindsetProgressBar)
                     MindsetProgressBar(
                         progress: viewModel.prompts.isEmpty

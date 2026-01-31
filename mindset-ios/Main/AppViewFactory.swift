@@ -84,7 +84,8 @@ struct AppViewFactory: MainViewFactory {
                 case .paywall:
                     coordinator.showPaywall()
                 }
-            })
+            },
+            onDismiss: { coordinator.showHomeView() })
 
         return AnyView(
             MorningRitualView(viewModel: viewModel)
