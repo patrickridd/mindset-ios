@@ -1,5 +1,5 @@
 //
-//  MindsetCloseButton.swift
+//  DismissButton.swift
 //  SharedUI
 //
 //  Reusable top-right close/dismiss button. Use in modals and full-screen flows (onboarding, ritual).
@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-/// A close button (X) aligned to the trailing edge, using design-system styling.
-public struct MindsetCloseButton: View {
+/// A dismiss button (X) aligned to the trailing edge, using design-system styling.
+public struct DismissButton: View {
     let action: () -> Void
 
     public init(action: @escaping () -> Void) {

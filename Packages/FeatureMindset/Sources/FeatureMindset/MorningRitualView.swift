@@ -28,7 +28,7 @@ public struct MorningRitualView: View {
                 Spacer()
             } else {
                 VStack(spacing: MindsetLayout.spacing12) {
-                    MindsetCloseButton(action: { viewModel.dismiss() })
+                    DismissButton(action: { viewModel.dismiss() })
 
                     // 1. Progress Bar (shared MindsetProgressBar)
                     MindsetProgressBar(

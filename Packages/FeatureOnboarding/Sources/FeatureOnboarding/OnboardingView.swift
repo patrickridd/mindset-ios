@@ -36,7 +36,7 @@ public struct OnboardingView: View {
             .ignoresSafeArea()
 
             VStack(alignment: .center, spacing: MindsetLayout.spacing12) {
-                MindsetCloseButton(action: { viewModel.dismiss() })
+                DismissButton(action: { viewModel.dismiss() })
 
                 MindsetProgressBar(
                     progress: viewModel.isCalculating
