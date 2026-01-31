@@ -30,11 +30,11 @@ public struct DebugOverlay: ViewModifier {
                             .contentShape(Circle())
                     }
                     .buttonStyle(.plain)
-                    .frame(minWidth: 44, minHeight: 44)
+                    .frame(minWidth: MindsetLayout.iconMedium, minHeight: MindsetLayout.iconMedium)
 
                     if isExpanded {
                         ScrollView {
-                            LazyVStack(alignment: .leading, spacing: 8) {
+                            LazyVStack(alignment: .leading, spacing: MindsetLayout.spacing8) {
                                 ForEach(logger.logs, id: \.self) { log in
                                     Text(log)
                                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -42,19 +42,19 @@ public struct DebugOverlay: ViewModifier {
                                         .multilineTextAlignment(.leading)
                                         .font(.system(size: 10, design: .monospaced))
                                         .foregroundColor(.primary)
-                                        .padding(6)
+                                        .padding(MindsetLayout.paddingSmall)
                                         .background(Color.primary.opacity(0.05))
-                                        .cornerRadius(4)
+                                        .cornerRadius(MindsetLayout.radiusSmall)
                                         .frame(maxHeight: 200)
                                 }
                             }
-                            .padding(8)
+                            .padding(MindsetLayout.paddingSmall)
                         }
                         .frame(maxHeight: 200)
                         .frame(maxWidth: 320)
                         .background(.ultraThinMaterial)
-                        .cornerRadius(12)
-                        .padding(.top, 4)
+                        .cornerRadius(MindsetLayout.radiusStandard)
+                        .padding(.top, MindsetLayout.spacing4)
                         .padding(.leading, 0)
                         .transition(.asymmetric(
                             insertion: .opacity.combined(with: .move(edge: .top)),
@@ -62,8 +62,8 @@ public struct DebugOverlay: ViewModifier {
                         ))
                     }
                 }
-                .padding(.leading, UIScreen.main.bounds.width/2 - 8)
-                .padding(.top, -16)
+                .padding(.leading, MindsetLayout.paddingMedium)
+                .padding(.top, -MindsetLayout.spacing8)
                 .allowsHitTesting(true)
             }
         #else
