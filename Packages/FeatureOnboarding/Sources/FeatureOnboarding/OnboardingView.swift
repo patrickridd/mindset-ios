@@ -51,6 +51,16 @@ public struct OnboardingView: View {
                 }
                 .buttonStyle(.plain)
 
+                OnboardingProgressBar(
+                    progress: viewModel.isCalculating
+                        ? 1.0
+                        : (viewModel.currentStep == 0 ? 0 : Double(viewModel.currentStep) / Double(viewModel.questions.count))
+                )
+                .animation(.easeInOut(duration: 0.35), value: viewModel.currentStep)
+                .animation(.easeInOut(duration: 0.5), value: viewModel.isCalculating)
+                .padding(.horizontal)
+                .frame(maxWidth: .infinity)
+
                 if viewModel.isCalculating {
                     CalculatingView()
                 } else {
@@ -67,17 +77,6 @@ public struct OnboardingView: View {
     private var questionContent: some View {
         let question = viewModel.questions[viewModel.currentStep]
         return VStack(spacing: MindsetLayout.spacing40) {
-            ProgressView(value: Double(viewModel.currentStep + 1), total: Double(viewModel.questions.count))
-                .progressViewStyle(.linear)
-                .tint(
-                    LinearGradient(
-                        colors: [MindsetColors.accentCoral, MindsetColors.accentOrange],
-                        startPoint: .leading,
-                        endPoint: .trailing
-                    )
-                )
-                .padding()
-
             Text(question.questionText)
                 .font(MindsetFonts.displayHeadline)
                 .foregroundStyle(MindsetColors.textPrimary)
@@ -87,7 +86,10 @@ public struct OnboardingView: View {
             VStack(spacing: MindsetLayout.spacing12) {
                 ForEach(question.options, id: \.self) { option in
                     Button {
-                        viewModel.selectOption(option)
+                        HapticManager.impact(.medium)
+                        withAnimation(.easeInOut(duration: 0.35)) {
+                            viewModel.selectOption(option)
+                        }
                     } label: {
                         Text(option)
                             .font(MindsetFonts.bodyMedium)
@@ -108,6 +110,40 @@ public struct OnboardingView: View {
             }
             .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
         }
+        .id(viewModel.currentStep)
+        .transition(
+            .asymmetric(
+                insertion: .move(edge: .trailing).combined(with: .opacity),
+                removal: .move(edge: .leading).combined(with: .opacity)
+            )
+        )
+    }
+}
+
+// MARK: - Onboarding Progress Bar (custom gradient fill)
+
+private struct OnboardingProgressBar: View {
+    let progress: Double
+
+    var body: some View {
+        GeometryReader { geometry in
+            ZStack(alignment: .leading) {
+                RoundedRectangle(cornerRadius: MindsetLayout.radiusSmall)
+                    .fill(MindsetColors.fillSubtle)
+                    .frame(height: MindsetLayout.progressBarHeight)
+
+                RoundedRectangle(cornerRadius: MindsetLayout.radiusSmall)
+                    .fill(
+                        LinearGradient(
+                            colors: [MindsetColors.accentCoral, MindsetColors.accentOrange],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .frame(width: max(0, geometry.size.width * progress), height: MindsetLayout.progressBarHeight)
+            }
+        }
+        .frame(height: MindsetLayout.progressBarHeight)
     }
 }
 
