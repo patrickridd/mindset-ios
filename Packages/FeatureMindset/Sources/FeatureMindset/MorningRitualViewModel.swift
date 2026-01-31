@@ -6,7 +6,6 @@
 //
 
 import Domain
-import SharedUtils
 import Foundation
 import Observation
 
@@ -115,17 +114,15 @@ public final class MorningRitualViewModel {
 
     public func submitCurrentAnswer() async {
         guard let prompt = currentPrompt, let answer = answers[prompt.id] else { return }
-        
-        HapticManager.action()
+
         isAiThinking = true
-        
+
         do {
             let reflection = try await aiService.generateFeedback(for: prompt, answer: answer)
             reflections[prompt.id] = reflection // Save reflection for this specific prompt
         } catch {
             reflections[prompt.id] = "That's a thoughtful reflection. Keep going!"
         }
-        HapticManager.success()
         isAiThinking = false
     }
     

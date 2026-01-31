@@ -7,6 +7,7 @@
 
 import Domain
 import SharedUI
+import SharedUtils
 import SwiftUI
 
 public struct MorningRitualView: View {
@@ -64,12 +65,14 @@ public struct MorningRitualView: View {
                                 }
                                 .padding(.horizontal)
                             }
-                            .onChange(of: viewModel.isAiThinking) { _, thinking in
-                                if thinking {
+                            .onChange(of: viewModel.isAiThinking) { oldValue, newValue in
+                                if newValue {
                                     // Delay slightly to allow keyboard/AI card to animate in
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                         withAnimation { proxy.scrollTo("bottom-spacer", anchor: .bottom) }
                                     }
+                                } else if oldValue == true {
+                                    HapticManager.success()
                                 }
                             }
                         }
@@ -128,6 +131,7 @@ public struct MorningRitualView: View {
                 // Feedback Trigger
                 if !viewModel.isAiThinking && viewModel.currentAiReflection == nil {
                     Button(action: {
+                        HapticManager.action()
                         Task { await viewModel.submitCurrentAnswer() }
                     }) {
                         Label("Get AI Reflection", systemImage: "sparkles")

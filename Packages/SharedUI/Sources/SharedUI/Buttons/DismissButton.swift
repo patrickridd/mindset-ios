@@ -5,6 +5,7 @@
 //  Reusable top-right close/dismiss button. Use in modals and full-screen flows (onboarding, ritual).
 //
 
+import SharedUtils
 import SwiftUI
 
 /// A dismiss button (X) aligned to the trailing edge, using design-system styling.
@@ -16,7 +17,10 @@ public struct DismissButton: View {
     }
 
     public var body: some View {
-        Button(action: action) {
+        Button(action: {
+            HapticManager.selection()
+            action()
+        }) {
             HStack {
                 Spacer()
                 Image(systemName: "xmark.circle.fill")

@@ -34,6 +34,7 @@
   - Use MVVM architecture with SwiftUI
   - Structure: Features/, Core/, UI/, Resources/
   - Follow Apple's Human Interface Guidelines
+  - **ViewModels stay clean:** ViewModels hold state and business logic only. Do not use HapticManager, UI types (Color, Font, View), or animation APIs in ViewModels—Views own haptics, animations, and visual feedback. ViewModels must not import SharedUtils for HapticManager; only Views call HapticManager when handling user actions or observing state.
 
   
   # Naming
@@ -60,6 +61,7 @@
   - **Layout:** Always use `MindsetLayout` from SharedUI for spacing, padding, corner radius, and dimensions. Never use magic numbers (e.g. `spacing: 12`, `.padding(25)`, `cornerRadius: 16`). Use tokens: `MindsetLayout.spacing12`, `MindsetLayout.paddingCard`, `MindsetLayout.radiusCard`, `MindsetLayout.buttonHeight`, etc.
   - Feature modules must add SharedUI as a dependency to use MindsetColors, MindsetFonts, and MindsetLayout.
   - **Modals:** Use `DismissButton(action: { ... })` from SharedUI to dismiss modals and full-screen flows (onboarding, ritual, etc.). Do not build custom close buttons for these; use the shared component for consistency.
+  - **Haptics:** Use `HapticManager` (SharedUtils) only in Views—never in ViewModels. Call the semantic APIs (selection(), action(), success(), tick()) from View code when handling taps or when observing state (e.g. success when isAiThinking goes false).
   - See `Packages/SharedUI/Sources/SharedUI/MindsetColors.swift`, `MindsetFonts.swift`, and `MindsetLayout.swift` for full token lists. See `Context.md` §13 for usage summary.
 
   # UI Development

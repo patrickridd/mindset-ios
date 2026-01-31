@@ -132,12 +132,24 @@ Use **`DismissButton(action: { ... })`** from SharedUI for closing/dismissing mo
 
 ### Haptics (SharedUtils HapticManager)
 
+Use **HapticManager only in Views, never in ViewModels.** Haptics are a presentation concern; the View triggers them when handling user actions or when observing state changes (e.g. `isAiThinking` → false → `HapticManager.success()`).
+
 Use the **semantic** APIs for consistency. Prefer these over raw `impact(_:)` / `notification(_:)`:
 
 - **`HapticManager.selection()`** — User picks one option (onboarding choice, list row, segment).
 - **`HapticManager.action()`** — Primary action (submit, continue, complete step).
 - **`HapticManager.success()`** — Flow or task completed (ritual done, onboarding done).
 - **`HapticManager.tick()`** — Light repeated feedback (progress/XP bar tick).
+
+### ViewModels (clean architecture)
+
+Keep ViewModels **clean**: they hold state and business logic only. Do **not** put presentation or View-layer concerns in ViewModels:
+
+- **No HapticManager** — Views call `HapticManager` when handling taps or observing state; ViewModels never import or use it.
+- **No UI types** — No `Color`, `Font`, `View` types, or layout constants; those belong in Views and SharedUI.
+- **No animations** — ViewModels update state; Views decide how to animate (e.g. `withAnimation { viewModel.nextStep() }`).
+
+ViewModels stay testable and reusable; Views own haptics, animations, and visual feedback.
 
 ## 14. Configuration & Secrets (AppConfig)
 - **Method:** Build-time injection via .xcconfig -> Info.plist.

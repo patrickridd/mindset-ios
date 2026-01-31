@@ -39,7 +39,10 @@ public struct DashboardView: View {
                             
                             Spacer(minLength: MindsetLayout.spacerMinLength)
                             
-                            Button(action: viewModel.startMindsetButtonTapped) {
+                            Button(action: {
+                                HapticManager.action()
+                                viewModel.startMindsetButtonTapped()
+                            }) {
                                 HStack {
                                     Text("Begin Morning Ritual")
                                     Image(systemName: "sparkles")
