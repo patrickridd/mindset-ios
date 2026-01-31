@@ -8,6 +8,7 @@
 import SwiftUI
 import Domain
 import SharedUtils
+import SharedUI
 
 public struct OnboardingView: View {
 #if DEBUG
@@ -22,21 +23,36 @@ public struct OnboardingView: View {
 
     public var body: some View {
         ZStack {
-            Color.black.ignoresSafeArea()
+            // Premium gradient: charcoal → soft black with subtle warm accent
+            LinearGradient(
+                colors: [
+                    MindsetColors.backgroundDark,
+                    MindsetColors.backgroundDarkSoft,
+                    MindsetColors.backgroundWarmAccent.opacity(0.5)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
+
             VStack(alignment: .center) {
                 Button {
                     viewModel.dismiss()
                 } label: {
                     HStack {
                         Spacer()
-                        Image(systemName: "x.circle.fill")
+                        Image(systemName: "xmark.circle.fill")
                             .resizable()
                             .frame(width: 32, height: 32)
+                            .symbolRenderingMode(.hierarchical)
+                            .foregroundStyle(MindsetColors.textSecondary)
                             .padding(.trailing)
                     }
                 }
+                .buttonStyle(.plain)
+
                 if viewModel.isCalculating {
-                    calculatingView
+                    CalculatingView()
                 } else {
                     questionContent
                 }
@@ -53,12 +69,18 @@ public struct OnboardingView: View {
         return VStack(spacing: 40) {
             ProgressView(value: Double(viewModel.currentStep + 1), total: Double(viewModel.questions.count))
                 .progressViewStyle(.linear)
-                .tint(.orange)
+                .tint(
+                    LinearGradient(
+                        colors: [MindsetColors.accentCoral, MindsetColors.accentOrange],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                )
                 .padding()
 
             Text(question.questionText)
                 .font(.system(size: 28, weight: .medium, design: .serif))
-                .foregroundStyle(.white)
+                .foregroundStyle(MindsetColors.textPrimary)
                 .multilineTextAlignment(.center)
                 .padding()
 
@@ -68,33 +90,85 @@ public struct OnboardingView: View {
                         viewModel.selectOption(option)
                     } label: {
                         Text(option)
-                            .padding()
+                            .font(.body.weight(.medium))
+                            .padding(.vertical, 16)
                             .frame(maxWidth: .infinity)
-                            .background(RoundedRectangle(cornerRadius: 12).stroke(.white.opacity(0.3)))
-                            .foregroundStyle(.white)
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(MindsetColors.fillSubtle)
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(MindsetColors.borderSubtle, lineWidth: 1)
+                            )
+                            .foregroundStyle(MindsetColors.textPrimary)
                     }
+                    .buttonStyle(OptionButtonStyle())
                 }
             }
             .padding(.horizontal, 30)
         }
     }
+}
 
-    private var calculatingView: some View {
+// MARK: - Option Button Style (tap feedback)
+
+private struct OptionButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
+            .animation(.easeInOut(duration: 0.15), value: configuration.isPressed)
+    }
+}
+
+// MARK: - Calculating View (with success states and pulse)
+
+private struct CalculatingView: View {
+    @State private var isPulsing = false
+
+    var body: some View {
         VStack(spacing: 30) {
-            ProgressView()
-                .tint(.orange)
-                .scaleEffect(2)
+            ZStack {
+                // Subtle glow behind spinner
+                Circle()
+                    .fill(MindsetColors.accentOrange.opacity(0.15))
+                    .frame(width: 80, height: 80)
+                    .blur(radius: 20)
+
+                ProgressView()
+                    .tint(MindsetColors.accentOrange)
+                    .scaleEffect(2)
+            }
 
             Text("Building your Identity Profile...")
                 .font(.headline)
-                .foregroundStyle(.white.opacity(0.8))
+                .foregroundStyle(MindsetColors.textSecondary)
 
             VStack(alignment: .leading, spacing: 10) {
-                Text("• Analyzing goals").foregroundStyle(.green)
-                Text("• Calibrating Archetypes").foregroundStyle(.green)
-                Text("• Setting up Yesterday Bridge").foregroundStyle(.white.opacity(0.3))
+                checklistRow("Analyzing goals", isComplete: true)
+                checklistRow("Calibrating Archetypes", isComplete: true)
+                checklistRow("Setting up Yesterday Bridge", isComplete: false)
             }
             .font(.caption)
+        }
+    }
+
+    private func checklistRow(_ text: String, isComplete: Bool) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: isComplete ? "checkmark.circle.fill" : "circle.dotted")
+                .font(.callout)
+                .foregroundStyle(isComplete ? MindsetColors.successGreen : MindsetColors.textMuted)
+
+            Text(text)
+                .foregroundStyle(isComplete ? MindsetColors.textSecondary : MindsetColors.textMuted)
+                .opacity(isComplete ? 1 : (isPulsing ? 0.6 : 1.0))
+        }
+        .onAppear {
+            if !isComplete {
+                withAnimation(.easeInOut(duration: 1.2).repeatForever(autoreverses: true)) {
+                    isPulsing = true
+                }
+            }
         }
     }
 }

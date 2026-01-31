@@ -19,6 +19,7 @@ let package = Package(
         .package(path: "../Domain"),
         .package(path: "../Data"),
         .package(path: "../SharedUtils"),
+        .package(path: "../SharedUI"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -29,6 +30,7 @@ let package = Package(
                 .product(name: "Domain", package: "Domain"),
                 .product(name: "Data", package: "Data"),
                 .product(name: "SharedUtils", package: "SharedUtils"),
+                .product(name: "SharedUI", package: "SharedUI"),
             ]
         ),
         .testTarget(
