@@ -7,7 +7,7 @@
 - **Domain** (`Packages/Domain`): Entities, Models, Protocols, UseCases, Logic (PromptEngine, PromptLibrary), Services (AIAnalysisService), Mocks, Errors. Pure business logic; no UI, no framework types for persistence.
 - **Data** (`Packages/Data`): `SD*` types — Repositories (SDMindsetRepository, SDUserRepository), Services (GeminiAIService, SDPersistenceService, RevenueCatSubscriptionService), Model (SDMindsetEntry, SDPromptResponse, SDUserProfile), AppConfig.
 - **Feature modules:** FeatureDashboard, FeatureHistory, FeatureMindset, FeatureOnboarding, FeatureSubscription — each has View(s) and ViewModel(s). FeatureMindset has Components (e.g. AIReflectionCard) and Mocks for previews.
-- **Shared:** SharedUI (DebugOverlay), SharedUtils (DebugLogger, HapticManager, InjectionBootstrap).
+- **Shared:** SharedUI (MindsetColors, MindsetFonts, DebugOverlay), SharedUtils (DebugLogger, HapticManager, InjectionBootstrap).
 
 ## 1. Goal & Vision
 - **Objective:** Reach $10k MRR by providing premium AI-driven daily Gratitude and Stoic reflections.
@@ -102,7 +102,27 @@
 - **Service:** `GeminiAIService`.
 - **Security:** Do NOT hardcode API Keys. Use `ProcessInfo.processInfo.environment` or a secure `Config.plist` that is gitignored.
 
-## 13. Configuration & Secrets (AppConfig)
+## 13. Design System (SharedUI)
+
+Use `MindsetColors` and `MindsetFonts` from SharedUI for all Feature views. Never use raw `Color.orange`, `Color.green`, `.font(.headline)` etc. — use semantic tokens for consistency and easy theme updates.
+
+### MindsetColors
+
+**Backgrounds:** `backgroundDark`, `backgroundDarkSoft`, `backgroundWarmAccent` (dark screens) • `backgroundGrouped`, `backgroundSecondary` (adaptive, light/dark)
+
+**Text:** `textPrimary`, `textSecondary`, `textMuted` (dark BGs) • `textPrimaryAdaptive`, `textSecondaryAdaptive`, `textDisabled`, `textOnAccent`, `labelAccent` (adaptive)
+
+**Accents:** `accentOrange`, `accentOrangeSoft`, `accentCoral` (motivation, CTAs, progress)
+
+**Success:** `successGreen`, `successEmerald` • **Stoic:** `stoicSlate`, `stoicSlateSoft` (borders, reflective content) • **Achievement:** `achievementGold` (XP, badges)
+
+**UI:** `borderSubtle`, `borderAccent`, `fillSubtle`, `progressInactive`, `buttonDisabledBackground`
+
+### MindsetFonts
+
+**Display (serif):** `displayHeadline`, `displayLarge`, `promptHeadline` • **Body (sans):** `body`, `promptQuestion`, `bodyMedium`, `subheadline`, `footnote`, `callout` • **Labels:** `label`, `labelUppercase`, `caption`, `captionBold` • **UI:** `button`, `featureTitle`, `title2`, `screenTitle`, `statValue`
+
+## 14. Configuration & Secrets (AppConfig)
 - **Method:** Build-time injection via .xcconfig -> Info.plist.
 - **Access:** `AppConfig.geminiAPIKey`.
 - **Git Safety:** Config.config file is gitignored; contains the source `GEMINI_API_KEY`.
