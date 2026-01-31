@@ -16,6 +16,7 @@ public struct OnboardingView: View {
 #endif
 
     @State private var viewModel: OnboardingViewModel
+    @State private var selectedOption: String?
 
     public init(viewModel: OnboardingViewModel) {
         self._viewModel = State(initialValue: viewModel)
@@ -72,10 +73,15 @@ public struct OnboardingView: View {
 
             VStack(spacing: MindsetLayout.spacing12) {
                 ForEach(question.options, id: \.self) { option in
+                    let isSelected = option == selectedOption
                     Button {
                         HapticManager.selection()
-                        withAnimation(.easeInOut(duration: 0.35)) {
-                            viewModel.selectOption(option)
+                        selectedOption = option
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                            withAnimation(.easeInOut(duration: 0.35)) {
+                                viewModel.selectOption(option)
+                            }
+                            selectedOption = nil
                         }
                     } label: {
                         Text(option)
@@ -84,15 +90,16 @@ public struct OnboardingView: View {
                             .frame(maxWidth: .infinity)
                             .background(
                                 RoundedRectangle(cornerRadius: MindsetLayout.radiusStandard)
-                                    .fill(MindsetColors.fillSubtle)
+                                    .fill(isSelected ? MindsetColors.accentOrangeSoft : MindsetColors.fillSubtle)
                             )
                             .overlay(
                                 RoundedRectangle(cornerRadius: MindsetLayout.radiusStandard)
-                                    .stroke(MindsetColors.borderSubtle, lineWidth: MindsetLayout.borderWidth)
+                                    .stroke(isSelected ? MindsetColors.borderAccent : MindsetColors.borderSubtle, lineWidth: MindsetLayout.borderWidth)
                             )
                             .foregroundStyle(MindsetColors.textPrimary)
                     }
                     .buttonStyle(OptionButtonStyle())
+                    .animation(.easeInOut(duration: 0.2), value: selectedOption)
                 }
             }
             .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
