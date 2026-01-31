@@ -6,6 +6,7 @@
 //
 
 import Domain
+import SharedUI
 import SwiftUI
 
 public struct PaywallView: View {
@@ -17,11 +18,18 @@ public struct PaywallView: View {
     
     public var body: some View {
         ZStack {
-            LinearGradient(colors: [.black, Color(white: 0.1)], startPoint: .top, endPoint: .bottom)
-                .ignoresSafeArea()
-            
+            LinearGradient(
+                colors: [
+                    MindsetColors.backgroundDark,
+                    MindsetColors.backgroundDarkSoft,
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
+
             if viewModel.isLoading {
-                ProgressView().tint(.orange)
+                ProgressView().tint(MindsetColors.accentOrange)
             } else {
                 content
             }
@@ -35,7 +43,7 @@ public struct PaywallView: View {
             HStack {
                 Button(action: { viewModel.closeButtonTapped() }) {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(.white.opacity(0.5))
+                        .foregroundStyle(MindsetColors.textMuted)
                         .font(.title2)
                 }
                 Spacer()
@@ -48,11 +56,11 @@ public struct PaywallView: View {
                     .font(.caption)
                     .fontWeight(.black)
                     .tracking(3)
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(MindsetColors.accentOrange)
                 
                 Text("Unlock Your Full Potential")
                     .font(.system(size: 34, weight: .bold, design: .serif))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(MindsetColors.textPrimary)
                     .multilineTextAlignment(.center)
             }
             
@@ -63,44 +71,39 @@ public struct PaywallView: View {
                 featureRow(icon: "cloud.fill", title: "Cross-Platform Sync", sub: "Access your journey on iOS and Android.")
             }
             .padding()
-            .background(RoundedRectangle(cornerRadius: 20).fill(.white.opacity(0.05)))
+            .background(RoundedRectangle(cornerRadius: 20).fill(MindsetColors.fillSubtle))
             .padding(.horizontal)
             
             Spacer()
             
             // Call to Action
             VStack(spacing: 15) {
-                Button(action: { /* Start Trial Logic */ }) {
+                Button(action: { Task { try await viewModel.purchase() } }) {
                     Text("Start 7-Day Free Trial")
                         .font(.headline)
                         .foregroundStyle(.black)
                         .frame(maxWidth: .infinity)
                         .frame(height: 60)
-                        .background(Capsule().fill(Color.orange))
+                        .background(Capsule().fill(MindsetColors.accentOrange))
                 }
-                
+
                 Text("Then $9.99/month. Cancel anytime.")
                     .font(.caption)
-                    .foregroundStyle(.white.opacity(0.6))
+                    .foregroundStyle(MindsetColors.textSecondary)
             }
             .padding(.horizontal, 30)
             .padding(.bottom, 20)
-            
-            Button(action: { Task { try await viewModel.purchase() } }) {
-                Text("Start 7-Day Free Trial")
-                // ... Styles ...
-            }
         }
     }
     
     private func featureRow(icon: String, title: String, sub: String) -> some View {
         HStack(alignment: .top, spacing: 15) {
             Image(systemName: icon)
-                .foregroundStyle(.orange)
+                .foregroundStyle(MindsetColors.accentOrange)
                 .font(.title3)
             VStack(alignment: .leading, spacing: 4) {
-                Text(title).fontWeight(.bold).foregroundStyle(.white)
-                Text(sub).font(.footnote).foregroundStyle(.white.opacity(0.7))
+                Text(title).fontWeight(.bold).foregroundStyle(MindsetColors.textPrimary)
+                Text(sub).font(.footnote).foregroundStyle(MindsetColors.textSecondary)
             }
         }
     }

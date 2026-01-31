@@ -6,6 +6,7 @@
 //
 
 import Domain
+import SharedUI
 import SwiftUI
 
 public struct MindsetHistoryView: View {
@@ -45,8 +46,8 @@ public struct MindsetHistoryView: View {
                     .font(.caption2)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
-                    .background(Capsule().fill(.orange.opacity(0.1)))
-                    .foregroundStyle(.orange)
+                    .background(Capsule().fill(MindsetColors.accentOrangeSoft))
+                    .foregroundStyle(MindsetColors.accentOrange)
             }
             
             // Show the first AI reflection as a "highlight"

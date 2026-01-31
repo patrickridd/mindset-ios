@@ -4,8 +4,7 @@
 //
 //  Created by patrick ridd on 1/11/26.
 //
-
-
+import SharedUI
 import SwiftUI
 
 struct AIReflectionCard: View {
@@ -16,7 +15,7 @@ struct AIReflectionCard: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: "sparkles")
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(MindsetColors.accentOrange)
                 Text("AI REFLECTION")
                     .font(.caption2).bold()
                     .tracking(1)
@@ -40,7 +39,7 @@ struct AIReflectionCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 16))
-        .overlay(RoundedRectangle(cornerRadius: 16).stroke(.orange.opacity(0.2), lineWidth: 1))
+        .overlay(RoundedRectangle(cornerRadius: 16).stroke(MindsetColors.borderAccent.opacity(0.4), lineWidth: 1))
     }
 }
 

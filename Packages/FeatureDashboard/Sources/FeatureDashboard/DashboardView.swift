@@ -5,9 +5,10 @@
 //  Created by patrick ridd on 1/7/26.
 //
 
+import Domain
+import SharedUI
 import SharedUtils
 import SwiftUI
-import Domain
 
 public struct DashboardView: View {
 
@@ -44,17 +45,17 @@ public struct DashboardView: View {
                                     Image(systemName: "sparkles")
                                 }
                                 .font(.headline)
-                                .foregroundStyle(.black)
+                                .foregroundStyle(MindsetColors.textOnAccent)
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 60)
-                                .background(Capsule().fill(Color.orange))
+                                .background(Capsule().fill(MindsetColors.accentOrange))
                             }
                             .padding(.horizontal)
                         }
                     }
                     .padding()
                 }
-                .background(Color(uiColor: .systemGroupedBackground))
+                .background(MindsetColors.backgroundGrouped)
                 .navigationTitle("Mindset")
                 .task {
                     await viewModel.loadDashboardData()
@@ -69,10 +70,11 @@ public struct DashboardView: View {
             VStack(alignment: .leading) {
                 Text("Good Morning,")
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(MindsetColors.textSecondaryAdaptive)
                 // Use the data from Onboarding!
                 Text(viewModel.userProfile?.userName ?? "Visionary")
                     .font(.largeTitle.bold())
+                    .foregroundStyle(MindsetColors.textPrimaryAdaptive)
             }
         }
         
@@ -81,28 +83,28 @@ public struct DashboardView: View {
                 Text("CURRENT GOAL")
                     .font(.caption2.bold())
                     .tracking(1)
-                    .foregroundStyle(.white.opacity(0.7))
+                    .foregroundStyle(MindsetColors.textSecondary)
                 
                 Text(viewModel.userProfile?.primaryGoal ?? "Calibrate Your Mindset")
                     .font(.title2.bold())
-                    .foregroundStyle(.white)
+                    .foregroundStyle(MindsetColors.textPrimary)
             }
             .padding(25)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(
                 RoundedRectangle(cornerRadius: 24)
-                    .fill(LinearGradient(colors: [.orange, .red], startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .fill(LinearGradient(colors: [MindsetColors.accentCoral, MindsetColors.accentOrange], startPoint: .topLeading, endPoint: .bottomTrailing))
             )
         }
     
     private func yesterdayBridge(text: String) -> some View {
         VStack(alignment: .leading) {
-            Text("YESTERDAY'S FOCUS").font(.caption2).bold().foregroundStyle(.orange)
-            Text(text).font(.subheadline).italic().lineLimit(nil)
+            Text("YESTERDAY'S FOCUS").font(.caption2).bold().foregroundStyle(MindsetColors.accentOrange)
+            Text(text).font(.subheadline).italic().foregroundStyle(MindsetColors.textPrimaryAdaptive).lineLimit(nil)
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Capsule().stroke(Color.orange.opacity(0.3)))
+        .background(Capsule().stroke(MindsetColors.borderAccent.opacity(0.6)))
     }
     
     private var statsGrid: some View {
@@ -112,7 +114,7 @@ public struct DashboardView: View {
                 value: "\(viewModel.streakCount) Days",
                 icon: "flame.fill",
                 // Only light up the flame if they have an active streak
-                color: viewModel.streakCount > 0 ? .orange : .secondary
+                color: viewModel.streakCount > 0 ? MindsetColors.accentOrange : MindsetColors.textSecondaryAdaptive
             )
             
             statBox(
@@ -120,7 +122,7 @@ public struct DashboardView: View {
                 // Replace hardcoded "12" with the real count from your repository
                 value: "\(viewModel.totalRituals) Total",
                 icon: "checkmark.circle.fill",
-                color: .green
+                color: MindsetColors.successGreen
             ).onTapGesture {
                 viewModel.seeHistoryBoxTapped()
             }
@@ -130,12 +132,12 @@ public struct DashboardView: View {
     private func statBox(title: String, value: String, icon: String, color: Color) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Image(systemName: icon).foregroundStyle(color)
-            Text(value).font(.headline)
-            Text(title).font(.caption).foregroundStyle(.secondary)
+            Text(value).font(.headline).foregroundStyle(MindsetColors.textPrimaryAdaptive)
+            Text(title).font(.caption).foregroundStyle(MindsetColors.textSecondaryAdaptive)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
-        .background(Color(uiColor: .secondarySystemGroupedBackground))
+        .background(MindsetColors.backgroundSecondary)
         .cornerRadius(16)
     }
 }

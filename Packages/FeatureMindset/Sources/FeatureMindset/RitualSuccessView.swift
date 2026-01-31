@@ -6,6 +6,7 @@
 //
 
 import Domain
+import SharedUI
 import SharedUtils
 import SwiftUI
 
@@ -29,14 +30,14 @@ public struct RitualSuccessView: View {
             // 1. Hero Icon
             ZStack {
                 Circle()
-                    .fill(Color.orange.opacity(0.1))
+                    .fill(MindsetColors.accentOrangeSoft)
                     .frame(width: 160, height: 160)
                 
                 Image(systemName: "figure.mindful")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 80)
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(MindsetColors.accentOrange)
             }
             
             // 2. Archetype Reveal
@@ -55,18 +56,18 @@ public struct RitualSuccessView: View {
                 HStack {
                     Text("Daily Progress")
                     Spacer()
-                    Text("+\(xpEarned) XP").bold().foregroundStyle(.orange)
+                    Text("+\(xpEarned) XP").bold().foregroundStyle(MindsetColors.accentOrange)
                 }
                 .font(.footnote)
                 .padding(.horizontal)
                 
                 ProgressView(value: progress, total: 100)
-                    .tint(.orange)
+                    .tint(MindsetColors.accentOrange)
                     .scaleEffect(x: 1, y: 2, anchor: .center)
                     .padding(.horizontal)
             }
             .padding()
-            .background(RoundedRectangle(cornerRadius: 20).fill(Color(uiColor: .secondarySystemGroupedBackground)))
+            .background(RoundedRectangle(cornerRadius: 20).fill(MindsetColors.backgroundSecondary))
             .padding(.horizontal)
 
             Spacer()
@@ -79,7 +80,7 @@ public struct RitualSuccessView: View {
                     .bold()
             }
             .buttonStyle(.borderedProminent)
-            .tint(.orange)
+            .tint(MindsetColors.accentOrange)
             .padding()
         }
         .onAppear {

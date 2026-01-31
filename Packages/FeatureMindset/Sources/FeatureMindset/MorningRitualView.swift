@@ -6,6 +6,7 @@
 //
 
 import Domain
+import SharedUI
 import SwiftUI
 
 public struct MorningRitualView: View {
@@ -18,12 +19,12 @@ public struct MorningRitualView: View {
     public var body: some View {
         ZStack {
             // Background stays behind everything
-            Color(uiColor: .systemGroupedBackground)
+            MindsetColors.backgroundGrouped
                 .ignoresSafeArea()
             if viewModel.isLoading {
                 Spacer()
                 ProgressView("Designing your ritual...")
-                    .tint(.orange)
+                    .tint(MindsetColors.accentOrange)
                 Spacer()
             } else {
                 VStack(spacing: 0) {
@@ -92,15 +93,17 @@ public struct MorningRitualView: View {
                         .font(.caption2)
                         .fontWeight(.black)
                         .tracking(2)
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(MindsetColors.labelAccent)
                     
                     Text(prompt.headline)
                         .font(.system(.title2, design: .serif))
                         .fontWeight(.bold)
+                        .foregroundStyle(MindsetColors.textPrimaryAdaptive)
                 }
                 
                 Text(prompt.questionText)
                     .font(.body)
+                    .foregroundStyle(MindsetColors.textPrimaryAdaptive)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
                 
@@ -123,9 +126,15 @@ public struct MorningRitualView: View {
                     }) {
                         Label("Get AI Reflection", systemImage: "sparkles")
                             .font(.subheadline).bold()
+                            .foregroundStyle(viewModel.canProceed ? MindsetColors.labelAccent : MindsetColors.textDisabled)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(viewModel.canProceed ? MindsetColors.accentOrangeSoft : Color.clear)
+                            )
                     }
-                    .buttonStyle(.borderless)
-                    .tint(.orange)
+                    .buttonStyle(.plain)
                     .disabled(!viewModel.canProceed)
                 }
 
@@ -148,29 +157,29 @@ public struct MorningRitualView: View {
         // Fixed height prevents the "shrinking" issue when keyboard appears
         .frame(minHeight: 120)
         .padding(12)
-        .background(RoundedRectangle(cornerRadius: 15).fill(Color(uiColor: .secondarySystemGroupedBackground)))
-        .overlay(RoundedRectangle(cornerRadius: 15).stroke(Color.orange.opacity(0.1), lineWidth: 1))
+        .background(RoundedRectangle(cornerRadius: 15).fill(MindsetColors.backgroundSecondary))
+        .overlay(RoundedRectangle(cornerRadius: 15).stroke(MindsetColors.borderAccent.opacity(0.2), lineWidth: 1))
     }
     
     private func coachTipView(tip: String) -> some View {
         VStack(alignment: .leading, spacing: 5) {
             Label("Coach Tip", systemImage: "lightbulb.fill")
                 .font(.caption).bold()
-                .foregroundStyle(.orange)
+                .foregroundStyle(MindsetColors.labelAccent)
             Text(tip)
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(MindsetColors.textSecondaryAdaptive)
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(RoundedRectangle(cornerRadius: 12).fill(Color.orange.opacity(0.05)))
+        .background(RoundedRectangle(cornerRadius: 12).fill(MindsetColors.accentOrangeSoft))
     }
     
     private var ritualProgressBar: some View {
         HStack {
             ForEach(0..<viewModel.prompts.count, id: \.self) { index in
                 Capsule()
-                    .fill(index <= viewModel.currentStepIndex ? Color.orange : Color.gray.opacity(0.3))
+                    .fill(index <= viewModel.currentStepIndex ? MindsetColors.accentOrange : MindsetColors.progressInactive)
                     .frame(height: 4)
             }
         }
@@ -184,32 +193,38 @@ public struct MorningRitualView: View {
             if !viewModel.prompts.isEmpty {
                 let isLastStep = viewModel.currentStepIndex == viewModel.prompts.count - 1
                 let checkmark: String = viewModel.canProceed ? "✅" : "☑️"
-                
+                let isDisabled = !viewModel.canProceed || viewModel.isAiThinking || viewModel.isLoading
+                let isAnalyzing = viewModel.isAiThinking
+                let showEnabledStyle = isAnalyzing || viewModel.canProceed
+
                 Button(action: {
                     withAnimation(.spring()) {
                         viewModel.nextStep()
                     }
                 }) {
                     HStack(spacing: 10) {
-                        if viewModel.isAiThinking {
+                        if isAnalyzing {
                             ProgressView()
                                 .tint(.white)
                         }
-                        
-                        Text(viewModel.isAiThinking ? "Analyzing..." : (isLastStep ? "Complete \(checkmark)" : "Continue"))
+
+                        Text(isAnalyzing ? "Analyzing..." : (isLastStep ? "Complete \(checkmark)" : "Continue"))
                             .bold()
-                        
-                        if !isLastStep && !viewModel.isAiThinking {
+
+                        if !isLastStep && !isAnalyzing {
                             Image(systemName: "chevron.right")
                         }
                     }
                     .frame(maxWidth: .infinity)
+                    .foregroundStyle(showEnabledStyle ? MindsetColors.textOnAccent : MindsetColors.textDisabled)
                     .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 14)
+                            .fill(showEnabledStyle ? MindsetColors.accentOrange : MindsetColors.buttonDisabledBackground)
+                    )
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(.orange)
-                // Disable if AI is thinking, if validation fails, or if still loading data
-                .disabled(!viewModel.canProceed || viewModel.isAiThinking || viewModel.isLoading)
+                .buttonStyle(.plain)
+                .disabled(isDisabled)
                 .padding()
             }
         }
