@@ -18,6 +18,7 @@ let package = Package(
     dependencies: [
         .package(path: "../Domain"),
         .package(path: "../Data"),
+        .package(path: "../SharedUtils"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -26,8 +27,8 @@ let package = Package(
             name: "FeatureOnboarding",
             dependencies: [
                 .product(name: "Domain", package: "Domain"),
-                .product(name: "Data", package: "Data")
-
+                .product(name: "Data", package: "Data"),
+                .product(name: "SharedUtils", package: "SharedUtils"),
             ]
         ),
         .testTarget(

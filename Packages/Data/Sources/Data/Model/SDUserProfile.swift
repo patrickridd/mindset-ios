@@ -15,20 +15,36 @@ public final class SDUserProfile {
     public var bestSelfName: String
     public var primaryGoal: String
     public var createdAt: Date
-    // SwiftData stores Enums easily if they are String-backed
     public var overwhelmedFrequency: String
+    
+    // Onboarding quiz results (raw values for optional enums)
+    public var headspaceRaw: String?
+    public var mentalMuscleRaw: String?
+    public var responseToSetbackRaw: String?
+    public var habitGoalRaw: String?
+    public var aiCoachToneRaw: String?
 
     public init(
         id: UUID = UUID(),
         bestSelfName: String,
         primaryGoal: String,
         overwhelmedFrequency: String,
+        headspaceRaw: String? = nil,
+        mentalMuscleRaw: String? = nil,
+        responseToSetbackRaw: String? = nil,
+        habitGoalRaw: String? = nil,
+        aiCoachToneRaw: String? = nil,
         createdAt: Date = Date()
     ) {
         self.id = id
         self.bestSelfName = bestSelfName
         self.primaryGoal = primaryGoal
         self.overwhelmedFrequency = overwhelmedFrequency
+        self.headspaceRaw = headspaceRaw
+        self.mentalMuscleRaw = mentalMuscleRaw
+        self.responseToSetbackRaw = responseToSetbackRaw
+        self.habitGoalRaw = habitGoalRaw
+        self.aiCoachToneRaw = aiCoachToneRaw
         self.createdAt = createdAt
     }
 
@@ -36,22 +52,32 @@ public final class SDUserProfile {
     
     /// Converts SwiftData storage model back to the clean Domain struct
     public func toDomain() -> UserProfile {
-        return UserProfile(
+        UserProfile(
             id: id,
             userName: bestSelfName,
             primaryGoal: primaryGoal,
             overwhelmedFrequency: UserProfile.OverwhelmedFrequency(rawValue: overwhelmedFrequency) ?? .sometimes,
+            headspace: headspaceRaw.flatMap { UserProfile.Headspace(rawValue: $0) },
+            mentalMuscle: mentalMuscleRaw.flatMap { UserProfile.MentalMuscle(rawValue: $0) },
+            responseToSetback: responseToSetbackRaw.flatMap { UserProfile.ResponseToSetback(rawValue: $0) },
+            habitGoal: habitGoalRaw.flatMap { UserProfile.HabitGoal(rawValue: $0) },
+            aiCoachTone: aiCoachToneRaw.flatMap { UserProfile.AICoachTone(rawValue: $0) },
             createdAt: createdAt
         )
     }
     
     /// Static helper to create a storage model from a Domain struct
     public static func fromDomain(_ domain: UserProfile) -> SDUserProfile {
-        return SDUserProfile(
+        SDUserProfile(
             id: domain.id,
             bestSelfName: domain.userName,
             primaryGoal: domain.primaryGoal,
             overwhelmedFrequency: domain.overwhelmedFrequency.rawValue,
+            headspaceRaw: domain.headspace?.rawValue,
+            mentalMuscleRaw: domain.mentalMuscle?.rawValue,
+            responseToSetbackRaw: domain.responseToSetback?.rawValue,
+            habitGoalRaw: domain.habitGoal?.rawValue,
+            aiCoachToneRaw: domain.aiCoachTone?.rawValue,
             createdAt: domain.createdAt
         )
     }

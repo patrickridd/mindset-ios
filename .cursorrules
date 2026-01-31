@@ -2,6 +2,14 @@
  You are an expert iOS developer using Swift and SwiftUI. Follow these guidelines:
 
 
+  # Product / MLP Vision (Mindset Ritual App)
+  - **What we're building:** Gratitude + mindset journaling meets Duolingo — gamified, habit-forming, fun.
+  - **Psychology basis:** Positive Psychology, Stoic, CBT, evidence-based daily exercises.
+  - **Curated prompts (quiz-driven):** Gratitude, memento mori, goal setting, what went well, "what did you forget to give yourself credit for?", etc.
+  - **Gamification:** Daily streak, XP, archetype building, weekly summaries, AI feedback, animations, haptics, sound effects. Progress that motivates.
+  - **Future:** XP → Zen garden or visual progress representation on Dashboard. See `Context.md` for full MLP roadmap.
+
+
   # Swift & iOS Rules
 
   # Modularization Rules

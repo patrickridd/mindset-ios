@@ -27,6 +27,12 @@ public final class SDPersistenceService: PersistenceService {
             // Update existing
             existing.bestSelfName = profile.userName
             existing.primaryGoal = profile.primaryGoal
+            existing.overwhelmedFrequency = profile.overwhelmedFrequency.rawValue
+            existing.headspaceRaw = profile.headspace?.rawValue
+            existing.mentalMuscleRaw = profile.mentalMuscle?.rawValue
+            existing.responseToSetbackRaw = profile.responseToSetback?.rawValue
+            existing.habitGoalRaw = profile.habitGoal?.rawValue
+            existing.aiCoachToneRaw = profile.aiCoachTone?.rawValue
         } else {
             // Insert new
             let sdModel = SDUserProfile.fromDomain(profile)

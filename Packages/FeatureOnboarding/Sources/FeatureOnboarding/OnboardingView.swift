@@ -7,15 +7,19 @@
 
 import SwiftUI
 import Domain
+import SharedUtils
 
 public struct OnboardingView: View {
+#if DEBUG
+    @ObserveInjection var inject
+#endif
 
     @State private var viewModel: OnboardingViewModel
-    
+
     public init(viewModel: OnboardingViewModel) {
         self._viewModel = State(initialValue: viewModel)
     }
-    
+
     public var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
@@ -39,28 +43,30 @@ public struct OnboardingView: View {
                 Spacer()
             }
         }
+#if DEBUG
+        .enableInjection()
+#endif
     }
 
     private var questionContent: some View {
-        VStack(spacing: 40) {
-            // Progress Bar
-            ProgressView(value: Double(viewModel.currentStep), total: Double(viewModel.questions.count))
+        let question = viewModel.questions[viewModel.currentStep]
+        return VStack(spacing: 40) {
+            ProgressView(value: Double(viewModel.currentStep + 1), total: Double(viewModel.questions.count))
                 .progressViewStyle(.linear)
                 .tint(.orange)
                 .padding()
 
-            Text(viewModel.questions[viewModel.currentStep])
+            Text(question.questionText)
                 .font(.system(size: 28, weight: .medium, design: .serif))
                 .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
                 .padding()
 
-            // Options (Example for Step 0)
             VStack(spacing: 12) {
-                ForEach(["Career", "Health", "Wealth", "Inner Peace"], id: \.self) { option in
-                    Button(action: {
+                ForEach(question.options, id: \.self) { option in
+                    Button {
                         viewModel.selectOption(option)
-                    }) {
+                    } label: {
                         Text(option)
                             .padding()
                             .frame(maxWidth: .infinity)
@@ -74,32 +80,26 @@ public struct OnboardingView: View {
     }
 
     private var calculatingView: some View {
-            VStack(spacing: 30) {
-                ProgressView()
-                    .tint(.orange)
-                    .scaleEffect(2)
-                
-                Text("Building your Identity Profile...")
-                    .font(.headline)
-                    .foregroundStyle(.white.opacity(0.8))
-                
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("• Analyzing goals").foregroundStyle(.green)
-                    Text("• Calibrating Archetypes").foregroundStyle(.green)
-                    Text("• Setting up Yesterday Bridge").foregroundStyle(.white.opacity(0.3))
-                }
-                .font(.caption)
+        VStack(spacing: 30) {
+            ProgressView()
+                .tint(.orange)
+                .scaleEffect(2)
+
+            Text("Building your Identity Profile...")
+                .font(.headline)
+                .foregroundStyle(.white.opacity(0.8))
+
+            VStack(alignment: .leading, spacing: 10) {
+                Text("• Analyzing goals").foregroundStyle(.green)
+                Text("• Calibrating Archetypes").foregroundStyle(.green)
+                Text("• Setting up Yesterday Bridge").foregroundStyle(.white.opacity(0.3))
             }
-            .onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-                    // TRIGGER PAYWALL HERE
-                }
-            }
+            .font(.caption)
         }
+    }
 }
 
 #Preview {
-    let viewModel = OnboardingViewModel(userRepository: MockUserRepository()) {
-    }
+    let viewModel = OnboardingViewModel(userRepository: MockUserRepository()) {}
     return OnboardingView(viewModel: viewModel)
 }
