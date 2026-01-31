@@ -81,11 +81,6 @@ public struct MorningRitualView: View {
                         // Removing .ignoresSafeArea from the ZStack lets the keyboard
                         // push this specific VStack up automatically.
                         footerButtons
-                            .background(
-                                Rectangle()
-                                    .fill(.ultraThinMaterial)
-                                    .shadow(color: .black.opacity(0.05), radius: MindsetLayout.shadowRadius, y: MindsetLayout.shadowY)
-                            )
                     }
                 }
             }
