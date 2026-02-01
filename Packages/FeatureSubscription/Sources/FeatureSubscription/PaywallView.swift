@@ -41,11 +41,7 @@ public struct PaywallView: View {
             // ... Header and Feature List remain the same ...
             // Close Button
             HStack {
-                Button(action: { viewModel.closeButtonTapped() }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(MindsetColors.textMuted)
-                        .font(MindsetFonts.title2)
-                }
+                DismissButton(action: viewModel.dismissButtonTapped)
                 Spacer()
             }
             .padding(.horizontal)
