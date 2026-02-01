@@ -13,6 +13,7 @@ import Observation
 @MainActor
 public final class OnboardingViewModel {
     private let userRepository: UserRepository
+    private let subscriptionService: SubscriptionService
     public var onboardingFinished: ((NavigationState) -> Void)?
 
     public var currentStep = 0
@@ -28,8 +29,13 @@ public final class OnboardingViewModel {
         case home
     }
 
-    public init(userRepository: UserRepository, onboardingFinished: ((NavigationState) -> Void)?) {
+    public init(
+        userRepository: UserRepository,
+        subscriptionService: SubscriptionService,
+        onboardingFinished: ((NavigationState) -> Void)?
+    ) {
         self.userRepository = userRepository
+        self.subscriptionService = subscriptionService
         self.onboardingFinished = onboardingFinished
     }
 
@@ -53,8 +59,11 @@ public final class OnboardingViewModel {
             
             try? await Task.sleep(for: .seconds(2.5))
             
+            // Check subscription status to determine next screen
+            let hasPremium = await subscriptionService.checkSubscriptionStatus()
+            
             isCalculating = false
-            onboardingFinished?(.paywall)
+            onboardingFinished?(hasPremium ? .home : .paywall)
         }
     }
     

@@ -27,6 +27,7 @@ struct AppViewFactory: MainViewFactory {
     func makeOnboardingView() -> AnyView {
         let viewModel = OnboardingViewModel(
             userRepository: userRepository,
+            subscriptionService: subscriptionService,
             onboardingFinished: { state in
                 switch state {
                 case .home:
