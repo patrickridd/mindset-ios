@@ -49,9 +49,9 @@ public enum MindsetLayout {
 
     public static let progressBarHeight: CGFloat = 4
     public static let buttonHeight: CGFloat = 60
-    public static let iconSmall: CGFloat = 32
-    public static let iconMedium: CGFloat = 44
-    public static let iconLarge: CGFloat = 80
+    public static let iconSmall: CGFloat = 24
+    public static let iconMedium: CGFloat = 32
+    public static let iconLarge: CGFloat = 64
     public static let heroCircleSize: CGFloat = 160
     public static let textEditorMinHeight: CGFloat = 120
     public static let bottomSpacerHeight: CGFloat = 20
