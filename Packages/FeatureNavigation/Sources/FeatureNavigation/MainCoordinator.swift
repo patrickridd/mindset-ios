@@ -21,13 +21,21 @@ public final class MainCoordinator {
     }
     
     // Modals and Overlays (Identifiable for SwiftUI item-based presentation)
-    public enum SheetState: Identifiable {
+    public enum FullScreenState: Identifiable {
         case paywall
-        case ritualSuccess(archetype: String, xp: Int)
         
         public var id: String {
             switch self {
             case .paywall: return "paywall"
+            }
+        }
+    }
+    
+    public enum SheetState: Identifiable {
+        case ritualSuccess(archetype: String, xp: Int)
+        
+        public var id: String {
+            switch self {
             case .ritualSuccess(let a, let x): return "success-\(a)-\(x)"
             }
         }
@@ -39,6 +47,7 @@ public final class MainCoordinator {
     }
 
     private(set) var rootState: RootState = .onboarding
+    public var fullScreenState: FullScreenState?
     public var sheetState: SheetState?
     public var selectedTab: Tab = .dashboard
     
@@ -69,7 +78,7 @@ public final class MainCoordinator {
         let isPro = await subscriptionService.checkSubscriptionStatus()
 
         if !isPro {
-            set(sheetState: .paywall)
+            set(fullScreenState: .paywall)
         }
     }
     
@@ -77,7 +86,7 @@ public final class MainCoordinator {
 
     public func onboardingFinished() {
         UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
-        set(sheetState: .paywall)
+        set(fullScreenState: .paywall)
     }
 
     public func showHomeView() {
@@ -97,19 +106,27 @@ public final class MainCoordinator {
     }
 
     public func showPaywall() {
-        set(sheetState: .paywall)
+        set(fullScreenState: .paywall)
     }
 
     public func showRitualSuccess(archetype: String, xp: Int) {
         set(sheetState: .ritualSuccess(archetype: archetype, xp: xp))
     }
 
+    public func dismissFullScreen() {
+        set(fullScreenState: nil)
+    }
+    
     public func dismissSheet() {
         set(sheetState: nil)
     }
 
     private func set(rootState: RootState) {
         withAnimation { self.rootState = rootState }
+    }
+    
+    private func set(fullScreenState: FullScreenState?) {
+        withAnimation { self.fullScreenState = fullScreenState }
     }
 
     private func set(sheetState: SheetState?) {

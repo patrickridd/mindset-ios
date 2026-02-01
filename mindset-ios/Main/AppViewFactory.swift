@@ -47,7 +47,7 @@ struct AppViewFactory: MainViewFactory {
             subscriptionService: subscriptionService,
             onPurchaseFinished: {
                 coordinator.showHomeView()
-                coordinator.dismissSheet()
+                coordinator.dismissFullScreen()
             })
         return AnyView(
             PaywallView(viewModel: viewModel)

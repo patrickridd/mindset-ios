@@ -34,14 +34,17 @@ public struct MainCoordinatorView: View {
             case .mindset:    factory.makeMindsetView()
             }
         }
-        // Sheet Layer
-        .sheet(item: $coordinator.sheetState) { state in
+        // Full Screen Cover Layer (for paywall)
+        .fullScreenCover(item: $coordinator.fullScreenState) { state in
             switch state {
             case .paywall:
                 factory.makePaywallView()
+            }
+        }
+        // Sheet Layer (for other modals)
+        .sheet(item: $coordinator.sheetState) { state in
+            switch state {
             case .ritualSuccess(let archetype, let xp):
-                // We use fullScreenCover for this normally,
-                // but this is how you'd switch within a sheet
                 factory.makeRitualSuccessView(archetype: archetype, xp: xp)
             }
         }
