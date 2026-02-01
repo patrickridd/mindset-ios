@@ -8,6 +8,7 @@
   - **Curated prompts (quiz-driven):** Gratitude, memento mori, goal setting, what went well, "what did you forget to give yourself credit for?", etc.
   - **Gamification:** Daily streak, XP, archetype building, weekly summaries, AI feedback, animations, haptics, sound effects. Progress that motivates.
   - **Future:** XP → Zen garden or visual progress representation on Dashboard. See `Context.md` for full MLP roadmap.
+  - **Onboarding flow (14 steps):** Intro → Quiz (5Q) → Analyzing → Archetype Reveal → Pain Screens (3) → How App Helps → Social Proof → AI Coach Intro → Custom Plan → Sign in with Apple → Paywall → App. See `Context.md` §4 for complete flow.
 
 
   # Swift & iOS Rules
@@ -17,11 +18,23 @@
   - API and Persistence belong in `Data`.
   - Views belong in `Feature[Name]` modules.
   - Never import a Feature module into another Feature module (use the Coordinator).
+  - Feature modules: FeatureDashboard, FeatureHistory, FeatureMindset, FeatureOnboarding, FeatureAuth, FeatureSubscription.
+  - FeatureAuth handles Sign in with Apple via Firebase Auth; never implement auth in other Feature modules.
 
   
   # AI Rules
   - Use `gemini-2.0-flash` for all AIService calls.
   - Ensure API keys are never hardcoded; suggest `Secrets.plist` or Environment Variables.
+
+  
+  # Auth & Data Sync Rules
+  - Use Firebase Auth for Sign in with Apple (FeatureAuth module).
+  - Firebase UID is the single source of truth for user identity.
+  - SwiftData is local-first (offline support); Firestore is cloud backup.
+  - Sync on auth + background refresh; last-write-wins for conflicts.
+  - Never hardcode Firebase config; use gitignored `GoogleService-Info.plist`.
+  - Services: `FirebaseAuthService`, `FirebaseSyncService` in Data module.
+  - RevenueCat user ID should match Firebase UID for subscription tracking.
 
  
   # Scoping (for complex changes)
