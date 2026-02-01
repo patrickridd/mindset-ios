@@ -44,7 +44,6 @@ public struct PaywallView: View {
                 DismissButton(action: viewModel.dismissButtonTapped)
                 Spacer()
             }
-            .padding(.horizontal)
             
             // Header
             VStack(spacing: MindsetLayout.spacing10) {
