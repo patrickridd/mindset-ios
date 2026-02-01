@@ -11,6 +11,7 @@ import SharedUtils
 import SwiftUI
 
 public struct MorningRitualView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @State private var viewModel: MorningRitualViewModel
     
     public init(viewModel: MorningRitualViewModel) {
@@ -20,7 +21,7 @@ public struct MorningRitualView: View {
     public var body: some View {
         ZStack {
             // Background stays behind everything
-            MindsetColors.backgroundGrouped
+            MindsetColors.backgroundGrouped(for: colorScheme)
                 .ignoresSafeArea()
             if viewModel.isLoading {
                 Spacer()
@@ -98,16 +99,16 @@ public struct MorningRitualView: View {
                     Text(prompt.category.displayName.uppercased())
                         .font(MindsetFonts.label)
                         .tracking(2)
-                        .foregroundStyle(MindsetColors.labelAccent)
+                        .foregroundStyle(MindsetColors.labelAccent(for: colorScheme))
                     
                     Text(prompt.headline)
                         .font(MindsetFonts.promptHeadline)
-                        .foregroundStyle(MindsetColors.textPrimaryAdaptive)
+                        .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
                 }
                 
                 Text(prompt.questionText)
                     .font(MindsetFonts.promptQuestion)
-                    .foregroundStyle(MindsetColors.textPrimaryAdaptive)
+                    .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
                 
@@ -131,7 +132,7 @@ public struct MorningRitualView: View {
                     }) {
                         Label("Get AI Reflection", systemImage: "sparkles")
                             .font(MindsetFonts.subheadline.weight(.bold))
-                            .foregroundStyle(viewModel.canProceed ? MindsetColors.labelAccent : MindsetColors.textDisabled)
+                            .foregroundStyle(viewModel.canProceed ? MindsetColors.labelAccent(for: colorScheme) : MindsetColors.textDisabled(for: colorScheme))
                             .padding(.horizontal, MindsetLayout.paddingStandard)
                             .padding(.vertical, MindsetLayout.spacing10)
                             .background(
@@ -162,7 +163,7 @@ public struct MorningRitualView: View {
         // Fixed height prevents the "shrinking" issue when keyboard appears
         .frame(minHeight: MindsetLayout.textEditorMinHeight)
         .padding(MindsetLayout.paddingMedium)
-        .background(RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).fill(MindsetColors.backgroundSecondary))
+        .background(RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).fill(MindsetColors.backgroundSecondary(for: colorScheme)))
         .overlay(RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).stroke(MindsetColors.stoicSlateSoft, lineWidth: MindsetLayout.borderWidth))
     }
     
@@ -170,10 +171,10 @@ public struct MorningRitualView: View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing5) {
             Label("Coach Tip", systemImage: "lightbulb.fill")
                 .font(MindsetFonts.captionBold)
-                .foregroundStyle(MindsetColors.labelAccent)
+                .foregroundStyle(MindsetColors.labelAccent(for: colorScheme))
             Text(tip)
                 .font(MindsetFonts.caption)
-                .foregroundStyle(MindsetColors.textSecondaryAdaptive)
+                .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -210,11 +211,11 @@ public struct MorningRitualView: View {
                         }
                     }
                     .frame(maxWidth: .infinity)
-                    .foregroundStyle(showEnabledStyle ? MindsetColors.textOnAccent : MindsetColors.textDisabled)
+                    .foregroundStyle(showEnabledStyle ? MindsetColors.textOnAccent(for: colorScheme) : MindsetColors.textDisabled(for: colorScheme))
                     .padding()
                     .background(
                         RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
-                            .fill(showEnabledStyle ? MindsetColors.accentOrange : MindsetColors.buttonDisabledBackground)
+                            .fill(showEnabledStyle ? MindsetColors.accentOrange : MindsetColors.buttonDisabledBackground(for: colorScheme))
                     )
                 }
                 .buttonStyle(.plain)

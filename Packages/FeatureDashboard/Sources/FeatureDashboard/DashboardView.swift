@@ -16,6 +16,7 @@ public struct DashboardView: View {
     @ObserveInjection var inject
     #endif
 
+    @Environment(\.colorScheme) private var colorScheme
     @State private var viewModel: DashboardViewModel
 
         public init(viewModel: DashboardViewModel) {
@@ -48,7 +49,7 @@ public struct DashboardView: View {
                                     Image(systemName: "sparkles")
                                 }
                                 .font(MindsetFonts.button)
-                                .foregroundStyle(MindsetColors.textOnAccent)
+                                .foregroundStyle(MindsetColors.textOnAccent(for: colorScheme))
                                 .frame(maxWidth: .infinity)
                                 .frame(height: MindsetLayout.buttonHeight)
                                 .background(Capsule().fill(MindsetColors.accentOrange))
@@ -58,7 +59,7 @@ public struct DashboardView: View {
                     }
                     .padding()
                 }
-                .background(MindsetColors.backgroundGrouped)
+                .background(MindsetColors.backgroundGrouped(for: colorScheme))
                 .navigationTitle("Mindset")
                 .task {
                     await viewModel.loadDashboardData()
@@ -73,11 +74,11 @@ public struct DashboardView: View {
             VStack(alignment: .leading) {
                 Text("Good Morning,")
                     .font(MindsetFonts.subheadline)
-                    .foregroundStyle(MindsetColors.textSecondaryAdaptive)
+                    .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
                 // Use the data from Onboarding!
                 Text(viewModel.userProfile?.userName ?? "Visionary")
                     .font(MindsetFonts.screenTitle)
-                    .foregroundStyle(MindsetColors.textPrimaryAdaptive)
+                    .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
             }
         }
         
@@ -103,7 +104,7 @@ public struct DashboardView: View {
     private func yesterdayBridge(text: String) -> some View {
         VStack(alignment: .leading) {
             Text("YESTERDAY'S FOCUS").font(MindsetFonts.labelUppercase).foregroundStyle(MindsetColors.accentOrange)
-            Text(text).font(MindsetFonts.subheadline).italic().foregroundStyle(MindsetColors.textPrimaryAdaptive).lineLimit(nil)
+            Text(text).font(MindsetFonts.subheadline).italic().foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme)).lineLimit(nil)
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -117,7 +118,7 @@ public struct DashboardView: View {
                 value: "\(viewModel.streakCount) Days",
                 icon: "flame.fill",
                 // Only light up the flame if they have an active streak
-                color: viewModel.streakCount > 0 ? MindsetColors.accentOrange : MindsetColors.textSecondaryAdaptive
+                color: viewModel.streakCount > 0 ? MindsetColors.accentOrange : MindsetColors.textSecondaryAdaptive(for: colorScheme)
             )
             
             statBox(
@@ -135,12 +136,12 @@ public struct DashboardView: View {
     private func statBox(title: String, value: String, icon: String, color: Color) -> some View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing10) {
             Image(systemName: icon).foregroundStyle(color)
-            Text(value).font(MindsetFonts.statValue).foregroundStyle(MindsetColors.textPrimaryAdaptive)
-            Text(title).font(MindsetFonts.caption).foregroundStyle(MindsetColors.textSecondaryAdaptive)
+            Text(value).font(MindsetFonts.statValue).foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
+            Text(title).font(MindsetFonts.caption).foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
-        .background(MindsetColors.backgroundSecondary)
+        .background(MindsetColors.backgroundSecondary(for: colorScheme))
         .cornerRadius(MindsetLayout.radiusCard)
     }
 }

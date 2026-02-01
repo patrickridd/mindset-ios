@@ -108,15 +108,15 @@ Use `MindsetColors`, `MindsetFonts`, and `MindsetLayout` from SharedUI for all F
 
 ### MindsetColors
 
-**Backgrounds:** `backgroundDark`, `backgroundDarkSoft`, `backgroundWarmAccent` (dark screens) • `backgroundGrouped`, `backgroundSecondary` (adaptive, light/dark)
+**Backgrounds:** `backgroundDark`, `backgroundDarkSoft`, `backgroundWarmAccent` (dark screens) • `backgroundGrouped(for:)`, `backgroundSecondary(for:)` (adaptive, pass `colorScheme`)
 
-**Text:** `textPrimary`, `textSecondary`, `textMuted` (dark BGs) • `textPrimaryAdaptive`, `textSecondaryAdaptive`, `textDisabled`, `textOnAccent`, `labelAccent` (adaptive)
+**Text:** `textPrimary`, `textSecondary`, `textMuted` (dark BGs) • `textPrimaryAdaptive(for:)`, `textSecondaryAdaptive(for:)`, `textDisabled(for:)`, `textOnAccent(for:)`, `labelAccent(for:)` (adaptive, pass `colorScheme`)
 
 **Accents:** `accentOrange`, `accentOrangeSoft`, `accentCoral` (motivation, CTAs, progress)
 
 **Success:** `successGreen`, `successEmerald` • **Stoic:** `stoicSlate`, `stoicSlateSoft` (borders, reflective content) • **Achievement:** `achievementGold` (XP, badges)
 
-**UI:** `borderSubtle`, `borderAccent`, `fillSubtle`, `progressInactive`, `buttonDisabledBackground`
+**UI:** `borderSubtle`, `borderAccent`, `fillSubtle`, `progressInactive`, `buttonDisabledBackground(for:)`, `dismissButtonIcon(for:)` (adaptive, pass `colorScheme`)
 
 ### MindsetFonts
 

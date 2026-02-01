@@ -10,6 +10,9 @@ import SwiftUI
 
 /// A dismiss button (X) aligned to the trailing edge, using design-system styling.
 public struct DismissButton: View {
+
+    @Environment(\.colorScheme) private var colorScheme
+
     let action: () -> Void
 
     public init(action: @escaping () -> Void) {
@@ -27,7 +30,7 @@ public struct DismissButton: View {
                     .resizable()
                     .frame(width: MindsetLayout.iconSmall, height: MindsetLayout.iconSmall)
                     .symbolRenderingMode(.hierarchical)
-                    .foregroundStyle(MindsetColors.textSecondary)
+                    .foregroundStyle(MindsetColors.dismissButtonIcon(for: colorScheme))
                     .padding(.trailing)
             }
         }

@@ -11,6 +11,8 @@ import SharedUtils
 import SwiftUI
 
 public struct RitualSuccessView: View {
+    @Environment(\.colorScheme) private var colorScheme
+
     let archetype: String
     let xpEarned: Int
     let onDismiss: () -> Void
@@ -67,7 +69,7 @@ public struct RitualSuccessView: View {
                     .padding(.horizontal)
             }
             .padding()
-            .background(RoundedRectangle(cornerRadius: MindsetLayout.radiusCardLarge).fill(MindsetColors.backgroundSecondary))
+            .background(RoundedRectangle(cornerRadius: MindsetLayout.radiusCardLarge).fill(MindsetColors.backgroundSecondary(for: colorScheme)))
             .padding(.horizontal)
 
             Spacer()
