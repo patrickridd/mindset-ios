@@ -13,7 +13,7 @@ import Observation
 @MainActor
 public final class OnboardingViewModel {
     private let userRepository: UserRepository
-    public var onboardingFinished: (() -> Void)?
+    public var onboardingFinished: ((NavigationState) -> Void)?
 
     public var currentStep = 0
     public var isCalculating = false
@@ -23,7 +23,12 @@ public final class OnboardingViewModel {
 
     public let questions = OnboardingQuestion.allQuestions
 
-    public init(userRepository: UserRepository, onboardingFinished: (() -> Void)?) {
+    public enum NavigationState {
+        case paywall
+        case home
+    }
+
+    public init(userRepository: UserRepository, onboardingFinished: ((NavigationState) -> Void)?) {
         self.userRepository = userRepository
         self.onboardingFinished = onboardingFinished
     }
@@ -49,7 +54,7 @@ public final class OnboardingViewModel {
             try? await Task.sleep(for: .seconds(2.5))
             
             isCalculating = false
-            onboardingFinished?()
+            onboardingFinished?(.paywall)
         }
     }
     
@@ -86,6 +91,6 @@ public final class OnboardingViewModel {
     }
 
     public func dismiss() {
-        onboardingFinished?()
+        onboardingFinished?(.home)
     }
 }

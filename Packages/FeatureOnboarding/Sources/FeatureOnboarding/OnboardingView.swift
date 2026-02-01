@@ -177,6 +177,6 @@ private struct CalculatingView: View {
 }
 
 #Preview {
-    let viewModel = OnboardingViewModel(userRepository: MockUserRepository()) {}
+    let viewModel = OnboardingViewModel(userRepository: MockUserRepository()) { _ in }
     return OnboardingView(viewModel: viewModel)
 }

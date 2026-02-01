@@ -27,8 +27,13 @@ struct AppViewFactory: MainViewFactory {
     func makeOnboardingView() -> AnyView {
         let viewModel = OnboardingViewModel(
             userRepository: userRepository,
-            onboardingFinished: {
-                coordinator.showHomeView()
+            onboardingFinished: { state in
+                switch state {
+                case .home:
+                    coordinator.showHomeView()
+                case .paywall:
+                    coordinator.showPaywall()
+                }
             })
         
         return AnyView(
