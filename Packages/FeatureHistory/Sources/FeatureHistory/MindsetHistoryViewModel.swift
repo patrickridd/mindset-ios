@@ -8,6 +8,8 @@
 import Domain
 import Observation
 import Foundation
+import SharedUtils
+import SharedUtils
 
 @Observable
 @MainActor
@@ -25,7 +27,7 @@ public final class MindsetHistoryViewModel {
         do {
             self.entries = try await repository.fetchAllEntries()
         } catch {
-            print("History load failed: \(error)")
+            DebugLogger.shared.add("❌ History load failed: \(error.localizedDescription)")
         }
         isLoading = false
     }

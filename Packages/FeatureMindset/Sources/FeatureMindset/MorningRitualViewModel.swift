@@ -8,6 +8,7 @@
 import Domain
 import Foundation
 import Observation
+import SharedUtils
 
 @MainActor
 @Observable
@@ -86,7 +87,7 @@ public final class MorningRitualViewModel {
             // Assigning to self.prompts triggers the UI update
             self.prompts = newPrompts
         } catch {
-            print("Setup failed: \(error)")
+            DebugLogger.shared.add("❌ Ritual setup failed: \(error.localizedDescription)")
             self.prompts = promptEngine.fetchPrompts(for: nil, completedCount: 0)
         }
         isLoading = false
@@ -175,7 +176,7 @@ public final class MorningRitualViewModel {
             }
             
         } catch {
-            print("Save failed: \(error)")
+            DebugLogger.shared.add("❌ Ritual save failed: \(error.localizedDescription)")
         }
         
         isLoading = false

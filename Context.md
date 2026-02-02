@@ -163,6 +163,39 @@ Use the **semantic** APIs for consistency. Prefer these over raw `impact(_:)` / 
 - **`HapticManager.success()`** — Flow or task completed (ritual done, onboarding done).
 - **`HapticManager.tick()`** — Light repeated feedback (progress/XP bar tick).
 
+### Logging (SharedUtils DebugLogger)
+
+**NEVER use print() in production code.** Use **`DebugLogger`** (SharedUtils) instead for all app-level logging.
+
+**Why DebugLogger is better:**
+- ✅ Visible in UI debug overlay (persistent, doesn't disappear)
+- ✅ Async, non-blocking (~0.1ms overhead vs print's blocking I/O)
+- ✅ Can be disabled in release builds
+- ✅ Helps remote debugging (users can take screenshots of debug overlay)
+- ✅ Secure (can sanitize sensitive data)
+
+**Usage:**
+```swift
+DebugLogger.shared.add("✅ User signed in: \(userID)")
+DebugLogger.shared.add("❌ Dashboard load failed: \(error.localizedDescription)")
+DebugLogger.shared.add("🔄 OAuth callback handled")
+```
+
+**When to use DebugLogger:**
+- Auth/navigation lifecycle (sign in, sign out, flow transitions)
+- Feature completion (ritual saved, onboarding done)
+- Critical errors that affect UX
+- State changes useful for debugging (e.g. OAuth callbacks)
+
+**When print() is acceptable:**
+- Mock/test code only (e.g. `MockAuthService`)
+- Never in production ViewModels, Views, Services, or Repositories
+
+**Best practices:**
+- Use emoji prefixes: ✅ success, ❌ errors, ⚠️ warnings, 📱 events, 🔄 state changes
+- Use `.localizedDescription` for errors (don't leak internal stack traces)
+- Sanitize sensitive data (URLs, tokens) before logging
+
 ### ViewModels (clean architecture)
 
 Keep ViewModels **clean**: they hold state and business logic only. Do **not** put presentation or View-layer concerns in ViewModels:

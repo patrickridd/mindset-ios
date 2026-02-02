@@ -8,6 +8,7 @@
 import SwiftUI
 import Data
 import Domain
+import SharedUtils
 import FeatureAuth
 import FeatureOnboarding
 import FeatureSubscription
@@ -31,11 +32,11 @@ struct AppViewFactory: MainViewFactory {
         let viewModel = SignInViewModel(
             authService: authService,
             onSignInSuccess: { userID in
-                print("✅ User signed in: \(userID)")
+                DebugLogger.shared.add("✅ User signed in: \(userID)")
                 coordinator.signInCompleted()
             },
             onSkip: {
-                print("⏭️ User skipped sign in (anonymous)")
+                DebugLogger.shared.add("⏭️ User skipped sign in (anonymous)")
                 coordinator.signInCompleted()
             }
         )

@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import SharedUI
+import SharedUtils
 import SwiftData
 import FirebaseCore
 import FeatureNavigation
@@ -92,9 +93,9 @@ struct MindsetApp: App {
                     // AuthService abstracts the provider-specific logic (Firebase, etc.)
                     let handled = authService.handleAuthCallback(url: url)
                     if handled {
-                        print("✅ AuthService handled OAuth callback: \(url)")
+                        DebugLogger.shared.add("✅ AuthService handled OAuth callback: \(url.scheme ?? "unknown")://...")
                     } else {
-                        print("⚠️ Unhandled URL: \(url)")
+                        DebugLogger.shared.add("⚠️ Unhandled URL: \(url)")
                     }
                 }
         }

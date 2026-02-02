@@ -125,13 +125,34 @@
   - Accessibility testing
 
 
-  # Essential Features
-  - Deep linking support
-  - Push notifications
-  - Background tasks
-  - Localization
-  - Error handling
-  - Analytics/logging
+ # Essential Features
+ - Deep linking support
+ - Push notifications
+ - Background tasks
+ - Localization
+ - Error handling
+ - Analytics/logging
+
+
+ # Logging & Debugging
+ - **NEVER use print() in production code** — print statements are an anti-pattern: blocking I/O, can't be disabled, leak sensitive data, only visible in Xcode console.
+ - **Use DebugLogger** (`SharedUtils`) for all app-level logging:
+   - `DebugLogger.shared.add("✅ Success message")` — visible in UI debug overlay, persistent, async, non-blocking
+   - Use emoji prefixes: ✅ success, ❌ errors, ⚠️ warnings, 📱 events, 🔄 state changes
+   - Use `.localizedDescription` for errors (don't leak internal details)
+   - Examples: auth callbacks, user sign-in/out, feature flow completion, critical errors
+ - **When DebugLogger is appropriate:**
+   - Auth/navigation lifecycle events (sign in, sign out, flow transitions)
+   - Feature completion (ritual saved, onboarding done)
+   - Critical errors that affect user experience
+   - State changes useful for debugging in the field (via debug overlay)
+ - **When print() is OK:**
+   - Mock/test code only (e.g. MockAuthService)
+   - Never in production ViewModels, Views, Services, or Repositories
+ - **Cost vs Benefit:**
+   - DebugLogger overhead: ~0.1ms per call (negligible)
+   - Benefit: UI visibility, persistence, can take screenshots, helps remote debugging
+   - Security: Sanitize sensitive data (e.g. URLs, tokens) before logging
 
 
   # Development Process

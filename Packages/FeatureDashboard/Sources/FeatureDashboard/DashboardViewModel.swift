@@ -8,6 +8,7 @@
 import Foundation
 import Domain
 import Observation
+import SharedUtils
 
 @Observable
 @MainActor
@@ -77,7 +78,7 @@ public final class DashboardViewModel {
             self.yesterdayGoal = bridgeResult ?? "Yesterday was a great start. Ready to go again?"
             
         } catch {
-            print("Dashboard load failed: \(error)")
+            DebugLogger.shared.add("❌ Dashboard load failed: \(error.localizedDescription)")
             // Fallback: If fetch fails, we keep existing values or set defaults
         }
         
