@@ -44,6 +44,9 @@ public enum MindsetFonts {
 
     // MARK: - Labels & Metadata (Sans)
 
+    /// Section headers — Settings, profile groups
+    public static let sectionHeader = Font.subheadline.weight(.semibold)
+
     /// Category labels — "BEST POSSIBLE SELF", "CURRENT GOAL"
     public static let label = Font.caption2.weight(.black)
 

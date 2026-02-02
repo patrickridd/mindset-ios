@@ -45,6 +45,7 @@ public final class MainCoordinator {
     public enum Tab {
         case dashboard
         case history
+        case profile
     }
 
     private(set) var rootState: RootState = .onboarding
@@ -141,6 +142,11 @@ public final class MainCoordinator {
     
     public func dismissSheet() {
         set(sheetState: nil)
+    }
+    
+    public func signOutCompleted() {
+        // Reset to auth screen
+        set(rootState: .auth)
     }
 
     private func set(rootState: RootState) {

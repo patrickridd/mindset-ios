@@ -42,6 +42,11 @@ public enum MindsetColors {
             return Color(red: 1.0, green: 0.995, blue: 0.97)
         }
     }
+    
+    /// Card background — alias for backgroundSecondary for semantic clarity
+    public static func backgroundCard(for colorScheme: ColorScheme) -> Color {
+        return backgroundSecondary(for: colorScheme)
+    }
 
     // MARK: - Text
 
@@ -137,6 +142,9 @@ public enum MindsetColors {
 
     /// Coral gradient start — softer than pure orange
     public static let accentCoral = Color(red: 1.0, green: 0.55, blue: 0.35)
+    
+    /// Blue accent — cloud sync, information, calm highlights
+    public static let accentBlue = Color(red: 0.25, green: 0.55, blue: 0.95)
 
     // MARK: - Success & Growth
 

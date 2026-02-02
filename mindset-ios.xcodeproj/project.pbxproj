@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2134C6C22F26A14700CB6D8B /* SharedUI in Frameworks */ = {isa = PBXBuildFile; productRef = 2134C6C12F26A14700CB6D8B /* SharedUI */; };
+		213E05A82F3045D4009223A6 /* FeatureUserProfile in Frameworks */ = {isa = PBXBuildFile; productRef = 213E05A72F3045D4009223A6 /* FeatureUserProfile */; };
 		213EB3652F0F5C0B00721D70 /* FeatureOnboarding in Frameworks */ = {isa = PBXBuildFile; productRef = 213EB3642F0F5C0B00721D70 /* FeatureOnboarding */; };
 		214565412F3034E500C4DB49 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 214565402F3034E500C4DB49 /* FirebaseAuth */; };
 		214565432F3034F600C4DB49 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 214565422F3034F600C4DB49 /* FirebaseFirestore */; };
@@ -91,6 +92,7 @@
 				213EB3652F0F5C0B00721D70 /* FeatureOnboarding in Frameworks */,
 				21D3BCC02F2FE115005A8D2F /* FeatureAuth in Frameworks */,
 				2187FBA92F0A1E6D00C028A9 /* Data in Frameworks */,
+				213E05A82F3045D4009223A6 /* FeatureUserProfile in Frameworks */,
 				21BA432D2F0DEDEF0013B0C9 /* FeatureMindset in Frameworks */,
 				2198ED922F232D0100C41E8E /* SharedUtils in Frameworks */,
 				214565412F3034E500C4DB49 /* FirebaseAuth in Frameworks */,
@@ -181,6 +183,7 @@
 				21D3BCBF2F2FE115005A8D2F /* FeatureAuth */,
 				214565402F3034E500C4DB49 /* FirebaseAuth */,
 				214565422F3034F600C4DB49 /* FirebaseFirestore */,
+				213E05A72F3045D4009223A6 /* FeatureUserProfile */,
 			);
 			productName = "mindset-ios";
 			productReference = 21DE280D2F08CCB900266CF8 /* mindset-ios.app */;
@@ -279,6 +282,7 @@
 				21D3BCBE2F2FE0C8005A8D2F /* XCLocalSwiftPackageReference "Packages/FeatureAuth" */,
 				2145653F2F3034C300C4DB49 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				21E0DB3E2F30362E004FC166 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				213E05A62F3045BA009223A6 /* XCLocalSwiftPackageReference "Packages/FeatureUserProfile" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 21DE280E2F08CCB900266CF8 /* Products */;
@@ -690,6 +694,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
+		213E05A62F3045BA009223A6 /* XCLocalSwiftPackageReference "Packages/FeatureUserProfile" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/FeatureUserProfile;
+		};
 		213EB3662F0F611700721D70 /* XCLocalSwiftPackageReference "Packages/FeatureNavigation" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/FeatureNavigation;
@@ -768,6 +776,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 215C9FBF2F269F2100AE535F /* XCLocalSwiftPackageReference "Packages/SharedUI" */;
 			productName = SharedUI;
+		};
+		213E05A72F3045D4009223A6 /* FeatureUserProfile */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 213E05A62F3045BA009223A6 /* XCLocalSwiftPackageReference "Packages/FeatureUserProfile" */;
+			productName = FeatureUserProfile;
 		};
 		213EB3642F0F5C0B00721D70 /* FeatureOnboarding */ = {
 			isa = XCSwiftPackageProductDependency;

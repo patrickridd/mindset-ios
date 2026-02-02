@@ -15,6 +15,7 @@ import FeatureDashboard
 import FeatureMindset
 import FeatureNavigation
 import FeatureHistory
+import FeatureUserProfile
 
 struct AppViewFactory: MainViewFactory {
     let coordinator: MainCoordinator
@@ -87,11 +88,20 @@ struct AppViewFactory: MainViewFactory {
             })
         
         let historyViewModel = MindsetHistoryViewModel(repository: mindsetRepository)
+        
+        let profileViewModel = UserProfileViewModel(
+            authService: authService,
+            userRepository: userRepository,
+            onSignOut: {
+                coordinator.signOutCompleted()
+            }
+        )
 
         return AnyView(MainTabView(
             coordinator: coordinator,
             dashboardView: AnyView(DashboardView(viewModel: dashboardViewModel)),
-            historyView: AnyView(MindsetHistoryView(viewModel: historyViewModel)))
+            historyView: AnyView(MindsetHistoryView(viewModel: historyViewModel)),
+            profileView: AnyView(UserProfileView(viewModel: profileViewModel)))
         )
     }
 

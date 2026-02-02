@@ -11,11 +11,18 @@ public struct MainTabView: View {
     @Bindable var coordinator: MainCoordinator
     private let dashboardView: AnyView
     private let historyView: AnyView
+    private let profileView: AnyView
     
-    public init(coordinator: MainCoordinator, dashboardView: AnyView, historyView: AnyView) {
+    public init(
+        coordinator: MainCoordinator,
+        dashboardView: AnyView,
+        historyView: AnyView,
+        profileView: AnyView
+    ) {
         self.coordinator = coordinator
         self.dashboardView = dashboardView
         self.historyView = historyView
+        self.profileView = profileView
     }
     
     public var body: some View {
@@ -27,6 +34,10 @@ public struct MainTabView: View {
             historyView
                 .tabItem { Label("History", systemImage: "calendar") }
                 .tag(MainCoordinator.Tab.history)
+            
+            profileView
+                .tabItem { Label("Profile", systemImage: "person.crop.circle") }
+                .tag(MainCoordinator.Tab.profile)
         }
     }
 }
