@@ -10,6 +10,7 @@ import AuthenticationServices
 import Observation
 import CryptoKit
 import Domain
+import SharedUtils
 
 @Observable
 @MainActor
@@ -99,10 +100,12 @@ public final class SignInViewModel {
             // Sign in via AuthService protocol
             let userID = try await authService.signIn(with: authCredential)
             
+            DebugLogger.shared.add("✅ Apple sign-in successful: \(userID)")
             isSigningIn = false
             onSignInSuccess(userID)
             
         } catch {
+            DebugLogger.shared.add("❌ Apple sign-in failed: \(error.localizedDescription)")
             isSigningIn = false
             errorMessage = "Sign in failed: \(error.localizedDescription)"
         }
@@ -120,12 +123,14 @@ public final class SignInViewModel {
             // Sign in via AuthService protocol
             let userID = try await authService.signIn(with: credential)
             
+            DebugLogger.shared.add("✅ Anonymous sign-in successful: \(userID)")
             isSigningIn = false
             onSignInSuccess(userID)
             
         } catch {
+            DebugLogger.shared.add("❌ Anonymous sign-in failed: \(error.localizedDescription)")
             isSigningIn = false
-            errorMessage = "Anonymous sign in failed. Please use Sign in with Apple."
+            errorMessage = "Anonymous sign in failed: \(error.localizedDescription)"
         }
     }
     
@@ -147,10 +152,12 @@ public final class SignInViewModel {
             // Sign in via AuthService protocol
             let userID = try await authService.signIn(with: credential)
             
+            DebugLogger.shared.add("✅ Google sign-in successful: \(userID)")
             isSigningIn = false
             onSignInSuccess(userID)
             
         } catch {
+            DebugLogger.shared.add("❌ Google sign-in failed: \(error.localizedDescription)")
             isSigningIn = false
             errorMessage = "Google sign in failed: \(error.localizedDescription)"
         }
