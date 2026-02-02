@@ -49,14 +49,9 @@ struct AppViewFactory: MainViewFactory {
     func makeOnboardingView() -> AnyView {
         let viewModel = OnboardingViewModel(
             userRepository: userRepository,
-            subscriptionService: subscriptionService,
-            onboardingFinished: { state in
-                switch state {
-                case .home:
-                    coordinator.showHomeView()
-                case .paywall:
-                    coordinator.showPaywall()
-                }
+            onboardingFinished: {
+                // Let MainCoordinator handle Auth → Paywall → Home flow
+                coordinator.onboardingFinished()
             })
         
         return AnyView(
@@ -68,7 +63,7 @@ struct AppViewFactory: MainViewFactory {
         let viewModel = PaywallViewModel(
             subscriptionService: subscriptionService,
             onPurchaseFinished: {
-                coordinator.showHomeView()
+                // Dismiss paywall overlay - already at .home root state
                 coordinator.dismissFullScreen()
             })
         return AnyView(

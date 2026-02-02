@@ -74,25 +74,30 @@ public final class MainCoordinator {
     }
 
     public func evaluateInitialState() async {
-        // 1. Check if user is authenticated
+        // Quiz First, Auth Last Strategy (Duolingo-style)
+        
+        // 1. Check if Onboarding is complete FIRST
+        let hasCompletedOnboarding = UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")
+        
+        if !hasCompletedOnboarding {
+            // Show onboarding (quiz + content) regardless of auth status
+            set(rootState: .onboarding)
+            return
+        }
+        
+        // 2. Check if user is authenticated
         let isAuthenticated = await authService.isAuthenticated()
         
         if !isAuthenticated {
+            // Onboarding complete but not signed in yet → show auth
             set(rootState: .auth)
             return
         }
         
-        // 2. Check if Onboarding is complete
-        let isFirstRun = !UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")
-        
-        if isFirstRun {
-            set(rootState: .onboarding)
-            return
-        } else {
-            set(rootState: .home)
-        }
+        // 3. User is authenticated and onboarding complete → show home
+        set(rootState: .home)
 
-        // 3. Check subscription status
+        // 4. Check subscription status and show paywall if needed
         let isPro = await subscriptionService.checkSubscriptionStatus()
 
         if !isPro {
@@ -103,13 +108,15 @@ public final class MainCoordinator {
     // Navigation Actions
     
     public func signInCompleted() {
-        // After sign in, show onboarding
-        set(rootState: .onboarding)
+        // Step 12 complete → transition to home, then show Paywall (step 13)
+        set(rootState: .home)
+        set(fullScreenState: .paywall)
     }
 
     public func onboardingFinished() {
+        // Steps 1-11 complete → now show Auth (step 12)
         UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
-        set(fullScreenState: .paywall)
+        set(rootState: .auth)
     }
 
     public func showHomeView() {

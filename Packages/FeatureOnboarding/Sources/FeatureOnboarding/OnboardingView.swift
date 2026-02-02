@@ -179,8 +179,7 @@ private struct CalculatingView: View {
 #Preview {
     let viewModel = OnboardingViewModel(
         userRepository: MockUserRepository(),
-        subscriptionService: MockSubscriptionService(),
-        onboardingFinished: { _ in }
+        onboardingFinished: nil
     )
     return OnboardingView(viewModel: viewModel)
 }

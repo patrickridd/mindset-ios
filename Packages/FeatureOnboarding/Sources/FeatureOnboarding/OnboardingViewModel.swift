@@ -13,8 +13,7 @@ import Observation
 @MainActor
 public final class OnboardingViewModel {
     private let userRepository: UserRepository
-    private let subscriptionService: SubscriptionService
-    public var onboardingFinished: ((NavigationState) -> Void)?
+    public var onboardingFinished: (() -> Void)?
 
     public var currentStep = 0
     public var isCalculating = false
@@ -24,18 +23,11 @@ public final class OnboardingViewModel {
 
     public let questions = OnboardingQuestion.allQuestions
 
-    public enum NavigationState {
-        case paywall
-        case home
-    }
-
     public init(
         userRepository: UserRepository,
-        subscriptionService: SubscriptionService,
-        onboardingFinished: ((NavigationState) -> Void)?
+        onboardingFinished: (() -> Void)?
     ) {
         self.userRepository = userRepository
-        self.subscriptionService = subscriptionService
         self.onboardingFinished = onboardingFinished
     }
 
@@ -59,11 +51,9 @@ public final class OnboardingViewModel {
             
             try? await Task.sleep(for: .seconds(2.5))
             
-            // Check subscription status to determine next screen
-            let hasPremium = await subscriptionService.checkSubscriptionStatus()
-            
             isCalculating = false
-            onboardingFinished?(hasPremium ? .home : .paywall)
+            // Notify completion - MainCoordinator will handle Auth → Paywall → Home flow
+            onboardingFinished?()
         }
     }
     
@@ -100,6 +90,6 @@ public final class OnboardingViewModel {
     }
 
     public func dismiss() {
-        onboardingFinished?(.home)
+        onboardingFinished?()
     }
 }
