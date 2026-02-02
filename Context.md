@@ -211,7 +211,28 @@ ViewModels stay testable and reusable; Views own haptics, animations, and visual
 - **Access:** `AppConfig.geminiAPIKey`, `AppConfig.firebaseAPIKey`.
 - **Git Safety:** Config.config file is gitignored; contains the source `GEMINI_API_KEY` and Firebase config.
 
-## 15. Firebase Integration (Auth + Firestore)
+## 15. Documentation
+
+All guides, architecture docs, and troubleshooting resources are organized in the `docs/` directory:
+
+```
+docs/
+├── README.md              # Documentation index and navigation
+├── architecture/          # System design and patterns
+├── setup/                # Configuration and installation
+├── guides/               # Implementation how-tos
+└── troubleshooting/      # Common issues and fixes
+```
+
+**Key documentation:**
+- **Architecture:** Auth decoupling, onboarding flow design
+- **Setup:** Firebase configuration, authentication providers
+- **Guides:** Google Sign In via Firebase, implementation tutorials
+- **Troubleshooting:** Anonymous sign-in, OAuth callbacks, Firebase errors
+
+See [docs/README.md](docs/README.md) for complete index and quick start guide.
+
+## 16. Firebase Integration (Auth + Firestore)
 
 ### Setup
 1. **Firebase Project:** Created at console.firebase.google.com
