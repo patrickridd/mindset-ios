@@ -8,6 +8,7 @@
 import SwiftUI
 import Data
 import Domain
+import FeatureAuth
 import FeatureOnboarding
 import FeatureSubscription
 import FeatureDashboard
@@ -17,12 +18,31 @@ import FeatureHistory
 
 struct AppViewFactory: MainViewFactory {
     let coordinator: MainCoordinator
+    let authService: AuthService
     let userRepository: UserRepository
     let mindsetRepository: MindsetRepository
     let getStreakUseCase: GetStreakUseCase
     let addMindsetUseCase: AddMindsetUseCase
     let getYesterdayGoalUseCase: GetYesterdayGoalUseCase
     let subscriptionService: SubscriptionService
+    
+    func makeSignInView() -> AnyView {
+        let viewModel = SignInViewModel(
+            authService: authService,
+            onSignInSuccess: { userID in
+                print("✅ User signed in: \(userID)")
+                coordinator.signInCompleted()
+            },
+            onSkip: {
+                print("⏭️ User skipped sign in (anonymous)")
+                coordinator.signInCompleted()
+            }
+        )
+        
+        return AnyView(
+            SignInView(viewModel: viewModel)
+        )
+    }
     
     func makeOnboardingView() -> AnyView {
         let viewModel = OnboardingViewModel(

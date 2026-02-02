@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import SharedUI
 import SwiftData
+import FirebaseCore
 import FeatureNavigation
 import FeatureDashboard
 import FeatureOnboarding
@@ -32,11 +33,15 @@ struct MindsetApp: App {
     
     /// Services
     let subscriptionService: SubscriptionService
+    let authService: AuthService
 
     @State private var coordinator: MainCoordinator
     private let viewFactory: AppViewFactory
 
     init() {
+        // 0. Initialize Firebase FIRST (before any Firebase services)
+        FirebaseApp.configure()
+        
         // 1. Bottom Level: Database
         container = try! ModelContainer(for: SDUserProfile.self, SDMindsetEntry.self)
         
@@ -52,9 +57,12 @@ struct MindsetApp: App {
         addMindsetUseCase = AddMindsetUseCase(repository: mindsetRepository)
         getYesterdayGoalUseCase = GetYesterdayGoalUseCase(repository: mindsetRepository)
 
+        // 5. Services (RevenueCat, Firebase Auth)
         subscriptionService = RevenueCatSubscriptionService()
+        authService = FirebaseAuthService()
         
         let coord = MainCoordinator(
+            authService: authService,
             subscriptionService: subscriptionService,
             mindsetRepository: mindsetRepository,
             userRepository: userRepository
@@ -65,6 +73,7 @@ struct MindsetApp: App {
         // Initialize the factory with all the dependencies it needs to "assemble" views
         self.viewFactory = AppViewFactory(
             coordinator: coord,
+            authService: authService,
             userRepository: userRepository,
             mindsetRepository: mindsetRepository,
             getStreakUseCase: getStreakUseCase,

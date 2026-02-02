@@ -64,6 +64,9 @@ fastlane/test_output
 # Config
 Config.xcconfig
 
+# Firebase
+GoogleService-Info.plist
+
 buildServer.json
 .build/
 DerivedData/

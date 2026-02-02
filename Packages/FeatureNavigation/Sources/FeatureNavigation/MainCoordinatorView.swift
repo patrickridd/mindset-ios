@@ -9,6 +9,7 @@ import SwiftUI
 import Domain
 
 public protocol MainViewFactory {
+    func makeSignInView() -> AnyView
     func makeOnboardingView() -> AnyView
     func makePaywallView() -> AnyView
     func makeHomeView() -> AnyView
@@ -29,8 +30,9 @@ public struct MainCoordinatorView: View {
         ZStack {
             // Root Layer
             switch coordinator.rootState {
+            case .auth:       factory.makeSignInView()
             case .onboarding: factory.makeOnboardingView()
-            case .home:  factory.makeHomeView()
+            case .home:       factory.makeHomeView()
             case .mindset:    factory.makeMindsetView()
             }
         }

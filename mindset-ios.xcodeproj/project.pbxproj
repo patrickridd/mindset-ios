@@ -11,6 +11,7 @@
 		213EB3652F0F5C0B00721D70 /* FeatureOnboarding in Frameworks */ = {isa = PBXBuildFile; productRef = 213EB3642F0F5C0B00721D70 /* FeatureOnboarding */; };
 		214565412F3034E500C4DB49 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 214565402F3034E500C4DB49 /* FirebaseAuth */; };
 		214565432F3034F600C4DB49 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 214565422F3034F600C4DB49 /* FirebaseFirestore */; };
+		215DE83C2F303DAE00E04640 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 215DE83B2F303DAE00E04640 /* GoogleService-Info.plist */; };
 		2187FBA62F0A1E5400C028A9 /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = 2187FBA52F0A1E5400C028A9 /* Domain */; };
 		2187FBA92F0A1E6D00C028A9 /* Data in Frameworks */ = {isa = PBXBuildFile; productRef = 2187FBA82F0A1E6D00C028A9 /* Data */; };
 		2198ED922F232D0100C41E8E /* SharedUtils in Frameworks */ = {isa = PBXBuildFile; productRef = 2198ED912F232D0100C41E8E /* SharedUtils */; };
@@ -41,6 +42,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		215DE83B2F303DAE00E04640 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		21CE7A0A2F1DE4E300178A6F /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		21DE280D2F08CCB900266CF8 /* mindset-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "mindset-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		21DE281C2F08CCBA00266CF8 /* mindset-iosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "mindset-iosTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -125,6 +127,7 @@
 				21DE28392F08CD8200266CF8 /* Frameworks */,
 				21DE280E2F08CCB900266CF8 /* Products */,
 				21CE7A0A2F1DE4E300178A6F /* Config.xcconfig */,
+				215DE83B2F303DAE00E04640 /* GoogleService-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -295,6 +298,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				21CE7A0B2F1DE4E300178A6F /* Config.xcconfig in Resources */,
+				215DE83C2F303DAE00E04640 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -480,10 +484,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "mindset-ios/mindset-ios.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 93224DXRHZ;
+				DEVELOPMENT_TEAM = CVQEUYD92N;
 				EMIT_FRONTEND_COMMAND_LINES = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -522,10 +527,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "mindset-ios/mindset-ios.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 93224DXRHZ;
+				DEVELOPMENT_TEAM = CVQEUYD92N;
 				EMIT_FRONTEND_COMMAND_LINES = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

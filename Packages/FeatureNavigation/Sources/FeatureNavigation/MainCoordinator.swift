@@ -15,6 +15,7 @@ public final class MainCoordinator {
     
     // Exclusive primary screens
     public enum RootState {
+        case auth
         case onboarding
         case home
         case mindset
@@ -51,11 +52,18 @@ public final class MainCoordinator {
     public var sheetState: SheetState?
     public var selectedTab: Tab = .dashboard
     
+    private let authService: AuthService
     private let subscriptionService: SubscriptionService
     private let mindsetRepository: MindsetRepository
     private let userProfileRepository: UserRepository
 
-    public init(subscriptionService: SubscriptionService, mindsetRepository: MindsetRepository, userRepository: UserRepository) {
+    public init(
+        authService: AuthService,
+        subscriptionService: SubscriptionService,
+        mindsetRepository: MindsetRepository,
+        userRepository: UserRepository
+    ) {
+        self.authService = authService
         self.subscriptionService = subscriptionService
         self.mindsetRepository = mindsetRepository
         self.userProfileRepository = userRepository
@@ -65,7 +73,15 @@ public final class MainCoordinator {
     }
 
     public func evaluateInitialState() async {
-        // 1. Check if Onboarding is complete (usually from UserDefaults/Supabase)
+        // 1. Check if user is authenticated
+        let isAuthenticated = await authService.isAuthenticated()
+        
+        if !isAuthenticated {
+            set(rootState: .auth)
+            return
+        }
+        
+        // 2. Check if Onboarding is complete
         let isFirstRun = !UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")
         
         if isFirstRun {
@@ -75,6 +91,7 @@ public final class MainCoordinator {
             set(rootState: .home)
         }
 
+        // 3. Check subscription status
         let isPro = await subscriptionService.checkSubscriptionStatus()
 
         if !isPro {
@@ -83,6 +100,11 @@ public final class MainCoordinator {
     }
     
     // Navigation Actions
+    
+    public func signInCompleted() {
+        // After sign in, show onboarding
+        set(rootState: .onboarding)
+    }
 
     public func onboardingFinished() {
         UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
