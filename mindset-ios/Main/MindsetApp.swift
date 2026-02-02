@@ -87,6 +87,16 @@ struct MindsetApp: App {
         WindowGroup {
             MainCoordinatorView(coordinator: coordinator, factory: viewFactory)
                 .withDebugOverlay()
+                .onOpenURL { url in
+                    // Delegate OAuth callback handling to AuthService (clean architecture!)
+                    // AuthService abstracts the provider-specific logic (Firebase, etc.)
+                    let handled = authService.handleAuthCallback(url: url)
+                    if handled {
+                        print("✅ AuthService handled OAuth callback: \(url)")
+                    } else {
+                        print("⚠️ Unhandled URL: \(url)")
+                    }
+                }
         }
         .modelContainer(container)
     }

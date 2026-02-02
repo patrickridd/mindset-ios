@@ -74,4 +74,10 @@ public final class MockAuthService: AuthService {
     public func isAuthenticated() async -> Bool {
         return shouldSucceed
     }
+    
+    nonisolated public func handleAuthCallback(url: URL) -> Bool {
+        // Mock implementation - always return true for testing
+        print("📱 [MockAuthService] Handling auth callback: \(url)")
+        return true
+    }
 }

@@ -51,6 +51,12 @@ public final class FirebaseAuthService: AuthService {
         return Auth.auth().currentUser != nil
     }
     
+    public func handleAuthCallback(url: URL) -> Bool {
+        // Delegate OAuth callback handling to Firebase
+        // Firebase will complete the sign-in flow if the URL matches its OAuth redirect
+        return Auth.auth().canHandle(url)
+    }
+    
     // MARK: - Private Implementation Details
     
     private func signInWithOAuth(
