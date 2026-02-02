@@ -7,9 +7,9 @@
 
 import Foundation
 import AuthenticationServices
-import FirebaseAuth
 import Observation
 import CryptoKit
+import Domain
 
 @Observable
 @MainActor
@@ -17,13 +17,16 @@ public final class SignInViewModel {
     public var isSigningIn = false
     public var errorMessage: String?
     
-    private let onSignInSuccess: (String) -> Void  // Firebase UID
+    private let authService: AuthService
+    private let onSignInSuccess: (String) -> Void  // User ID
     private let onSkip: () -> Void
     
     public init(
+        authService: AuthService,
         onSignInSuccess: @escaping (String) -> Void,
         onSkip: @escaping () -> Void
     ) {
+        self.authService = authService
         self.onSignInSuccess = onSignInSuccess
         self.onSkip = onSkip
     }
@@ -72,30 +75,32 @@ public final class SignInViewModel {
                 throw NSError(domain: "SignInError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unable to serialize token"])
             }
             
-            // Create Firebase credential
-            let firebaseCredential = OAuthProvider.credential(
-                providerID: .apple,
-                idToken: idTokenString,
-                rawNonce: nonce
-            )
-            
-            // Sign in to Firebase
-            let result = try await Auth.auth().signIn(with: firebaseCredential)
-            let firebaseUID = result.user.uid
-            
-            // Store user info if available (first sign-in only)
-            if let fullName = credential.fullName {
-                let displayName = [fullName.givenName, fullName.familyName]
+            // Extract full name if available (first sign-in only)
+            var fullName: String?
+            if let name = credential.fullName {
+                let displayName = [name.givenName, name.familyName]
                     .compactMap { $0 }
                     .joined(separator: " ")
                 
                 if !displayName.isEmpty {
+                    fullName = displayName
                     UserDefaults.standard.set(displayName, forKey: "userName")
                 }
             }
             
+            // Create generic OAuth credential (no mention of Apple in Domain!)
+            let authCredential = AuthCredential.oauth(
+                identityToken: idTokenString,
+                nonce: nonce,
+                accessToken: nil,
+                fullName: fullName
+            )
+            
+            // Sign in via AuthService protocol
+            let userID = try await authService.signIn(with: authCredential)
+            
             isSigningIn = false
-            onSignInSuccess(firebaseUID)
+            onSignInSuccess(userID)
             
         } catch {
             isSigningIn = false
@@ -109,16 +114,45 @@ public final class SignInViewModel {
         isSigningIn = true
         
         do {
-            // Sign in anonymously to Firebase (for trial/testing)
-            let result = try await Auth.auth().signInAnonymously()
-            let firebaseUID = result.user.uid
+            // Create anonymous credential
+            let credential = AuthCredential.anonymous
+            
+            // Sign in via AuthService protocol
+            let userID = try await authService.signIn(with: credential)
             
             isSigningIn = false
-            onSignInSuccess(firebaseUID)
+            onSignInSuccess(userID)
             
         } catch {
             isSigningIn = false
             errorMessage = "Anonymous sign in failed. Please use Sign in with Apple."
+        }
+    }
+    
+    // MARK: - Sign in with Google
+    
+    public func signInWithGoogle(idToken: String, accessToken: String) async {
+        isSigningIn = true
+        
+        do {
+            // Create generic OAuth credential (Firebase will handle the web flow)
+            // Empty tokens trigger Firebase's built-in web OAuth
+            let credential = AuthCredential.oauth(
+                identityToken: "",  // Not needed for Firebase web flow
+                nonce: nil,          // Apple only
+                accessToken: nil,    // Not needed for Firebase web flow
+                fullName: nil
+            )
+            
+            // Sign in via AuthService protocol
+            let userID = try await authService.signIn(with: credential)
+            
+            isSigningIn = false
+            onSignInSuccess(userID)
+            
+        } catch {
+            isSigningIn = false
+            errorMessage = "Google sign in failed: \(error.localizedDescription)"
         }
     }
     

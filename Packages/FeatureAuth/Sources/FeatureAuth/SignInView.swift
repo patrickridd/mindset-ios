@@ -9,6 +9,7 @@ import SwiftUI
 import AuthenticationServices
 import SharedUI
 import SharedUtils
+import Domain
 
 public struct SignInView: View {
 #if DEBUG
@@ -54,6 +55,7 @@ public struct SignInView: View {
                 
                 // Title
                 Text("Your Mindset Profile is Ready")
+                    .lineLimit(0)
                     .font(MindsetFonts.displayHeadline)
                     .foregroundStyle(MindsetColors.textPrimary)
                     .multilineTextAlignment(.center)
@@ -70,7 +72,7 @@ public struct SignInView: View {
                 
                 // Benefits List
                 VStack(alignment: .leading, spacing: MindsetLayout.spacing16) {
-                    benefitRow(icon: "checkmark.shield.fill", text: "Secure & private with Apple")
+                    benefitRow(icon: "checkmark.shield.fill", text: "Secure & private authentication")
                     benefitRow(icon: "icloud.fill", text: "Sync across all your devices")
                     benefitRow(icon: "chart.line.uptrend.xyaxis", text: "Never lose your streak or progress")
                 }
@@ -92,6 +94,34 @@ public struct SignInView: View {
                 .frame(height: MindsetLayout.buttonHeight)
                 .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
                 .disabled(viewModel.isSigningIn)
+                
+                // Google Sign In Button
+                GoogleSignInButton { idToken, accessToken in
+                    Task {
+                        await viewModel.signInWithGoogle(
+                            idToken: idToken,
+                            accessToken: accessToken
+                        )
+                    }
+                }
+                .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
+                .disabled(viewModel.isSigningIn)
+                
+                // OR divider
+                HStack(spacing: MindsetLayout.spacing12) {
+                    Rectangle()
+                        .fill(MindsetColors.borderSubtle)
+                        .frame(height: 1)
+                    
+                    Text("OR")
+                        .font(MindsetFonts.caption)
+                        .foregroundStyle(MindsetColors.textMuted)
+                    
+                    Rectangle()
+                        .fill(MindsetColors.borderSubtle)
+                        .frame(height: 1)
+                }
+                .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
                 
                 // Continue without account (optional)
                 Button {
@@ -207,7 +237,9 @@ public struct SignInView: View {
 }
 
 #Preview {
+    let mockAuthService = MockAuthService()
     let viewModel = SignInViewModel(
+        authService: mockAuthService,
         onSignInSuccess: { _ in },
         onSkip: {}
     )

@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		2134C6C22F26A14700CB6D8B /* SharedUI in Frameworks */ = {isa = PBXBuildFile; productRef = 2134C6C12F26A14700CB6D8B /* SharedUI */; };
 		213EB3652F0F5C0B00721D70 /* FeatureOnboarding in Frameworks */ = {isa = PBXBuildFile; productRef = 213EB3642F0F5C0B00721D70 /* FeatureOnboarding */; };
+		214565412F3034E500C4DB49 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 214565402F3034E500C4DB49 /* FirebaseAuth */; };
+		214565432F3034F600C4DB49 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 214565422F3034F600C4DB49 /* FirebaseFirestore */; };
 		2187FBA62F0A1E5400C028A9 /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = 2187FBA52F0A1E5400C028A9 /* Domain */; };
 		2187FBA92F0A1E6D00C028A9 /* Data in Frameworks */ = {isa = PBXBuildFile; productRef = 2187FBA82F0A1E6D00C028A9 /* Data */; };
 		2198ED922F232D0100C41E8E /* SharedUtils in Frameworks */ = {isa = PBXBuildFile; productRef = 2198ED912F232D0100C41E8E /* SharedUtils */; };
@@ -82,12 +84,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				21B9DED32F0F5BE6000FA365 /* FeatureSubscription in Frameworks */,
+				214565432F3034F600C4DB49 /* FirebaseFirestore in Frameworks */,
 				21996CD02F0F612F00438DBD /* FeatureNavigation in Frameworks */,
 				213EB3652F0F5C0B00721D70 /* FeatureOnboarding in Frameworks */,
 				21D3BCC02F2FE115005A8D2F /* FeatureAuth in Frameworks */,
 				2187FBA92F0A1E6D00C028A9 /* Data in Frameworks */,
 				21BA432D2F0DEDEF0013B0C9 /* FeatureMindset in Frameworks */,
 				2198ED922F232D0100C41E8E /* SharedUtils in Frameworks */,
+				214565412F3034E500C4DB49 /* FirebaseAuth in Frameworks */,
 				21AAACCD2F1DEF3600BFF7D4 /* FeatureHistory in Frameworks */,
 				2134C6C22F26A14700CB6D8B /* SharedUI in Frameworks */,
 				21F0B9E02F0F67B1008710CE /* FeatureDashboard in Frameworks */,
@@ -172,6 +176,8 @@
 				2198ED912F232D0100C41E8E /* SharedUtils */,
 				2134C6C12F26A14700CB6D8B /* SharedUI */,
 				21D3BCBF2F2FE115005A8D2F /* FeatureAuth */,
+				214565402F3034E500C4DB49 /* FirebaseAuth */,
+				214565422F3034F600C4DB49 /* FirebaseFirestore */,
 			);
 			productName = "mindset-ios";
 			productReference = 21DE280D2F08CCB900266CF8 /* mindset-ios.app */;
@@ -268,6 +274,8 @@
 				2198ED902F232C8D00C41E8E /* XCLocalSwiftPackageReference "Packages/SharedUtils" */,
 				215C9FBF2F269F2100AE535F /* XCLocalSwiftPackageReference "Packages/SharedUI" */,
 				21D3BCBE2F2FE0C8005A8D2F /* XCLocalSwiftPackageReference "Packages/FeatureAuth" */,
+				2145653F2F3034C300C4DB49 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				21E0DB3E2F30362E004FC166 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 21DE280E2F08CCB900266CF8 /* Products */;
@@ -723,12 +731,28 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		2145653F2F3034C300C4DB49 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.8.0;
+			};
+		};
 		21CE7A072F1DDE8500178A6F /* XCRemoteSwiftPackageReference "generative-ai-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/google/generative-ai-swift";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 0.5.6;
+			};
+		};
+		21E0DB3E2F30362E004FC166 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.1.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -743,6 +767,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 21B9DED12F0F5BDF000FA365 /* XCLocalSwiftPackageReference "Packages/FeatureOnboarding" */;
 			productName = FeatureOnboarding;
+		};
+		214565402F3034E500C4DB49 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2145653F2F3034C300C4DB49 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		214565422F3034F600C4DB49 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2145653F2F3034C300C4DB49 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
 		};
 		2187FBA52F0A1E5400C028A9 /* Domain */ = {
 			isa = XCSwiftPackageProductDependency;
