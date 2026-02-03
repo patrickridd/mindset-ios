@@ -37,111 +37,114 @@ public struct SignInView: View {
             )
             .ignoresSafeArea()
             
-            VStack(spacing: MindsetLayout.spacing30) {
-                Spacer()
-                
-                // Hero Icon
-                ZStack {
-                    Circle()
-                        .fill(MindsetColors.accentOrange.opacity(0.15))
-                        .frame(width: MindsetLayout.heroCircleSize, height: MindsetLayout.heroCircleSize)
-                        .blur(radius: MindsetLayout.glowBlurRadius)
+            ScrollView {
+                VStack(spacing: MindsetLayout.spacing12) {
+                    // Top spacing
+                    Color.clear.frame(height: MindsetLayout.spacing8)
                     
-                    Image(systemName: "person.crop.circle.fill")
-                        .font(.system(size: 80))
-                        .foregroundStyle(MindsetColors.accentOrange)
-                }
-                .padding(.bottom, MindsetLayout.spacing20)
-                
-                // Title
-                Text("Your Mindset Profile is Ready")
-                    .font(MindsetFonts.displayHeadline)
-                    .foregroundStyle(MindsetColors.textPrimary)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
+                    // Hero Icon
+                    ZStack {
+                        Circle()
+                            .fill(MindsetColors.accentOrange.opacity(0.15))
+                            .frame(width: MindsetLayout.heroCircleSize, height: MindsetLayout.heroCircleSize)
+                            .blur(radius: MindsetLayout.glowBlurRadius)
+                        
+                        Image(systemName: "person.crop.circle.fill")
+                            .font(.system(size: 80))
+                            .foregroundStyle(MindsetColors.accentOrange)
+                    }
+                    .padding(.bottom, MindsetLayout.spacing20)
+                    
+                    // Title
+                    Text("Your Mindset Profile is Ready")
+                        .font(MindsetFonts.displayHeadline)
+                        .foregroundStyle(MindsetColors.textPrimary)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
+                    
+                    // Subtitle
+                    Text("Sign in to save your progress and sync across devices")
+                        .font(MindsetFonts.body)
+                        .foregroundStyle(MindsetColors.textSecondary)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
+                    
+                    // Benefits List
+                    VStack(alignment: .leading, spacing: MindsetLayout.spacing16) {
+                        benefitRow(icon: "checkmark.shield.fill", text: "Secure & private authentication")
+                        benefitRow(icon: "icloud.fill", text: "Sync across all your devices")
+                        benefitRow(icon: "chart.line.uptrend.xyaxis", text: "Never lose your streak or progress")
+                    }
                     .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
-                
-                // Subtitle
-                Text("Sign in to save your progress and sync across devices")
-                    .font(MindsetFonts.body)
-                    .foregroundStyle(MindsetColors.textSecondary)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.vertical, MindsetLayout.spacing30)
+                    
+                    // Sign in with Apple Button
+                    SignInWithAppleButton(
+                        onRequest: { request in
+                            viewModel.handleSignInRequest(request)
+                        },
+                        onCompletion: { result in
+                            Task {
+                                await viewModel.handleSignInCompletion(result)
+                            }
+                        }
+                    )
+                    .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
+                    .frame(height: MindsetLayout.buttonHeight)
                     .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
-                
-                Spacer()
-                
-                // Benefits List
-                VStack(alignment: .leading, spacing: MindsetLayout.spacing16) {
-                    benefitRow(icon: "checkmark.shield.fill", text: "Secure & private authentication")
-                    benefitRow(icon: "icloud.fill", text: "Sync across all your devices")
-                    benefitRow(icon: "chart.line.uptrend.xyaxis", text: "Never lose your streak or progress")
-                }
-                .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
-                .padding(.bottom, MindsetLayout.spacing30)
-                
-                // Sign in with Apple Button
-                SignInWithAppleButton(
-                    onRequest: { request in
-                        viewModel.handleSignInRequest(request)
-                    },
-                    onCompletion: { result in
+                    .disabled(viewModel.isSigningIn)
+                    
+                    // Google Sign In Button
+                    GoogleSignInButton { idToken, accessToken in
                         Task {
-                            await viewModel.handleSignInCompletion(result)
+                            await viewModel.signInWithGoogle(
+                                idToken: idToken,
+                                accessToken: accessToken
+                            )
                         }
                     }
-                )
-                .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
-                .frame(height: MindsetLayout.buttonHeight)
-                .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
-                .disabled(viewModel.isSigningIn)
-                
-                // Google Sign In Button
-                GoogleSignInButton { idToken, accessToken in
-                    Task {
-                        await viewModel.signInWithGoogle(
-                            idToken: idToken,
-                            accessToken: accessToken
-                        )
-                    }
-                }
-                .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
-                .disabled(viewModel.isSigningIn)
-                
-                // OR divider
-                HStack(spacing: MindsetLayout.spacing12) {
-                    Rectangle()
-                        .fill(MindsetColors.borderSubtle)
-                        .frame(height: 1)
+                    .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
+                    .disabled(viewModel.isSigningIn)
                     
-                    Text("OR")
-                        .font(MindsetFonts.caption)
-                        .foregroundStyle(MindsetColors.textMuted)
-                    
-                    Rectangle()
-                        .fill(MindsetColors.borderSubtle)
-                        .frame(height: 1)
-                }
-                .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
-                
-                // Continue without account (optional)
-                Button {
-                    HapticManager.selection()
-                    Task {
-                        await viewModel.continueWithoutAccount()
+                    // OR divider
+                    HStack(spacing: MindsetLayout.spacing8) {
+                        Rectangle()
+                            .fill(MindsetColors.borderSubtle)
+                            .frame(height: 1)
+                        
+                        Text("OR")
+                            .font(MindsetFonts.caption)
+                            .foregroundStyle(MindsetColors.textMuted)
+                        
+                        Rectangle()
+                            .fill(MindsetColors.borderSubtle)
+                            .frame(height: 1)
                     }
-                } label: {
-                    Text("Continue without account")
-                        .font(MindsetFonts.button)
-                        .foregroundStyle(MindsetColors.textSecondary)
-                        .lineLimit(nil)
-                        .multilineTextAlignment(.center)
-                        .padding(.vertical, MindsetLayout.paddingMedium)
+                    .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
+                    
+                    // Continue without account (optional)
+                    Button {
+                        HapticManager.selection()
+                        Task {
+                            await viewModel.continueWithoutAccount()
+                        }
+                    } label: {
+                        Text("Continue without account")
+                            .font(MindsetFonts.button)
+                            .foregroundStyle(MindsetColors.textSecondary)
+                            .lineLimit(nil)
+                            .multilineTextAlignment(.center)
+                            .padding(.vertical, MindsetLayout.paddingMedium)
+                    }
+                    .disabled(viewModel.isSigningIn)
+                    
+                    // Bottom spacing
+                    Color.clear.frame(height: MindsetLayout.spacing30)
                 }
-                .disabled(viewModel.isSigningIn)
-                
-                Spacer()
             }
+            .scrollIndicators(.hidden)
             
             // Loading overlay
             if viewModel.isSigningIn {
