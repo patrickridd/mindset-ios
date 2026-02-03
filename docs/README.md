@@ -74,6 +74,30 @@ docs/
   - Common patterns and decision tree
   - Avoid common mistakes
 
+- **[LOCALIZATION_IMPLEMENTATION_SUMMARY.md](guides/LOCALIZATION_IMPLEMENTATION_SUMMARY.md)** 📋
+  - Complete implementation overview
+  - Package structure and statistics
+  - What was created and why
+  - Next steps guide
+
+- **[LOCALIZATION_TYPE_SAFETY_UPGRADE.md](guides/LOCALIZATION_TYPE_SAFETY_UPGRADE.md)** 🛡️
+  - Type-safe API upgrade details
+  - Before/after comparisons
+  - All Feature[Name]Strings enums
+  - Migration guide
+
+- **[BEFORE_AFTER_COMPARISON.md](guides/BEFORE_AFTER_COMPARISON.md)** 🔄
+  - Visual side-by-side comparisons
+  - Magic strings vs type-safe
+  - Real-world scenarios
+  - Developer experience improvements
+
+- **[LOCALIZATION_COMPLETE.md](guides/LOCALIZATION_COMPLETE.md)** ✅
+  - Implementation completion checklist
+  - All tasks completed summary
+  - Quick start guide
+  - Files created list
+
 - **[GOOGLE_SIGNIN_VIA_FIREBASE.md](guides/GOOGLE_SIGNIN_VIA_FIREBASE.md)**
   - Google Sign In using Firebase's built-in OAuth flow
   - How to avoid GoogleSignIn SDK
