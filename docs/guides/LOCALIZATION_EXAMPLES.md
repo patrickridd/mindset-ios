@@ -9,7 +9,7 @@ import SwiftUI
 import AuthenticationServices
 import SharedUI
 import SharedUtils
-import SharedLocalization  // ← Import SharedLocalization
+import SharedLocalization  // ← Import for common strings
 import Domain
 
 public struct SignInView: View {
@@ -24,19 +24,19 @@ public struct SignInView: View {
                 VStack(spacing: MindsetLayout.spacing12) {
                     // Hero Icon...
                     
-                    // Title - Feature-specific
-                    Text(String(localized: "auth.signInTitle"))
+                    // Title - Feature-specific, type-safe!
+                    Text(FeatureAuthStrings.signInTitle)
                         .font(MindsetFonts.displayHeadline)
                         .foregroundStyle(MindsetColors.textPrimary)
                     
-                    // Subtitle - Feature-specific
-                    Text(String(localized: "auth.signInSubtitle"))
+                    // Subtitle - Feature-specific, type-safe!
+                    Text(FeatureAuthStrings.signInSubtitle)
                         .font(MindsetFonts.body)
                         .foregroundStyle(MindsetColors.textSecondary)
                     
                     // Sign in with Apple Button - Feature-specific
                     SignInWithAppleButton { /* ... */ }
-                        .accessibilityLabel(String(localized: "auth.signInWithApple"))
+                        .accessibilityLabel(FeatureAuthStrings.signInWithApple)
                     
                     // Google Sign In Button - Feature-specific
                     GoogleSignInButton { /* ... */ }
@@ -48,7 +48,7 @@ public struct SignInView: View {
                             await viewModel.continueWithoutAccount()
                         }
                     } label: {
-                        Text(String(localized: "auth.continueAsGuest"))
+                        Text(FeatureAuthStrings.continueAsGuest)
                             .font(MindsetFonts.button)
                     }
                 }
@@ -84,8 +84,8 @@ public struct SignInView: View {
         VStack(spacing: MindsetLayout.spacing16) {
             Image(systemName: "exclamationmark.triangle.fill")
             
-            // Feature-specific error title
-            Text(String(localized: "auth.error.signInFailed"))
+            // Feature-specific error title - type-safe!
+            Text(FeatureAuthStrings.Error.signInFailed)
                 .font(MindsetFonts.featureTitle)
             
             Text(message)
@@ -103,30 +103,11 @@ public struct SignInView: View {
 }
 ```
 
-**Corresponding strings in FeatureAuth/Resources/Localizable.xcstrings:**
-
-```json
-{
-  "auth.signInTitle": {
-    "comment": "Sign in screen title",
-    "localizations": {
-      "en": { "stringUnit": { "state": "translated", "value": "Your Mindset Profile is Ready" } }
-    }
-  },
-  "auth.signInSubtitle": {
-    "comment": "Sign in screen subtitle",
-    "localizations": {
-      "en": { "stringUnit": { "state": "translated", "value": "Sign in to save your progress and sync across devices" } }
-    }
-  },
-  "auth.error.signInFailed": {
-    "comment": "Sign in failed error",
-    "localizations": {
-      "en": { "stringUnit": { "state": "translated", "value": "Sign In Error" } }
-    }
-  }
-}
-```
+**Key Benefits:**
+- ✅ **Compile-time safety** - Typos caught at build time
+- ✅ **Autocomplete** - Xcode suggests available strings
+- ✅ **Refactoring support** - Rename safely with Xcode
+- ✅ **No magic strings** - Clear, discoverable API
 
 ---
 
@@ -149,9 +130,9 @@ struct DashboardView: View {
                     Text(greetingText)
                         .font(MindsetFonts.displayLarge)
                     
-                    // Streak Card
+                    // Streak Card - Type-safe strings!
                     VStack {
-                        Text(String(localized: "dashboard.streak.title"))
+                        Text(FeatureDashboardStrings.Streak.title)
                             .font(MindsetFonts.label)
                         
                         // String interpolation with count
@@ -160,9 +141,9 @@ struct DashboardView: View {
                             .font(MindsetFonts.statValue)
                     }
                     
-                    // XP Card
+                    // XP Card - Type-safe!
                     VStack {
-                        Text(String(localized: "dashboard.xp.title"))
+                        Text(FeatureDashboardStrings.XP.title)
                             .font(MindsetFonts.label)
                         
                         Text("\(viewModel.totalXP)")
@@ -177,7 +158,7 @@ struct DashboardView: View {
                 }
                 .padding()
             }
-            .navigationTitle(String(localized: "dashboard.title"))
+            .navigationTitle(FeatureDashboardStrings.title)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
@@ -196,30 +177,30 @@ struct DashboardView: View {
         let hour = Calendar.current.component(.hour, from: Date())
         switch hour {
         case 0..<12:
-            return String(localized: "dashboard.greeting.morning")
+            return FeatureDashboardStrings.Greeting.morning
         case 12..<17:
-            return String(localized: "dashboard.greeting.afternoon")
+            return FeatureDashboardStrings.Greeting.afternoon
         default:
-            return String(localized: "dashboard.greeting.evening")
+            return FeatureDashboardStrings.Greeting.evening
         }
     }
     
     private var ritualStatusCard: some View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing12) {
-            Text(String(localized: "dashboard.todayRitual.title"))
+            Text(FeatureDashboardStrings.TodayRitual.title)
                 .font(MindsetFonts.label)
             
             if viewModel.hasTodayRitualCompleted {
                 HStack {
                     Image(systemName: "checkmark.circle.fill")
-                    Text(String(localized: "dashboard.todayRitual.completed"))
+                    Text(FeatureDashboardStrings.TodayRitual.completed)
                 }
                 .foregroundStyle(MindsetColors.successGreen)
             } else {
                 Button {
                     startRitual()
                 } label: {
-                    Text(String(localized: "dashboard.todayRitual.pending"))
+                    Text(FeatureDashboardStrings.TodayRitual.pending)
                         .font(MindsetFonts.button)
                 }
             }
@@ -233,7 +214,7 @@ struct DashboardView: View {
     
     private var weeklySummaryCard: some View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing12) {
-            Text(String(localized: "dashboard.weeklySummary.title"))
+            Text(FeatureDashboardStrings.WeeklySummary.title)
                 .font(MindsetFonts.label)
             
             Text(String(localized: "dashboard.weeklySummary.ritualsCompleted",
@@ -266,8 +247,8 @@ final class MorningRitualViewModel {
     func submitRitual() async {
         // Validate input
         guard !userResponse.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            // Feature-specific validation error
-            errorMessage = String(localized: "ritual.error.emptyResponse")
+            // Feature-specific validation error - type-safe!
+            errorMessage = FeatureMindsetStrings.Error.emptyResponse
             return
         }
         
@@ -509,7 +490,7 @@ struct HistoryEmptyStateView: View {
 
 1. **Import SharedLocalization** when you need common strings
 2. **Use `SharedLocalizedString.*`** for buttons, errors, validation
-3. **Use `String(localized:)`** for feature-specific content
+3. **Use `Feature[Name]Strings.*`** for feature-specific content - **NO magic strings!**
 4. **Mix both approaches** in the same view when appropriate
 5. **Keep ViewModels clean** - return localized strings from ViewModel, let View display them
 6. **String interpolation** - use `defaultValue:` parameter for strings with variables
@@ -518,5 +499,8 @@ struct HistoryEmptyStateView: View {
 This pattern ensures:
 - ✅ No duplication of common strings
 - ✅ Feature independence
+- ✅ **Compile-time safety** - no magic strings, typos caught at build time
+- ✅ **Autocomplete support** - Xcode shows available strings
+- ✅ **Refactoring friendly** - rename safely across the codebase
 - ✅ Easy to maintain and translate
 - ✅ Consistent with your modular architecture

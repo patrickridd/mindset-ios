@@ -76,15 +76,34 @@ SharedLocalizedString.General.feedback      // "Feedback"
 SharedLocalizedString.General.contactUs     // "Contact Us"
 ```
 
-## Feature-Specific Strings
+## Feature-Specific Strings (Type-Safe!)
 
 ```swift
-// Use String(localized:) for feature-specific content
-Text(String(localized: "ritual.title"))
-Text(String(localized: "dashboard.greeting.morning"))
-Text(String(localized: "onboarding.welcome.title"))
+// Type-safe access - NO magic strings!
+Text(FeatureMindsetStrings.title)
+Text(FeatureDashboardStrings.Greeting.morning)
+Text(FeatureOnboardingStrings.Welcome.title)
 
-// With parameters/interpolation
+// Organized by feature module
+FeatureAuthStrings.signInTitle
+FeatureAuthStrings.Error.signInFailed
+
+FeatureMindsetStrings.Success.title
+FeatureMindsetStrings.Categories.gratitude
+
+FeatureDashboardStrings.Streak.title
+FeatureDashboardStrings.TodayRitual.completed
+
+FeatureHistoryStrings.Empty.title
+FeatureHistoryStrings.Filter.week
+
+FeatureSubscriptionStrings.Feature.aiCoach
+FeatureSubscriptionStrings.Plan.yearlyTitle
+
+FeatureUserProfileStrings.Stats.totalRituals
+FeatureUserProfileStrings.Subscription.active
+
+// With parameters/interpolation (still use String(localized:))
 Text(String(localized: "dashboard.streak.days", 
            defaultValue: "\(count) days"))
 ```
@@ -133,7 +152,7 @@ if emailError {
 ### Navigation Title (Feature-Specific)
 
 ```swift
-.navigationTitle(String(localized: "dashboard.title"))
+.navigationTitle(FeatureDashboardStrings.title)  // Type-safe!
 ```
 
 ## Decision Tree
@@ -156,29 +175,36 @@ if emailError {
 ```
 Packages/
 ├── SharedLocalization/
-│   └── Sources/SharedLocalization/Resources/
-│       └── Localizable.xcstrings
+│   ├── SharedLocalization.swift               (Type-safe API)
+│   └── Resources/Localizable.xcstrings         (String catalog)
 │
-├── FeatureAuth/Sources/FeatureAuth/Resources/
-│   └── Localizable.xcstrings
+├── FeatureAuth/Sources/FeatureAuth/
+│   ├── FeatureAuthStrings.swift                (Type-safe API) ← NEW!
+│   └── Resources/Localizable.xcstrings         (String catalog)
 │
-├── FeatureOnboarding/Sources/FeatureOnboarding/Resources/
-│   └── Localizable.xcstrings
+├── FeatureOnboarding/Sources/FeatureOnboarding/
+│   ├── FeatureOnboardingStrings.swift          (Type-safe API) ← NEW!
+│   └── Resources/Localizable.xcstrings         (String catalog)
 │
-├── FeatureMindset/Sources/FeatureMindset/Resources/
-│   └── Localizable.xcstrings
+├── FeatureMindset/Sources/FeatureMindset/
+│   ├── FeatureMindsetStrings.swift             (Type-safe API) ← NEW!
+│   └── Resources/Localizable.xcstrings         (String catalog)
 │
-├── FeatureDashboard/Sources/FeatureDashboard/Resources/
-│   └── Localizable.xcstrings
+├── FeatureDashboard/Sources/FeatureDashboard/
+│   ├── FeatureDashboardStrings.swift           (Type-safe API) ← NEW!
+│   └── Resources/Localizable.xcstrings         (String catalog)
 │
-├── FeatureHistory/Sources/FeatureHistory/Resources/
-│   └── Localizable.xcstrings
+├── FeatureHistory/Sources/FeatureHistory/
+│   ├── FeatureHistoryStrings.swift             (Type-safe API) ← NEW!
+│   └── Resources/Localizable.xcstrings         (String catalog)
 │
-├── FeatureSubscription/Sources/FeatureSubscription/Resources/
-│   └── Localizable.xcstrings
+├── FeatureSubscription/Sources/FeatureSubscription/
+│   ├── FeatureSubscriptionStrings.swift        (Type-safe API) ← NEW!
+│   └── Resources/Localizable.xcstrings         (String catalog)
 │
-└── FeatureUserProfile/Sources/FeatureUserProfile/Resources/
-    └── Localizable.xcstrings
+└── FeatureUserProfile/Sources/FeatureUserProfile/
+    ├── FeatureUserProfileStrings.swift         (Type-safe API) ← NEW!
+    └── Resources/Localizable.xcstrings         (String catalog)
 ```
 
 ## Common Mistakes to Avoid
@@ -191,6 +217,18 @@ Text("Cancel")  // BAD
 ✅ **Use localization:**
 ```swift
 Text(SharedLocalizedString.cancel)  // GOOD
+```
+
+---
+
+❌ **Don't use magic strings for feature content:**
+```swift
+Text(String(localized: "ritual.title"))  // BAD - magic string!
+```
+
+✅ **Use the type-safe API:**
+```swift
+Text(FeatureMindsetStrings.title)  // GOOD - compile-time safe!
 ```
 
 ---
@@ -230,9 +268,9 @@ Text(SharedLocalizedString.save)  // GOOD
 // Don't add "ritual.title" to SharedLocalization
 ```
 
-✅ **Use feature catalogs for feature content:**
+✅ **Use feature strings enum for feature content:**
 ```swift
-Text(String(localized: "ritual.title"))  // GOOD
+Text(FeatureMindsetStrings.title)  // GOOD - type-safe!
 ```
 
 ## Testing
@@ -286,7 +324,13 @@ public enum General {
   }
 }
 ```
-3. Use in code: `String(localized: "myFeature.myKey")`
+3. Add to `Feature[Name]Strings.swift`:
+```swift
+public enum Feature[Name]Strings {
+    public static let myKey = String(localized: "myFeature.myKey", bundle: .module, comment: "Description")
+}
+```
+4. Use in code: `Feature[Name]Strings.myKey` ← Type-safe!
 
 ## Resources
 

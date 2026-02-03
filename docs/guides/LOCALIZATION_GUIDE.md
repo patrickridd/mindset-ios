@@ -154,9 +154,9 @@ SharedLocalizedString.General.feedback
 SharedLocalizedString.General.contactUs
 ```
 
-### 2. Using Feature-Specific Strings
+### 2. Using Feature-Specific Strings (Type-Safe!)
 
-For feature-specific content, use the standard `String(localized:)` API:
+For feature-specific content, use the type-safe `Feature[Name]Strings` API:
 
 ```swift
 import SwiftUI
@@ -164,23 +164,29 @@ import SwiftUI
 struct MorningRitualView: View {
     var body: some View {
         VStack {
-            // Feature-specific strings use String(localized:)
-            Text(String(localized: "ritual.title"))
+            // Feature-specific strings use type-safe enum - NO magic strings!
+            Text(FeatureMindsetStrings.title)
                 .font(MindsetFonts.displayHeadline)
             
-            Text(String(localized: "ritual.promptLabel"))
+            Text(FeatureMindsetStrings.promptLabel)
                 .font(MindsetFonts.label)
             
             TextEditor(text: $response)
-                .placeholder(String(localized: "ritual.placeholder"))
+                .placeholder(FeatureMindsetStrings.placeholder)
             
-            Button(String(localized: "ritual.submit")) {
+            Button(FeatureMindsetStrings.submit) {
                 submitRitual()
             }
         }
     }
 }
 ```
+
+**Benefits of this approach:**
+- ✅ **Compile-time safety** - typos caught at build time
+- ✅ **Autocomplete support** - Xcode suggests available strings
+- ✅ **Refactoring friendly** - rename safely across the codebase
+- ✅ **No magic strings** - clear, discoverable API
 
 ### 3. ViewModels and Localization
 
@@ -206,8 +212,8 @@ final class SignInViewModel {
             isLoading = false
             // Use SharedLocalization for common errors
             errorMessage = SharedLocalizedString.Error.somethingWentWrong
-            // Or feature-specific error
-            errorMessage = String(localized: "auth.error.signInFailed")
+            // Or feature-specific error (type-safe!)
+            errorMessage = FeatureAuthStrings.Error.signInFailed
         }
     }
 }
@@ -252,12 +258,14 @@ Text(String(localized: "dashboard.streak.days", defaultValue: "\(streakCount) da
 - Common auth terms (Sign In, Sign Out, Account)
 - Loading states (Loading..., Please wait)
 
-**Use Feature-specific catalogs for:**
+**Use Feature-specific catalogs (via `Feature[Name]Strings`) for:**
 - Screen titles specific to a feature
 - Feature-specific error messages
 - Prompt questions and categories
 - Feature-specific labels and descriptions
 - Any content unique to that feature
+
+**Always use the type-safe API** (`FeatureMindsetStrings.title`) instead of magic strings (`String(localized: "ritual.title")`) for better compile-time safety and refactoring support.
 
 #### Naming Conventions:
 
@@ -384,14 +392,17 @@ If you have existing hardcoded strings:
 ## Summary
 
 - **SharedLocalization**: Import and use `SharedLocalizedString.*` for common strings
-- **Feature catalogs**: Use `String(localized: "key")` for feature-specific content
-- **Keep it organized**: Group related strings with dot notation
+- **Feature catalogs**: Use `Feature[Name]Strings.*` for feature-specific content (type-safe!)
+- **No magic strings**: All strings accessed via compile-time safe enums
+- **Keep it organized**: Group related strings with dot notation in the enums
 - **Document everything**: Add clear comments to help translators
 - **Test thoroughly**: Use Xcode previews and simulator language settings
 
 This hybrid approach gives you the benefits of:
 - ✅ No duplication of common strings
 - ✅ Feature independence and scalability
+- ✅ **Compile-time safety** - no magic strings, typos caught at build
+- ✅ **Autocomplete & refactoring** - Xcode tooling support
 - ✅ Clear ownership and organization
 - ✅ Easy translation workflow
 - ✅ Consistent with your modular architecture
