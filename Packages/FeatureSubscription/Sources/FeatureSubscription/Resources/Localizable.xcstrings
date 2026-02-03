@@ -1,0 +1,186 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "paywall.title" : {
+      "comment" : "Paywall title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Your Mindset Journey"
+          }
+        }
+      }
+    },
+    "paywall.subtitle" : {
+      "comment" : "Paywall subtitle",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Join thousands building daily mindset habits"
+          }
+        }
+      }
+    },
+    "paywall.feature.aiCoach" : {
+      "comment" : "AI coach feature",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personalized AI coach feedback"
+          }
+        }
+      }
+    },
+    "paywall.feature.unlimitedRituals" : {
+      "comment" : "Unlimited rituals feature",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlimited daily rituals"
+          }
+        }
+      }
+    },
+    "paywall.feature.curatedPrompts" : {
+      "comment" : "Curated prompts feature",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "150+ curated prompts"
+          }
+        }
+      }
+    },
+    "paywall.feature.streakTracking" : {
+      "comment" : "Streak tracking feature",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Streak & XP tracking"
+          }
+        }
+      }
+    },
+    "paywall.feature.weeklySummaries" : {
+      "comment" : "Weekly summaries feature",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly AI summaries"
+          }
+        }
+      }
+    },
+    "paywall.feature.cloudSync" : {
+      "comment" : "Cloud sync feature",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud sync across devices"
+          }
+        }
+      }
+    },
+    "paywall.plan.monthly.title" : {
+      "comment" : "Monthly plan title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monthly"
+          }
+        }
+      }
+    },
+    "paywall.plan.yearly.title" : {
+      "comment" : "Yearly plan title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yearly"
+          }
+        }
+      }
+    },
+    "paywall.plan.yearly.badge" : {
+      "comment" : "Yearly plan savings badge",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save 40%"
+          }
+        }
+      }
+    },
+    "paywall.cta.subscribe" : {
+      "comment" : "Subscribe button",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Free Trial"
+          }
+        }
+      }
+    },
+    "paywall.terms" : {
+      "comment" : "Terms of service link",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terms of Service"
+          }
+        }
+      }
+    },
+    "paywall.privacy" : {
+      "comment" : "Privacy policy link",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy Policy"
+          }
+        }
+      }
+    },
+    "paywall.restore" : {
+      "comment" : "Restore purchases button",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore Purchases"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

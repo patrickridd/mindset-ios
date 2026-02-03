@@ -1,0 +1,90 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "auth.signInWithApple" : {
+      "comment" : "Sign in with Apple button",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in with Apple"
+          }
+        }
+      }
+    },
+    "auth.signInWithGoogle" : {
+      "comment" : "Sign in with Google button",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in with Google"
+          }
+        }
+      }
+    },
+    "auth.continueAsGuest" : {
+      "comment" : "Continue as guest option",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue as Guest"
+          }
+        }
+      }
+    },
+    "auth.signInTitle" : {
+      "comment" : "Sign in screen title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welcome Back"
+          }
+        }
+      }
+    },
+    "auth.signInSubtitle" : {
+      "comment" : "Sign in screen subtitle",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in to save your progress and sync across devices"
+          }
+        }
+      }
+    },
+    "auth.error.signInFailed" : {
+      "comment" : "Sign in failed error",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in failed. Please try again."
+          }
+        }
+      }
+    },
+    "auth.error.cancelled" : {
+      "comment" : "Sign in cancelled message",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in was cancelled"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

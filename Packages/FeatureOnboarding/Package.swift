@@ -20,6 +20,7 @@ let package = Package(
         .package(path: "../Data"),
         .package(path: "../SharedUtils"),
         .package(path: "../SharedUI"),
+        .package(path: "../SharedLocalization"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -31,6 +32,10 @@ let package = Package(
                 .product(name: "Data", package: "Data"),
                 .product(name: "SharedUtils", package: "SharedUtils"),
                 .product(name: "SharedUI", package: "SharedUI"),
+                .product(name: "SharedLocalization", package: "SharedLocalization"),
+            ],
+            resources: [
+                .process("Resources")
             ]
         ),
         .testTarget(

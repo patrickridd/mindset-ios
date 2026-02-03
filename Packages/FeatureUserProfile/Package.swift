@@ -14,6 +14,7 @@ let package = Package(
         .package(path: "../Domain"),
         .package(path: "../SharedUI"),
         .package(path: "../SharedUtils"),
+        .package(path: "../SharedLocalization"),
     ],
     targets: [
         .target(
@@ -22,6 +23,10 @@ let package = Package(
                 .product(name: "Domain", package: "Domain"),
                 .product(name: "SharedUI", package: "SharedUI"),
                 .product(name: "SharedUtils", package: "SharedUtils"),
+                .product(name: "SharedLocalization", package: "SharedLocalization"),
+            ],
+            resources: [
+                .process("Resources")
             ]
         ),
         .testTarget(

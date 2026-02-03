@@ -1,0 +1,162 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "dashboard.title" : {
+      "comment" : "Dashboard screen title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dashboard"
+          }
+        }
+      }
+    },
+    "dashboard.greeting.morning" : {
+      "comment" : "Morning greeting",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Good morning"
+          }
+        }
+      }
+    },
+    "dashboard.greeting.afternoon" : {
+      "comment" : "Afternoon greeting",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Good afternoon"
+          }
+        }
+      }
+    },
+    "dashboard.greeting.evening" : {
+      "comment" : "Evening greeting",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Good evening"
+          }
+        }
+      }
+    },
+    "dashboard.streak.title" : {
+      "comment" : "Streak section title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current Streak"
+          }
+        }
+      }
+    },
+    "dashboard.streak.days" : {
+      "comment" : "Days count for streak",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld days"
+          }
+        }
+      }
+    },
+    "dashboard.xp.title" : {
+      "comment" : "XP section title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total XP"
+          }
+        }
+      }
+    },
+    "dashboard.todayRitual.title" : {
+      "comment" : "Today's ritual card title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today's Ritual"
+          }
+        }
+      }
+    },
+    "dashboard.todayRitual.completed" : {
+      "comment" : "Ritual completed status",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✓ Completed"
+          }
+        }
+      }
+    },
+    "dashboard.todayRitual.pending" : {
+      "comment" : "Ritual pending status",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start your ritual"
+          }
+        }
+      }
+    },
+    "dashboard.archetype.title" : {
+      "comment" : "Archetype card title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your Archetype"
+          }
+        }
+      }
+    },
+    "dashboard.weeklySummary.title" : {
+      "comment" : "Weekly summary section title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This Week"
+          }
+        }
+      }
+    },
+    "dashboard.weeklySummary.ritualsCompleted" : {
+      "comment" : "Rituals completed count",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld rituals completed"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

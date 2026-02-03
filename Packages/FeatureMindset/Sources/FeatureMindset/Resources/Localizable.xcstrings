@@ -1,0 +1,162 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "ritual.title" : {
+      "comment" : "Morning ritual screen title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Morning Ritual"
+          }
+        }
+      }
+    },
+    "ritual.promptLabel" : {
+      "comment" : "Prompt label",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today's Prompt"
+          }
+        }
+      }
+    },
+    "ritual.placeholder" : {
+      "comment" : "Text input placeholder",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Write your thoughts here..."
+          }
+        }
+      }
+    },
+    "ritual.submit" : {
+      "comment" : "Submit button",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Complete Ritual"
+          }
+        }
+      }
+    },
+    "ritual.aiAnalyzing" : {
+      "comment" : "AI analyzing message",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI is reflecting on your response..."
+          }
+        }
+      }
+    },
+    "ritual.success.title" : {
+      "comment" : "Ritual success title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ritual Complete! 🎉"
+          }
+        }
+      }
+    },
+    "ritual.success.streakMessage" : {
+      "comment" : "Streak message on success",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld day streak"
+          }
+        }
+      }
+    },
+    "ritual.success.xpEarned" : {
+      "comment" : "XP earned message",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld XP"
+          }
+        }
+      }
+    },
+    "ritual.aiReflection.title" : {
+      "comment" : "AI reflection card title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI Reflection"
+          }
+        }
+      }
+    },
+    "ritual.categories.gratitude" : {
+      "comment" : "Gratitude prompt category",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratitude"
+          }
+        }
+      }
+    },
+    "ritual.categories.mementoMori" : {
+      "comment" : "Memento mori prompt category",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memento Mori"
+          }
+        }
+      }
+    },
+    "ritual.categories.goalSetting" : {
+      "comment" : "Goal setting prompt category",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Goal Setting"
+          }
+        }
+      }
+    },
+    "ritual.error.emptyResponse" : {
+      "comment" : "Empty response error",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please write something before continuing"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

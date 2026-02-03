@@ -1,0 +1,186 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "onboarding.welcome.title" : {
+      "comment" : "Welcome screen title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welcome to Mindset"
+          }
+        }
+      }
+    },
+    "onboarding.welcome.subtitle" : {
+      "comment" : "Welcome screen subtitle",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 minutes to build your personalized mindset ritual"
+          }
+        }
+      }
+    },
+    "onboarding.quiz.title" : {
+      "comment" : "Quiz section title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Let's Get to Know You"
+          }
+        }
+      }
+    },
+    "onboarding.analyzing.title" : {
+      "comment" : "Analyzing screen title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analyzing Your Responses..."
+          }
+        }
+      }
+    },
+    "onboarding.analyzing.subtitle" : {
+      "comment" : "Analyzing screen subtitle",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Building your identity profile"
+          }
+        }
+      }
+    },
+    "onboarding.archetype.title" : {
+      "comment" : "Archetype reveal title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your Mindset Archetype"
+          }
+        }
+      }
+    },
+    "onboarding.pain.overwhelmed.title" : {
+      "comment" : "Pain screen 1 title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feeling overwhelmed or restless?"
+          }
+        }
+      }
+    },
+    "onboarding.pain.stuck.title" : {
+      "comment" : "Pain screen 2 title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stuck in the same mental patterns?"
+          }
+        }
+      }
+    },
+    "onboarding.pain.habit.title" : {
+      "comment" : "Pain screen 3 title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to build a daily journaling habit before?"
+          }
+        }
+      }
+    },
+    "onboarding.howAppHelps.title" : {
+      "comment" : "How app helps screen title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How Mindset Can Help"
+          }
+        }
+      }
+    },
+    "onboarding.socialProof.title" : {
+      "comment" : "Social proof screen title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Join 10,000+ Members"
+          }
+        }
+      }
+    },
+    "onboarding.socialProof.subtitle" : {
+      "comment" : "Social proof screen subtitle",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Building daily mindset streaks"
+          }
+        }
+      }
+    },
+    "onboarding.aiCoach.title" : {
+      "comment" : "AI coach intro title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meet Your AI Coach"
+          }
+        }
+      }
+    },
+    "onboarding.customPlan.title" : {
+      "comment" : "Custom plan screen title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your Custom Daily Ritual"
+          }
+        }
+      }
+    },
+    "onboarding.customPlan.duration" : {
+      "comment" : "Ritual duration",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 minutes per day"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
