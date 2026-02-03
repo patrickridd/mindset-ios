@@ -7,7 +7,7 @@
 - **Domain** (`Packages/Domain`): Entities, Models, Protocols, UseCases, Logic (PromptEngine, PromptLibrary), Services (AIAnalysisService), Mocks, Errors. Pure business logic; no UI, no framework types for persistence.
 - **Data** (`Packages/Data`): `SD*` types — Repositories (SDMindsetRepository, SDUserRepository), Services (GeminiAIService, SDPersistenceService, RevenueCatSubscriptionService, FirebaseAuthService, FirebaseSyncService), Model (SDMindsetEntry, SDPromptResponse, SDUserProfile), AppConfig.
 - **Feature modules:** FeatureDashboard, FeatureHistory, FeatureMindset, FeatureOnboarding, FeatureAuth, FeatureSubscription — each has View(s) and ViewModel(s). FeatureMindset has Components (e.g. AIReflectionCard) and Mocks for previews.
-- **Shared:** SharedUI (MindsetColors, MindsetFonts, MindsetLayout, DebugOverlay), SharedUtils (DebugLogger, HapticManager, InjectionBootstrap).
+- **Shared:** SharedUI (MindsetColors, MindsetFonts, MindsetLayout, DebugOverlay), SharedUtils (DebugLogger, HapticManager, InjectionBootstrap), SharedLocalization (common localized strings).
 
 ## 1. Goal & Vision
 - **Objective:** Reach $10k MRR by providing premium AI-driven daily Gratitude and Stoic reflections.
@@ -205,6 +205,30 @@ Keep ViewModels **clean**: they hold state and business logic only. Do **not** p
 - **No animations** — ViewModels update state; Views decide how to animate (e.g. `withAnimation { viewModel.nextStep() }`).
 
 ViewModels stay testable and reusable; Views own haptics, animations, and visual feedback.
+
+### Localization (String Management)
+
+**NEVER use hardcoded strings or magic strings.** All user-facing text must be localized using the type-safe APIs.
+
+Use **SharedLocalization** for common strings used across multiple features:
+- `SharedLocalizedString.cancel`, `SharedLocalizedString.save`, `SharedLocalizedString.done`, etc.
+- `SharedLocalizedString.Error.networkError`, `SharedLocalizedString.Error.somethingWentWrong`
+- `SharedLocalizedString.Validation.requiredField`, `SharedLocalizedString.Validation.invalidEmail`
+- `SharedLocalizedString.Auth.signIn`, `SharedLocalizedString.Auth.signOut`
+- `SharedLocalizedString.Loading.loading`, `SharedLocalizedString.General.settings`
+
+Use **Feature[Name]Strings** for feature-specific content:
+- `FeatureAuthStrings.signInTitle`, `FeatureAuthStrings.Error.signInFailed`
+- `FeatureDashboardStrings.Greeting.morning`, `FeatureDashboardStrings.Streak.title`
+- `FeatureMindsetStrings.title`, `FeatureMindsetStrings.Categories.gratitude`
+- `FeatureOnboardingStrings.Welcome.title`, `FeatureOnboardingStrings.Pain.overwhelmedTitle`
+- `FeatureSubscriptionStrings.Feature.aiCoach`, `FeatureSubscriptionStrings.Plan.yearlyTitle`
+
+ViewModels can return localized strings; Views display them. Both SharedLocalization and Feature[Name]Strings provide compile-time safety and autocomplete.
+
+**Decision tree:** Is the string used in multiple features? → Use `SharedLocalizedString`. Is it unique to one feature? → Use `Feature[Name]Strings`.
+
+See `docs/guides/LOCALIZATION_QUICK_REFERENCE.md` for complete API reference.
 
 ## 14. Configuration & Secrets (AppConfig)
 - **Method:** Build-time injection via .xcconfig -> Info.plist.

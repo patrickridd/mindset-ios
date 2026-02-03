@@ -68,14 +68,49 @@
   - Protocol extensions for shared code
 
 
-  # Design System (SharedUI)
-  - **Colors:** Always use `MindsetColors` from SharedUI. Never use raw `Color.orange`, `Color.green`, `.white`, etc. Use semantic tokens: `backgroundGrouped`, `textPrimaryAdaptive`, `accentOrange`, `successGreen`, `stoicSlateSoft`, `achievementGold`, etc.
-  - **Fonts:** Always use `MindsetFonts` from SharedUI. Never use raw `.font(.headline)` or `.font(.caption)`. Use semantic tokens: `displayHeadline`, `promptHeadline`, `body`, `label`, `button`, etc.
-  - **Layout:** Always use `MindsetLayout` from SharedUI for spacing, padding, corner radius, and dimensions. Never use magic numbers (e.g. `spacing: 12`, `.padding(25)`, `cornerRadius: 16`). Use tokens: `MindsetLayout.spacing12`, `MindsetLayout.paddingCard`, `MindsetLayout.radiusCard`, `MindsetLayout.buttonHeight`, etc.
-  - Feature modules must add SharedUI as a dependency to use MindsetColors, MindsetFonts, and MindsetLayout.
-  - **Modals:** Use `DismissButton(action: { ... })` from SharedUI to dismiss modals and full-screen flows (onboarding, ritual, etc.). Do not build custom close buttons for these; use the shared component for consistency.
-  - **Haptics:** Use `HapticManager` (SharedUtils) only in Views—never in ViewModels. Call the semantic APIs (selection(), action(), success(), tick()) from View code when handling taps or when observing state (e.g. success when isAiThinking goes false).
-  - See `Packages/SharedUI/Sources/SharedUI/MindsetColors.swift`, `MindsetFonts.swift`, and `MindsetLayout.swift` for full token lists. See `Context.md` §13 for usage summary.
+ # Design System (SharedUI)
+ - **Colors:** Always use `MindsetColors` from SharedUI. Never use raw `Color.orange`, `Color.green`, `.white`, etc. Use semantic tokens: `backgroundGrouped`, `textPrimaryAdaptive`, `accentOrange`, `successGreen`, `stoicSlateSoft`, `achievementGold`, etc.
+ - **Fonts:** Always use `MindsetFonts` from SharedUI. Never use raw `.font(.headline)` or `.font(.caption)`. Use semantic tokens: `displayHeadline`, `promptHeadline`, `body`, `label`, `button`, etc.
+ - **Layout:** Always use `MindsetLayout` from SharedUI for spacing, padding, corner radius, and dimensions. Never use magic numbers (e.g. `spacing: 12`, `.padding(25)`, `cornerRadius: 16`). Use tokens: `MindsetLayout.spacing12`, `MindsetLayout.paddingCard`, `MindsetLayout.radiusCard`, `MindsetLayout.buttonHeight`, etc.
+ - Feature modules must add SharedUI as a dependency to use MindsetColors, MindsetFonts, and MindsetLayout.
+ - **Modals:** Use `DismissButton(action: { ... })` from SharedUI to dismiss modals and full-screen flows (onboarding, ritual, etc.). Do not build custom close buttons for these; use the shared component for consistency.
+ - **Haptics:** Use `HapticManager` (SharedUtils) only in Views—never in ViewModels. Call the semantic APIs (selection(), action(), success(), tick()) from View code when handling taps or when observing state (e.g. success when isAiThinking goes false).
+ - See `Packages/SharedUI/Sources/SharedUI/MindsetColors.swift`, `MindsetFonts.swift`, and `MindsetLayout.swift` for full token lists. See `Context.md` §13 for usage summary.
+
+ 
+ # Localization (String Management)
+ - **NEVER use hardcoded strings or magic strings** like `Text("Cancel")` or `String(localized: "ritual.title")`. Always use the type-safe localization APIs.
+ - **SharedLocalization** for common strings used across multiple features:
+   - Actions: `SharedLocalizedString.cancel`, `.save`, `.done`, `.back`, `.close`, `.continue`, `.retry`
+   - Errors: `SharedLocalizedString.Error.networkError`, `.somethingWentWrong`, `.saveFailed`, `.tryAgain`
+   - Validation: `SharedLocalizedString.Validation.requiredField`, `.invalidEmail`, `.tooShort`, `.tooLong`
+   - Auth: `SharedLocalizedString.Auth.signIn`, `.signOut`, `.account`, `.profile`
+   - Loading: `SharedLocalizedString.Loading.loading`, `.pleaseWait`, `.processing`
+   - General: `SharedLocalizedString.General.settings`, `.help`, `.about`, `.feedback`
+ - **Feature[Name]Strings** for feature-specific content (each Feature module has its own):
+   - FeatureAuth: `FeatureAuthStrings.signInTitle`, `.signInWithApple`, `.Error.signInFailed`
+   - FeatureDashboard: `FeatureDashboardStrings.Greeting.morning`, `.Streak.title`, `.TodayRitual.completed`
+   - FeatureMindset: `FeatureMindsetStrings.title`, `.Categories.gratitude`, `.Success.title`
+   - FeatureOnboarding: `FeatureOnboardingStrings.Welcome.title`, `.Pain.overwhelmedTitle`
+   - FeatureSubscription: `FeatureSubscriptionStrings.Feature.aiCoach`, `.Plan.yearlyTitle`
+   - FeatureHistory: `FeatureHistoryStrings.Empty.title`, `.Filter.week`
+   - FeatureUserProfile: `FeatureUserProfileStrings.Stats.totalRituals`, `.Subscription.active`
+ - **Decision tree:** Is the string used in multiple features? → Use `SharedLocalizedString`. Is it unique to one feature? → Use `Feature[Name]Strings`.
+ - **Examples:**
+   ```swift
+   // ✅ GOOD - Type-safe, compile-time checked
+   Text(SharedLocalizedString.cancel)
+   Text(FeatureDashboardStrings.Greeting.morning)
+   Button(FeatureAuthStrings.signInWithApple) { /* ... */ }
+   errorMessage = SharedLocalizedString.Error.networkError
+   
+   // ❌ BAD - Magic strings, runtime errors
+   Text("Cancel")  // Hardcoded
+   Text(String(localized: "dashboard.greeting.morning"))  // Magic string
+   ```
+ - **Import statement:** Add `import SharedLocalization` when using common strings. Feature[Name]Strings are automatically available in their respective feature modules.
+ - **Adding new strings:** Add to the appropriate `.xcstrings` file, then add the type-safe property to `SharedLocalization.swift` or `Feature[Name]Strings.swift`.
+ - **See:** `docs/guides/LOCALIZATION_QUICK_REFERENCE.md` for full API reference and examples.
 
   # UI Development
   - SwiftUI first, UIKit when needed
