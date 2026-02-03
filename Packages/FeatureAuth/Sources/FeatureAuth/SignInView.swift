@@ -55,10 +55,10 @@ public struct SignInView: View {
                 
                 // Title
                 Text("Your Mindset Profile is Ready")
-                    .lineLimit(0)
                     .font(MindsetFonts.displayHeadline)
                     .foregroundStyle(MindsetColors.textPrimary)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
                     .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
                 
                 // Subtitle
@@ -66,6 +66,7 @@ public struct SignInView: View {
                     .font(MindsetFonts.body)
                     .foregroundStyle(MindsetColors.textSecondary)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
                     .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
                 
                 Spacer()
@@ -133,6 +134,8 @@ public struct SignInView: View {
                     Text("Continue without account")
                         .font(MindsetFonts.button)
                         .foregroundStyle(MindsetColors.textSecondary)
+                        .lineLimit(nil)
+                        .multilineTextAlignment(.center)
                         .padding(.vertical, MindsetLayout.paddingMedium)
                 }
                 .disabled(viewModel.isSigningIn)
@@ -156,7 +159,7 @@ public struct SignInView: View {
     }
     
     private func benefitRow(icon: String, text: String) -> some View {
-        HStack(spacing: MindsetLayout.spacing12) {
+        HStack(alignment: .top, spacing: MindsetLayout.spacing12) {
             Image(systemName: icon)
                 .font(MindsetFonts.callout)
                 .foregroundStyle(MindsetColors.successEmerald)
@@ -165,6 +168,8 @@ public struct SignInView: View {
             Text(text)
                 .font(MindsetFonts.bodyMedium)
                 .foregroundStyle(MindsetColors.textPrimary)
+                .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
     
@@ -207,6 +212,7 @@ public struct SignInView: View {
                     .font(MindsetFonts.body)
                     .foregroundStyle(MindsetColors.textSecondary)
                     .multilineTextAlignment(.center)
+                    .lineLimit(nil)
                 
                 Button {
                     HapticManager.action()
