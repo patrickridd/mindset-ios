@@ -13,6 +13,7 @@ import SwiftUI
 public struct MorningRitualView: View {
     @Environment(\.colorScheme) private var colorScheme
     @State private var viewModel: MorningRitualViewModel
+    @FocusState private var isTextFieldFocused: Bool
     
     public init(viewModel: MorningRitualViewModel) {
         _viewModel = State(wrappedValue: viewModel)
@@ -76,6 +77,18 @@ public struct MorningRitualView: View {
                                     HapticManager.success()
                                 }
                             }
+                            .onChange(of: viewModel.currentStepIndex) { _, _ in
+                                // Focus keyboard when moving to next prompt
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                    isTextFieldFocused = true
+                                }
+                            }
+                            .onAppear {
+                                // Auto-focus keyboard when ritual starts
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                    isTextFieldFocused = true
+                                }
+                            }
                         }
                         .scrollDismissesKeyboard(.interactively)
                         // 3. Sticky Footer
@@ -94,23 +107,22 @@ public struct MorningRitualView: View {
     private var ritualContent: some View {
         if let prompt = viewModel.currentPrompt {
             VStack(spacing: MindsetLayout.spacing24) {
-                // Prompt Header
-                VStack(spacing: MindsetLayout.spacing8) {
+                // Simplified Prompt Display
+                VStack(spacing: MindsetLayout.spacing16) {
+                    // Category label - clean orange text
                     Text(prompt.category.displayName.uppercased())
-                        .font(MindsetFonts.label)
-                        .tracking(2)
+                        .font(MindsetFonts.labelUppercase)
+                        .tracking(1.5)
                         .foregroundStyle(MindsetColors.labelAccent(for: colorScheme))
-                    
-                    Text(prompt.headline)
-                        .font(MindsetFonts.promptHeadline)
+                        .padding(.top, MindsetLayout.spacing8)
+                    // Main question - clear and prominent
+                    Text(prompt.questionText)
+                        .font(MindsetFonts.promptQuestion)
                         .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
+                        .multilineTextAlignment(.leading)
+                        .lineSpacing(MindsetLayout.spacing4)
+                        .padding(.horizontal, MindsetLayout.paddingSmall)
                 }
-                
-                Text(prompt.questionText)
-                    .font(MindsetFonts.promptQuestion)
-                    .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
                 
                 // Input Area
                 textEditor(promptId: prompt.id)
@@ -165,21 +177,24 @@ public struct MorningRitualView: View {
         .padding(MindsetLayout.paddingMedium)
         .background(RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).fill(MindsetColors.backgroundSecondary(for: colorScheme)))
         .overlay(RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).stroke(MindsetColors.stoicSlateSoft, lineWidth: MindsetLayout.borderWidth))
+        .focused($isTextFieldFocused)
     }
     
     private func coachTipView(tip: String) -> some View {
-        VStack(alignment: .leading, spacing: MindsetLayout.spacing5) {
-            Label("Coach Tip", systemImage: "lightbulb.fill")
-                .font(MindsetFonts.captionBold)
+        HStack(alignment: .top, spacing: MindsetLayout.spacing8) {
+            Image(systemName: "lightbulb.fill")
+                .font(.caption2)
                 .foregroundStyle(MindsetColors.labelAccent(for: colorScheme))
             Text(tip)
                 .font(MindsetFonts.caption)
                 .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
         }
-        .padding()
+        .padding(MindsetLayout.paddingMedium)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(RoundedRectangle(cornerRadius: MindsetLayout.radiusStandard).fill(MindsetColors.accentOrangeSoft))
-        .overlay(RoundedRectangle(cornerRadius: MindsetLayout.radiusStandard).stroke(MindsetColors.stoicSlateSoft, lineWidth: MindsetLayout.borderWidth))
+        .background(
+            RoundedRectangle(cornerRadius: MindsetLayout.radiusStandard)
+                .fill(MindsetColors.backgroundSecondary(for: colorScheme).opacity(0.5))
+        )
     }
     
     private var footerButtons: some View {
@@ -224,4 +239,21 @@ public struct MorningRitualView: View {
             }
         }
     }
+}
+
+// MARK: - Preview
+
+#Preview("Morning Ritual") {
+    MorningRitualView(
+        viewModel: MorningRitualViewModel(
+            userRepository: Domain.MockUserRepository(),
+            addMindsetUseCase: AddMindsetUseCase(
+                repository: Domain.MockMindsetRepository(days: 7)
+            ),
+            subscriptionService: Domain.MockSubscriptionService(),
+            aiService: Domain.MockAIService(),
+            onNavigate: { _ in },
+            onDismiss: { }
+        )
+    )
 }

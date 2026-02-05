@@ -20,7 +20,7 @@ public enum MindsetFonts {
     public static let displayLarge = Font.system(size: 34, weight: .bold, design: .serif)
 
     /// Prompt headlines — "The Optimism Bridge", ritual step titles
-    public static let promptHeadline = Font.system(.title2, design: .serif).weight(.bold)
+    public static let promptHeadline = Font.system(.headline, design: .serif).weight(.medium)
 
     // MARK: - Body (Sans — clear, modern)
 
