@@ -31,8 +31,47 @@ public struct MorningRitualView: View {
                 Spacer()
             } else {
                 VStack(spacing: MindsetLayout.spacing12) {
-                    DismissButton(action: { viewModel.dismiss() })
-
+                    // Header with back and dismiss buttons
+                    ZStack {
+                        // Background layer: buttons on leading and trailing
+                        HStack {
+                            // Back button - always reserve space, fade in/out
+                            Button(action: {
+                                HapticManager.selection()
+                                withAnimation(.spring()) {
+                                    viewModel.previousStep()
+                                }
+                            }) {
+                                HStack(spacing: MindsetLayout.spacing8) {
+                                    Image(systemName: "chevron.left")
+                                }
+                                .font(MindsetFonts.body)
+                                .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
+                                .padding(.horizontal, MindsetLayout.spacing12)
+                                .padding(.vertical, MindsetLayout.spacing8)
+                                .background(
+                                    Capsule()
+                                        .fill(MindsetColors.backgroundSecondary(for: colorScheme))
+                                )
+                            }
+                            .buttonStyle(.plain)
+                            .opacity(viewModel.currentStepIndex > 0 ? 1 : 0)
+                            .disabled(viewModel.currentStepIndex == 0)
+                            
+                            Spacer()
+                            
+                            DismissButton(action: { viewModel.dismiss() })
+                        }
+                        
+                        // Foreground layer: centered category label
+                        if let prompt = viewModel.currentPrompt {
+                            Text(prompt.category.displayName.uppercased())
+                                .font(MindsetFonts.labelUppercase)
+                                .tracking(1.5)
+                                .foregroundStyle(MindsetColors.labelAccent(for: colorScheme))
+                        }
+                    }
+                    .padding(.horizontal)
                     // 1. Progress Bar (shared MindsetProgressBar)
                     MindsetProgressBar(
                         progress: viewModel.prompts.isEmpty
@@ -109,12 +148,6 @@ public struct MorningRitualView: View {
             VStack(spacing: MindsetLayout.spacing24) {
                 // Simplified Prompt Display
                 VStack(spacing: MindsetLayout.spacing16) {
-                    // Category label - clean orange text
-                    Text(prompt.category.displayName.uppercased())
-                        .font(MindsetFonts.labelUppercase)
-                        .tracking(1.5)
-                        .foregroundStyle(MindsetColors.labelAccent(for: colorScheme))
-                        .padding(.top, MindsetLayout.spacing8)
                     // Main question - clear and prominent
                     Text(prompt.questionText)
                         .font(MindsetFonts.promptQuestion)
@@ -123,6 +156,7 @@ public struct MorningRitualView: View {
                         .lineSpacing(MindsetLayout.spacing4)
                         .padding(.horizontal, MindsetLayout.paddingSmall)
                 }
+                .padding(.top)
                 
                 // Input Area
                 textEditor(promptId: prompt.id)

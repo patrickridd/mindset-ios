@@ -112,6 +112,12 @@ public final class MorningRitualViewModel {
             Task { await completeRitual() }
         }
     }
+    
+    public func previousStep() {
+        if currentStepIndex > 0 {
+            currentStepIndex -= 1
+        }
+    }
 
     public func submitCurrentAnswer() async {
         guard let prompt = currentPrompt, let answer = answers[prompt.id] else { return }
