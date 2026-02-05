@@ -10,7 +10,7 @@ import Domain
 public final class MockSubscriptionService: SubscriptionService, @unchecked Sendable {
     public var isPro: Bool
     
-    public init(isPro: Bool = false) {
+    public init(isPro: Bool = true) {
         self.isPro = isPro
     }
     

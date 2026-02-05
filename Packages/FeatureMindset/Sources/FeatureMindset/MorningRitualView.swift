@@ -14,6 +14,7 @@ public struct MorningRitualView: View {
     @Environment(\.colorScheme) private var colorScheme
     @State private var viewModel: MorningRitualViewModel
     @FocusState private var isTextFieldFocused: Bool
+    @State private var isCoachTipVisible: Bool = false
     
     public init(viewModel: MorningRitualViewModel) {
         _viewModel = State(wrappedValue: viewModel)
@@ -24,12 +25,16 @@ public struct MorningRitualView: View {
             // Background stays behind everything
             MindsetColors.backgroundGrouped(for: colorScheme)
                 .ignoresSafeArea()
+            
             if viewModel.isLoading {
-                Spacer()
-                ProgressView("Designing your ritual...")
-                    .tint(MindsetColors.accentOrange)
-                Spacer()
+                VStack {
+                    Spacer()
+                    ProgressView("Designing your ritual...")
+                        .tint(MindsetColors.accentOrange)
+                    Spacer()
+                }
             } else {
+                // Main content layer
                 VStack(spacing: MindsetLayout.spacing12) {
                     // Header with back and dismiss buttons
                     ZStack {
@@ -72,7 +77,8 @@ public struct MorningRitualView: View {
                         }
                     }
                     .padding(.horizontal)
-                    // 1. Progress Bar (shared MindsetProgressBar)
+                    
+                    // Progress Bar
                     MindsetProgressBar(
                         progress: viewModel.prompts.isEmpty
                             ? 0
@@ -100,8 +106,8 @@ public struct MorningRitualView: View {
                                 VStack(spacing: MindsetLayout.spacing24) {
                                     ritualContent
                                     
-                                    // Use a specific ID for the spacer to scroll to
-                                    Color.clear.frame(height: MindsetLayout.bottomSpacerHeight)
+                                    // Extra padding at bottom to account for fixed footer
+                                    Color.clear.frame(height: 100)
                                         .id("bottom-spacer")
                                 }
                                 .padding(.horizontal)
@@ -117,6 +123,9 @@ public struct MorningRitualView: View {
                                 }
                             }
                             .onChange(of: viewModel.currentStepIndex) { _, _ in
+                                // Reset coach tip visibility when moving to next prompt
+                                isCoachTipVisible = false
+                                
                                 // Focus keyboard when moving to next prompt
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                     isTextFieldFocused = true
@@ -130,12 +139,15 @@ public struct MorningRitualView: View {
                             }
                         }
                         .scrollDismissesKeyboard(.interactively)
-                        // 3. Sticky Footer
-                        // Removing .ignoresSafeArea from the ZStack lets the keyboard
-                        // push this specific VStack up automatically.
-                        footerButtons
                     }
                 }
+                
+                // Footer overlay - stays at bottom behind keyboard
+                VStack {
+                    Spacer()
+                    footerButtons
+                }
+                .ignoresSafeArea(.keyboard, edges: .bottom)
             }
         }
     }
@@ -190,8 +202,11 @@ public struct MorningRitualView: View {
                     .disabled(!viewModel.canProceed)
                 }
 
-                // Coach Tip
-                coachTipView(tip: prompt.coachTip)
+                // Coach Tip - toggled via keyboard toolbar
+                if isCoachTipVisible {
+                    coachTipView(tip: prompt.coachTip)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
                 
                 Spacer(minLength: MindsetLayout.spacerBottomMinLength)
             }
@@ -212,6 +227,41 @@ public struct MorningRitualView: View {
         .background(RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).fill(MindsetColors.backgroundSecondary(for: colorScheme)))
         .overlay(RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).stroke(MindsetColors.stoicSlateSoft, lineWidth: MindsetLayout.borderWidth))
         .focused($isTextFieldFocused)
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                // Coach tip button
+                Button(action: {
+                    HapticManager.selection()
+                    withAnimation(.spring(response: 0.3)) {
+                        isCoachTipVisible.toggle()
+                    }
+                }) {
+                    Image(systemName: isCoachTipVisible ? "lightbulb.fill" : "lightbulb")
+                        .font(MindsetFonts.body)
+                        .foregroundStyle(isCoachTipVisible ? MindsetColors.labelAccent(for: colorScheme) : MindsetColors.textSecondaryAdaptive(for: colorScheme))
+                }
+                
+                Spacer()
+                
+                // Submit answer button
+                Button(action: {
+                    HapticManager.action()
+                    isTextFieldFocused = false // Dismiss keyboard
+                    Task { await viewModel.submitCurrentAnswer() }
+                }) {
+                    Text("Submit")
+                        .font(MindsetFonts.button)
+                        .foregroundStyle(viewModel.canProceed ? MindsetColors.textOnAccent(for: colorScheme) : MindsetColors.textDisabled(for: colorScheme))
+                        .padding(.horizontal, MindsetLayout.spacing16)
+                        .padding(.vertical, MindsetLayout.spacing8)
+                        .background(
+                            Capsule()
+                                .fill(viewModel.canProceed ? MindsetColors.accentOrange : MindsetColors.buttonDisabledBackground(for: colorScheme))
+                        )
+                }
+                .disabled(!viewModel.canProceed)
+            }
+        }
     }
     
     private func coachTipView(tip: String) -> some View {
