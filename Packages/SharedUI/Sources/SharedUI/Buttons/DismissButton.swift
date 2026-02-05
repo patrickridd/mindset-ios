@@ -26,14 +26,17 @@ public struct DismissButton: View {
         }) {
             HStack {
                 Spacer()
-                Image(systemName: "xmark.circle.fill")
+                Image(systemName: "xmark")
                     .resizable()
                     .frame(width: MindsetLayout.iconSmall, height: MindsetLayout.iconSmall)
-                    .symbolRenderingMode(.hierarchical)
                     .foregroundStyle(MindsetColors.dismissButtonIcon(for: colorScheme))
                     .padding(.trailing)
             }
         }
         .buttonStyle(.plain)
     }
+}
+
+#Preview {
+    DismissButton(action: {})
 }

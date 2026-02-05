@@ -46,7 +46,7 @@ public struct MorningRitualView: View {
                                     Image(systemName: "chevron.left")
                                 }
                                 .font(MindsetFonts.body)
-                                .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
+                                .foregroundStyle(MindsetColors.dismissButtonIcon(for: colorScheme))
                                 .padding(.horizontal, MindsetLayout.spacing12)
                                 .padding(.vertical, MindsetLayout.spacing8)
                                 .background(
