@@ -24,8 +24,8 @@ struct MindsetApp: App {
     /// Repository/Persistence
     let container: ModelContainer
     let persistence: SDPersistenceService
-    let mindsetRepository: SDMindsetRepository
-    let userRepository: SDUserRepository
+    let mindsetRepository: MindsetRepository
+    let userRepository: UserRepository
     
     /// Use Cases
     let getStreakUseCase: GetStreakUseCase
@@ -38,29 +38,41 @@ struct MindsetApp: App {
 
     @State private var coordinator: MainCoordinator
     private let viewFactory: AppViewFactory
+    
+    /// Service configuration (Debug = mock, Release = real)
+    private let serviceFactory: ServiceFactory
 
     init() {
-        // 0. Initialize Firebase FIRST (before any Firebase services)
-        FirebaseApp.configure()
+        // 0. Service Configuration
+        // In Debug builds, uses mock services by default
+        // In Release builds, always uses real services
+        // To force real services in Debug: ServiceFactory(config: .production)
+        serviceFactory = ServiceFactory(config: .default)
         
-        // 1. Bottom Level: Database
+        // 1. Initialize Firebase FIRST (before any Firebase services)
+        // Only needed if using real services
+        if serviceFactory.config.useRealServices {
+            FirebaseApp.configure()
+        }
+        
+        // 2. Bottom Level: Database
         container = try! ModelContainer(for: SDUserProfile.self, SDMindsetEntry.self)
         
-        // 2. Level 2: Raw Persistence Driver
+        // 3. Level 2: Raw Persistence Driver
         persistence = SDPersistenceService(modelContext: container.mainContext)
         
-        // 3. Level 3: Domain-Specific Repositories
-        mindsetRepository = SDMindsetRepository(persistence: persistence)
-        userRepository = SDUserRepository(persistence: persistence)
+        // 4. Level 3: Domain-Specific Repositories (real or mock)
+        mindsetRepository = serviceFactory.makeMindsetRepository(persistence: persistence)
+        userRepository = serviceFactory.makeUserRepository(persistence: persistence)
         
-        // 4. Level 4: Business Logic (Use Case)
+        // 5. Level 4: Business Logic (Use Cases)
         getStreakUseCase = GetStreakUseCase(repository: mindsetRepository)
         addMindsetUseCase = AddMindsetUseCase(repository: mindsetRepository)
         getYesterdayGoalUseCase = GetYesterdayGoalUseCase(repository: mindsetRepository)
 
-        // 5. Services (RevenueCat, Firebase Auth)
-        subscriptionService = RevenueCatSubscriptionService()
-        authService = FirebaseAuthService()
+        // 6. Services (real or mock based on config)
+        subscriptionService = serviceFactory.makeSubscriptionService()
+        authService = serviceFactory.makeAuthService()
         
         let coord = MainCoordinator(
             authService: authService,
@@ -80,7 +92,8 @@ struct MindsetApp: App {
             getStreakUseCase: getStreakUseCase,
             addMindsetUseCase: addMindsetUseCase,
             getYesterdayGoalUseCase: getYesterdayGoalUseCase,
-            subscriptionService: subscriptionService
+            subscriptionService: subscriptionService,
+            serviceFactory: serviceFactory
         )
     }
 

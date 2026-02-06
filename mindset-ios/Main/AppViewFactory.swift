@@ -27,6 +27,7 @@ struct AppViewFactory: MainViewFactory {
     let addMindsetUseCase: AddMindsetUseCase
     let getYesterdayGoalUseCase: GetYesterdayGoalUseCase
     let subscriptionService: SubscriptionService
+    let serviceFactory: ServiceFactory
     
     func makeSignInView() -> AnyView {
         let viewModel = SignInViewModel(
@@ -102,8 +103,7 @@ struct AppViewFactory: MainViewFactory {
     }
 
     func makeMindsetView() -> AnyView {
-        let apiKey = AppConfig.geminiAPIKey
-        let aiService = GeminiAIService(apiKey: apiKey)
+        let aiService = serviceFactory.makeAIService()
         let viewModel = MorningRitualViewModel(
             userRepository: userRepository,
             addMindsetUseCase: addMindsetUseCase,
