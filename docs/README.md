@@ -56,6 +56,13 @@ docs/
 
 **Step-by-step implementation guides:**
 
+- **[SERVICE_FACTORY_GUIDE.md](guides/SERVICE_FACTORY_GUIDE.md)** 🏭
+  - Service Factory pattern for Debug vs Production
+  - Switch between real and mock services
+  - ServiceConfiguration usage and benefits
+  - Adding new services to the factory
+  - Perfect for rapid UI development with mocks
+
 - **[LOCALIZATION_GUIDE.md](guides/LOCALIZATION_GUIDE.md)** 🌍
   - Complete localization system overview
   - SharedLocalization vs Feature-specific catalogs
@@ -127,9 +134,10 @@ New to the project? Start here:
 
 1. Read `Context.md` in the root (project overview and tech stack)
 2. Follow [FIREBASE_SETUP.md](setup/FIREBASE_SETUP.md) to configure Firebase
-3. Review [AUTH_DECOUPLED_ARCHITECTURE.md](architecture/AUTH_DECOUPLED_ARCHITECTURE.md) to understand auth flow
-4. Keep [LOCALIZATION_QUICK_REFERENCE.md](guides/LOCALIZATION_QUICK_REFERENCE.md) handy for string localization
-5. Check [troubleshooting/](troubleshooting/) if you encounter issues
+3. Review [SERVICE_FACTORY_GUIDE.md](guides/SERVICE_FACTORY_GUIDE.md) to understand mock vs real services
+4. Review [AUTH_DECOUPLED_ARCHITECTURE.md](architecture/AUTH_DECOUPLED_ARCHITECTURE.md) to understand auth flow
+5. Keep [LOCALIZATION_QUICK_REFERENCE.md](guides/LOCALIZATION_QUICK_REFERENCE.md) handy for string localization
+6. Check [troubleshooting/](troubleshooting/) if you encounter issues
 
 ---
 

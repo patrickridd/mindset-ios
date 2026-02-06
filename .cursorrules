@@ -27,17 +27,33 @@
   - Ensure API keys are never hardcoded; suggest `Secrets.plist` or Environment Variables.
 
   
-  # Auth & Data Sync Rules
-  - Use Firebase Auth for Sign in with Apple (FeatureAuth module).
-  - Firebase UID is the single source of truth for user identity.
-  - SwiftData is local-first (offline support); Firestore is cloud backup.
-  - Sync on auth + background refresh; last-write-wins for conflicts.
-  - Never hardcode Firebase config; use gitignored `GoogleService-Info.plist`.
-  - Services: `FirebaseAuthService`, `FirebaseSyncService` in Data module.
-  - RevenueCat user ID should match Firebase UID for subscription tracking.
+ # Auth & Data Sync Rules
+ - Use Firebase Auth for Sign in with Apple (FeatureAuth module).
+ - Firebase UID is the single source of truth for user identity.
+ - SwiftData is local-first (offline support); Firestore is cloud backup.
+ - Sync on auth + background refresh; last-write-wins for conflicts.
+ - Never hardcode Firebase config; use gitignored `GoogleService-Info.plist`.
+ - Services: `FirebaseAuthService`, `FirebaseSyncService` in Data module.
+ - RevenueCat user ID should match Firebase UID for subscription tracking.
 
  
-  # Scoping (for complex changes)
+ # Service Factory Pattern (Debug vs Production)
+ - **ALWAYS use ServiceFactory** to create services and repositories in `MindsetApp.swift`.
+ - **Never hardcode service instantiation** with scattered `#if DEBUG` blocks.
+ - **Default behavior:** `ServiceFactory(config: .default)` uses Mock services in Debug builds, Real services in Release builds.
+ - **Override for testing:** Use `ServiceFactory(config: .production)` to test real backends in Debug mode.
+ - **Benefits:** Clean separation, type-safe, performant (Firebase skipped in mocks), testable, secure (no API keys in mocks).
+ - **Mock services:** Instant responses, pre-seeded data, no network calls, perfect for UI development and SwiftUI previews.
+ - **Adding new services:**
+   1. Define protocol in `Domain/Protocols/`
+   2. Implement real service in `Data/Services/`
+   3. Implement mock service in `Domain/Mocks/`
+   4. Add factory method to `ServiceFactory`
+   5. Update `MindsetApp.swift` to use factory
+ - See `Context.md` §17 and `docs/guides/SERVICE_FACTORY_GUIDE.md` for complete documentation.
+
+ 
+ # Scoping (for complex changes)
   - Prefer one package or one use case/flow per Composer request. For multi-file edits, name the target files or modules so changes stay predictable and reviewable.
 
 

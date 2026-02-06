@@ -1,7 +1,8 @@
 # Project: Mindset Ritual App (MLP)
 
 ## 0. Codebase Map (Where Things Live)
-- **App entry:** `mindset-ios/Main/MindsetApp.swift` — composes container, repos, use cases, `MainCoordinator`, and `AppViewFactory`.
+- **App entry:** `mindset-ios/Main/MindsetApp.swift` — composes container, repos, use cases, `MainCoordinator`, and `AppViewFactory`. Uses `ServiceFactory` to create real/mock services based on build config.
+- **Service Factory:** `mindset-ios/Main/ServiceFactory.swift` — centralized factory for creating services (Auth, Subscription, AI) and repositories. Switches between real and mock implementations based on `ServiceConfiguration` (mock in Debug, real in Release).
 - **Navigation:** `FeatureNavigation` — `MainCoordinator`, `MainCoordinatorView`, `MainTabView`. Only the app and coordinator import Feature modules; Features never import each other.
 - **Package dependency direction:** App → Feature* + Domain + Data. Domain has no dependency on Data or Feature. Data depends only on Domain (protocols). Feature modules depend on Domain (+ Data when needed) and optionally SharedUI/SharedUtils.
 - **Domain** (`Packages/Domain`): Entities, Models, Protocols, UseCases, Logic (PromptEngine, PromptLibrary), Services (AIAnalysisService), Mocks, Errors. Pure business logic; no UI, no framework types for persistence.
@@ -249,9 +250,13 @@ docs/
 ```
 
 **Key documentation:**
-- **Architecture:** Auth decoupling, onboarding flow design
+- **Architecture:** Auth decoupling, onboarding flow design, localization architecture
 - **Setup:** Firebase configuration, authentication providers
-- **Guides:** Google Sign In via Firebase, implementation tutorials
+- **Guides:** 
+  - Service Factory pattern (real vs mock services)
+  - Google Sign In via Firebase
+  - Localization quick reference and examples
+  - Implementation tutorials
 - **Troubleshooting:** Anonymous sign-in, OAuth callbacks, Firebase errors
 
 See [docs/README.md](docs/README.md) for complete index and quick start guide.
@@ -280,3 +285,69 @@ See [docs/README.md](docs/README.md) for complete index and quick start guide.
 - Users can only read/write their own data (`request.auth.uid == userId`)
 - Profile, entries, and prompts are user-scoped collections
 - RevenueCat webhook updates subscription status server-side
+
+## 17. Service Factory Pattern (Debug vs Production)
+
+### Overview
+The **Service Factory** pattern (`mindset-ios/Main/ServiceFactory.swift`) provides a clean, centralized way to switch between real and mock services based on build configuration.
+
+### Architecture
+
+**ServiceConfiguration** - Defines which services to use:
+```swift
+ServiceConfiguration.default    // Mock in Debug, Real in Release (default)
+ServiceConfiguration.production // Force real services (for testing real backends in Debug)
+ServiceConfiguration.mock       // Force mock services (for previews/UI testing)
+```
+
+**ServiceFactory** - Creates services and repositories:
+- `makeAuthService()` → `FirebaseAuthService` or `MockAuthService`
+- `makeSubscriptionService()` → `RevenueCatSubscriptionService` or `MockSubscriptionService`
+- `makeAIService()` → `GeminiAIService` or `MockAIService`
+- `makeMindsetRepository()` → `SDMindsetRepository` or `MockMindsetRepository`
+- `makeUserRepository()` → `SDUserRepository` or `MockUserRepository`
+
+### Usage in MindsetApp.swift
+
+```swift
+// Default: Mock services in Debug, Real in Release
+serviceFactory = ServiceFactory(config: .default)
+
+// Override to test with real services in Debug:
+// serviceFactory = ServiceFactory(config: .production)
+
+// All services created via factory
+authService = serviceFactory.makeAuthService()
+subscriptionService = serviceFactory.makeSubscriptionService()
+mindsetRepository = serviceFactory.makeMindsetRepository(persistence: persistence)
+// etc.
+```
+
+### Benefits
+
+✅ **Clean separation** - One place to manage real vs mock services (no scattered `#if DEBUG` blocks)  
+✅ **Type-safe** - All services conform to protocols; compile-time safety  
+✅ **Performant** - Firebase skipped when using mocks → faster debug launches  
+✅ **Testable** - Easy to inject mocks for tests and previews  
+✅ **Secure** - No API keys loaded when using mocks  
+✅ **Scalable** - Add new services by implementing protocol + adding factory method  
+
+### Mock Services
+
+Mock services provide:
+- **Instant responses** (no network calls, no delays)
+- **Pre-seeded data** for testing UI flows
+- **Local-only** (no cloud sync, no API calls)
+- **No API keys required**
+
+Perfect for rapid UI development, SwiftUI previews, and testing user flows without backend dependencies.
+
+### Adding New Services
+
+1. Define protocol in `Domain/Protocols/`
+2. Implement real service in `Data/Services/`
+3. Implement mock service in `Domain/Mocks/`
+4. Add factory method to `ServiceFactory`
+5. Update `MindsetApp.swift` to use factory method
+
+See `docs/guides/SERVICE_FACTORY_GUIDE.md` for complete documentation.
