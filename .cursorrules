@@ -64,6 +64,7 @@
   - Structure: Features/, Core/, UI/, Resources/
   - Follow Apple's Human Interface Guidelines
   - **ViewModels stay clean:** ViewModels hold state and business logic only. Do not use HapticManager, UI types (Color, Font, View), or animation APIs in ViewModels—Views own haptics, animations, and visual feedback. ViewModels must not import SharedUtils for HapticManager; only Views call HapticManager when handling user actions or observing state.
+  - **State in ViewModels:** Keep published/observable state (e.g. @State-backed, @Observable) in the ViewModel when possible. Use View @State only for state that would leak unnecessary framework or implementation details into the ViewModel (e.g. @FocusState, SwiftUI-only types, or one-off layout keys). Prefer a single source of truth in the ViewModel so logic and tests stay in one place.
 
   
   # Naming

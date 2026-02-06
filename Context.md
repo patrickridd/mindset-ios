@@ -205,6 +205,8 @@ Keep ViewModels **clean**: they hold state and business logic only. Do **not** p
 - **No UI types** — No `Color`, `Font`, `View` types, or layout constants; those belong in Views and SharedUI.
 - **No animations** — ViewModels update state; Views decide how to animate (e.g. `withAnimation { viewModel.nextStep() }`).
 
+**State in ViewModels:** Keep published/observable state in the ViewModel when possible. Use View `@State` only when the state would leak unnecessary framework or implementation details into the ViewModel—e.g. `@FocusState`, SwiftUI-only types, or one-off layout keys. Prefer a single source of truth in the ViewModel so business logic and tests stay in one place.
+
 ViewModels stay testable and reusable; Views own haptics, animations, and visual feedback.
 
 ### Localization (String Management)
