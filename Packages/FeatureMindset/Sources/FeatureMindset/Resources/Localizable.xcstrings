@@ -156,6 +156,102 @@
           }
         }
       }
+    },
+    "ritual.morning.designingRitual" : {
+      "comment" : "Loading state when designing ritual",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Designing your ritual..."
+          }
+        }
+      }
+    },
+    "ritual.morning.fetchingPrompts" : {
+      "comment" : "Loading state when fetching prompts",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fetching your prompts..."
+          }
+        }
+      }
+    },
+    "ritual.morning.noPromptsFound" : {
+      "comment" : "Empty state when no prompts available",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Prompts Found"
+          }
+        }
+      }
+    },
+    "ritual.morning.noPromptsFoundDescription" : {
+      "comment" : "Empty state description for no prompts",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try restarting the ritual or check your profile settings."
+          }
+        }
+      }
+    },
+    "ritual.morning.getAiReflection" : {
+      "comment" : "Button to get AI reflection",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get AI Reflection"
+          }
+        }
+      }
+    },
+    "ritual.morning.analyzing" : {
+      "comment" : "AI analyzing state",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analyzing..."
+          }
+        }
+      }
+    },
+    "ritual.morning.complete" : {
+      "comment" : "Complete button label",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Complete"
+          }
+        }
+      }
+    },
+    "ritual.morning.coachTip" : {
+      "comment" : "Coach tip popover title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coach Tip"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

@@ -373,6 +373,18 @@
         }
       }
     },
+    "submit" : {
+      "comment" : "Submit button",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Submit"
+          }
+        }
+      }
+    },
     "save" : {
       "comment" : "Save button",
       "extractionState" : "manual",

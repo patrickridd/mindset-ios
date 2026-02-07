@@ -6,6 +6,7 @@
 //
 
 import Domain
+import SharedLocalization
 import SharedUI
 import SharedUtils
 import SwiftUI
@@ -43,7 +44,7 @@ private extension MorningRitualView {
     var initialLoadingOverlay: some View {
         VStack {
             Spacer()
-            ProgressView("Designing your ritual...")
+            ProgressView(FeatureMindsetStrings.MorningRitual.designingRitual)
                 .tint(MindsetColors.accentOrange)
             Spacer()
         }
@@ -118,16 +119,16 @@ private extension MorningRitualView {
         if viewModel.isLoading {
             VStack {
                 Spacer()
-                ProgressView("Fetching your prompts...")
+                ProgressView(FeatureMindsetStrings.MorningRitual.fetchingPrompts)
                 Spacer()
             }
         } else if viewModel.prompts.isEmpty {
             VStack {
                 Spacer()
                 ContentUnavailableView(
-                    "No Prompts Found",
+                    FeatureMindsetStrings.MorningRitual.noPromptsFound,
                     systemImage: "exclamationmark.triangle",
-                    description: Text("Try restarting the ritual or check your profile settings.")
+                    description: Text(FeatureMindsetStrings.MorningRitual.noPromptsFoundDescription)
                 )
                 Spacer()
             }
@@ -235,7 +236,7 @@ private extension MorningRitualView {
                         HapticManager.action()
                         Task { await viewModel.submitCurrentAnswer() }
                     }) {
-                        Label("Get AI Reflection", systemImage: "sparkles")
+                        Label(FeatureMindsetStrings.MorningRitual.getAiReflection, systemImage: "sparkles")
                             .font(MindsetFonts.subheadline.weight(.bold))
                             .foregroundStyle(viewModel.canProceed ? MindsetColors.labelAccent(for: colorScheme) : MindsetColors.textDisabled(for: colorScheme))
                             .padding(.horizontal, MindsetLayout.paddingStandard)
@@ -288,7 +289,7 @@ private extension MorningRitualView {
                     isTextFieldFocused = false
                     Task { await viewModel.submitCurrentAnswer() }
                 }) {
-                    Text("Submit")
+                    Text(SharedLocalizedString.submit)
                         .font(MindsetFonts.button)
                         .foregroundStyle(viewModel.canProceed ? MindsetColors.textOnAccent(for: colorScheme) : MindsetColors.textDisabled(for: colorScheme))
                         .padding(.horizontal, MindsetLayout.spacing16)
@@ -327,7 +328,7 @@ private extension MorningRitualView {
                                 .tint(.white)
                         }
 
-                        Text(isAnalyzing ? "Analyzing..." : (isLastStep ? "Complete \(checkmark)" : "Continue"))
+                        Text(isAnalyzing ? FeatureMindsetStrings.MorningRitual.analyzing : (isLastStep ? "\(FeatureMindsetStrings.MorningRitual.complete) \(checkmark)" : SharedLocalizedString.continue))
                             .bold()
 
                         if !isLastStep && !isAnalyzing {

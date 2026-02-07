@@ -19,7 +19,7 @@ struct CoachTipPopover: View {
                     .font(MindsetFonts.body)
                     .foregroundStyle(MindsetColors.accentOrange)
                 
-                Text("Coach Tip")
+                Text(FeatureMindsetStrings.MorningRitual.coachTip)
                     .font(MindsetFonts.label.weight(.semibold))
                     .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
             }

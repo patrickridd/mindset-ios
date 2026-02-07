@@ -34,6 +34,7 @@ public enum SharedLocalizedString {
     public static let edit = String(localized: "edit", bundle: .module, comment: "Edit button")
     public static let share = String(localized: "share", bundle: .module, comment: "Share button")
     public static let retry = String(localized: "retry", bundle: .module, comment: "Retry button")
+    public static let submit = String(localized: "submit", bundle: .module, comment: "Submit button")
     
     // MARK: - Error Messages
     
