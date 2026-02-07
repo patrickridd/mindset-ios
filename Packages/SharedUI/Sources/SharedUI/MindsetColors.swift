@@ -121,14 +121,23 @@ public enum MindsetColors {
         }
     }
 
-    /// Dismiss button icon (X) — adapts to light/dark mode.
-    /// Dark: light gray for visibility on dark backgrounds. Light: gray.
+    /// Dismiss button icon (X) — adapts to light/dark mode. White on dark, dark on light (for use on circular fill).
     public static func dismissButtonIcon(for colorScheme: ColorScheme) -> Color {
         switch colorScheme {
         case .dark:
-            return Color(white: 0.9)
+            return Color(white: 1.0)
         default:
-            return Color.gray
+            return Color(red: 0.22, green: 0.22, blue: 0.26)
+        }
+    }
+
+    /// Dismiss button circular background — subtle translucent fill (Reminders-style).
+    public static func dismissButtonBackground(for colorScheme: ColorScheme) -> Color {
+        switch colorScheme {
+        case .dark:
+            return Color.white.opacity(0.2)
+        default:
+            return Color(white: 0.0, opacity: 0.08)
         }
     }
 

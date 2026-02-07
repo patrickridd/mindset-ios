@@ -2,13 +2,13 @@
 //  DismissButton.swift
 //  SharedUI
 //
-//  Reusable top-right close/dismiss button. Use in modals and full-screen flows (onboarding, ritual).
+//  Reusable close/dismiss button (circular, xmark). Use in modals and full-screen flows (onboarding, ritual).
 //
 
 import SharedUtils
 import SwiftUI
 
-/// A dismiss button (X) aligned to the trailing edge, using design-system styling.
+/// A dismiss button (circular fill + SF Symbol xmark). Place in top-leading or top-trailing of your header.
 public struct DismissButton: View {
 
     @Environment(\.colorScheme) private var colorScheme
@@ -24,14 +24,11 @@ public struct DismissButton: View {
             HapticManager.selection()
             action()
         }) {
-            HStack {
-                Spacer()
-                Image(systemName: "xmark")
-                    .resizable()
-                    .frame(width: MindsetLayout.iconSmall, height: MindsetLayout.iconSmall)
-                    .foregroundStyle(MindsetColors.dismissButtonIcon(for: colorScheme))
-                    .padding(.trailing)
-            }
+            Image(systemName: "xmark")
+                .font(.system(size: MindsetLayout.iconSmall, weight: .medium))
+                .foregroundStyle(MindsetColors.dismissButtonIcon(for: colorScheme))
+                .frame(width: MindsetLayout.dismissButtonCircle, height: MindsetLayout.dismissButtonCircle)
+                .background(Circle().fill(MindsetColors.dismissButtonBackground(for: colorScheme)))
         }
         .buttonStyle(.plain)
     }
