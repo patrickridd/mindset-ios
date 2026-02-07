@@ -83,7 +83,7 @@ public struct UserProfileView: View {
             // Avatar
             ZStack {
                 Circle()
-                    .fill(MindsetColors.accentOrange.opacity(0.15))
+                    .fill(MindsetColors.accentOrange.opacity(colorScheme == .dark ? 0.15 : 0.2))
                     .frame(width: 100, height: 100)
                 
                 Image(systemName: "person.crop.circle.fill")
@@ -94,13 +94,13 @@ public struct UserProfileView: View {
             // Display Name
             Text(viewModel.displayName ?? "Mindset User")
                 .font(MindsetFonts.featureTitle)
-                .foregroundStyle(MindsetColors.textPrimary)
+                .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
             
             // User ID (truncated)
             if let userID = viewModel.userID {
                 Text("ID: \(userID.prefix(8))...")
                     .font(MindsetFonts.caption)
-                    .foregroundStyle(MindsetColors.textMuted)
+                    .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
             }
         }
         .frame(maxWidth: .infinity)
@@ -111,7 +111,7 @@ public struct UserProfileView: View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing12) {
             Text("Account")
                 .font(MindsetFonts.sectionHeader)
-                .foregroundStyle(MindsetColors.textSecondary)
+                .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
                 .padding(.horizontal, MindsetLayout.paddingMedium)
             
             VStack(spacing: 0) {
@@ -119,17 +119,21 @@ public struct UserProfileView: View {
                     icon: "checkmark.shield.fill",
                     title: "Signed In",
                     subtitle: "Your data is secure",
-                    color: MindsetColors.successEmerald
+                    color: MindsetColors.successEmerald,
+                    colorScheme: colorScheme
                 )
                 
-                Divider()
+                Rectangle()
+                    .fill(MindsetColors.stoicSlateSoft)
+                    .frame(height: 1)
                     .padding(.leading, 60)
                 
                 accountRow(
                     icon: "icloud.fill",
                     title: "Cloud Sync",
                     subtitle: "All devices synced",
-                    color: MindsetColors.accentBlue
+                    color: MindsetColors.accentBlue,
+                    colorScheme: colorScheme
                 )
             }
             .background(
@@ -139,11 +143,11 @@ public struct UserProfileView: View {
         }
     }
     
-    private func accountRow(icon: String, title: String, subtitle: String, color: Color) -> some View {
+    private func accountRow(icon: String, title: String, subtitle: String, color: Color, colorScheme: ColorScheme) -> some View {
         HStack(spacing: MindsetLayout.spacing16) {
             ZStack {
                 Circle()
-                    .fill(color.opacity(0.15))
+                    .fill(color.opacity(colorScheme == .dark ? 0.15 : 0.2))
                     .frame(width: 44, height: 44)
                 
                 Image(systemName: icon)
@@ -154,11 +158,11 @@ public struct UserProfileView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .font(MindsetFonts.bodyMedium)
-                    .foregroundStyle(MindsetColors.textPrimary)
+                    .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
                 
                 Text(subtitle)
                     .font(MindsetFonts.caption)
-                    .foregroundStyle(MindsetColors.textSecondary)
+                    .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
             }
             
             Spacer()
@@ -183,11 +187,11 @@ public struct UserProfileView: View {
             .frame(height: MindsetLayout.buttonHeight)
             .background(
                 RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
-                    .fill(MindsetColors.accentCoral.opacity(0.1))
+                    .fill(MindsetColors.accentCoral.opacity(colorScheme == .dark ? 0.1 : 0.15))
             )
             .overlay(
                 RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
-                    .stroke(MindsetColors.accentCoral.opacity(0.3), lineWidth: 1)
+                    .stroke(MindsetColors.accentCoral.opacity(colorScheme == .dark ? 0.3 : 0.4), lineWidth: 1)
             )
         }
         .disabled(viewModel.isSigningOut)
