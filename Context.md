@@ -211,6 +211,39 @@ Keep ViewModels **clean**: they hold state and business logic only. Do **not** p
 
 ViewModels stay testable and reusable; Views own haptics, animations, and visual feedback.
 
+### SwiftUI View Body Composition
+
+Compose the body of Views into smaller subviews in a **private extension** on the View. Keep the main `body` minimal—e.g. a single ZStack or VStack that references composed subviews—and extract sections into named computed properties or functions.
+
+**Benefits:** Readability, easier navigation, simpler diffs, maintainability.
+
+**Structure:**
+- Main struct: `init`, `body` only (plus any `@State` / `@Environment` / `@FocusState` the body needs).
+- `private extension ViewName`: Add `// MARK: - Body Composition` for top-level layout pieces (background, loading overlay, main content stack, overlays) and `// MARK: - Subviews` for finer-grained pieces (header, footer, content sections, etc.).
+
+**Example:**
+```swift
+public var body: some View {
+    ZStack {
+        backgroundView
+        if viewModel.isLoading { initialLoadingOverlay }
+        else {
+            mainContentStack
+            coachTipOverlay
+        }
+    }
+}
+
+private extension SomeView {
+    var backgroundView: some View { ... }
+    var mainContentStack: some View { ... }
+    var headerSection: some View { ... }
+    var footerButtons: some View { ... }
+}
+```
+
+Reference: `Packages/FeatureMindset/Sources/FeatureMindset/MorningRitualView.swift`.
+
 ### Localization (String Management)
 
 **NEVER use hardcoded strings or magic strings.** All user-facing text must be localized using the type-safe APIs.
