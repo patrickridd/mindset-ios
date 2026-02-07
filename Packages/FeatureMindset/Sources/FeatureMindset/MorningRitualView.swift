@@ -14,7 +14,6 @@ public struct MorningRitualView: View {
     @Environment(\.colorScheme) private var colorScheme
     @State private var viewModel: MorningRitualViewModel
     @FocusState private var isTextFieldFocused: Bool
-    @State private var isCoachTipVisible: Bool = false
     
     public init(viewModel: MorningRitualViewModel) {
         _viewModel = State(wrappedValue: viewModel)
@@ -123,9 +122,6 @@ public struct MorningRitualView: View {
                                 }
                             }
                             .onChange(of: viewModel.currentStepIndex) { _, _ in
-                                // Reset coach tip visibility when moving to next prompt
-                                isCoachTipVisible = false
-                                
                                 // Focus keyboard when moving to next prompt
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                     isTextFieldFocused = true
@@ -141,6 +137,8 @@ public struct MorningRitualView: View {
                         .scrollDismissesKeyboard(.interactively)
                     }
                 }
+                .blur(radius: viewModel.isCoachTipVisible ? 3 : 0, opaque: false)
+                .animation(viewModel.isCoachTipVisible ? .easeIn(duration: 0.2) : .linear(duration: 0.2), value: viewModel.isCoachTipVisible)
                 
                 // Footer overlay - stays at bottom behind keyboard
                 VStack {
@@ -148,6 +146,31 @@ public struct MorningRitualView: View {
                     footerButtons
                 }
                 .ignoresSafeArea(.keyboard, edges: .bottom)
+                .blur(radius: viewModel.isCoachTipVisible ? 3 : 0, opaque: false)
+                .animation(viewModel.isCoachTipVisible ? .easeIn(duration: 0.2) : .linear(duration: 0), value: viewModel.isCoachTipVisible)
+            }
+            
+            // Custom coach tip overlay — above keyboard; tap outside to dismiss
+            if viewModel.isCoachTipVisible, let prompt = viewModel.currentPrompt {
+                Group {
+                    Color.black.opacity(0.001)
+                        .ignoresSafeArea()
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            viewModel.toggleCoachTip()
+                        }
+                    VStack {
+                        Spacer()
+                        CoachTipPopover(tip: prompt.coachTip)
+                            .padding(.horizontal, MindsetLayout.paddingStandard)
+                        .padding(.bottom, 100)
+                    }
+                }
+                .transition(.asymmetric(
+                    insertion: .opacity.combined(with: .scale(scale: 0.94)).combined(with: .move(edge: .bottom)),
+                    removal: .opacity
+                ))
+                .animation(.spring(response: 0.35, dampingFraction: 0.82), value: viewModel.isCoachTipVisible)
             }
         }
     }
@@ -201,12 +224,6 @@ public struct MorningRitualView: View {
                     .buttonStyle(.plain)
                     .disabled(!viewModel.canProceed)
                 }
-
-                // Coach Tip - toggled via keyboard toolbar
-                if isCoachTipVisible {
-                    coachTipView(tip: prompt.coachTip)
-                        .transition(.move(edge: .bottom).combined(with: .opacity))
-                }
                 
                 Spacer(minLength: MindsetLayout.spacerBottomMinLength)
             }
@@ -229,21 +246,23 @@ public struct MorningRitualView: View {
         .focused($isTextFieldFocused)
         .toolbar {
             ToolbarItemGroup(placement: .keyboard) {
-                // Coach tip button
-                Button(action: {
+                // Coach tip button — 44pt min tap target (Apple HIG)
+                Button {
                     HapticManager.selection()
-                    withAnimation(.spring(response: 0.3)) {
-                        isCoachTipVisible.toggle()
-                    }
-                }) {
-                    Image(systemName: isCoachTipVisible ? "lightbulb.fill" : "lightbulb")
+                    viewModel.toggleCoachTip()
+                } label: {
+                    Image(systemName: viewModel.isCoachTipVisible ? "lightbulb.fill" : "lightbulb")
                         .font(MindsetFonts.body)
-                        .foregroundStyle(isCoachTipVisible ? MindsetColors.labelAccent(for: colorScheme) : MindsetColors.textSecondaryAdaptive(for: colorScheme))
+                        .foregroundStyle(viewModel.isCoachTipVisible ? MindsetColors.labelAccent(for: colorScheme) : MindsetColors.textSecondaryAdaptive(for: colorScheme))
+                        .contentTransition(.symbolEffect(.replace))
+                        .frame(minWidth: 44, minHeight: 44)
+                        .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
                 
                 Spacer()
                 
-                // Submit answer button
+                // Submit button — fits content; min height for tap target
                 Button(action: {
                     HapticManager.action()
                     isTextFieldFocused = false // Dismiss keyboard
@@ -254,32 +273,20 @@ public struct MorningRitualView: View {
                         .foregroundStyle(viewModel.canProceed ? MindsetColors.textOnAccent(for: colorScheme) : MindsetColors.textDisabled(for: colorScheme))
                         .padding(.horizontal, MindsetLayout.spacing16)
                         .padding(.vertical, MindsetLayout.spacing8)
+                        .frame(minHeight: 44)
+                        .contentShape(Rectangle())
                         .background(
                             Capsule()
                                 .fill(viewModel.canProceed ? MindsetColors.accentOrange : MindsetColors.buttonDisabledBackground(for: colorScheme))
                         )
                 }
+                .buttonStyle(.plain)
+                .fixedSize(horizontal: true, vertical: false)
                 .disabled(!viewModel.canProceed)
             }
         }
     }
     
-    private func coachTipView(tip: String) -> some View {
-        HStack(alignment: .top, spacing: MindsetLayout.spacing8) {
-            Image(systemName: "lightbulb.fill")
-                .font(.caption2)
-                .foregroundStyle(MindsetColors.labelAccent(for: colorScheme))
-            Text(tip)
-                .font(MindsetFonts.caption)
-                .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
-        }
-        .padding(MindsetLayout.paddingMedium)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: MindsetLayout.radiusStandard)
-                .fill(MindsetColors.backgroundSecondary(for: colorScheme).opacity(0.5))
-        )
-    }
     
     private var footerButtons: some View {
         VStack {
@@ -322,6 +329,43 @@ public struct MorningRitualView: View {
                 .padding()
             }
         }
+    }
+}
+
+// MARK: - Coach Tip Popover Component
+
+struct CoachTipPopover: View {
+    @Environment(\.colorScheme) private var colorScheme
+    let tip: String
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: MindsetLayout.spacing12) {
+            HStack(spacing: MindsetLayout.spacing8) {
+                Image(systemName: "lightbulb.fill")
+                    .font(MindsetFonts.body)
+                    .foregroundStyle(MindsetColors.accentOrange)
+                
+                Text("Coach Tip")
+                    .font(MindsetFonts.label.weight(.semibold))
+                    .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
+            }
+            
+            Text(tip)
+                .font(MindsetFonts.callout)
+                .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
+                .multilineTextAlignment(.leading)
+        }
+        .padding(MindsetLayout.paddingStandard)
+        .frame(maxWidth: 340, alignment: .topLeading)
+        .background(
+            RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
+                .fill(MindsetColors.backgroundSecondary(for: colorScheme))
+                .shadow(color: .black.opacity(0.2), radius: 16, x: 0, y: 8)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
+                .strokeBorder(MindsetColors.borderSubtle.opacity(0.3), lineWidth: 1)
+        )
     }
 }
 

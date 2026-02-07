@@ -31,6 +31,7 @@ public final class MorningRitualViewModel {
     // UI State
     public var isLoading: Bool = false
     public var isShowingPaywall: Bool = false
+    public var isCoachTipVisible: Bool = false
     public var onNavigate: ((NavigationState) -> Void)?
     
     public var isAiThinking: Bool = false
@@ -106,6 +107,9 @@ public final class MorningRitualViewModel {
     }
 
     public func nextStep() {
+        // Reset coach tip visibility when moving to next prompt
+        isCoachTipVisible = false
+        
         if currentStepIndex < prompts.count - 1 {
             currentStepIndex += 1
         } else {
@@ -114,9 +118,16 @@ public final class MorningRitualViewModel {
     }
     
     public func previousStep() {
+        // Reset coach tip visibility when moving to previous prompt
+        isCoachTipVisible = false
+        
         if currentStepIndex > 0 {
             currentStepIndex -= 1
         }
+    }
+    
+    public func toggleCoachTip() {
+        isCoachTipVisible.toggle()
     }
 
     public func submitCurrentAnswer() async {
