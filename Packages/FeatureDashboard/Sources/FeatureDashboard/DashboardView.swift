@@ -25,44 +25,47 @@ public struct DashboardView: View {
         }
 
         public var body: some View {
-            NavigationStack {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: MindsetLayout.spacing25) {
-                        if viewModel.isLoading {
-                            ProgressView().padding()
-                        } else {
-                            headerSection
-                            identityCard
-                            if let yesterday = viewModel.yesterdayGoal {
-                                yesterdayBridge(text: yesterday)
-                            }
-                            statsGrid
-                            
-                            Spacer(minLength: MindsetLayout.spacerMinLength)
-                            
-                            Button(action: {
-                                HapticManager.action()
-                                viewModel.startMindsetButtonTapped()
-                            }) {
-                                HStack {
-                                    Text("Begin Morning Ritual")
-                                    Image(systemName: "sparkles")
+            ZStack {
+                MindsetColors.backgroundGrouped(for: colorScheme)
+                    .ignoresSafeArea()
+                NavigationStack {
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: MindsetLayout.spacing25) {
+                            if viewModel.isLoading {
+                                ProgressView().padding()
+                            } else {
+                                headerSection
+                                identityCard
+                                if let yesterday = viewModel.yesterdayGoal {
+                                    yesterdayBridge(text: yesterday)
                                 }
-                                .font(MindsetFonts.button)
-                                .foregroundStyle(MindsetColors.textOnAccent(for: colorScheme))
-                                .frame(maxWidth: .infinity)
-                                .frame(height: MindsetLayout.buttonHeight)
-                                .background(Capsule().fill(MindsetColors.accentOrange))
+                                statsGrid
+                                
+                                Spacer(minLength: MindsetLayout.spacerMinLength)
+                                
+                                Button(action: {
+                                    HapticManager.action()
+                                    viewModel.startMindsetButtonTapped()
+                                }) {
+                                    HStack {
+                                        Text("Begin Morning Ritual")
+                                        Image(systemName: "sparkles")
+                                    }
+                                    .font(MindsetFonts.button)
+                                    .foregroundStyle(MindsetColors.textOnAccent(for: colorScheme))
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: MindsetLayout.buttonHeight)
+                                    .background(Capsule().fill(MindsetColors.accentOrange))
+                                }
+                                .padding(.horizontal)
                             }
-                            .padding(.horizontal)
                         }
+                        .padding()
                     }
-                    .padding()
-                }
-                .background(MindsetColors.backgroundGrouped(for: colorScheme))
-                .navigationTitle("Mindset")
-                .task {
-                    await viewModel.loadDashboardData()
+                    .navigationTitle("Mindset")
+                    .task {
+                        await viewModel.loadDashboardData()
+                    }
                 }
             }
             #if DEBUG
