@@ -15,22 +15,22 @@ public struct MorningRitualView: View {
     @Environment(\.colorScheme) private var colorScheme
     @State private var viewModel: MorningRitualViewModel
     @FocusState private var isTextFieldFocused: Bool
-    
+
     public init(viewModel: MorningRitualViewModel) {
         _viewModel = State(wrappedValue: viewModel)
     }
-    
+
     public var body: some View {
-            ZStack {
-                backgroundView
-                if viewModel.isLoading {
-                    initialLoadingOverlay
-                } else {
-                    // Attach the toolbar directly to the content that holds the TextEditor
-                    mainContentStack
-                    coachTipOverlay
-                }
+        ZStack {
+            backgroundView
+            if viewModel.isLoading {
+                initialLoadingOverlay
+            } else {
+                // Attach the toolbar directly to the content that holds the TextEditor
+                mainContentStack
+                coachTipOverlay
             }
+        }
     }
 }
 
@@ -41,7 +41,7 @@ private extension MorningRitualView {
         MindsetColors.backgroundGrouped(for: colorScheme)
             .ignoresSafeArea()
     }
-    
+
     var initialLoadingOverlay: some View {
         VStack {
             Spacer()
@@ -60,12 +60,16 @@ private extension MorningRitualView {
             } label: {
                 Image(systemName: viewModel.isCoachTipVisible ? "lightbulb.fill" : "lightbulb")
                     .font(MindsetFonts.body)
-                    .foregroundStyle(viewModel.isCoachTipVisible ? MindsetColors.labelAccent(for: colorScheme) : MindsetColors.textSecondaryAdaptive(for: colorScheme))
+                    .foregroundStyle(
+                        viewModel.isCoachTipVisible
+                            ? MindsetColors.labelAccent(for: colorScheme)
+                            : MindsetColors.textSecondaryAdaptive(for: colorScheme)
+                    )
                     .frame(width: 44, height: 44)
             }
-            
+
             Spacer()
-            
+
             // Submit Button
             Button(action: {
                 HapticManager.action()
@@ -74,10 +78,18 @@ private extension MorningRitualView {
             }) {
                 Text(SharedLocalizedString.submit)
                     .font(MindsetFonts.button)
-                    .foregroundStyle(viewModel.canProceed ? MindsetColors.textOnAccent(for: colorScheme) : MindsetColors.textDisabled(for: colorScheme))
+                    .foregroundStyle(
+                        viewModel.canProceed
+                            ? MindsetColors.textOnAccent(for: colorScheme)
+                            : MindsetColors.textDisabled(for: colorScheme)
+                    )
                     .padding(.horizontal, MindsetLayout.spacing16)
                     .padding(.vertical, MindsetLayout.spacing8)
-                    .background(Capsule().fill(viewModel.canProceed ? MindsetColors.accentOrange : MindsetColors.buttonDisabledBackground(for: colorScheme)))
+                    .background(
+                        Capsule().fill(
+                            viewModel.canProceed
+                                ? MindsetColors.accentOrange
+                                : MindsetColors.buttonDisabledBackground(for: colorScheme)))
             }
             .disabled(!viewModel.canProceed)
         }
@@ -85,14 +97,14 @@ private extension MorningRitualView {
         .padding(.bottom, MindsetLayout.spacing4)
         .background(MindsetColors.backgroundGrouped(for: colorScheme))
     }
-    
+
     @ViewBuilder
     var mainContentStack: some View {
-        VStack(spacing: 0) { // Set spacing to 0 to control padding manually
+        VStack(spacing: 0) {  // Set spacing to 0 to control padding manually
             headerSection
             progressBar
-            contentSection // This contains your ScrollView
-            
+            contentSection  // This contains your ScrollView
+
             if isTextFieldFocused {
                 customKeyboardBar
                     .transition(.move(edge: .bottom).combined(with: .opacity))
@@ -101,7 +113,7 @@ private extension MorningRitualView {
         .blur(radius: viewModel.isCoachTipVisible ? 3 : 0)
         footerOverlay
     }
-    
+
     var headerSection: some View {
         ZStack {
             HStack {
@@ -126,12 +138,12 @@ private extension MorningRitualView {
                 .buttonStyle(.plain)
                 .opacity(viewModel.currentStepIndex > 0 ? 1 : 0)
                 .disabled(viewModel.currentStepIndex == 0)
-                
+
                 Spacer()
-                
+
                 DismissButton(action: { viewModel.dismiss() })
             }
-            
+
             if let prompt = viewModel.currentPrompt {
                 Text(prompt.category.displayName.uppercased())
                     .font(MindsetFonts.labelUppercase)
@@ -141,7 +153,7 @@ private extension MorningRitualView {
         }
         .padding(.horizontal)
     }
-    
+
     var progressBar: some View {
         MindsetProgressBar(
             progress: viewModel.prompts.isEmpty
@@ -152,7 +164,7 @@ private extension MorningRitualView {
         .padding(.horizontal)
         .frame(maxWidth: .infinity)
     }
-    
+
     @ViewBuilder
     var contentSection: some View {
         if viewModel.isLoading {
@@ -175,7 +187,7 @@ private extension MorningRitualView {
             ritualScrollView
         }
     }
-    
+
     var ritualScrollView: some View {
         ScrollViewReader { proxy in
             ScrollView(.vertical, showsIndicators: false) {
@@ -208,7 +220,7 @@ private extension MorningRitualView {
         }
         .scrollDismissesKeyboard(.interactively)
     }
-    
+
     var footerOverlay: some View {
         VStack {
             Spacer()
@@ -216,9 +228,11 @@ private extension MorningRitualView {
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .blur(radius: viewModel.isCoachTipVisible ? 3 : 0, opaque: false)
-        .animation(viewModel.isCoachTipVisible ? .easeIn(duration: 0.2) : .linear(duration: 0), value: viewModel.isCoachTipVisible)
+        .animation(
+            viewModel.isCoachTipVisible ? .easeIn(duration: 0.2) : .linear(duration: 0),
+            value: viewModel.isCoachTipVisible)
     }
-    
+
     @ViewBuilder
     var coachTipOverlay: some View {
         if viewModel.isCoachTipVisible, let prompt = viewModel.currentPrompt {
@@ -236,16 +250,20 @@ private extension MorningRitualView {
                         .padding(.bottom, 100)
                 }
             }
-            .transition(.asymmetric(
-                insertion: .opacity.combined(with: .scale(scale: 0.94)).combined(with: .move(edge: .bottom)),
-                removal: .opacity
-            ))
-            .animation(.spring(response: 0.35, dampingFraction: 0.82), value: viewModel.isCoachTipVisible)
+            .transition(
+                .asymmetric(
+                    insertion: .opacity.combined(with: .scale(scale: 0.94)).combined(
+                        with: .move(edge: .bottom)),
+                    removal: .opacity
+                )
+            )
+            .animation(
+                .spring(response: 0.35, dampingFraction: 0.82), value: viewModel.isCoachTipVisible)
         }
     }
-    
+
     // MARK: - Subviews
-    
+
     /// Transition for step content: forward = next (in from right, out to left), back = previous (in from left, out to right).
     private var stepTransition: AnyTransition {
         if viewModel.stepTransitionForward {
@@ -254,7 +272,7 @@ private extension MorningRitualView {
             return .asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .trailing))
         }
     }
-    
+
     @ViewBuilder
     var ritualContent: some View {
         if let prompt = viewModel.currentPrompt {
@@ -268,9 +286,9 @@ private extension MorningRitualView {
                         .padding(.horizontal, MindsetLayout.paddingSmall)
                 }
                 .padding(.top)
-                
+
                 textEditor(promptId: prompt.id)
-                
+
                 if viewModel.isAiThinking || viewModel.currentAiReflection != nil {
                     AIReflectionCard(
                         reflection: viewModel.currentAiReflection,
@@ -278,51 +296,69 @@ private extension MorningRitualView {
                     )
                     .padding(.top)
                 }
-                
+
                 if !viewModel.isAiThinking && viewModel.currentAiReflection == nil {
                     Button(action: {
                         HapticManager.action()
                         Task { await viewModel.submitCurrentAnswer() }
                     }) {
-                        Label(FeatureMindsetStrings.MorningRitual.getAiReflection, systemImage: "sparkles")
-                            .font(MindsetFonts.subheadline.weight(.bold))
-                            .foregroundStyle(viewModel.canProceed ? MindsetColors.labelAccent(for: colorScheme) : MindsetColors.textDisabled(for: colorScheme))
-                            .padding(.horizontal, MindsetLayout.paddingStandard)
-                            .padding(.vertical, MindsetLayout.spacing10)
-                            .background(
-                                RoundedRectangle(cornerRadius: MindsetLayout.radiusStandard)
-                                    .fill(viewModel.canProceed ? MindsetColors.accentOrangeSoft : Color.clear)
-                            )
+                        Label(
+                            FeatureMindsetStrings.MorningRitual.getAiReflection,
+                            systemImage: "sparkles"
+                        )
+                        .font(MindsetFonts.subheadline.weight(.bold))
+                        .foregroundStyle(
+                            viewModel.canProceed
+                                ? MindsetColors.labelAccent(for: colorScheme)
+                                : MindsetColors.textDisabled(for: colorScheme)
+                        )
+                        .padding(.horizontal, MindsetLayout.paddingStandard)
+                        .padding(.vertical, MindsetLayout.spacing10)
+                        .background(
+                            RoundedRectangle(cornerRadius: MindsetLayout.radiusStandard)
+                                .fill(
+                                    viewModel.canProceed
+                                        ? MindsetColors.accentOrangeSoft : Color.clear)
+                        )
                     }
                     .buttonStyle(.plain)
                     .disabled(!viewModel.canProceed)
                 }
-                
+
                 Spacer(minLength: MindsetLayout.spacerBottomMinLength)
             }
             .id(prompt.id)
             .transition(stepTransition)
         }
     }
-    
+
     func textEditor(promptId: String) -> some View {
-        TextEditor(text: Binding(
-            get: { viewModel.answers[promptId] ?? "" },
-            set: { viewModel.answers[promptId] = $0 }
-        ))
+        TextEditor(
+            text: Binding(
+                get: { viewModel.answers[promptId] ?? "" },
+                set: { viewModel.answers[promptId] = $0 }
+            )
+        )
         .frame(minHeight: MindsetLayout.textEditorMinHeight)
         .padding(MindsetLayout.paddingMedium)
-        .background(RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).fill(MindsetColors.backgroundSecondary(for: colorScheme)))
-        .overlay(RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).stroke(MindsetColors.stoicSlateSoft, lineWidth: MindsetLayout.borderWidth))
+        .background(
+            RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).fill(
+                MindsetColors.backgroundSecondary(for: colorScheme))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).stroke(
+                MindsetColors.stoicSlateSoft, lineWidth: MindsetLayout.borderWidth)
+        )
         .focused($isTextFieldFocused)
     }
-    
+
     var footerButtons: some View {
         VStack {
             if !viewModel.prompts.isEmpty {
                 let isLastStep = viewModel.currentStepIndex == viewModel.prompts.count - 1
                 let checkmark: String = viewModel.canProceed ? "✅" : "☑️"
-                let isDisabled = !viewModel.canProceed || viewModel.isAiThinking || viewModel.isLoading
+                let isDisabled =
+                    !viewModel.canProceed || viewModel.isAiThinking || viewModel.isLoading
                 let isAnalyzing = viewModel.isAiThinking
                 let showEnabledStyle = isAnalyzing || viewModel.canProceed
 
@@ -337,19 +373,32 @@ private extension MorningRitualView {
                                 .tint(.white)
                         }
 
-                        Text(isAnalyzing ? FeatureMindsetStrings.MorningRitual.analyzing : (isLastStep ? "\(FeatureMindsetStrings.MorningRitual.complete) \(checkmark)" : SharedLocalizedString.continue))
-                            .bold()
+                        Text(
+                            isAnalyzing
+                                ? FeatureMindsetStrings.MorningRitual.analyzing
+                                : (isLastStep
+                                    ? "\(FeatureMindsetStrings.MorningRitual.complete) \(checkmark)"
+                                    : SharedLocalizedString.continue)
+                        )
+                        .bold()
 
                         if !isLastStep && !isAnalyzing {
                             Image(systemName: "chevron.right")
                         }
                     }
                     .frame(maxWidth: .infinity)
-                    .foregroundStyle(showEnabledStyle ? MindsetColors.textOnAccent(for: colorScheme) : MindsetColors.textDisabled(for: colorScheme))
+                    .foregroundStyle(
+                        showEnabledStyle
+                            ? MindsetColors.textOnAccent(for: colorScheme)
+                            : MindsetColors.textDisabled(for: colorScheme)
+                    )
                     .padding()
                     .background(
                         RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
-                            .fill(showEnabledStyle ? MindsetColors.accentOrange : MindsetColors.buttonDisabledBackground(for: colorScheme))
+                            .fill(
+                                showEnabledStyle
+                                    ? MindsetColors.accentOrange
+                                    : MindsetColors.buttonDisabledBackground(for: colorScheme))
                     )
                 }
                 .buttonStyle(.plain)
@@ -372,7 +421,7 @@ private extension MorningRitualView {
             subscriptionService: Domain.MockSubscriptionService(),
             aiService: Domain.MockAIService(),
             onNavigate: { _ in },
-            onDismiss: { }
+            onDismiss: {}
         )
     )
 }
