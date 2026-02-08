@@ -58,7 +58,6 @@ public enum MindsetLayout {
     public static let heroCircleSize: CGFloat = 160
     public static let textEditorMinHeight: CGFloat = 120
     public static let bottomSpacerHeight: CGFloat = 20
-    public static let spacerMinLength: CGFloat = 40
     public static let spacerBottomMinLength: CGFloat = 50
 
     // MARK: - Line & Stroke

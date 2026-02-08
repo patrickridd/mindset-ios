@@ -11,20 +11,20 @@ import SharedUtils
 import SwiftUI
 
 public struct DashboardView: View {
-
+    
 #if DEBUG
     @ObserveInjection var inject
 #endif
-
+    
     @Environment(\.colorScheme) private var colorScheme
     @State private var viewModel: DashboardViewModel
-
+    
     public init(viewModel: DashboardViewModel) {
         self._viewModel = State(initialValue: viewModel)
     }
-
+    
     // MARK: - Body Composition
-
+    
     public var body: some View {
         NavigationStack {
             ZStack {
@@ -40,18 +40,19 @@ public struct DashboardView: View {
                                 yesterdayBridge(text: yesterday)
                             }
                             statsGrid
-                            Spacer(minLength: MindsetLayout.spacerMinLength)
+                            Spacer(minLength: MindsetLayout.spacing4)
                             beginRitualButton
                         }
                     }
-                    .padding(MindsetLayout.paddingStandard)
+                    .padding(.horizontal)
+                    .padding(.top, MindsetLayout.spacing16) 
                 }
-                .navigationTitle(FeatureDashboardStrings.navTitle)
-                .toolbarBackground(MindsetColors.backgroundGrouped(for: colorScheme), for: .navigationBar)
                 .scrollContentBackground(.hidden)
-                .task {
-                    await viewModel.loadDashboardData()
-                }
+            }
+            .navigationTitle(FeatureDashboardStrings.navTitle)
+            .toolbarBackground(MindsetColors.backgroundGrouped(for: colorScheme), for: .navigationBar)
+            .task {
+                await viewModel.loadDashboardData()
             }
         }
 #if DEBUG
@@ -63,17 +64,17 @@ public struct DashboardView: View {
 // MARK: - Subviews
 
 private extension DashboardView {
-
+    
     var backgroundView: some View {
         MindsetColors.backgroundGrouped(for: colorScheme)
             .ignoresSafeArea()
     }
-
+    
     var loadingView: some View {
         ProgressView()
             .padding(MindsetLayout.paddingCard)
     }
-
+    
     var headerSection: some View {
         VStack(alignment: .leading) {
             Text(FeatureDashboardStrings.Greeting.morningWithComma)
@@ -84,14 +85,14 @@ private extension DashboardView {
                 .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
         }
     }
-
+    
     var identityCard: some View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing15) {
             Text(FeatureDashboardStrings.Goal.currentLabel)
                 .font(MindsetFonts.labelUppercase)
                 .tracking(1)
                 .foregroundStyle(MindsetColors.textSecondary)
-
+            
             Text(viewModel.userProfile?.primaryGoal ?? FeatureDashboardStrings.Goal.defaultPlaceholder)
                 .font(MindsetFonts.promptHeadline)
                 .foregroundStyle(MindsetColors.textPrimary)
@@ -103,7 +104,7 @@ private extension DashboardView {
                 .fill(LinearGradient(colors: [MindsetColors.accentCoral, MindsetColors.accentOrange], startPoint: .topLeading, endPoint: .bottomTrailing))
         )
     }
-
+    
     func yesterdayBridge(text: String) -> some View {
         VStack(alignment: .leading) {
             Text(FeatureDashboardStrings.Yesterday.label)
@@ -119,7 +120,7 @@ private extension DashboardView {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Capsule().stroke(MindsetColors.stoicSlateSoft))
     }
-
+    
     var statsGrid: some View {
         HStack(spacing: MindsetLayout.spacing15) {
             statBox(
@@ -128,7 +129,7 @@ private extension DashboardView {
                 icon: "flame.fill",
                 color: viewModel.streakCount > 0 ? MindsetColors.accentOrange : MindsetColors.textSecondaryAdaptive(for: colorScheme)
             )
-
+            
             statBox(
                 title: FeatureDashboardStrings.Rituals.statLabel,
                 value: String(format: FeatureDashboardStrings.Rituals.totalFormat, viewModel.totalRituals),
@@ -140,7 +141,7 @@ private extension DashboardView {
             }
         }
     }
-
+    
     var beginRitualButton: some View {
         Button(action: {
             HapticManager.action()
@@ -158,7 +159,7 @@ private extension DashboardView {
         }
         .padding(.horizontal, MindsetLayout.paddingStandard)
     }
-
+    
     func statBox(title: String, value: String, icon: String, color: Color) -> some View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing10) {
             Image(systemName: icon)
