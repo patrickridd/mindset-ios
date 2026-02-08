@@ -1,0 +1,13 @@
+{
+  "sweetpad.format.path": "/opt/homebrew/bin/swift-format",
+  "sweetpad.format.args": [
+    "--configuration",
+    ".swift-format.json",
+    "--in-place",
+    "${file}"
+  ],
+  "[swift]": {
+    "editor.defaultFormatter": "sweetpad.sweetpad",
+    "editor.formatOnSave": true
+  }
+}
