@@ -124,7 +124,10 @@ private extension DashboardView {
         }
         .padding(MindsetLayout.paddingCard)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Capsule().stroke(MindsetColors.stoicSlateSoft))
+        .background(
+            Capsule()
+            .fill(MindsetColors.backgroundSecondary(for: colorScheme))
+        )
     }
 
     var statsGrid: some View {
