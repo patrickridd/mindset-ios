@@ -33,14 +33,15 @@ public struct MainCoordinatorView: View {
             case .auth:       factory.makeSignInView()
             case .onboarding: factory.makeOnboardingView()
             case .home:       factory.makeHomeView()
-            case .mindset:    factory.makeMindsetView()
             }
         }
-        // Full Screen Cover Layer (for paywall)
+        // Full Screen Cover Layer (paywall, mindset ritual)
         .fullScreenCover(item: $coordinator.fullScreenState) { state in
             switch state {
             case .paywall:
                 factory.makePaywallView()
+            case .mindset:
+                factory.makeMindsetView()
             }
         }
         // Sheet Layer (for other modals)

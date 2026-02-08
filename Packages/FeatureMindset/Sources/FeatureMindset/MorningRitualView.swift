@@ -21,15 +21,16 @@ public struct MorningRitualView: View {
     }
     
     public var body: some View {
-        ZStack {
-            backgroundView
-            if viewModel.isLoading {
-                initialLoadingOverlay
-            } else {
-                mainContentStack
-                coachTipOverlay
+            ZStack {
+                backgroundView
+                if viewModel.isLoading {
+                    initialLoadingOverlay
+                } else {
+                    // Attach the toolbar directly to the content that holds the TextEditor
+                    mainContentStack
+                    coachTipOverlay
+                }
             }
-        }
     }
 }
 
@@ -49,17 +50,55 @@ private extension MorningRitualView {
             Spacer()
         }
     }
+
+    private var customKeyboardBar: some View {
+        HStack {
+            // Lightbulb Button
+            Button {
+                HapticManager.selection()
+                viewModel.toggleCoachTip()
+            } label: {
+                Image(systemName: viewModel.isCoachTipVisible ? "lightbulb.fill" : "lightbulb")
+                    .font(MindsetFonts.body)
+                    .foregroundStyle(viewModel.isCoachTipVisible ? MindsetColors.labelAccent(for: colorScheme) : MindsetColors.textSecondaryAdaptive(for: colorScheme))
+                    .frame(width: 44, height: 44)
+            }
+            
+            Spacer()
+            
+            // Submit Button
+            Button(action: {
+                HapticManager.action()
+                isTextFieldFocused = false
+                Task { await viewModel.submitCurrentAnswer() }
+            }) {
+                Text(SharedLocalizedString.submit)
+                    .font(MindsetFonts.button)
+                    .foregroundStyle(viewModel.canProceed ? MindsetColors.textOnAccent(for: colorScheme) : MindsetColors.textDisabled(for: colorScheme))
+                    .padding(.horizontal, MindsetLayout.spacing16)
+                    .padding(.vertical, MindsetLayout.spacing8)
+                    .background(Capsule().fill(viewModel.canProceed ? MindsetColors.accentOrange : MindsetColors.buttonDisabledBackground(for: colorScheme)))
+            }
+            .disabled(!viewModel.canProceed)
+        }
+        .padding(.horizontal, MindsetLayout.spacing12)
+        .padding(.bottom, MindsetLayout.spacing4)
+        .background(MindsetColors.backgroundGrouped(for: colorScheme))
+    }
     
     @ViewBuilder
     var mainContentStack: some View {
-        VStack(spacing: MindsetLayout.spacing12) {
+        VStack(spacing: 0) { // Set spacing to 0 to control padding manually
             headerSection
             progressBar
-            contentSection
+            contentSection // This contains your ScrollView
+            
+            if isTextFieldFocused {
+                customKeyboardBar
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
         }
-        .blur(radius: viewModel.isCoachTipVisible ? 3 : 0, opaque: false)
-        .animation(viewModel.isCoachTipVisible ? .easeIn(duration: 0.2) : .linear(duration: 0.2), value: viewModel.isCoachTipVisible)
-        
+        .blur(radius: viewModel.isCoachTipVisible ? 3 : 0)
         footerOverlay
     }
     
@@ -157,12 +196,12 @@ private extension MorningRitualView {
                 }
             }
             .onChange(of: viewModel.currentStepIndex) { _, _ in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     isTextFieldFocused = true
                 }
             }
             .onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     isTextFieldFocused = true
                 }
             }
@@ -206,6 +245,15 @@ private extension MorningRitualView {
     }
     
     // MARK: - Subviews
+    
+    /// Transition for step content: forward = next (in from right, out to left), back = previous (in from left, out to right).
+    private var stepTransition: AnyTransition {
+        if viewModel.stepTransitionForward {
+            return .asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading))
+        } else {
+            return .asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .trailing))
+        }
+    }
     
     @ViewBuilder
     var ritualContent: some View {
@@ -253,7 +301,7 @@ private extension MorningRitualView {
                 Spacer(minLength: MindsetLayout.spacerBottomMinLength)
             }
             .id(prompt.id)
-            .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading)))
+            .transition(stepTransition)
         }
     }
     
@@ -267,45 +315,6 @@ private extension MorningRitualView {
         .background(RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).fill(MindsetColors.backgroundSecondary(for: colorScheme)))
         .overlay(RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).stroke(MindsetColors.stoicSlateSoft, lineWidth: MindsetLayout.borderWidth))
         .focused($isTextFieldFocused)
-        .toolbar {
-            ToolbarItemGroup(placement: .keyboard) {
-                Button {
-                    HapticManager.selection()
-                    viewModel.toggleCoachTip()
-                } label: {
-                    Image(systemName: viewModel.isCoachTipVisible ? "lightbulb.fill" : "lightbulb")
-                        .font(MindsetFonts.body)
-                        .foregroundStyle(viewModel.isCoachTipVisible ? MindsetColors.labelAccent(for: colorScheme) : MindsetColors.textSecondaryAdaptive(for: colorScheme))
-                        .contentTransition(.symbolEffect(.replace))
-                        .frame(minWidth: 44, minHeight: 44)
-                        .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                
-                Spacer()
-                
-                Button(action: {
-                    HapticManager.action()
-                    isTextFieldFocused = false
-                    Task { await viewModel.submitCurrentAnswer() }
-                }) {
-                    Text(SharedLocalizedString.submit)
-                        .font(MindsetFonts.button)
-                        .foregroundStyle(viewModel.canProceed ? MindsetColors.textOnAccent(for: colorScheme) : MindsetColors.textDisabled(for: colorScheme))
-                        .padding(.horizontal, MindsetLayout.spacing16)
-                        .padding(.vertical, MindsetLayout.spacing8)
-                        .frame(minHeight: 44)
-                        .contentShape(Rectangle())
-                        .background(
-                            Capsule()
-                                .fill(viewModel.canProceed ? MindsetColors.accentOrange : MindsetColors.buttonDisabledBackground(for: colorScheme))
-                        )
-                }
-                .buttonStyle(.plain)
-                .fixedSize(horizontal: true, vertical: false)
-                .disabled(!viewModel.canProceed)
-            }
-        }
     }
     
     var footerButtons: some View {

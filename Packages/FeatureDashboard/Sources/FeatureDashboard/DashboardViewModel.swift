@@ -54,8 +54,12 @@ public final class DashboardViewModel {
     }
 
     public func loadDashboardData() async {
-        // Prevent flashing if data is already there, or keep it true for a hard refresh
-        isLoading = true
+        // Only show loading when we have no cached data (initial load). When returning to the tab,
+        // show existing content and refresh in the background without blocking the UI.
+        let hasCachedData = userProfile != nil || totalRituals > 0
+        if !hasCachedData {
+            isLoading = true
+        }
         
         do {
             // 1. Fetch User Identity (Name and Primary Goal)

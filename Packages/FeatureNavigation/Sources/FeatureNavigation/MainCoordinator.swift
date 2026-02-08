@@ -18,16 +18,18 @@ public final class MainCoordinator {
         case auth
         case onboarding
         case home
-        case mindset
     }
     
     // Modals and Overlays (Identifiable for SwiftUI item-based presentation)
+    /// Mindset is a full-screen overlay so home stays alive—avoids Dashboard reload on dismiss.
     public enum FullScreenState: Identifiable {
         case paywall
+        case mindset
         
         public var id: String {
             switch self {
             case .paywall: return "paywall"
+            case .mindset: return "mindset"
             }
         }
     }
@@ -121,6 +123,7 @@ public final class MainCoordinator {
 
     public func showHomeView() {
         set(rootState: .home)
+        set(fullScreenState: nil)
     }
 
     public func subscriptionPurchased() {
@@ -128,7 +131,8 @@ public final class MainCoordinator {
     }
 
     public func startMorningMindset() {
-        set(rootState: .mindset)
+        set(rootState: .home)
+        set(fullScreenState: .mindset)
     }
 
     public func set(tab: Tab) {
@@ -140,6 +144,7 @@ public final class MainCoordinator {
     }
 
     public func showRitualSuccess(archetype: String, xp: Int) {
+        set(fullScreenState: nil) // Dismiss mindset overlay first
         set(sheetState: .ritualSuccess(archetype: archetype, xp: xp))
     }
 
