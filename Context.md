@@ -213,16 +213,17 @@ ViewModels stay testable and reusable; Views own haptics, animations, and visual
 
 ### SwiftUI View Body Composition
 
-Compose the body of Views into smaller subviews in a **private extension** on the View. Keep the main `body` minimal—e.g. a single ZStack or VStack that references composed subviews—and extract sections into named computed properties or functions.
+Compose the body of Views into smaller subviews in a **private extension** on the View. Subview implementations (header, content sections, overlays, footers) **must** live in that private extension, not in the main struct. Keep the main struct to stored properties, `init`, and `body` only; keep `body` minimal—e.g. a single ZStack or VStack that references composed subviews.
 
 **Benefits:** Readability, easier navigation, simpler diffs, maintainability.
 
 **Structure:**
-- Main struct: `init`, `body` only (plus any `@State` / `@Environment` / `@FocusState` the body needs).
-- `private extension ViewName`: Add `// MARK: - Body Composition` for top-level layout pieces (background, loading overlay, main content stack, overlays) and `// MARK: - Subviews` for finer-grained pieces (header, footer, content sections, etc.).
+- **Main struct:** `init`, `body` only (plus any `@State` / `@Environment` / `@FocusState` the body needs). Use `// MARK: - Body Composition` above `body`.
+- **Private extension:** Put all subview implementations here. Use `// MARK: - Subviews` on the extension. No subview computed properties or helper views in the main struct.
 
 **Example:**
 ```swift
+// Main struct
 public var body: some View {
     ZStack {
         backgroundView
@@ -234,6 +235,8 @@ public var body: some View {
     }
 }
 
+// MARK: - Subviews
+
 private extension SomeView {
     var backgroundView: some View { ... }
     var mainContentStack: some View { ... }
@@ -242,7 +245,7 @@ private extension SomeView {
 }
 ```
 
-Reference: `Packages/FeatureMindset/Sources/FeatureMindset/MorningRitualView.swift`.
+Reference: `Packages/FeatureDashboard/Sources/FeatureDashboard/DashboardView.swift`, `Packages/FeatureMindset/Sources/FeatureMindset/MorningRitualView.swift`.
 
 ### Localization (String Management)
 

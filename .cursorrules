@@ -141,7 +141,7 @@
   - Always use Swift 6 / Swift 2026 idioms.
   - Prefer `@Observable` over `ObservableObject`.
   - Use `Group` or `Section` in SwiftUI to avoid deeply nested view hierarchies.
-  - **View body composition:** Compose the body of Views into smaller subviews in a `private extension` on the View. Keep the main `body` minimal (e.g. a ZStack or VStack that references composed subviews). Extract sections like headers, content areas, overlays, and footers into named computed properties or functions (e.g. `headerSection`, `contentSection`, `footerOverlay`). Use `// MARK: - Body Composition` and `// MARK: - Subviews` to organize the extension. Improves readability, navigation, and maintainability.
+  - **View body composition:** Keep the main View struct minimal: only stored properties, `init`, and `body`. Put all subview implementations in a **private extension** on the View (e.g. `private extension DashboardView`). In the main struct, use `// MARK: - Body Composition` above `body`; in the extension, use `// MARK: - Subviews`. Extract sections like headers, content areas, overlays, and footers into named computed properties or functions in that extension (e.g. `headerSection`, `contentSection`, `footerOverlay`). The `body` should be a single ZStack/VStack that references these subviews. Improves readability, navigation, and maintainability.
   - When creating new Views, include:
     ```swift
     #if DEBUG

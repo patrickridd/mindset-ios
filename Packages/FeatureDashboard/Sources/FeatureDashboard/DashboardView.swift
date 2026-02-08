@@ -58,20 +58,23 @@ public struct DashboardView: View {
         .enableInjection()
 #endif
     }
+}
 
-    // MARK: - Subviews
+// MARK: - Subviews
 
-    private var backgroundView: some View {
+private extension DashboardView {
+
+    var backgroundView: some View {
         MindsetColors.backgroundGrouped(for: colorScheme)
             .ignoresSafeArea()
     }
 
-    private var loadingView: some View {
+    var loadingView: some View {
         ProgressView()
             .padding(MindsetLayout.paddingCard)
     }
 
-    private var headerSection: some View {
+    var headerSection: some View {
         VStack(alignment: .leading) {
             Text(FeatureDashboardStrings.Greeting.morningWithComma)
                 .font(MindsetFonts.subheadline)
@@ -82,7 +85,7 @@ public struct DashboardView: View {
         }
     }
 
-    private var identityCard: some View {
+    var identityCard: some View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing15) {
             Text(FeatureDashboardStrings.Goal.currentLabel)
                 .font(MindsetFonts.labelUppercase)
@@ -101,7 +104,7 @@ public struct DashboardView: View {
         )
     }
 
-    private func yesterdayBridge(text: String) -> some View {
+    func yesterdayBridge(text: String) -> some View {
         VStack(alignment: .leading) {
             Text(FeatureDashboardStrings.Yesterday.label)
                 .font(MindsetFonts.labelUppercase)
@@ -117,7 +120,7 @@ public struct DashboardView: View {
         .background(Capsule().stroke(MindsetColors.stoicSlateSoft))
     }
 
-    private var statsGrid: some View {
+    var statsGrid: some View {
         HStack(spacing: MindsetLayout.spacing15) {
             statBox(
                 title: FeatureDashboardStrings.Streak.statLabel,
@@ -138,7 +141,7 @@ public struct DashboardView: View {
         }
     }
 
-    private var beginRitualButton: some View {
+    var beginRitualButton: some View {
         Button(action: {
             HapticManager.action()
             viewModel.startMindsetButtonTapped()
@@ -156,7 +159,7 @@ public struct DashboardView: View {
         .padding(.horizontal, MindsetLayout.paddingStandard)
     }
 
-    private func statBox(title: String, value: String, icon: String, color: Color) -> some View {
+    func statBox(title: String, value: String, icon: String, color: Color) -> some View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing10) {
             Image(systemName: icon)
                 .foregroundStyle(color)
@@ -183,5 +186,5 @@ public struct DashboardView: View {
         getYesterdayGoalUseCase: GetYesterdayGoalUseCase(repository: mindsetRepository),
         onStartMindset: {},
         onSeeHistory: {})
-    return DashboardView(viewModel: viewModel)
+    DashboardView(viewModel: viewModel)
 }
