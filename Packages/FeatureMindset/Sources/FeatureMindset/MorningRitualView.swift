@@ -100,7 +100,7 @@ private extension MorningRitualView {
 
     @ViewBuilder
     var mainContentStack: some View {
-        VStack(spacing: 0) {  // Set spacing to 0 to control padding manually
+        VStack(spacing: MindsetLayout.spacing12) {
             headerSection
             progressBar
             contentSection  // This contains your ScrollView
