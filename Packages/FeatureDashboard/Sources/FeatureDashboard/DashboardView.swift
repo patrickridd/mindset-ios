@@ -50,9 +50,7 @@ public struct DashboardView: View {
                 .scrollContentBackground(.hidden)
             }
             .navigationTitle(FeatureDashboardStrings.navTitle)
-            .toolbarBackground(
-                MindsetColors.backgroundGrouped(for: colorScheme), for: .navigationBar
-            )
+            .navigationBarTitleDisplayMode(.large)
             .task {
                 await viewModel.loadDashboardData()
             }
