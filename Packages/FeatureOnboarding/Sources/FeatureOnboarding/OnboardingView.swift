@@ -23,38 +23,52 @@ public struct OnboardingView: View {
     }
 
     public var body: some View {
-        ZStack {
-            // Premium gradient: charcoal → soft black with subtle warm accent
-            LinearGradient(
-                colors: [
-                    MindsetColors.backgroundDark,
-                    MindsetColors.backgroundDarkSoft,
-                    MindsetColors.backgroundWarmAccent.opacity(0.5)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
-
-            VStack(alignment: .center, spacing: MindsetLayout.spacing12) {
-                DismissButton(action: { viewModel.dismiss() })
-
-                MindsetProgressBar(
-                    progress: viewModel.isCalculating
+        NavigationStack {
+            ZStack {
+                // Premium gradient: charcoal → soft black with subtle warm accent
+                LinearGradient(
+                    colors: [
+                        MindsetColors.backgroundDark,
+                        MindsetColors.backgroundDarkSoft,
+                        MindsetColors.backgroundWarmAccent.opacity(0.5)
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .ignoresSafeArea()
+                
+                VStack(alignment: .center, spacing: MindsetLayout.spacing12) {
+                    
+                    MindsetProgressBar(
+                        progress: viewModel.isCalculating
                         ? 1.0
                         : (viewModel.currentStep == 0 ? 0 : Double(viewModel.currentStep) / Double(viewModel.questions.count))
-                )
-                .animation(.easeInOut(duration: 0.35), value: viewModel.currentStep)
-                .animation(.easeInOut(duration: 0.5), value: viewModel.isCalculating)
-                .padding(.horizontal)
-                .frame(maxWidth: .infinity)
-
-                if viewModel.isCalculating {
-                    CalculatingView()
-                } else {
-                    questionContent
+                    )
+                    .animation(.easeInOut(duration: 0.35), value: viewModel.currentStep)
+                    .animation(.easeInOut(duration: 0.5), value: viewModel.isCalculating)
+                    .padding(.horizontal)
+                    .padding(.top, MindsetLayout.paddingSmall)
+                    .frame(maxWidth: .infinity)
+                    
+                    if viewModel.isCalculating {
+                        Spacer()
+                        CalculatingView()
+                            .padding(.bottom, MindsetLayout.paddingXLarge)
+                        Spacer()
+                    } else {
+                        questionContent
+                    }
+                    Spacer()
                 }
-                Spacer()
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(role: .cancel) {
+                            viewModel.dismiss()
+                        } label: {
+                            Image(systemName: "xmark")
+                        }
+                    }
+                }
             }
         }
 #if DEBUG
