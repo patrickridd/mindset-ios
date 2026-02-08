@@ -11,28 +11,28 @@ import SharedUtils
 import SwiftUI
 
 public struct DashboardView: View {
-    
+
 #if DEBUG
     @ObserveInjection var inject
 #endif
-    
+
     @Environment(\.colorScheme) private var colorScheme
     @State private var viewModel: DashboardViewModel
-    
+
     public init(viewModel: DashboardViewModel) {
-        // Initialize the ViewModel with the injected service
         self._viewModel = State(initialValue: viewModel)
     }
-    
+
+    // MARK: - Body Composition
+
     public var body: some View {
         NavigationStack {
             ZStack {
-                MindsetColors.backgroundGrouped(for: colorScheme)
-                    .ignoresSafeArea()
+                backgroundView
                 ScrollView {
                     VStack(alignment: .leading, spacing: MindsetLayout.spacing25) {
                         if viewModel.isLoading {
-                            ProgressView().padding()
+                            loadingView
                         } else {
                             headerSection
                             identityCard
@@ -40,29 +40,13 @@ public struct DashboardView: View {
                                 yesterdayBridge(text: yesterday)
                             }
                             statsGrid
-                            
                             Spacer(minLength: MindsetLayout.spacerMinLength)
-                            
-                            Button(action: {
-                                HapticManager.action()
-                                viewModel.startMindsetButtonTapped()
-                            }) {
-                                HStack {
-                                    Text("Begin Morning Ritual")
-                                    Image(systemName: "sparkles")
-                                }
-                                .font(MindsetFonts.button)
-                                .foregroundStyle(MindsetColors.textOnAccent(for: colorScheme))
-                                .frame(maxWidth: .infinity)
-                                .frame(height: MindsetLayout.buttonHeight)
-                                .background(Capsule().fill(MindsetColors.accentOrange))
-                            }
-                            .padding(.horizontal)
+                            beginRitualButton
                         }
                     }
-                    .padding()
+                    .padding(MindsetLayout.paddingStandard)
                 }
-                .navigationTitle("Mindset")
+                .navigationTitle(FeatureDashboardStrings.navTitle)
                 .toolbarBackground(MindsetColors.backgroundGrouped(for: colorScheme), for: .navigationBar)
                 .scrollContentBackground(.hidden)
                 .task {
@@ -74,27 +58,38 @@ public struct DashboardView: View {
         .enableInjection()
 #endif
     }
-    
+
+    // MARK: - Subviews
+
+    private var backgroundView: some View {
+        MindsetColors.backgroundGrouped(for: colorScheme)
+            .ignoresSafeArea()
+    }
+
+    private var loadingView: some View {
+        ProgressView()
+            .padding(MindsetLayout.paddingCard)
+    }
+
     private var headerSection: some View {
         VStack(alignment: .leading) {
-            Text("Good Morning,")
+            Text(FeatureDashboardStrings.Greeting.morningWithComma)
                 .font(MindsetFonts.subheadline)
                 .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
-            // Use the data from Onboarding!
-            Text(viewModel.userProfile?.userName ?? "Visionary")
+            Text(viewModel.userProfile?.userName ?? FeatureDashboardStrings.defaultUserName)
                 .font(MindsetFonts.screenTitle)
                 .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
         }
     }
-    
+
     private var identityCard: some View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing15) {
-            Text("CURRENT GOAL")
+            Text(FeatureDashboardStrings.Goal.currentLabel)
                 .font(MindsetFonts.labelUppercase)
                 .tracking(1)
                 .foregroundStyle(MindsetColors.textSecondary)
-            
-            Text(viewModel.userProfile?.primaryGoal ?? "Calibrate Your Mindset")
+
+            Text(viewModel.userProfile?.primaryGoal ?? FeatureDashboardStrings.Goal.defaultPlaceholder)
                 .font(MindsetFonts.promptHeadline)
                 .foregroundStyle(MindsetColors.textPrimary)
         }
@@ -105,60 +100,88 @@ public struct DashboardView: View {
                 .fill(LinearGradient(colors: [MindsetColors.accentCoral, MindsetColors.accentOrange], startPoint: .topLeading, endPoint: .bottomTrailing))
         )
     }
-    
+
     private func yesterdayBridge(text: String) -> some View {
         VStack(alignment: .leading) {
-            Text("YESTERDAY'S FOCUS").font(MindsetFonts.labelUppercase).foregroundStyle(MindsetColors.accentOrange)
-            Text(text).font(MindsetFonts.subheadline).italic().foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme)).lineLimit(nil)
+            Text(FeatureDashboardStrings.Yesterday.label)
+                .font(MindsetFonts.labelUppercase)
+                .foregroundStyle(MindsetColors.accentOrange)
+            Text(text)
+                .font(MindsetFonts.subheadline)
+                .italic()
+                .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
+                .lineLimit(nil)
         }
-        .padding()
+        .padding(MindsetLayout.paddingCard)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Capsule().stroke(MindsetColors.stoicSlateSoft))
     }
-    
+
     private var statsGrid: some View {
         HStack(spacing: MindsetLayout.spacing15) {
             statBox(
-                title: "Streak",
-                value: "\(viewModel.streakCount) Days",
+                title: FeatureDashboardStrings.Streak.statLabel,
+                value: String(format: FeatureDashboardStrings.Streak.days, viewModel.streakCount),
                 icon: "flame.fill",
-                // Only light up the flame if they have an active streak
                 color: viewModel.streakCount > 0 ? MindsetColors.accentOrange : MindsetColors.textSecondaryAdaptive(for: colorScheme)
             )
-            
+
             statBox(
-                title: "Rituals",
-                // Replace hardcoded "12" with the real count from your repository
-                value: "\(viewModel.totalRituals) Total",
+                title: FeatureDashboardStrings.Rituals.statLabel,
+                value: String(format: FeatureDashboardStrings.Rituals.totalFormat, viewModel.totalRituals),
                 icon: "checkmark.circle.fill",
                 color: MindsetColors.successGreen
-            ).onTapGesture {
+            )
+            .onTapGesture {
                 viewModel.seeHistoryBoxTapped()
             }
         }
     }
-    
+
+    private var beginRitualButton: some View {
+        Button(action: {
+            HapticManager.action()
+            viewModel.startMindsetButtonTapped()
+        }) {
+            HStack {
+                Text(FeatureDashboardStrings.CTA.beginMorningRitual)
+                Image(systemName: "sparkles")
+            }
+            .font(MindsetFonts.button)
+            .foregroundStyle(MindsetColors.textOnAccent(for: colorScheme))
+            .frame(maxWidth: .infinity)
+            .frame(height: MindsetLayout.buttonHeight)
+            .background(Capsule().fill(MindsetColors.accentOrange))
+        }
+        .padding(.horizontal, MindsetLayout.paddingStandard)
+    }
+
     private func statBox(title: String, value: String, icon: String, color: Color) -> some View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing10) {
-            Image(systemName: icon).foregroundStyle(color)
-            Text(value).font(MindsetFonts.statValue).foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
-            Text(title).font(MindsetFonts.caption).foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
+            Image(systemName: icon)
+                .foregroundStyle(color)
+            Text(value)
+                .font(MindsetFonts.statValue)
+                .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
+            Text(title)
+                .font(MindsetFonts.caption)
+                .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
+        .padding(MindsetLayout.paddingStandard)
         .background(MindsetColors.backgroundSecondary(for: colorScheme))
         .cornerRadius(MindsetLayout.radiusCard)
     }
 }
 
 #Preview {
-    let mindSetReposoitory = MockMindsetRepository(days: 1)
+    let mindsetRepository = MockMindsetRepository(days: 1)
     let viewModel = DashboardViewModel(
         userRepository: MockUserRepository(),
-        mindsetRepository: mindSetReposoitory,
-        getStreakUseCase: GetStreakUseCase(repository: mindSetReposoitory),
-        getYesterdayGoalUseCase: GetYesterdayGoalUseCase(repository: mindSetReposoitory),
-        onStartMindet: {},
+        mindsetRepository: mindsetRepository,
+        getStreakUseCase: GetStreakUseCase(repository: mindsetRepository),
+        getYesterdayGoalUseCase: GetYesterdayGoalUseCase(repository: mindsetRepository),
+        onStartMindset: {},
         onSeeHistory: {})
     return DashboardView(viewModel: viewModel)
 }

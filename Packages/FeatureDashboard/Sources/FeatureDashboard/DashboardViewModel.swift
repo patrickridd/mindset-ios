@@ -34,7 +34,7 @@ public final class DashboardViewModel {
     }
 
     // Navigation Actions
-    private var onStartMindet: () -> Void
+    private var onStartMindset: () -> Void
     private let onSeeHistory: () -> Void
 
     public init(
@@ -42,14 +42,14 @@ public final class DashboardViewModel {
         mindsetRepository: MindsetRepository,
         getStreakUseCase: GetStreakUseCase,
         getYesterdayGoalUseCase: GetYesterdayGoalUseCase,
-        onStartMindet: @escaping () -> Void,
+        onStartMindset: @escaping () -> Void,
         onSeeHistory: @escaping () -> Void
     ) {
         self.userRepository = userRepository
         self.mindsetRepository = mindsetRepository
         self.getStreakUseCase = getStreakUseCase
         self.getYesterdayGoalUseCase = getYesterdayGoalUseCase
-        self.onStartMindet = onStartMindet
+        self.onStartMindset = onStartMindset
         self.onSeeHistory = onSeeHistory
     }
 
@@ -90,7 +90,7 @@ public final class DashboardViewModel {
     }
 
     func startMindsetButtonTapped() {
-        onStartMindet()
+        onStartMindset()
     }
 
     func seeHistoryBoxTapped() {

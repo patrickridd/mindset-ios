@@ -13,6 +13,18 @@
         }
       }
     },
+    "dashboard.navTitle" : {
+      "comment" : "Navigation bar title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mindset"
+          }
+        }
+      }
+    },
     "dashboard.greeting.morning" : {
       "comment" : "Morning greeting",
       "extractionState" : "manual",
@@ -21,6 +33,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Good morning"
+          }
+        }
+      }
+    },
+    "dashboard.greeting.morningWithComma" : {
+      "comment" : "Morning greeting with comma for header",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Good morning,"
           }
         }
       }
@@ -49,6 +73,66 @@
         }
       }
     },
+    "dashboard.goal.currentLabel" : {
+      "comment" : "Current goal card label",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CURRENT GOAL"
+          }
+        }
+      }
+    },
+    "dashboard.goal.defaultPlaceholder" : {
+      "comment" : "Default goal when none set",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calibrate Your Mindset"
+          }
+        }
+      }
+    },
+    "dashboard.defaultUserName" : {
+      "comment" : "Default user name when profile missing",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visionary"
+          }
+        }
+      }
+    },
+    "dashboard.yesterday.label" : {
+      "comment" : "Yesterday's focus section label",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "YESTERDAY'S FOCUS"
+          }
+        }
+      }
+    },
+    "dashboard.cta.beginMorningRitual" : {
+      "comment" : "Begin morning ritual button",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Begin Morning Ritual"
+          }
+        }
+      }
+    },
     "dashboard.streak.title" : {
       "comment" : "Streak section title",
       "extractionState" : "manual",
@@ -61,6 +145,18 @@
         }
       }
     },
+    "dashboard.streak.statLabel" : {
+      "comment" : "Streak stat box label",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Streak"
+          }
+        }
+      }
+    },
     "dashboard.streak.days" : {
       "comment" : "Days count for streak",
       "extractionState" : "manual",
@@ -69,6 +165,30 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld days"
+          }
+        }
+      }
+    },
+    "dashboard.rituals.statLabel" : {
+      "comment" : "Rituals stat box label",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rituals"
+          }
+        }
+      }
+    },
+    "dashboard.rituals.totalFormat" : {
+      "comment" : "Total rituals count format",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Total"
           }
         }
       }

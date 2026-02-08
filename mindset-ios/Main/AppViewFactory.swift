@@ -78,7 +78,7 @@ struct AppViewFactory: MainViewFactory {
             mindsetRepository: mindsetRepository,
             getStreakUseCase: getStreakUseCase,
             getYesterdayGoalUseCase: getYesterdayGoalUseCase,
-            onStartMindet: {
+            onStartMindset: {
                 coordinator.startMorningMindset()
             }, onSeeHistory: {
                 coordinator.set(tab: .history)
