@@ -26,7 +26,6 @@ public struct MorningRitualView: View {
             if viewModel.isLoading {
                 initialLoadingOverlay
             } else {
-                // Attach the toolbar directly to the content that holds the TextEditor
                 mainContentStack
                 coachTipOverlay
             }
@@ -52,7 +51,7 @@ private extension MorningRitualView {
     }
 
     private var customKeyboardBar: some View {
-        HStack {
+        HStack(alignment: .center) {
             // Lightbulb Button
             Button {
                 HapticManager.selection()
@@ -65,7 +64,11 @@ private extension MorningRitualView {
                             ? MindsetColors.labelAccent(for: colorScheme)
                             : MindsetColors.textSecondaryAdaptive(for: colorScheme)
                     )
-                    .frame(width: 44, height: 44)
+                    
+                    .frame(
+                        width: MindsetLayout.iconButtonLarge,
+                        height: MindsetLayout.iconButtonLarge
+                    )
             }
 
             Spacer()
@@ -93,7 +96,7 @@ private extension MorningRitualView {
             }
             .disabled(!viewModel.canProceed)
         }
-        .padding(.horizontal, MindsetLayout.spacing12)
+        .padding(.horizontal, MindsetLayout.paddingStandard)
         .padding(.bottom, MindsetLayout.spacing4)
         .background(MindsetColors.backgroundGrouped(for: colorScheme))
     }
