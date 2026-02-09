@@ -5,15 +5,15 @@
 //  Created by patrick ridd on 1/7/26.
 //
 
-import SwiftUI
 import Domain
-import SharedUtils
 import SharedUI
+import SharedUtils
+import SwiftUI
 
 public struct OnboardingView: View {
-#if DEBUG
+    #if DEBUG
     @ObserveInjection var inject
-#endif
+    #endif
 
     @State private var viewModel: OnboardingViewModel
     @State private var selectedOption: String?
@@ -22,61 +22,78 @@ public struct OnboardingView: View {
         self._viewModel = State(initialValue: viewModel)
     }
 
+    // MARK: - Body Composition
+
     public var body: some View {
         NavigationStack {
             ZStack {
-                // Premium gradient: charcoal → soft black with subtle warm accent
-                LinearGradient(
-                    colors: [
-                        MindsetColors.backgroundDark,
-                        MindsetColors.backgroundDarkSoft,
-                        MindsetColors.backgroundWarmAccent.opacity(0.5)
-                    ],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .ignoresSafeArea()
-                
-                VStack(alignment: .center, spacing: MindsetLayout.spacing12) {
-                    
-                    MindsetProgressBar(
-                        progress: viewModel.isCalculating
-                        ? 1.0
-                        : (viewModel.currentStep == 0 ? 0 : Double(viewModel.currentStep) / Double(viewModel.questions.count))
-                    )
-                    .animation(.easeInOut(duration: 0.35), value: viewModel.currentStep)
-                    .animation(.easeInOut(duration: 0.5), value: viewModel.isCalculating)
-                    .padding(.horizontal)
-                    .padding(.top, MindsetLayout.paddingSmall)
-                    .frame(maxWidth: .infinity)
-                    
-                    if viewModel.isCalculating {
-                        Spacer()
-                        CalculatingView()
-                            .padding(.bottom, MindsetLayout.paddingXLarge)
-                        Spacer()
-                    } else {
-                        questionContent
-                    }
-                    Spacer()
-                }
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button(role: .cancel) {
-                            viewModel.dismiss()
-                        } label: {
-                            Image(systemName: "xmark")
-                        }
+                backgroundView
+                mainContentStack
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(role: .cancel) {
+                        HapticManager.selection()
+                        viewModel.dismiss()
+                    } label: {
+                        Image(systemName: "xmark")
                     }
                 }
             }
         }
-#if DEBUG
+        #if DEBUG
         .enableInjection()
-#endif
+        #endif
+    }
+}
+
+// MARK: - Subviews
+
+private extension OnboardingView {
+    var backgroundView: some View {
+        LinearGradient(
+            colors: [
+                MindsetColors.backgroundDark,
+                MindsetColors.backgroundDarkSoft,
+                MindsetColors.backgroundWarmAccent.opacity(0.5),
+            ],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+        .ignoresSafeArea()
     }
 
-    private var questionContent: some View {
+    var mainContentStack: some View {
+        VStack(alignment: .center, spacing: MindsetLayout.spacing12) {
+            progressSection
+            if viewModel.isCalculating {
+                Spacer()
+                CalculatingView()
+                    .padding(.bottom, MindsetLayout.paddingXLarge)
+                Spacer()
+            } else {
+                questionContent
+            }
+            Spacer()
+        }
+    }
+
+    var progressSection: some View {
+        MindsetProgressBar(
+            progress: viewModel.isCalculating
+                ? 1.0
+                : (viewModel.currentStep == 0
+                    ? 0
+                    : Double(viewModel.currentStep) / Double(viewModel.questions.count))
+        )
+        .animation(.easeInOut(duration: 0.35), value: viewModel.currentStep)
+        .animation(.easeInOut(duration: 0.5), value: viewModel.isCalculating)
+        .padding(.horizontal)
+        .padding(.top, MindsetLayout.paddingSmall)
+        .frame(maxWidth: .infinity)
+    }
+
+    var questionContent: some View {
         let question = viewModel.questions[viewModel.currentStep]
         return VStack(spacing: MindsetLayout.spacing40) {
             Text(question.questionText)
@@ -104,11 +121,18 @@ public struct OnboardingView: View {
                             .frame(maxWidth: .infinity)
                             .background(
                                 RoundedRectangle(cornerRadius: MindsetLayout.radiusStandard)
-                                    .fill(isSelected ? MindsetColors.accentOrangeSoft : MindsetColors.fillSubtle)
+                                    .fill(
+                                        isSelected
+                                            ? MindsetColors.accentOrangeSoft
+                                            : MindsetColors.fillSubtle)
                             )
                             .overlay(
                                 RoundedRectangle(cornerRadius: MindsetLayout.radiusStandard)
-                                    .stroke(isSelected ? MindsetColors.borderAccent : MindsetColors.borderSubtle, lineWidth: MindsetLayout.borderWidth)
+                                    .stroke(
+                                        isSelected
+                                            ? MindsetColors.borderAccent
+                                            : MindsetColors.borderSubtle,
+                                        lineWidth: MindsetLayout.borderWidth)
                             )
                             .foregroundStyle(MindsetColors.textPrimary)
                     }
@@ -146,7 +170,6 @@ private struct CalculatingView: View {
     var body: some View {
         VStack(spacing: MindsetLayout.spacing30) {
             ZStack {
-                // Subtle glow behind spinner
                 Circle()
                     .fill(MindsetColors.accentOrange.opacity(0.15))
                     .frame(width: MindsetLayout.iconLarge, height: MindsetLayout.iconLarge)
@@ -157,14 +180,14 @@ private struct CalculatingView: View {
                     .scaleEffect(2)
             }
 
-            Text("Building your Identity Profile...")
+            Text(FeatureOnboardingStrings.Analyzing.buildingProfile)
                 .font(MindsetFonts.button)
                 .foregroundStyle(MindsetColors.textSecondary)
 
             VStack(alignment: .leading, spacing: MindsetLayout.spacing10) {
-                checklistRow("Analyzing goals", isComplete: true)
-                checklistRow("Calibrating Archetypes", isComplete: true)
-                checklistRow("Setting up Yesterday Bridge", isComplete: false)
+                checklistRow(FeatureOnboardingStrings.Analyzing.checklistGoals, isComplete: true)
+                checklistRow(FeatureOnboardingStrings.Analyzing.checklistArchetypes, isComplete: true)
+                checklistRow(FeatureOnboardingStrings.Analyzing.checklistYesterdayBridge, isComplete: false)
             }
             .font(MindsetFonts.caption)
         }
@@ -174,7 +197,8 @@ private struct CalculatingView: View {
         HStack(spacing: MindsetLayout.spacing8) {
             Image(systemName: isComplete ? "checkmark.circle.fill" : "circle.dotted")
                 .font(MindsetFonts.callout)
-                .foregroundStyle(isComplete ? MindsetColors.successEmerald : MindsetColors.textMuted)
+                .foregroundStyle(
+                    isComplete ? MindsetColors.successEmerald : MindsetColors.textMuted)
 
             Text(text)
                 .foregroundStyle(isComplete ? MindsetColors.textSecondary : MindsetColors.textMuted)

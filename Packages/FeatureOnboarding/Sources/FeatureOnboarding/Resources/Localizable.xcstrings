@@ -61,6 +61,54 @@
         }
       }
     },
+    "onboarding.analyzing.buildingProfile" : {
+      "comment" : "Building your Identity Profile loading message",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Building your Identity Profile..."
+          }
+        }
+      }
+    },
+    "onboarding.analyzing.checklist.goals" : {
+      "comment" : "Checklist: Analyzing goals",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analyzing goals"
+          }
+        }
+      }
+    },
+    "onboarding.analyzing.checklist.archetypes" : {
+      "comment" : "Checklist: Calibrating Archetypes",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calibrating Archetypes"
+          }
+        }
+      }
+    },
+    "onboarding.analyzing.checklist.yesterdayBridge" : {
+      "comment" : "Checklist: Setting up Yesterday Bridge",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setting up Yesterday Bridge"
+          }
+        }
+      }
+    },
     "onboarding.archetype.title" : {
       "comment" : "Archetype reveal title",
       "extractionState" : "manual",

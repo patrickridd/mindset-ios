@@ -28,6 +28,10 @@ public enum FeatureOnboardingStrings {
     public enum Analyzing {
         public static let title = String(localized: "onboarding.analyzing.title", bundle: .module, comment: "Analyzing screen title")
         public static let subtitle = String(localized: "onboarding.analyzing.subtitle", bundle: .module, comment: "Analyzing screen subtitle")
+        public static let buildingProfile = String(localized: "onboarding.analyzing.buildingProfile", bundle: .module, comment: "Building your Identity Profile loading message")
+        public static let checklistGoals = String(localized: "onboarding.analyzing.checklist.goals", bundle: .module, comment: "Checklist: Analyzing goals")
+        public static let checklistArchetypes = String(localized: "onboarding.analyzing.checklist.archetypes", bundle: .module, comment: "Checklist: Calibrating Archetypes")
+        public static let checklistYesterdayBridge = String(localized: "onboarding.analyzing.checklist.yesterdayBridge", bundle: .module, comment: "Checklist: Setting up Yesterday Bridge")
     }
     
     // MARK: - Archetype
