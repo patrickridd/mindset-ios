@@ -119,7 +119,7 @@ private extension OnboardingView {
                 ForEach(question.options, id: \.self) { option in
                     let isSelected =
                         option == viewModel.selectedOption
-                        || option == viewModel.selectedAnswerForCurrentStep
+                        || (viewModel.selectedOption == nil && option == viewModel.selectedAnswerForCurrentStep)
                     Button {
                         HapticManager.selection()
                         viewModel.selectedOption = option
