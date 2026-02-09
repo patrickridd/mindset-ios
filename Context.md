@@ -151,9 +151,11 @@ Use `MindsetColors`, `MindsetFonts`, and `MindsetLayout` from SharedUI for all F
 
 **Sizing preference:** Prefer views and controls that size to their content. Avoid static or max widths/heights unless necessary—e.g. to prevent overflow, enforce a minimum tap target (e.g. 44pt height), or cap width for readability. Let height follow content; use `frame(maxWidth:)` only when needed.
 
-### DismissButton (SharedUI)
+### Dismiss / close button (modals and full-screen flows)
 
-Use **`DismissButton(action: { ... })`** from SharedUI for closing/dismissing modals and full-screen flows (e.g. onboarding, morning ritual). It renders a top-right X with design-system styling; pass your dismiss callback (e.g. `viewModel.dismiss()` or coordinator callback) so behavior stays consistent across the app.
+**Standard:** Use a toolbar **`Button(role: .cancel)`** with `Image(systemName: "xmark")` and **`HapticManager.selection()`** in the action (then call `viewModel.dismiss()` or your dismiss callback). Use this for onboarding, paywall, and other modals/full-screen flows.
+
+**Exception:** **`MorningRitualView`** (FeatureMindset) continues to use **`DismissButton(action: { ... })`** from SharedUI; do not change it to the toolbar button. `DismissButton` remains available in SharedUI for that screen and any future exceptions.
 
 ### Haptics (SharedUtils HapticManager)
 

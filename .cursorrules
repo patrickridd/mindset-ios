@@ -91,7 +91,7 @@
  - **Layout:** Always use `MindsetLayout` from SharedUI for spacing, padding, corner radius, and dimensions. Never use magic numbers (e.g. `spacing: 12`, `.padding(25)`, `cornerRadius: 16`). Use tokens: `MindsetLayout.spacing12`, `MindsetLayout.paddingCard`, `MindsetLayout.radiusCard`, `MindsetLayout.buttonHeight`, etc.
  - **Sizing:** Prefer views and controls that size to their content. Avoid static or max widths/heights (e.g. `frame(maxWidth: _, maxHeight: 200)`) unless necessary—e.g. to prevent overflow, enforce a tap target (minHeight 44), or cap width for readability. Let height follow content; use `frame(maxWidth:)` only when needed for layout.
  - Feature modules must add SharedUI as a dependency to use MindsetColors, MindsetFonts, and MindsetLayout.
- - **Modals:** Use `DismissButton(action: { ... })` from SharedUI to dismiss modals and full-screen flows (onboarding, ritual, etc.). Do not build custom close buttons for these; use the shared component for consistency.
+ - **Modals:** Use the standard toolbar **`Button(role: .cancel)`** with `Image(systemName: "xmark")` and **`HapticManager.selection()`** in the action to dismiss modals and full-screen flows (e.g. onboarding). **Exception:** `MorningRitualView` (FeatureMindset) uses `DismissButton(action: { ... })` from SharedUI; do not change it to the toolbar button.
  - **Haptics:** Use `HapticManager` (SharedUtils) only in Views—never in ViewModels. Call the semantic APIs (selection(), action(), success(), tick()) from View code when handling taps or when observing state (e.g. success when isAiThinking goes false).
  - See `Packages/SharedUI/Sources/SharedUI/MindsetColors.swift`, `MindsetFonts.swift`, and `MindsetLayout.swift` for full token lists. See `Context.md` §13 for usage summary.
 
