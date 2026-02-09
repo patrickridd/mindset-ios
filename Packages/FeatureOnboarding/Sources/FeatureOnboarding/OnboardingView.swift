@@ -31,7 +31,7 @@ public struct OnboardingView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    if !viewModel.isCalculating, viewModel.currentStep > 0 {
+                    if viewModel.isBackButtonDisplayed {
                         Button {
                             HapticManager.selection()
                             viewModel.selectedOption = nil

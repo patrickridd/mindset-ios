@@ -55,6 +55,11 @@ public final class OnboardingViewModel {
         return answers[questions[currentStep].logic]
     }
 
+    /// True when the back button should be shown (not calculating and not on first step).
+    public var isBackButtonDisplayed: Bool {
+        !isCalculating && currentStep > 0
+    }
+
     /// Go back to the previous quiz step. No-op if already at step 0 or calculating.
     public func goBack() {
         guard !isCalculating, currentStep > 0 else { return }
