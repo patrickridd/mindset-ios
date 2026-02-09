@@ -17,7 +17,14 @@ public final class OnboardingViewModel {
 
     public var currentStep = 0
     public var isCalculating = false
-    
+
+    /// Option currently highlighted before advancing (cleared after transition).
+    public var selectedOption: String?
+    /// When true, question transition slides backward (insert from leading, remove to trailing).
+    public var isGoingBack = false
+    /// When false, use identity transition to avoid jerk on initial appearance and first navigation.
+    public var hasNavigated = false
+
     /// Captured answers (option strings), keyed by question logic
     private var answers: [OnboardingQuestion.Logic: String] = [:]
 
@@ -40,6 +47,18 @@ public final class OnboardingViewModel {
         } else {
             startCalculation()
         }
+    }
+
+    /// Previously selected answer for the current step (e.g. when user went back). Nil if not yet answered.
+    public var selectedAnswerForCurrentStep: String? {
+        guard currentStep < questions.count else { return nil }
+        return answers[questions[currentStep].logic]
+    }
+
+    /// Go back to the previous quiz step. No-op if already at step 0 or calculating.
+    public func goBack() {
+        guard !isCalculating, currentStep > 0 else { return }
+        currentStep -= 1
     }
 
     private func startCalculation() {

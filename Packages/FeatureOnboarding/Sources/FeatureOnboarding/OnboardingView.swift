@@ -16,7 +16,6 @@ public struct OnboardingView: View {
     #endif
 
     @State private var viewModel: OnboardingViewModel
-    @State private var selectedOption: String?
 
     public init(viewModel: OnboardingViewModel) {
         self._viewModel = State(initialValue: viewModel)
@@ -31,6 +30,21 @@ public struct OnboardingView: View {
                 mainContentStack
             }
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    if !viewModel.isCalculating, viewModel.currentStep > 0 {
+                        Button {
+                            HapticManager.selection()
+                            viewModel.selectedOption = nil
+                            viewModel.hasNavigated = true
+                            viewModel.isGoingBack = true
+                            withAnimation(.easeInOut(duration: 0.35)) {
+                                viewModel.goBack()
+                            }
+                        } label: {
+                            Image(systemName: "chevron.left")
+                        }
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(role: .cancel) {
                         HapticManager.selection()
@@ -104,15 +118,19 @@ private extension OnboardingView {
 
             VStack(spacing: MindsetLayout.spacing12) {
                 ForEach(question.options, id: \.self) { option in
-                    let isSelected = option == selectedOption
+                    let isSelected = option == viewModel.selectedOption || option == viewModel.selectedAnswerForCurrentStep
                     Button {
                         HapticManager.selection()
-                        selectedOption = option
+                        viewModel.selectedOption = option
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-                            withAnimation(.easeInOut(duration: 0.35)) {
-                                viewModel.selectOption(option)
+                            viewModel.hasNavigated = true
+                            viewModel.isGoingBack = false
+                            DispatchQueue.main.async {
+                                withAnimation(.easeInOut(duration: 0.35)) {
+                                    viewModel.selectOption(option)
+                                }
+                                viewModel.selectedOption = nil
                             }
-                            selectedOption = nil
                         }
                     } label: {
                         Text(option)
@@ -137,17 +155,23 @@ private extension OnboardingView {
                             .foregroundStyle(MindsetColors.textPrimary)
                     }
                     .buttonStyle(OptionButtonStyle())
-                    .animation(.easeInOut(duration: 0.2), value: selectedOption)
+                    .animation(.easeInOut(duration: 0.2), value: viewModel.selectedOption)
                 }
             }
             .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
         }
         .id(viewModel.currentStep)
         .transition(
-            .asymmetric(
-                insertion: .move(edge: .trailing).combined(with: .opacity),
-                removal: .move(edge: .leading).combined(with: .opacity)
-            )
+            viewModel.hasNavigated
+                ? .asymmetric(
+                    insertion: viewModel.isGoingBack
+                        ? .move(edge: .leading).combined(with: .opacity)
+                        : .move(edge: .trailing).combined(with: .opacity),
+                    removal: viewModel.isGoingBack
+                        ? .move(edge: .trailing).combined(with: .opacity)
+                        : .move(edge: .leading).combined(with: .opacity)
+                )
+                : .identity
         )
     }
 }
