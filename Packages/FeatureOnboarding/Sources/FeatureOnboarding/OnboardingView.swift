@@ -12,7 +12,7 @@ import SwiftUI
 
 public struct OnboardingView: View {
     #if DEBUG
-    @ObserveInjection var inject
+        @ObserveInjection var inject
     #endif
 
     @State private var viewModel: OnboardingViewModel
@@ -35,7 +35,6 @@ public struct OnboardingView: View {
                         Button {
                             HapticManager.selection()
                             viewModel.selectedOption = nil
-                            viewModel.hasNavigated = true
                             viewModel.isGoingBack = true
                             withAnimation(.easeInOut(duration: 0.35)) {
                                 viewModel.goBack()
@@ -56,7 +55,7 @@ public struct OnboardingView: View {
             }
         }
         #if DEBUG
-        .enableInjection()
+            .enableInjection()
         #endif
     }
 }
@@ -118,12 +117,13 @@ private extension OnboardingView {
 
             VStack(spacing: MindsetLayout.spacing12) {
                 ForEach(question.options, id: \.self) { option in
-                    let isSelected = option == viewModel.selectedOption || option == viewModel.selectedAnswerForCurrentStep
+                    let isSelected =
+                        option == viewModel.selectedOption
+                        || option == viewModel.selectedAnswerForCurrentStep
                     Button {
                         HapticManager.selection()
                         viewModel.selectedOption = option
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-                            viewModel.hasNavigated = true
                             viewModel.isGoingBack = false
                             DispatchQueue.main.async {
                                 withAnimation(.easeInOut(duration: 0.35)) {
@@ -162,16 +162,14 @@ private extension OnboardingView {
         }
         .id(viewModel.currentStep)
         .transition(
-            viewModel.hasNavigated
-                ? .asymmetric(
-                    insertion: viewModel.isGoingBack
-                        ? .move(edge: .leading).combined(with: .opacity)
-                        : .move(edge: .trailing).combined(with: .opacity),
-                    removal: viewModel.isGoingBack
-                        ? .move(edge: .trailing).combined(with: .opacity)
-                        : .move(edge: .leading).combined(with: .opacity)
-                )
-                : .identity
+            .asymmetric(
+                insertion: viewModel.isGoingBack
+                    ? .move(edge: .leading).combined(with: .opacity)
+                    : .move(edge: .trailing).combined(with: .opacity),
+                removal: viewModel.isGoingBack
+                    ? .move(edge: .trailing).combined(with: .opacity)
+                    : .move(edge: .leading).combined(with: .opacity)
+            )
         )
     }
 }
@@ -210,8 +208,10 @@ private struct CalculatingView: View {
 
             VStack(alignment: .leading, spacing: MindsetLayout.spacing10) {
                 checklistRow(FeatureOnboardingStrings.Analyzing.checklistGoals, isComplete: true)
-                checklistRow(FeatureOnboardingStrings.Analyzing.checklistArchetypes, isComplete: true)
-                checklistRow(FeatureOnboardingStrings.Analyzing.checklistYesterdayBridge, isComplete: false)
+                checklistRow(
+                    FeatureOnboardingStrings.Analyzing.checklistArchetypes, isComplete: true)
+                checklistRow(
+                    FeatureOnboardingStrings.Analyzing.checklistYesterdayBridge, isComplete: false)
             }
             .font(MindsetFonts.caption)
         }

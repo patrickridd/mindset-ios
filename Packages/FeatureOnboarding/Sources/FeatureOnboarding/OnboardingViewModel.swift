@@ -22,8 +22,6 @@ public final class OnboardingViewModel {
     public var selectedOption: String?
     /// When true, question transition slides backward (insert from leading, remove to trailing).
     public var isGoingBack = false
-    /// When false, use identity transition to avoid jerk on initial appearance and first navigation.
-    public var hasNavigated = false
 
     /// Captured answers (option strings), keyed by question logic
     private var answers: [OnboardingQuestion.Logic: String] = [:]
