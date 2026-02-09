@@ -96,7 +96,7 @@ private extension OnboardingView {
             progress: viewModel.isCalculating
                 ? 1.0
                 : (viewModel.currentStep == 0
-                    ? 0
+                    ? 0.05
                     : Double(viewModel.currentStep) / Double(viewModel.questions.count))
         )
         .animation(.easeInOut(duration: 0.35), value: viewModel.currentStep)
