@@ -94,11 +94,7 @@ private extension OnboardingView {
     var progressSection: some View {
         MindsetProgressBar(
             backgroundFillColor: MindsetColors.fillSubtle,
-            progress: viewModel.isCalculating
-                ? 1.0
-                : (viewModel.currentStep == 0
-                    ? 0.025
-                    : Double(viewModel.currentStep) / Double(viewModel.questions.count))
+            progress: viewModel.progress
         )
         .animation(.easeInOut(duration: 0.35), value: viewModel.currentStep)
         .animation(.easeInOut(duration: 0.5), value: viewModel.isCalculating)

@@ -58,6 +58,13 @@ public final class OnboardingViewModel {
         !isCalculating && currentStep > 0
     }
 
+    /// Progress for the step progress bar (0...1). First step shows a small nub (0.025); calculating shows full.
+    public var progress: Double {
+        if isCalculating { return 1.0 }
+        if currentStep == 0 { return 0.025 }
+        return Double(currentStep) / Double(questions.count)
+    }
+
     /// Go back to the previous quiz step. No-op if already at step 0 or calculating.
     public func goBack() {
         guard !isCalculating, currentStep > 0 else { return }

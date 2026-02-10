@@ -161,11 +161,7 @@ private extension MorningRitualView {
     var progressBar: some View {
         MindsetProgressBar(
             backgroundFillColor: MindsetColors.dismissButtonBackground(for: colorScheme),
-            progress: viewModel.prompts.isEmpty
-                ? 0
-                : (viewModel.currentStepIndex == 0
-                    ? 0.025
-                    : Double(viewModel.currentStepIndex) / Double(viewModel.prompts.count))
+            progress: viewModel.progress
         )
         .animation(.easeInOut(duration: 0.35), value: viewModel.currentStepIndex)
         .padding(.horizontal)

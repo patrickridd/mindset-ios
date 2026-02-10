@@ -108,6 +108,13 @@ public final class MorningRitualViewModel {
         return (answers[currentId]?.count ?? 0) >= 3
     }
 
+    /// Progress for the step progress bar (0...1). First step shows a small nub (0.025).
+    public var progress: Double {
+        guard !prompts.isEmpty else { return 0 }
+        if currentStepIndex == 0 { return 0.025 }
+        return Double(currentStepIndex) / Double(prompts.count)
+    }
+
     public func nextStep() {
         isCoachTipVisible = false
         isGoingBack = false
