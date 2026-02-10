@@ -64,7 +64,7 @@ private extension MorningRitualView {
                             ? MindsetColors.labelAccent(for: colorScheme)
                             : MindsetColors.textSecondaryAdaptive(for: colorScheme)
                     )
-                    
+
                     .frame(
                         width: MindsetLayout.iconButtonLarge,
                         height: MindsetLayout.iconButtonLarge
@@ -122,7 +122,8 @@ private extension MorningRitualView {
             HStack {
                 Button(action: {
                     HapticManager.selection()
-                    withAnimation(.spring()) {
+                    viewModel.isGoingBack = true
+                    withAnimation(.easeInOut(duration: 0.35)) {
                         viewModel.previousStep()
                     }
                 }) {
@@ -159,9 +160,12 @@ private extension MorningRitualView {
 
     var progressBar: some View {
         MindsetProgressBar(
+            backgroundFillColor: MindsetColors.dismissButtonBackground(for: colorScheme),
             progress: viewModel.prompts.isEmpty
                 ? 0
-                : Double(viewModel.currentStepIndex + 1) / Double(viewModel.prompts.count)
+                : (viewModel.currentStepIndex == 0
+                    ? 0.025
+                    : Double(viewModel.currentStepIndex) / Double(viewModel.prompts.count))
         )
         .animation(.easeInOut(duration: 0.35), value: viewModel.currentStepIndex)
         .padding(.horizontal)
@@ -267,13 +271,16 @@ private extension MorningRitualView {
 
     // MARK: - Subviews
 
-    /// Transition for step content: forward = next (in from right, out to left), back = previous (in from left, out to right).
+    /// Transition for step content: matches OnboardingView — forward = in from trailing + opacity, back = in from leading + opacity.
     private var stepTransition: AnyTransition {
-        if viewModel.stepTransitionForward {
-            return .asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading))
-        } else {
-            return .asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .trailing))
-        }
+        .asymmetric(
+            insertion: viewModel.isGoingBack
+                ? .move(edge: .leading).combined(with: .opacity)
+                : .move(edge: .trailing).combined(with: .opacity),
+            removal: viewModel.isGoingBack
+                ? .move(edge: .trailing).combined(with: .opacity)
+                : .move(edge: .leading).combined(with: .opacity)
+        )
     }
 
     @ViewBuilder
@@ -366,7 +373,8 @@ private extension MorningRitualView {
                 let showEnabledStyle = isAnalyzing || viewModel.canProceed
 
                 Button(action: {
-                    withAnimation(.spring()) {
+                    viewModel.isGoingBack = false
+                    withAnimation(.easeInOut(duration: 0.35)) {
                         viewModel.nextStep()
                     }
                 }) {

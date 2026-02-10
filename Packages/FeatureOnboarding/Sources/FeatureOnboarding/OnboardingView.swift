@@ -93,10 +93,11 @@ private extension OnboardingView {
 
     var progressSection: some View {
         MindsetProgressBar(
+            backgroundFillColor: MindsetColors.fillSubtle,
             progress: viewModel.isCalculating
                 ? 1.0
                 : (viewModel.currentStep == 0
-                    ? 0.05
+                    ? 0.025
                     : Double(viewModel.currentStep) / Double(viewModel.questions.count))
         )
         .animation(.easeInOut(duration: 0.35), value: viewModel.currentStep)
@@ -119,7 +120,8 @@ private extension OnboardingView {
                 ForEach(question.options, id: \.self) { option in
                     let isSelected =
                         option == viewModel.selectedOption
-                        || (viewModel.selectedOption == nil && option == viewModel.selectedAnswerForCurrentStep)
+                        || (viewModel.selectedOption == nil
+                            && option == viewModel.selectedAnswerForCurrentStep)
                     Button {
                         HapticManager.selection()
                         viewModel.selectedOption = option

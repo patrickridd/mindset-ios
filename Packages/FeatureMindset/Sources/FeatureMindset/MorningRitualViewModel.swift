@@ -32,8 +32,8 @@ public final class MorningRitualViewModel {
     public var isLoading: Bool = false
     public var isShowingPaywall: Bool = false
     public var isCoachTipVisible: Bool = false
-    /// True when moving to next step, false when moving to previous. Used for step transition direction.
-    public var stepTransitionForward: Bool = true
+    /// When true, step content transition slides backward (insert from leading, remove to trailing).
+    public var isGoingBack: Bool = false
     public var onNavigate: ((NavigationState) -> Void)?
     
     public var isAiThinking: Bool = false
@@ -110,7 +110,7 @@ public final class MorningRitualViewModel {
 
     public func nextStep() {
         isCoachTipVisible = false
-        stepTransitionForward = true
+        isGoingBack = false
         if currentStepIndex < prompts.count - 1 {
             currentStepIndex += 1
         } else {
@@ -120,7 +120,7 @@ public final class MorningRitualViewModel {
     
     public func previousStep() {
         isCoachTipVisible = false
-        stepTransitionForward = false
+        isGoingBack = true
         if currentStepIndex > 0 {
             currentStepIndex -= 1
         }

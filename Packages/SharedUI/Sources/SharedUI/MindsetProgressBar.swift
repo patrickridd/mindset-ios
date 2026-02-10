@@ -11,7 +11,9 @@ import SwiftUI
 public struct MindsetProgressBar: View {
     let progress: Double
 
-    public init(progress: Double) {
+    let backgroundFillColor: Color
+    public init(backgroundFillColor: Color, progress: Double) {
+        self.backgroundFillColor = backgroundFillColor
         self.progress = progress
     }
 
@@ -19,7 +21,7 @@ public struct MindsetProgressBar: View {
         GeometryReader { geometry in
             ZStack(alignment: .leading) {
                 RoundedRectangle(cornerRadius: MindsetLayout.radiusSmall)
-                    .fill(MindsetColors.fillSubtle)
+                    .fill(backgroundFillColor)
                     .frame(height: MindsetLayout.progressBarHeight)
 
                 RoundedRectangle(cornerRadius: MindsetLayout.radiusSmall)
@@ -30,7 +32,10 @@ public struct MindsetProgressBar: View {
                             endPoint: .trailing
                         )
                     )
-                    .frame(width: max(0, geometry.size.width * progress), height: MindsetLayout.progressBarHeight)
+                    .frame(
+                        width: max(0, geometry.size.width * progress),
+                        height: MindsetLayout.progressBarHeight
+                    )
             }
         }
         .frame(height: MindsetLayout.progressBarHeight)

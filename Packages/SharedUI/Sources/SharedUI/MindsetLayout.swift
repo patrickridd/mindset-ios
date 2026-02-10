@@ -47,7 +47,7 @@ public enum MindsetLayout {
 
     // MARK: - Dimensions
 
-    public static let progressBarHeight: CGFloat = 4
+    public static let progressBarHeight: CGFloat = 5
     public static let buttonHeight: CGFloat = 60
     public static let iconExtraSmall: CGFloat = 8
     public static let iconSmall: CGFloat = 12

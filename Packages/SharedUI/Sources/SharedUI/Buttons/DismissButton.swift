@@ -27,7 +27,10 @@ public struct DismissButton: View {
             Image(systemName: "xmark")
                 .font(.system(size: MindsetLayout.iconSmall, weight: .medium))
                 .foregroundStyle(MindsetColors.dismissButtonIcon(for: colorScheme))
-                .frame(width: MindsetLayout.dismissButtonCircle, height: MindsetLayout.dismissButtonCircle)
+                .frame(
+                    width: MindsetLayout.dismissButtonCircle,
+                    height: MindsetLayout.dismissButtonCircle
+                )
                 .background(Circle().fill(MindsetColors.dismissButtonBackground(for: colorScheme)))
         }
         .buttonStyle(.plain)
