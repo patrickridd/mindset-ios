@@ -1,54 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "ritual.title" : {
-      "comment" : "Morning ritual screen title",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Morning Ritual"
-          }
-        }
-      }
-    },
-    "ritual.promptLabel" : {
-      "comment" : "Prompt label",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Today's Prompt"
-          }
-        }
-      }
-    },
-    "ritual.placeholder" : {
-      "comment" : "Text input placeholder",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Write your thoughts here..."
-          }
-        }
-      }
-    },
-    "ritual.submit" : {
-      "comment" : "Submit button",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Complete Ritual"
-          }
-        }
-      }
-    },
     "ritual.aiAnalyzing" : {
       "comment" : "AI analyzing message",
       "extractionState" : "manual",
@@ -61,42 +13,6 @@
         }
       }
     },
-    "ritual.success.title" : {
-      "comment" : "Ritual success title",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ritual Complete! 🎉"
-          }
-        }
-      }
-    },
-    "ritual.success.streakMessage" : {
-      "comment" : "Streak message on success",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld day streak"
-          }
-        }
-      }
-    },
-    "ritual.success.xpEarned" : {
-      "comment" : "XP earned message",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+%lld XP"
-          }
-        }
-      }
-    },
     "ritual.aiReflection.title" : {
       "comment" : "AI reflection card title",
       "extractionState" : "manual",
@@ -105,6 +21,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "AI Reflection"
+          }
+        }
+      }
+    },
+    "ritual.categories.goalSetting" : {
+      "comment" : "Goal setting prompt category",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Goal Setting"
           }
         }
       }
@@ -133,18 +61,6 @@
         }
       }
     },
-    "ritual.categories.goalSetting" : {
-      "comment" : "Goal setting prompt category",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Goal Setting"
-          }
-        }
-      }
-    },
     "ritual.error.emptyResponse" : {
       "comment" : "Empty response error",
       "extractionState" : "manual",
@@ -153,6 +69,42 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Please write something before continuing"
+          }
+        }
+      }
+    },
+    "ritual.morning.analyzing" : {
+      "comment" : "AI analyzing state",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analyzing..."
+          }
+        }
+      }
+    },
+    "ritual.morning.coachTip" : {
+      "comment" : "Coach tip popover title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coach Tip"
+          }
+        }
+      }
+    },
+    "ritual.morning.complete" : {
+      "comment" : "Complete button label",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Complete"
           }
         }
       }
@@ -181,6 +133,18 @@
         }
       }
     },
+    "ritual.morning.getAiReflection" : {
+      "comment" : "Button to get AI reflection",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get AI Reflection"
+          }
+        }
+      }
+    },
     "ritual.morning.noPromptsFound" : {
       "comment" : "Empty state when no prompts available",
       "extractionState" : "manual",
@@ -205,50 +169,98 @@
         }
       }
     },
-    "ritual.morning.getAiReflection" : {
-      "comment" : "Button to get AI reflection",
+    "ritual.placeholder" : {
+      "comment" : "Text input placeholder",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Get AI Reflection"
+            "value" : "Write your thoughts here..."
           }
         }
       }
     },
-    "ritual.morning.analyzing" : {
-      "comment" : "AI analyzing state",
+    "ritual.promptLabel" : {
+      "comment" : "Prompt label",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Analyzing..."
+            "value" : "Today's Prompt"
           }
         }
       }
     },
-    "ritual.morning.complete" : {
-      "comment" : "Complete button label",
+    "ritual.submit" : {
+      "comment" : "Submit button",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Complete"
+            "value" : "Complete Ritual"
           }
         }
       }
     },
-    "ritual.morning.coachTip" : {
-      "comment" : "Coach tip popover title",
+    "ritual.success.loading" : {
+      "comment" : "Loading/Calculating Ritual Score",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Coach Tip"
+            "value" : "Great Job 👏! Calculating score…"
+          }
+        }
+      }
+    },
+    "ritual.success.streakMessage" : {
+      "comment" : "Streak message on success",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld day streak"
+          }
+        }
+      }
+    },
+    "ritual.success.title" : {
+      "comment" : "Ritual success title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ritual Complete! 🎉"
+          }
+        }
+      }
+    },
+    "ritual.success.xpEarned" : {
+      "comment" : "XP earned message",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld XP"
+          }
+        }
+      }
+    },
+    "ritual.title" : {
+      "comment" : "Morning ritual screen title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Morning Ritual"
           }
         }
       }

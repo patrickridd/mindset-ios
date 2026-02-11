@@ -44,7 +44,7 @@ private extension MorningRitualView {
     var initialLoadingOverlay: some View {
         VStack {
             Spacer()
-            ProgressView(FeatureMindsetStrings.MorningRitual.designingRitual)
+            ProgressView(viewModel.loadingDescription)
                 .tint(MindsetColors.accentOrange)
             Spacer()
         }

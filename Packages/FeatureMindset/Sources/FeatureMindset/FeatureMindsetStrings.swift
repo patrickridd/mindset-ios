@@ -25,6 +25,7 @@ public enum FeatureMindsetStrings {
         public static let analyzing = String(localized: "ritual.morning.analyzing", bundle: .module, comment: "AI analyzing state")
         public static let complete = String(localized: "ritual.morning.complete", bundle: .module, comment: "Complete button label")
         public static let coachTip = String(localized: "ritual.morning.coachTip", bundle: .module, comment: "Coach tip popover title")
+        public static let ritualSuccessLoading = String(localized: "ritual.success.loading", bundle: .module, comment: "Loading/Calculating Ritual Score")
     }
     public static let promptLabel = String(localized: "ritual.promptLabel", bundle: .module, comment: "Prompt label")
     public static let placeholder = String(localized: "ritual.placeholder", bundle: .module, comment: "Text input placeholder")

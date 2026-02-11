@@ -30,6 +30,7 @@ public final class MorningRitualViewModel {
 
     // UI State
     public var isLoading: Bool = false
+    public var isRitualComplete: Bool = false
     public var isShowingPaywall: Bool = false
     public var isCoachTipVisible: Bool = false
     /// When true, step content transition slides backward (insert from leading, remove to trailing).
@@ -150,10 +151,19 @@ public final class MorningRitualViewModel {
         }
         isAiThinking = false
     }
+    
+    public var loadingDescription: String {
+        if isRitualComplete {
+            return FeatureMindsetStrings.MorningRitual.ritualSuccessLoading
+        } else {
+            return FeatureMindsetStrings.MorningRitual.designingRitual
+        }
+    }
 
     // MARK: - Completion
 
     public func completeRitual() async {
+        isRitualComplete = true
         isLoading = true
 
         do {
