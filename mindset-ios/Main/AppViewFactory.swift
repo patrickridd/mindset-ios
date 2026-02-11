@@ -5,18 +5,18 @@
 //  Created by patrick ridd on 1/11/26.
 //
 
-import SwiftUI
 import Data
 import Domain
-import SharedUtils
 import FeatureAuth
-import FeatureOnboarding
-import FeatureSubscription
 import FeatureDashboard
+import FeatureHistory
 import FeatureMindset
 import FeatureNavigation
-import FeatureHistory
+import FeatureOnboarding
+import FeatureSubscription
 import FeatureUserProfile
+import SharedUtils
+import SwiftUI
 
 struct AppViewFactory: MainViewFactory {
     let coordinator: MainCoordinator
@@ -28,7 +28,7 @@ struct AppViewFactory: MainViewFactory {
     let getYesterdayGoalUseCase: GetYesterdayGoalUseCase
     let subscriptionService: SubscriptionService
     let serviceFactory: ServiceFactory
-    
+
     func makeSignInView() -> AnyView {
         let viewModel = SignInViewModel(
             authService: authService,
@@ -41,12 +41,12 @@ struct AppViewFactory: MainViewFactory {
                 coordinator.signInCompleted()
             }
         )
-        
+
         return AnyView(
             SignInView(viewModel: viewModel)
         )
     }
-    
+
     func makeOnboardingView() -> AnyView {
         let viewModel = OnboardingViewModel(
             userRepository: userRepository,
@@ -54,7 +54,7 @@ struct AppViewFactory: MainViewFactory {
                 // Let MainCoordinator handle Auth → Paywall → Home flow
                 coordinator.onboardingFinished()
             })
-        
+
         return AnyView(
             OnboardingView(viewModel: viewModel)
         )
@@ -80,12 +80,13 @@ struct AppViewFactory: MainViewFactory {
             getYesterdayGoalUseCase: getYesterdayGoalUseCase,
             onStartMindset: {
                 coordinator.startMorningMindset()
-            }, onSeeHistory: {
+            },
+            onSeeHistory: {
                 coordinator.set(tab: .history)
             })
-        
+
         let historyViewModel = MindsetHistoryViewModel(repository: mindsetRepository)
-        
+
         let profileViewModel = UserProfileViewModel(
             authService: authService,
             userRepository: userRepository,
@@ -94,11 +95,12 @@ struct AppViewFactory: MainViewFactory {
             }
         )
 
-        return AnyView(MainTabView(
-            coordinator: coordinator,
-            dashboardView: AnyView(DashboardView(viewModel: dashboardViewModel)),
-            historyView: AnyView(MindsetHistoryView(viewModel: historyViewModel)),
-            profileView: AnyView(UserProfileView(viewModel: profileViewModel)))
+        return AnyView(
+            MainTabView(
+                coordinator: coordinator,
+                dashboardView: AnyView(DashboardView(viewModel: dashboardViewModel)),
+                historyView: AnyView(MindsetHistoryView(viewModel: historyViewModel)),
+                profileView: AnyView(UserProfileView(viewModel: profileViewModel)))
         )
     }
 
@@ -125,9 +127,10 @@ struct AppViewFactory: MainViewFactory {
     }
 
     func makeRitualSuccessView(archetype: String, xp: Int) -> AnyView {
-        AnyView(RitualSuccessView(archetype: archetype, xpEarned: xp) {
-            coordinator.showHomeView()
-            coordinator.dismissSheet()
-        })
+        AnyView(
+            RitualSuccessView(archetype: archetype, xpEarned: xp) {
+                coordinator.showHomeView()
+                coordinator.dismissSheet()
+            })
     }
 }

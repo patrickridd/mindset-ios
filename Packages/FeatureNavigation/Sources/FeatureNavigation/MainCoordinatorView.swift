@@ -35,13 +35,15 @@ public struct MainCoordinatorView: View {
             case .home:       factory.makeHomeView()
             }
         }
-        // Full Screen Cover Layer (paywall, mindset ritual)
+        // Full Screen Cover Layer (paywall, mindset ritual, ritualSuccess)
         .fullScreenCover(item: $coordinator.fullScreenState) { state in
             switch state {
             case .paywall:
                 factory.makePaywallView()
             case .mindset:
                 factory.makeMindsetView()
+            case .ritualSuccess(archetype: let archetype, xp: let xp):
+                factory.makeRitualSuccessView(archetype: archetype, xp: xp)
             }
         }
         // Sheet Layer (for other modals)

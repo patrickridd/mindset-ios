@@ -5,38 +5,39 @@
 //  Created by patrick ridd on 1/7/26.
 //
 
-
-import SwiftUI
 import Domain
+import SwiftUI
 
 @Observable
 @MainActor
 public final class MainCoordinator {
-    
+
     // Exclusive primary screens
     public enum RootState {
         case auth
         case onboarding
         case home
     }
-    
+
     // Modals and Overlays (Identifiable for SwiftUI item-based presentation)
     /// Mindset is a full-screen overlay so home stays alive—avoids Dashboard reload on dismiss.
     public enum FullScreenState: Identifiable {
         case paywall
         case mindset
-        
+        case ritualSuccess(archetype: String, xp: Int)
+
         public var id: String {
             switch self {
             case .paywall: return "paywall"
             case .mindset: return "mindset"
+            case .ritualSuccess(let a, let x): return "success-\(a)-\(x)"
             }
         }
     }
-    
+
     public enum SheetState: Identifiable {
         case ritualSuccess(archetype: String, xp: Int)
-        
+
         public var id: String {
             switch self {
             case .ritualSuccess(let a, let x): return "success-\(a)-\(x)"
@@ -54,7 +55,7 @@ public final class MainCoordinator {
     public var fullScreenState: FullScreenState?
     public var sheetState: SheetState?
     public var selectedTab: Tab = .dashboard
-    
+
     private let authService: AuthService
     private let subscriptionService: SubscriptionService
     private let mindsetRepository: MindsetRepository
@@ -70,32 +71,32 @@ public final class MainCoordinator {
         self.subscriptionService = subscriptionService
         self.mindsetRepository = mindsetRepository
         self.userProfileRepository = userRepository
-        
+
         // Initial check: Where should we start?
         Task { await evaluateInitialState() }
     }
 
     public func evaluateInitialState() async {
         // Quiz First, Auth Last Strategy (Duolingo-style)
-        
+
         // 1. Check if Onboarding is complete FIRST
         let hasCompletedOnboarding = UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")
-        
+
         if !hasCompletedOnboarding {
             // Show onboarding (quiz + content) regardless of auth status
             set(rootState: .onboarding)
             return
         }
-        
+
         // 2. Check if user is authenticated
         let isAuthenticated = await authService.isAuthenticated()
-        
+
         if !isAuthenticated {
             // Onboarding complete but not signed in yet → show auth
             set(rootState: .auth)
             return
         }
-        
+
         // 3. User is authenticated and onboarding complete → show home
         set(rootState: .home)
 
@@ -106,9 +107,9 @@ public final class MainCoordinator {
             set(fullScreenState: .paywall)
         }
     }
-    
+
     // Navigation Actions
-    
+
     public func signInCompleted() {
         // Step 12 complete → transition to home, then show Paywall (step 13)
         set(rootState: .home)
@@ -144,18 +145,17 @@ public final class MainCoordinator {
     }
 
     public func showRitualSuccess(archetype: String, xp: Int) {
-        set(fullScreenState: nil) // Dismiss mindset overlay first
-        set(sheetState: .ritualSuccess(archetype: archetype, xp: xp))
+        set(fullScreenState: .ritualSuccess(archetype: archetype, xp: xp))
     }
 
     public func dismissFullScreen() {
         set(fullScreenState: nil)
     }
-    
+
     public func dismissSheet() {
         set(sheetState: nil)
     }
-    
+
     public func signOutCompleted() {
         // Reset to auth screen
         set(rootState: .auth)
@@ -164,7 +164,7 @@ public final class MainCoordinator {
     private func set(rootState: RootState) {
         withAnimation { self.rootState = rootState }
     }
-    
+
     private func set(fullScreenState: FullScreenState?) {
         withAnimation { self.fullScreenState = fullScreenState }
     }
