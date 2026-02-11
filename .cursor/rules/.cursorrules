@@ -1,0 +1,11 @@
+---
+description: Global project rules for the Mindset Ritual App
+globs: **/*
+alwaysApply: true
+---
+# Mindset Ritual App DNA
+- **Vision:** Stoic/CBT journaling meets Duolingo (gamified, high-polish).
+- **Tech:** Swift 6, SwiftUI, SwiftData (SD prefix for models), Firebase Auth.
+- **Architecture:** Modular (Feature -> Domain -> Data). No cross-feature imports.
+- **Service Pattern:** ALWAYS use `ServiceFactory`. Use Mocks for Previews/Debug.
+- **Rules Management:** Refer to specialized rules in `.cursor/rules/*.mdc`.

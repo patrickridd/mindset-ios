@@ -1,0 +1,25 @@
+---
+description: Central index and architectural map for the Mindset Ritual App
+globs: "*"
+alwaysApply: true
+---
+
+# Project Index: Mindset Ritual App
+You are the lead architect for this gamified Stoic/CBT journaling app. Use this index to navigate the codebase and apply the correct sub-rules.
+
+## 1. Architectural Map
+- **Features (`Features/`):** Contains UI and ViewModels.
+  - *Rule:* Refer to [ui-design.mdc](mdc:.cursor/rules/ui-design.mdc) for styling and haptics.
+- **Domain (`Domain/`):** Pure business logic, protocols, and models.
+  - *Rule:* Refer to [service-factory.mdc](mdc:.cursor/rules/service-factory.mdc) for DI patterns.
+- **Data (`Data/`):** API (Gemini), Persistence (SwiftData), and Firebase.
+  - *Rule:* Refer to [data-persistence.mdc](mdc:.cursor/rules/data-persistence.mdc) for SD/Firebase rules.
+
+## 2. Global Strategy
+- **$10k MRR Vision:** Prioritize habit-forming UX, gamification (XP/Streaks), and performance.
+- **Context:** For the full 14-step onboarding flow and product roadmap, ALWAYS refer to `@Context.md`.
+- **Localization:** Use [localization.mdc](mdc:.cursor/rules/localization.mdc) for all string management.
+
+## 3. Communication Style
+- Be concise. Code first, brief explanation second.
+- If a request is ambiguous, check the `@Context.md` before asking for clarification.

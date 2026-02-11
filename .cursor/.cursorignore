@@ -1,0 +1,33 @@
+# --- Build Artifacts & System Files ---
+DerivedData/
+build/
+*.xcresult
+*.xcuserstate
+.DS_Store
+
+# --- Dependencies & Package Management ---
+# We want Cursor to know what packages you have, 
+# but not to index 100,000 lines of third-party source code.
+.swiftpm/
+.build/
+Packages/
+Package.resolved
+
+# --- Media & Assets (AI doesn't need to index these) ---
+*.png
+*.jpg
+*.jpeg
+*.pdf
+*.mp4
+*.assets
+Assets.xcassets/
+
+# --- Local Config & Secrets ---
+.config
+Secrets.plist
+buildServer.json
+Config.xcconfig
+
+# --- Version Control ---
+.git/
+.gitignore

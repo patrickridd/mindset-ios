@@ -1,0 +1,29 @@
+# --- Assets & Resources ---
+# Keep them visible so you can @ them, but don't index their content.
+*.xcassets/
+*.json
+*.strings
+*.plist
+
+# --- Documentation & Planning ---
+# Prevents Cursor from getting "confused" by old versions of your roadmap.
+Docs/Archive/
+*.notes
+*.todo
+
+# --- Mock Data & Testing ---
+# Crucial: You want to manually @ these in tests, but don't want 
+# search results cluttered with 5,000 lines of fake data.
+Tests/Mocks/
+**/Mock*.swift
+Preview Content/
+
+# --- Third-Party / External ---
+# If you have local versions of libraries or vendored code.
+Pods/
+Vendor/
+
+# --- Legacy / Reference ---
+# Any "v1" folders or reference code you aren't currently editing.
+Legacy/
+ReferenceCode/

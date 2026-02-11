@@ -365,6 +365,20 @@ mindsetRepository = serviceFactory.makeMindsetRepository(persistence: persistenc
 // etc.
 ```
 
+## 18. Rule Index (Active Intelligence)
+
+This project utilizes **Modular MDC (Markdown Cursor)** rules to ensure high-performance AI reasoning and architectural consistency. Refer to these specialized instruction sets for specific implementation requirements:
+
+| Rule File | Primary Responsibility | Target Scope (Globs) |
+| :--- | :--- | :--- |
+| **`index.mdc`** | Central map for $10k MRR vision and cross-module coordination. | `*` (Always Apply) |
+| **`ui-design.mdc`** | Liquid Glass UI, `SharedUI` tokens, haptics in views, and body composition. | `**/*View.swift` |
+| **`localization.mdc`** | Enforcement of type-safe strings. No hardcoded or magic strings allowed. | `**/*.swift` |
+| **`data-persistence.mdc`** | Gemini 2.0 Flash, SwiftData (`SD` prefix), and Firebase sync logic. | `**/Data/**`, `**/Domain/**` |
+| **`service-factory.mdc`** | Dependency Injection, Mock vs. Real service logic, and App composition. | `**/Main/**`, `**/Protocols/**` |
+
+**Developer Note:** To force the AI to adhere strictly to one of these systems during a complex task, mention the rule specifically in the prompt (e.g., *"Refactor this view according to @ui-design.mdc"*).
+
 ### Benefits
 
 ✅ **Clean separation** - One place to manage real vs mock services (no scattered `#if DEBUG` blocks)  

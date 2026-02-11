@@ -1,0 +1,9 @@
+---
+description: Rules for SwiftData, Firebase, and Auth
+globs: **/Data/**, **/Domain/**, **/FeatureAuth/**
+---
+# Data & Auth
+- **Identity:** Firebase UID is the single source of truth.
+- **Sync:** SwiftData (Local-first) + Firestore (Cloud backup).
+- **Security:** Never hardcode keys. Use `Secrets.plist` or Environment Variables.
+- **Naming:** Data layer types use `SD` prefix (e.g., `SDMindsetEntry`).

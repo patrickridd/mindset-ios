@@ -1,0 +1,12 @@
+---
+description: Rules for the Service Factory and Dependency Injection pattern
+globs: **/MindsetApp.swift, **/Data/Services/**, **/Domain/Protocols/**
+---
+# Service Factory Pattern
+- **Constraint:** Never hardcode service instantiation (e.g., `let service = RealService()`).
+- **Standard:** Use `ServiceFactory(config: .default)` for Mocks in Debug, Real in Release.
+- **Workflow for New Services:**
+  1. Define Protocol in `Domain/Protocols/`
+  2. Implement Real Service in `Data/Services/`
+  3. Implement Mock in `Domain/Mocks/`
+  4. Register in `ServiceFactory`.

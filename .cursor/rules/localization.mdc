@@ -1,0 +1,9 @@
+---
+description: Rules for Type-Safe Localization
+globs: **/*.swift
+---
+# Localization
+- **NO MAGIC STRINGS:** Never use `Text("String")`.
+- **Shared:** Use `SharedLocalizedString` for common actions (cancel, save).
+- **Feature:** Use `Feature[Name]Strings` for specific content.
+- **Usage:** `Text(FeatureDashboardStrings.Greeting.morning)`
