@@ -60,7 +60,9 @@ public final class MainCoordinator {
     private let subscriptionService: SubscriptionService
     private let mindsetRepository: MindsetRepository
     private let userProfileRepository: UserRepository
-
+    // Add this to manage the internal stack of the Mindset modal
+    public var mindsetPath = NavigationPath()
+    
     public init(
         authService: AuthService,
         subscriptionService: SubscriptionService,
@@ -123,8 +125,8 @@ public final class MainCoordinator {
     }
 
     public func showHomeView() {
-        set(rootState: .home)
         set(fullScreenState: nil)
+        set(rootState: .home)
     }
 
     public func subscriptionPurchased() {
@@ -132,6 +134,7 @@ public final class MainCoordinator {
     }
 
     public func startMorningMindset() {
+        mindsetPath = NavigationPath() // Reset the path
         set(rootState: .home)
         set(fullScreenState: .mindset)
     }
@@ -145,7 +148,9 @@ public final class MainCoordinator {
     }
 
     public func showRitualSuccess(archetype: String, xp: Int) {
-        set(fullScreenState: .ritualSuccess(archetype: archetype, xp: xp))
+        // Instead of changing fullScreenState (which triggers a new modal),
+        // we push a data object into the path.
+        mindsetPath.append(RitualResult(archetype: archetype, xp: xp))
     }
 
     public func dismissFullScreen() {

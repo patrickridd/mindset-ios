@@ -122,7 +122,15 @@ struct AppViewFactory: MainViewFactory {
             onDismiss: { coordinator.showHomeView() })
 
         return AnyView(
-            MorningRitualView(viewModel: viewModel)
+            // Bind the stack to the coordinator's path
+            NavigationStack(path: Bindable(coordinator).mindsetPath) {
+                MorningRitualView(viewModel: viewModel)
+                    .navigationDestination(for: RitualResult.self) { result in
+                        // The factory uses the coordinator's data to build the next view
+                        self.makeRitualSuccessView(archetype: result.archetype, xp: result.xp)
+                            .navigationBarBackButtonHidden()
+                    }
+            }
         )
     }
 
