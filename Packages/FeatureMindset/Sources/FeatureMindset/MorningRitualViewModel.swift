@@ -43,6 +43,10 @@ public final class MorningRitualViewModel {
     public var isShowingSuccess: Bool = false
     private var onDismiss: (() -> Void)?
 
+    public var shouldShowTextField: Bool {
+        currentStepIndex < prompts.count
+    }
+
     public var currentAiReflection: String? {
         guard let id = currentPrompt?.id else { return nil }
         return reflections[id]

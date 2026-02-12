@@ -92,7 +92,9 @@ private extension MorningRitualView {
                         Capsule().fill(
                             viewModel.canProceed
                                 ? MindsetColors.accentOrange
-                                : MindsetColors.buttonDisabledBackground(for: colorScheme)))
+                                : MindsetColors.buttonDisabledBackground(for: colorScheme)
+                        )
+                    )
             }
             .disabled(!viewModel.canProceed)
         }
@@ -212,12 +214,12 @@ private extension MorningRitualView {
             }
             .onChange(of: viewModel.currentStepIndex) { _, _ in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    isTextFieldFocused = true
+                    isTextFieldFocused = viewModel.shouldShowTextField
                 }
             }
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    isTextFieldFocused = true
+                    isTextFieldFocused = viewModel.shouldShowTextField
                 }
             }
         }
