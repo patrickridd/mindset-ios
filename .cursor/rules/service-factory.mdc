@@ -1,6 +1,6 @@
 ---
-description: Rules for the Service Factory and Dependency Injection pattern
-globs: **/MindsetApp.swift, **/Data/Services/**, **/Domain/Protocols/**
+description: Dependency Injection and Service Factory patterns
+globs: ["mindset-ios/Main/*.swift", "Packages/Domain/Protocols/**/*.swift", "Packages/Domain/Mocks/**/*.swift"]
 ---
 # Service Factory Pattern
 - **Constraint:** Never hardcode service instantiation (e.g., `let service = RealService()`).

@@ -1,6 +1,6 @@
 ---
-description: Rules for SwiftData, Firebase, and Auth
-globs: **/Data/**, **/Domain/**, **/FeatureAuth/**
+description: SwiftData, Firebase, and AI Service integration rules
+globs: ["Packages/Data/**/*.swift", "Packages/Domain/**/*.swift", "**/Models/**/*.swift", "**/Services/**/*.swift"]
 ---
 # Data & Auth
 - **Identity:** Firebase UID is the single source of truth.

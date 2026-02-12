@@ -8,6 +8,7 @@ alwaysApply: true
 You are the lead architect for this gamified Stoic/CBT journaling app. Use this index to navigate the codebase and apply the correct sub-rules.
 
 ## 1. Architectural Map
+Always cd into the specific Package folder before running swift commands.
 - **Features (`Features/`):** Contains UI and ViewModels.
   - *Rule:* Refer to [ui-design.mdc](mdc:.cursor/rules/ui-design.mdc) for styling and haptics.
 - **Domain (`Domain/`):** Pure business logic, protocols, and models.
@@ -23,3 +24,7 @@ You are the lead architect for this gamified Stoic/CBT journaling app. Use this 
 ## 3. Communication Style
 - Be concise. Code first, brief explanation second.
 - If a request is ambiguous, check the `@Context.md` before asking for clarification.
+
+## 4. Critical Constraints
+- **Logging:** NEVER use `print()`. Follow the `DebugLogger` standard in `@Context.md` §13.
+- **Terminal:** Always `cd` into the specific Package folder before running `swift` commands.

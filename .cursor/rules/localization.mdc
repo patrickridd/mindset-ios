@@ -1,6 +1,6 @@
 ---
-description: Rules for Type-Safe Localization
-globs: **/*.swift
+description: Enforcement of type-safe strings and SharedLocalization
+globs: ["**/*.swift"]
 ---
 # Localization
 - **NO MAGIC STRINGS:** Never use `Text("String")`.

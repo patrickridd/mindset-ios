@@ -1,6 +1,6 @@
 ---
 description: Rules for SwiftUI, Design System, and Haptics
-globs: **/*View.swift, **/SharedUI/**
+globs: "**/*View.swift", "**/SharedUI/**", "**/Components/**", "**/Styles/**"
 ---
 # Design System & UI
 - **Tokens:** ALWAYS use `MindsetColors`, `MindsetFonts`, and `MindsetLayout`. No magic numbers.
