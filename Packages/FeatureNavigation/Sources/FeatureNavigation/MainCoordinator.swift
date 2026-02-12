@@ -150,7 +150,11 @@ public final class MainCoordinator {
     public func showRitualSuccess(archetype: String, xp: Int) {
         // Instead of changing fullScreenState (which triggers a new modal),
         // we push a data object into the path.
-        mindsetPath.append(RitualResult(archetype: archetype, xp: xp))
+        var transaction = Transaction()
+        transaction.disablesAnimations = true
+        withTransaction(transaction) {
+            mindsetPath.append(RitualResult(archetype: archetype, xp: xp))
+        }
     }
 
     public func dismissFullScreen() {
