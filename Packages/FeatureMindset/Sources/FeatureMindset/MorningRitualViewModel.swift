@@ -169,6 +169,8 @@ public final class MorningRitualViewModel {
     public func completeRitual() async {
         isRitualComplete = true
         isLoading = true
+        
+        try? await Task.sleep(for: .seconds(0.5)) // Simulate "calculation"
 
         do {
             // 1. Map current answers and reflections into PromptResponse objects
