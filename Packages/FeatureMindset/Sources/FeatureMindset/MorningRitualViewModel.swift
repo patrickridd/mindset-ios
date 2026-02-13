@@ -231,12 +231,10 @@ public final class MorningRitualViewModel {
             } else {
                 onNavigate?(.paywall)
             }
-
-        } catch {
-            DebugLogger.shared.add("❌ Ritual save failed: \(error.localizedDescription)")
-        }
-        defer {
             isLoading = false
+        } catch {
+            isLoading = false
+            DebugLogger.shared.add("❌ Ritual save failed: \(error.localizedDescription)")
         }
     }
 }
