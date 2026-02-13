@@ -9,7 +9,7 @@ public final class MockAIService: AIAnalysisService {
     public init() {}
     
     public func generateFeedback(for prompt: MindsetPrompt, answer: String) async throws -> String {
-        try? await Task.sleep(for: .seconds(1.5)) // Simulate AI "thinking"
+        try? await Task.sleep(for: .seconds(0.85)) // Simulate AI "thinking"
         
         // Simple heuristic-based mock feedback
         if answer.count < 10 {
