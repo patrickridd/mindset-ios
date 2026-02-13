@@ -165,7 +165,7 @@ private extension MorningRitualView {
             backgroundFillColor: MindsetColors.dismissButtonBackground(for: colorScheme),
             progress: viewModel.progress
         )
-        .animation(.easeInOut(duration: 0.35), value: viewModel.currentStepIndex)
+        .animation(.easeInOut(duration: 0.35), value: viewModel.isCurrentPromptSubmitted)
         .padding(.horizontal)
         .frame(maxWidth: .infinity)
     }
@@ -362,7 +362,7 @@ private extension MorningRitualView {
 
     var footerButtons: some View {
         VStack {
-            if !viewModel.prompts.isEmpty {
+            if !viewModel.prompts.isEmpty && viewModel.isCurrentPromptSubmitted {
                 let isLastStep = viewModel.currentStepIndex == viewModel.prompts.count - 1
                 let checkmark: String = viewModel.canProceed ? "✅" : "☑️"
                 let isDisabled =

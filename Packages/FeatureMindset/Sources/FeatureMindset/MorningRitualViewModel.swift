@@ -33,6 +33,8 @@ public final class MorningRitualViewModel {
     public var isRitualComplete: Bool = false
     public var isShowingPaywall: Bool = false
     public var isCoachTipVisible: Bool = false
+    public var isCurrentPromptSubmitted: Bool = false
+
     /// When true, step content transition slides backward (insert from leading, remove to trailing).
     public var isGoingBack: Bool = false
     public var onNavigate: ((NavigationState) -> Void)?
@@ -85,6 +87,7 @@ public final class MorningRitualViewModel {
         self.currentStepIndex = 0
         self.answers = [:]
         self.reflections = [:]
+        self.isCurrentPromptSubmitted = false
 
         do {
             let profile = try await userRepository.fetchUserProfile()
@@ -116,13 +119,21 @@ public final class MorningRitualViewModel {
     /// Progress for the step progress bar (0...1). First step shows a small nub (0.025).
     public var progress: Double {
         guard !prompts.isEmpty else { return 0 }
-        if currentStepIndex == 0 { return 0.025 }
-        return Double(currentStepIndex) / Double(prompts.count)
+        let baseProgress = Double(currentStepIndex) / Double(prompts.count)
+        if isCurrentPromptSubmitted && currentStepIndex < prompts.count - 1 {
+            // If current prompt is submitted, and it's not the last step, show progress for the next step
+            return Double(currentStepIndex + 1) / Double(prompts.count)
+        } else if isCurrentPromptSubmitted && currentStepIndex == prompts.count - 1 {
+            // If it's the last step and submitted, show full progress
+            return 1.0
+        }
+        return baseProgress
     }
 
     public func nextStep() {
         isCoachTipVisible = false
         isGoingBack = false
+        isCurrentPromptSubmitted = false
         if currentStepIndex < prompts.count - 1 {
             currentStepIndex += 1
         } else {
@@ -133,6 +144,7 @@ public final class MorningRitualViewModel {
     public func previousStep() {
         isCoachTipVisible = false
         isGoingBack = true
+        isCurrentPromptSubmitted = false
         if currentStepIndex > 0 {
             currentStepIndex -= 1
         }
@@ -145,6 +157,7 @@ public final class MorningRitualViewModel {
     public func submitCurrentAnswer() async {
         guard let prompt = currentPrompt, let answer = answers[prompt.id] else { return }
 
+        isCurrentPromptSubmitted = true
         isAiThinking = true
 
         do {
@@ -155,7 +168,7 @@ public final class MorningRitualViewModel {
         }
         isAiThinking = false
     }
-    
+
     public var loadingDescription: String {
         if isRitualComplete {
             return FeatureMindsetStrings.MorningRitual.ritualSuccessLoading
@@ -169,8 +182,8 @@ public final class MorningRitualViewModel {
     public func completeRitual() async {
         isRitualComplete = true
         isLoading = true
-        
-        try? await Task.sleep(for: .seconds(0.5)) // Simulate "calculation"
+
+        try? await Task.sleep(for: .seconds(0.5))  // Simulate "calculation"
 
         do {
             // 1. Map current answers and reflections into PromptResponse objects
