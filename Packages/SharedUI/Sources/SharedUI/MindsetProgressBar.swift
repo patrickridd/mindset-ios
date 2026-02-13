@@ -10,11 +10,13 @@ import SwiftUI
 /// A horizontal progress bar with coral-to-orange gradient fill. Progress is in 0...1.
 public struct MindsetProgressBar: View {
     let progress: Double
-
+    let animationInterval: Double
+    
     let backgroundFillColor: Color
-    public init(backgroundFillColor: Color, progress: Double) {
+    public init(backgroundFillColor: Color, progress: Double, animationInterval: Double = 0.5) {
         self.backgroundFillColor = backgroundFillColor
         self.progress = progress
+        self.animationInterval = animationInterval
     }
 
     public var body: some View {
@@ -39,5 +41,6 @@ public struct MindsetProgressBar: View {
             }
         }
         .frame(height: MindsetLayout.progressBarHeight)
+        .animation(.easeInOut(duration: animationInterval), value: progress)
     }
 }
