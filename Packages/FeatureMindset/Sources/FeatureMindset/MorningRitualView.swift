@@ -305,7 +305,7 @@ private extension MorningRitualView {
 
                 textEditor(promptId: prompt.id)
 
-                if viewModel.isAiThinking || viewModel.currentAiReflection != nil {
+                if (viewModel.isAiThinking || viewModel.currentAiReflection != nil) && !isTextFieldFocused {
                     AIReflectionCard(
                         reflection: viewModel.currentAiReflection,
                         isThinking: viewModel.isAiThinking
