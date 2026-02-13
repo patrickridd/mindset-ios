@@ -77,7 +77,7 @@ private extension OnboardingView {
     }
 
     var mainContentStack: some View {
-        VStack(alignment: .center, spacing: MindsetLayout.spacing12) {
+        VStack(alignment: .center, spacing: MindsetLayout.spacing24) {
             progressSection
             if viewModel.isCalculating {
                 Spacer()
@@ -109,9 +109,10 @@ private extension OnboardingView {
             if viewModel.shouldAnimateCurrentQuestion {
                 TypewriterText(
                     text: question.questionText,
-                    font: MindsetFonts.displayHeadline,
+                    font: MindsetFonts.promptHeadline,
                     color: MindsetColors.textPrimary,
                     characterDelay: 0.06,
+                    isHapticFeedbackEnabled: true,
                     onComplete: {
                         viewModel.markCurrentQuestionAnimated()
                     }
@@ -120,7 +121,7 @@ private extension OnboardingView {
                 .padding()
             } else {
                 Text(question.questionText)
-                    .font(MindsetFonts.displayHeadline)
+                    .font(MindsetFonts.promptHeadline)
                     .foregroundStyle(MindsetColors.textPrimary)
                     .multilineTextAlignment(.center)
                     .padding()

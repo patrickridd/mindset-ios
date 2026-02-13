@@ -16,6 +16,7 @@ public struct TypewriterText: View {
     let font: Font
     let color: Color
     let characterDelay: TimeInterval
+    let isHapticFeedbackEnabled: Bool
     let onComplete: (() -> Void)?
     
     @State private var displayedText: String = ""
@@ -26,12 +27,14 @@ public struct TypewriterText: View {
         font: Font,
         color: Color,
         characterDelay: TimeInterval = 0.06,
+        isHapticFeedbackEnabled: Bool = true,
         onComplete: (() -> Void)? = nil
     ) {
         self.text = text
         self.font = font
         self.color = color
         self.characterDelay = characterDelay
+        self.isHapticFeedbackEnabled = isHapticFeedbackEnabled
         self.onComplete = onComplete
     }
     
@@ -45,6 +48,7 @@ public struct TypewriterText: View {
             .onDisappear {
                 animationTask?.cancel()
             }
+            .padding(.horizontal)
     }
     
     private func animateText() async {
@@ -65,7 +69,9 @@ public struct TypewriterText: View {
                 displayedText.append(character)
                 
                 // Trigger haptic for each character (light, non-intrusive)
-                HapticManager.selection()
+                if isHapticFeedbackEnabled {
+                    HapticManager.selection()
+                }
                 
                 // Wait before next character
                 try? await Task.sleep(for: .milliseconds(Int(characterDelay * 1000)))
