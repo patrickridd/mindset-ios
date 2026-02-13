@@ -118,29 +118,6 @@ private extension MorningRitualView {
     var headerSection: some View {
         ZStack {
             HStack {
-                Button(action: {
-                    HapticManager.selection()
-                    viewModel.isGoingBack = true
-                    withAnimation(.easeInOut(duration: 0.35)) {
-                        viewModel.previousStep()
-                    }
-                }) {
-                    HStack(spacing: MindsetLayout.spacing8) {
-                        Image(systemName: "chevron.left")
-                    }
-                    .font(MindsetFonts.body)
-                    .foregroundStyle(MindsetColors.dismissButtonIcon(for: colorScheme))
-                    .padding(.horizontal, MindsetLayout.spacing12)
-                    .padding(.vertical, MindsetLayout.spacing8)
-                    .background(
-                        Capsule()
-                            .fill(MindsetColors.backgroundSecondary(for: colorScheme))
-                    )
-                }
-                .buttonStyle(.plain)
-                .opacity(viewModel.currentStepIndex > 0 ? 1 : 0)
-                .disabled(viewModel.currentStepIndex == 0)
-
                 Spacer()
 
                 DismissButton(action: { viewModel.dismiss() })
@@ -280,12 +257,8 @@ private extension MorningRitualView {
     /// Transition for step content: matches OnboardingView — forward = in from trailing + opacity, back = in from leading + opacity.
     private var stepTransition: AnyTransition {
         .asymmetric(
-            insertion: viewModel.isGoingBack
-                ? .move(edge: .leading).combined(with: .opacity)
-                : .move(edge: .trailing).combined(with: .opacity),
-            removal: viewModel.isGoingBack
-                ? .move(edge: .trailing).combined(with: .opacity)
-                : .move(edge: .leading).combined(with: .opacity)
+            insertion: .move(edge: .trailing).combined(with: .opacity),
+            removal: .move(edge: .leading).combined(with: .opacity)
         )
     }
 
@@ -379,7 +352,6 @@ private extension MorningRitualView {
                 let showEnabledStyle = isAnalyzing || viewModel.canProceed
 
                 Button(action: {
-                    viewModel.isGoingBack = false
                     withAnimation(.easeInOut(duration: 0.35)) {
                         viewModel.nextStep()
                     }

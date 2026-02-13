@@ -36,8 +36,6 @@ public final class MorningRitualViewModel {
     public var isCurrentPromptSubmitted: Bool = false
     public var maxProgressAchieved: Double = 0.0
 
-    /// When true, step content transition slides backward (insert from leading, remove to trailing).
-    public var isGoingBack: Bool = false
     public var onNavigate: ((NavigationState) -> Void)?
 
     public var isAiThinking: Bool = false
@@ -136,21 +134,13 @@ public final class MorningRitualViewModel {
 
     public func nextStep() {
         isCoachTipVisible = false
-        isGoingBack = false
         isCurrentPromptSubmitted = false
         if currentStepIndex < prompts.count - 1 {
             currentStepIndex += 1
         } else {
-            Task { await completeRitual() }
-        }
-    }
-
-    public func previousStep() {
-        isCoachTipVisible = false
-        isGoingBack = true
-        isCurrentPromptSubmitted = false
-        if currentStepIndex > 0 {
-            currentStepIndex -= 1
+            Task {
+                await completeRitual()
+            }
         }
     }
 
