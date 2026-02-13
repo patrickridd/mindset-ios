@@ -100,7 +100,7 @@ private extension MorningRitualView {
         }
         .padding(.horizontal, MindsetLayout.paddingStandard)
         .padding(.bottom, MindsetLayout.spacing4)
-        .background(MindsetColors.backgroundGrouped(for: colorScheme))
+        .background(.clear)
     }
 
     @ViewBuilder
@@ -109,14 +109,10 @@ private extension MorningRitualView {
             headerSection
             progressBar
             contentSection  // This contains your ScrollView
-
-            if isTextFieldFocused {
-                customKeyboardBar
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
-            }
         }
         .blur(radius: viewModel.isCoachTipVisible ? 3 : 0)
         footerOverlay
+        keyboardBarOverlay
     }
 
     var headerSection: some View {
@@ -235,7 +231,19 @@ private extension MorningRitualView {
         .blur(radius: viewModel.isCoachTipVisible ? 3 : 0, opaque: false)
         .animation(
             viewModel.isCoachTipVisible ? .easeIn(duration: 0.2) : .linear(duration: 0),
-            value: viewModel.isCoachTipVisible)
+            value: viewModel.isCoachTipVisible
+        )
+    }
+
+    var keyboardBarOverlay: some View {
+        VStack {
+            Spacer()
+            if isTextFieldFocused {
+                customKeyboardBar
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
+        .animation(.easeInOut(duration: 0.3), value: isTextFieldFocused)
     }
 
     @ViewBuilder
