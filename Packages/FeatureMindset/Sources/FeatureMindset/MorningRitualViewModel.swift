@@ -28,6 +28,9 @@ public final class MorningRitualViewModel {
     public var answers: [String: String] = [:]
     public var reflections: [String: String] = [:]  // Store reflections per prompt
 
+    // Typewriter Animation State
+    public var animatedPromptIds: Set<String> = []
+
     // UI State
     public var isLoading: Bool = false
     public var isRitualComplete: Bool = false
@@ -51,6 +54,11 @@ public final class MorningRitualViewModel {
     public var currentAiReflection: String? {
         guard let id = currentPrompt?.id else { return nil }
         return reflections[id]
+    }
+
+    public var shouldAnimateCurrentPrompt: Bool {
+        guard let promptId = currentPrompt?.id else { return false }
+        return !animatedPromptIds.contains(promptId)
     }
 
     public enum NavigationState {
@@ -88,6 +96,7 @@ public final class MorningRitualViewModel {
         self.reflections = [:]
         self.isCurrentPromptSubmitted = false
         self.maxProgressAchieved = 0.0
+        self.animatedPromptIds = []
 
         do {
             let profile = try await userRepository.fetchUserProfile()
@@ -146,6 +155,11 @@ public final class MorningRitualViewModel {
 
     public func toggleCoachTip() {
         isCoachTipVisible.toggle()
+    }
+
+    public func markCurrentPromptAnimated() {
+        guard let promptId = currentPrompt?.id else { return }
+        animatedPromptIds.insert(promptId)
     }
 
     public func submitCurrentAnswer() async {

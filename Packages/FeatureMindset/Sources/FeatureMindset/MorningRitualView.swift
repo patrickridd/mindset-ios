@@ -266,12 +266,27 @@ private extension MorningRitualView {
         if let prompt = viewModel.currentPrompt {
             VStack(spacing: MindsetLayout.spacing24) {
                 VStack(spacing: MindsetLayout.spacing16) {
-                    Text(prompt.questionText)
-                        .font(MindsetFonts.promptQuestion)
-                        .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
+                    if viewModel.shouldAnimateCurrentPrompt {
+                        TypewriterText(
+                            text: prompt.questionText,
+                            font: MindsetFonts.promptQuestion,
+                            color: MindsetColors.textPrimaryAdaptive(for: colorScheme),
+                            characterDelay: 0.06,
+                            onComplete: {
+                                viewModel.markCurrentPromptAnimated()
+                            }
+                        )
                         .multilineTextAlignment(.leading)
                         .lineSpacing(MindsetLayout.spacing4)
                         .padding(.horizontal, MindsetLayout.paddingSmall)
+                    } else {
+                        Text(prompt.questionText)
+                            .font(MindsetFonts.promptQuestion)
+                            .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
+                            .multilineTextAlignment(.leading)
+                            .lineSpacing(MindsetLayout.spacing4)
+                            .padding(.horizontal, MindsetLayout.paddingSmall)
+                    }
                 }
                 .padding(.top)
 
