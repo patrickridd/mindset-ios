@@ -106,11 +106,25 @@ private extension OnboardingView {
     var questionContent: some View {
         let question = viewModel.questions[viewModel.currentStep]
         return VStack(spacing: MindsetLayout.spacing40) {
-            Text(question.questionText)
-                .font(MindsetFonts.displayHeadline)
-                .foregroundStyle(MindsetColors.textPrimary)
+            if viewModel.shouldAnimateCurrentQuestion {
+                TypewriterText(
+                    text: question.questionText,
+                    font: MindsetFonts.displayHeadline,
+                    color: MindsetColors.textPrimary,
+                    characterDelay: 0.06,
+                    onComplete: {
+                        viewModel.markCurrentQuestionAnimated()
+                    }
+                )
                 .multilineTextAlignment(.center)
                 .padding()
+            } else {
+                Text(question.questionText)
+                    .font(MindsetFonts.displayHeadline)
+                    .foregroundStyle(MindsetColors.textPrimary)
+                    .multilineTextAlignment(.center)
+                    .padding()
+            }
 
             VStack(spacing: MindsetLayout.spacing12) {
                 ForEach(question.options, id: \.self) { option in

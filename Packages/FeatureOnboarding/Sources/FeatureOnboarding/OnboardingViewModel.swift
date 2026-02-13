@@ -26,6 +26,9 @@ public final class OnboardingViewModel {
     /// Captured answers (option strings), keyed by question logic
     private var answers: [OnboardingQuestion.Logic: String] = [:]
 
+    /// Typewriter Animation State: tracks which questions have been animated
+    public var animatedQuestionIds: Set<Int> = []
+
     public let questions = OnboardingQuestion.allQuestions
 
     public init(
@@ -63,6 +66,20 @@ public final class OnboardingViewModel {
         if isCalculating { return 1.0 }
         if currentStep == 0 { return 0.025 }
         return Double(currentStep) / Double(questions.count)
+    }
+
+    /// Returns true if the current question should show typewriter animation (not yet animated).
+    public var shouldAnimateCurrentQuestion: Bool {
+        guard currentStep < questions.count else { return false }
+        let questionId = questions[currentStep].id
+        return !animatedQuestionIds.contains(questionId)
+    }
+
+    /// Marks the current question as animated (won't animate again if user goes back).
+    public func markCurrentQuestionAnimated() {
+        guard currentStep < questions.count else { return }
+        let questionId = questions[currentStep].id
+        animatedQuestionIds.insert(questionId)
     }
 
     /// Go back to the previous quiz step. No-op if already at step 0 or calculating.
