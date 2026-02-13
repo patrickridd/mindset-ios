@@ -34,6 +34,7 @@ public final class MorningRitualViewModel {
     public var isShowingPaywall: Bool = false
     public var isCoachTipVisible: Bool = false
     public var isCurrentPromptSubmitted: Bool = false
+    public var maxProgressAchieved: Double = 0.0
 
     /// When true, step content transition slides backward (insert from leading, remove to trailing).
     public var isGoingBack: Bool = false
@@ -88,6 +89,7 @@ public final class MorningRitualViewModel {
         self.answers = [:]
         self.reflections = [:]
         self.isCurrentPromptSubmitted = false
+        self.maxProgressAchieved = 0.0
 
         do {
             let profile = try await userRepository.fetchUserProfile()
@@ -122,12 +124,14 @@ public final class MorningRitualViewModel {
         let baseProgress = Double(currentStepIndex) / Double(prompts.count)
         if isCurrentPromptSubmitted && currentStepIndex < prompts.count - 1 {
             // If current prompt is submitted, and it's not the last step, show progress for the next step
-            return Double(currentStepIndex + 1) / Double(prompts.count)
+            maxProgressAchieved = max(maxProgressAchieved, Double(currentStepIndex + 1) / Double(prompts.count))
         } else if isCurrentPromptSubmitted && currentStepIndex == prompts.count - 1 {
             // If it's the last step and submitted, show full progress
-            return 1.0
+            maxProgressAchieved = max(maxProgressAchieved, 1.0)
+        } else {
+            maxProgressAchieved = max(maxProgressAchieved, baseProgress)
         }
-        return baseProgress
+        return maxProgressAchieved
     }
 
     public func nextStep() {
