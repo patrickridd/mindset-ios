@@ -7,11 +7,16 @@
 import SharedUI
 import SwiftUI
 
-struct AIReflectionCard: View {
+public struct AIReflectionCard: View {
     let reflection: String?
     let isThinking: Bool
 
-    var body: some View {
+    public init(reflection: String?, isThinking: Bool) {
+        self.reflection = reflection
+        self.isThinking = isThinking
+    }
+    
+    public var body: some View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing12) {
             HStack {
                 Image(systemName: "sparkles")
@@ -46,31 +51,6 @@ struct AIReflectionCard: View {
 extension View {
     func shimmer() -> some View {
         self.modifier(ShimmerModifier())
-    }
-}
-
-struct ShimmerModifier: ViewModifier {
-    @State private var phase: CGFloat = 0
-    
-    func body(content: Content) -> some View {
-        content
-            .overlay(
-                GeometryReader { geo in
-                    LinearGradient(
-                        colors: [.clear, .white.opacity(0.3), .clear],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                    .frame(width: geo.size.width * 2)
-                    .offset(x: -geo.size.width + (geo.size.width * 2 * phase))
-                }
-            )
-            .onAppear {
-                withAnimation(.linear(duration: 1.5).repeatForever(autoreverses: false)) {
-                    phase = 1
-                }
-            }
-            .mask(content)
     }
 }
 
