@@ -22,7 +22,7 @@ public struct PromptLibrary {
                 id: "savoring_01",
                 category: .savoring,
                 headline: "Present-Moment Savoring",
-                questionText: "Identify one positive experience happening *right now*. How can you intensify the joy of it?",
+                questionText: "Identify one positive experience happening 'right now'. How can you intensify the joy of it?",
                 coachTip: "Try 'behavioral expression'—smile, take a deep breath, or tell someone nearby how much you're enjoying this.",
                 scientificRationale: "Strengthens the ability to extract pleasure from everyday experiences (Bryant & Veroff)."
             )
@@ -42,7 +42,7 @@ public struct PromptLibrary {
                 id: "strength_01",
                 category: .signatureStrength,
                 headline: "Strength Deployment",
-                questionText: "Which of your core strengths (e.g., Curiosity, Bravery, Humor) can you use in a *new way* today?",
+                questionText: "Which of your core strengths (e.g., Curiosity, Bravery, Humor) can you use in a 'new way' today?",
                 coachTip: "Pick one strength and apply it to a task you usually find boring or difficult.",
                 scientificRationale: "Using signature strengths in new ways is proven to boost happiness for up to 6 months (Seligman)."
             )
@@ -73,7 +73,7 @@ public struct PromptLibrary {
                 category: .stoic,
                 headline: "The Circle of Control",
                 questionText: "What is one thing you are currently worried about that is actually outside of your control?",
-                coachTip: "Acknowledge the worry, then consciously decide to put your energy into an action you *can* control.",
+                coachTip: "Acknowledge the worry, then consciously decide to put your energy into an action you 'can' control.",
                 scientificRationale: "Reduces anxiety by narrowing focus to self-agency."
             )
         ],
