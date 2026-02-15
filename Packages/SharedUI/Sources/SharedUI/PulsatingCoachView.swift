@@ -49,3 +49,7 @@ struct PulsatingCoachView: View {
         }
     }
 }
+
+#Preview {
+    PulsatingCoachView(emoji: "🧘‍♂️")
+}

@@ -31,3 +31,9 @@ struct ShimmerModifier: ViewModifier {
             .mask(content)
     }
 }
+
+extension View {
+    public func shimmer() -> some View {
+        self.modifier(ShimmerModifier())
+    }
+}

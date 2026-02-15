@@ -48,12 +48,6 @@ public struct AIReflectionCard: View {
     }
 }
 
-extension View {
-    func shimmer() -> some View {
-        self.modifier(ShimmerModifier())
-    }
-}
-
 #Preview("AI Thinking") {
     AIReflectionCard(reflection: "That is a good thought", isThinking: true)
 }
