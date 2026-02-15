@@ -28,16 +28,19 @@ public struct AIReflectionCard: View {
             
             if isThinking {
                 // Shimmering placeholder logic
-                VStack(alignment: .leading, spacing: MindsetLayout.spacing8) {
-                    RoundedRectangle(cornerRadius: MindsetLayout.radiusSmall).fill(.gray.opacity(0.2)).frame(height: MindsetLayout.spacing12)
-                    RoundedRectangle(cornerRadius: MindsetLayout.radiusSmall).fill(.gray.opacity(0.2)).frame(height: MindsetLayout.spacing12).padding(.trailing, MindsetLayout.spacing40)
-                }
-                .shimmer() // We'll add this modifier below
+                ShimmerPlaceholderView()
             } else if let reflection = reflection {
-                Text(reflection)
-                    .font(MindsetFonts.subheadline)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .transition(.opacity.combined(with: .move(edge: .bottom)))
+                TypewriterText(
+                    text: reflection,
+                    font: MindsetFonts.subheadline,
+                    color: MindsetColors.textPrimary
+                )
+                .fixedSize(horizontal: false, vertical: true)
+                .transition(
+                    .opacity.combined(
+                        with: .move(edge: .bottom)
+                    )
+                )
             }
         }
         .padding()

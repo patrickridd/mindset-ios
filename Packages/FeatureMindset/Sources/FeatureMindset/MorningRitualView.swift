@@ -271,7 +271,6 @@ private extension MorningRitualView {
                             text: prompt.questionText,
                             font: MindsetFonts.promptQuestion,
                             color: MindsetColors.textPrimaryAdaptive(for: colorScheme),
-                            characterDelay: 0.06,
                             onComplete: {
                                 viewModel.markCurrentPromptAnimated()
                             }

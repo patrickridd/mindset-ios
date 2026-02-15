@@ -15,73 +15,77 @@ public struct TypewriterText: View {
     let text: String
     let font: Font
     let color: Color
-    let characterDelay: TimeInterval
-    let isHapticFeedbackEnabled: Bool
+    let isHapticEnabled: Bool
     let onComplete: (() -> Void)?
     
     @State private var displayedText: String = ""
-    @State private var animationTask: Task<Void, Never>?
+    @State private var isTypingActive: Bool = false
+    @State private var isThinking: Bool = false
     
     public init(
         text: String,
         font: Font,
         color: Color,
-        characterDelay: TimeInterval = 0.06,
-        isHapticFeedbackEnabled: Bool = true,
+        isHapticEnabled: Bool = true,
         onComplete: (() -> Void)? = nil
     ) {
         self.text = text
         self.font = font
         self.color = color
-        self.characterDelay = characterDelay
-        self.isHapticFeedbackEnabled = isHapticFeedbackEnabled
+        self.isHapticEnabled = isHapticEnabled
         self.onComplete = onComplete
     }
     
     public var body: some View {
-        Text(displayedText)
-            .font(font)
-            .foregroundStyle(color)
-            .task {
-                await animateText()
+        ZStack(alignment: .topLeading) {
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                Text(text)
+                    .font(font)
+                    .opacity(0)
             }
-            .onDisappear {
-                animationTask?.cancel()
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                Text(displayedText)
+                    .font(font)
             }
-            .padding(.horizontal)
+        }
+        .task(id: text) {
+            await animateSequence()
+        }
     }
     
-    private func animateText() async {
-        // Cancel any existing animation
-        animationTask?.cancel()
+    private func animateSequence() async {
+        displayedText = ""
+       
+        withAnimation {
+            isTypingActive = true
+        }
+
+        HapticManager.prepareTypewriter()
+        HapticManager.action() // Initial "Let's go" tap
         
-        // Create new animation task
-        animationTask = Task { @MainActor in
-            displayedText = ""
+        let words = text.components(separatedBy: " ")
+        for (index, word) in words.enumerated() {
+            if Task.isCancelled { break }
             
-            for character in text {
-                // Check for cancellation between characters
-                guard !Task.isCancelled else {
-                    return
-                }
-                
-                // Add character
-                displayedText.append(character)
-                
-                // Trigger haptic for each character (light, non-intrusive)
-                if isHapticFeedbackEnabled {
-                    HapticManager.selection()
-                }
-                
-                // Wait before next character
-                try? await Task.sleep(for: .milliseconds(Int(characterDelay * 1000)))
-            }
+            displayedText += word + (index == words.count - 1 ? "" : " ")
+            triggerSmartHaptic(for: word)
             
-            // Animation complete
-            onComplete?()
+            let delay = word.contains(".") ? 300 : 60
+            try? await Task.sleep(for: .milliseconds(55))
         }
         
-        await animationTask?.value
+        isTypingActive = false
+
+        onComplete?()
+    }
+
+    private func triggerSmartHaptic(for word: String) {
+        guard isHapticEnabled else { return }
+        if word.contains(".") || word.contains("?") {
+            HapticManager.typewriterEmphasis()
+        } else {
+            HapticManager.typewriterTick()
+        }
     }
 }
 
@@ -90,10 +94,11 @@ public struct TypewriterText: View {
 #Preview("Typewriter Animation") {
     VStack(spacing: 40) {
         TypewriterText(
-            text: "What are three things you're grateful for today?",
+            text: "What are three things you're grateful for today? Think about them carefully.",
             font: .title2,
             color: .primary,
-            characterDelay: 0.06
+            isHapticEnabled: true,
+            onComplete: nil
         )
         .multilineTextAlignment(.leading)
         .padding()
@@ -102,7 +107,8 @@ public struct TypewriterText: View {
             text: "Reflect on a moment when you felt truly present.",
             font: .body,
             color: .secondary,
-            characterDelay: 0.05
+            isHapticEnabled: false,
+            onComplete: nil
         )
         .multilineTextAlignment(.leading)
         .padding()

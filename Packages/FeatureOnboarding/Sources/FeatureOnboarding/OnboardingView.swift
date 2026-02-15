@@ -111,8 +111,7 @@ private extension OnboardingView {
                     text: question.questionText,
                     font: MindsetFonts.promptHeadline,
                     color: MindsetColors.textPrimary,
-                    characterDelay: 0.06,
-                    isHapticFeedbackEnabled: true,
+                    isHapticEnabled: true,
                     onComplete: {
                         viewModel.markCurrentQuestionAnimated()
                     }
