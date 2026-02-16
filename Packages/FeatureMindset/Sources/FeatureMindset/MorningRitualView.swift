@@ -298,35 +298,6 @@ private extension MorningRitualView {
                     )
                     .padding(.top)
                 }
-
-                if !viewModel.isAiThinking && viewModel.currentAiReflection == nil {
-                    Button(action: {
-                        HapticManager.action()
-                        Task { await viewModel.submitCurrentAnswer() }
-                    }) {
-                        Label(
-                            FeatureMindsetStrings.MorningRitual.getAiReflection,
-                            systemImage: "sparkles"
-                        )
-                        .font(MindsetFonts.subheadline.weight(.bold))
-                        .foregroundStyle(
-                            viewModel.canProceed
-                                ? MindsetColors.labelAccent(for: colorScheme)
-                                : MindsetColors.textDisabled(for: colorScheme)
-                        )
-                        .padding(.horizontal, MindsetLayout.paddingStandard)
-                        .padding(.vertical, MindsetLayout.spacing10)
-                        .background(
-                            RoundedRectangle(cornerRadius: MindsetLayout.radiusStandard)
-                                .fill(
-                                    viewModel.canProceed
-                                        ? MindsetColors.accentOrangeSoft : Color.clear)
-                        )
-                    }
-                    .buttonStyle(.plain)
-                    .disabled(!viewModel.canProceed)
-                }
-
                 Spacer(minLength: MindsetLayout.spacerBottomMinLength)
             }
             .id(prompt.id)
