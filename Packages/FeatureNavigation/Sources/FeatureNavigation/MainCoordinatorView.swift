@@ -15,6 +15,7 @@ public protocol MainViewFactory {
     func makeHomeView() -> AnyView
     func makeMindsetView() -> AnyView
     func makeRitualSuccessView(archetype: String, xp: Int) -> AnyView
+    func makeLoadingView() -> AnyView
 }
 
 public struct MainCoordinatorView: View {
@@ -33,6 +34,7 @@ public struct MainCoordinatorView: View {
             case .auth:       factory.makeSignInView()
             case .onboarding: factory.makeOnboardingView()
             case .home:       factory.makeHomeView()
+            case .loading:    factory.makeLoadingView()
             }
         }
         // Full Screen Cover Layer (paywall, mindset ritual, ritualSuccess)

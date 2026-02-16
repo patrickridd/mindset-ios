@@ -16,6 +16,7 @@ import FeatureOnboarding
 import FeatureSubscription
 import FeatureUserProfile
 import SharedUtils
+import SharedUI
 import SwiftUI
 
 struct AppViewFactory: MainViewFactory {
@@ -140,5 +141,20 @@ struct AppViewFactory: MainViewFactory {
                 coordinator.showHomeView()
                 coordinator.dismissSheet()
             })
+    }
+
+    func makeLoadingView() -> AnyView {
+        AnyView(
+            ZStack {
+                Circle()
+                    .fill(MindsetColors.accentOrange.opacity(0.15))
+                    .frame(width: MindsetLayout.iconLarge, height: MindsetLayout.iconLarge)
+                    .blur(radius: MindsetLayout.glowBlurRadius)
+                
+                ProgressView()
+                    .tint(MindsetColors.accentOrange)
+                    .scaleEffect(2)
+            }
+        )
     }
 }

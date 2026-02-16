@@ -17,6 +17,7 @@ public final class MainCoordinator {
         case auth
         case onboarding
         case home
+        case loading
     }
 
     // Modals and Overlays (Identifiable for SwiftUI item-based presentation)
@@ -51,7 +52,7 @@ public final class MainCoordinator {
         case profile
     }
 
-    private(set) var rootState: RootState = .onboarding
+    private(set) var rootState: RootState = .loading
     public var fullScreenState: FullScreenState?
     public var sheetState: SheetState?
     public var selectedTab: Tab = .dashboard
