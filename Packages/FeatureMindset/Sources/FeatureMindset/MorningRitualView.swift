@@ -59,7 +59,6 @@ private extension MorningRitualView {
                         .regular.interactive(),
                         in: .circle
                     )
-                    .buttonStyle(.glass)
             } else {
                 // Fallback on earlier versions
                 lightBulbButton
@@ -75,8 +74,8 @@ private extension MorningRitualView {
                 submitButtonFallBack
             }
         }
-        .padding(.horizontal, MindsetLayout.paddingStandard)
-        .padding(.bottom, MindsetLayout.spacing4)
+        .padding(.horizontal, MindsetLayout.paddingLarge)
+        .padding(.bottom, MindsetLayout.spacing8)
         .background(.clear)
     }
     
@@ -130,7 +129,7 @@ private extension MorningRitualView {
             .regular.interactive().tint(
                 viewModel.canProceed
                 ? MindsetColors.accentOrange
-                : MindsetColors.buttonDisabledBackground(for: colorScheme)
+                : nil
             ),
             in: .capsule
         )
@@ -149,8 +148,8 @@ private extension MorningRitualView {
                     : MindsetColors.textSecondaryAdaptive(for: colorScheme)
                 )
                 .frame(
-                    width: MindsetLayout.iconButtonLarge,
-                    height: MindsetLayout.iconButtonLarge
+                    width: MindsetLayout.iconButtonLarge + 2,
+                    height: MindsetLayout.iconButtonLarge + 2
                 )
         }
     }
