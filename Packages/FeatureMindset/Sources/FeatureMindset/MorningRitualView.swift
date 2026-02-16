@@ -52,55 +52,107 @@ private extension MorningRitualView {
 
     private var customKeyboardBar: some View {
         HStack(alignment: .center) {
-            // Lightbulb Button
-            Button {
-                HapticManager.selection()
-                viewModel.toggleCoachTip()
-            } label: {
-                Image(systemName: viewModel.isCoachTipVisible ? "lightbulb.fill" : "lightbulb")
-                    .font(MindsetFonts.body)
-                    .foregroundStyle(
-                        viewModel.isCoachTipVisible
-                            ? MindsetColors.labelAccent(for: colorScheme)
-                            : MindsetColors.textSecondaryAdaptive(for: colorScheme)
-                    )
 
-                    .frame(
-                        width: MindsetLayout.iconButtonLarge,
-                        height: MindsetLayout.iconButtonLarge
+            if #available(iOS 26.0, *) {
+                lightBulbButton
+                    .glassEffect(
+                        .regular.interactive(),
+                        in: .circle
                     )
+                    .buttonStyle(.glass)
+            } else {
+                // Fallback on earlier versions
+                lightBulbButton
+                    .buttonStyle(.automatic)
             }
 
             Spacer()
 
-            // Submit Button
-            Button(action: {
-                HapticManager.action()
-                isTextFieldFocused = false
-                Task { await viewModel.submitCurrentAnswer() }
-            }) {
-                Text(SharedLocalizedString.submit)
-                    .font(MindsetFonts.button)
-                    .foregroundStyle(
-                        viewModel.canProceed
-                            ? MindsetColors.textOnAccent(for: colorScheme)
-                            : MindsetColors.textDisabled(for: colorScheme)
-                    )
-                    .padding(.horizontal, MindsetLayout.spacing16)
-                    .padding(.vertical, MindsetLayout.spacing8)
-                    .background(
-                        Capsule().fill(
-                            viewModel.canProceed
-                                ? MindsetColors.accentOrange
-                                : MindsetColors.buttonDisabledBackground(for: colorScheme)
-                        )
-                    )
+            if #available(iOS 26.0, *) {
+                submitButtonGlass
+            } else {
+                // Fallback on earlier versions
+                submitButtonFallBack
             }
-            .disabled(!viewModel.canProceed)
         }
         .padding(.horizontal, MindsetLayout.paddingStandard)
         .padding(.bottom, MindsetLayout.spacing4)
         .background(.clear)
+    }
+    
+    @available(iOS, deprecated: 26.0, renamed: "submitButtonGlass")
+    var submitButtonFallBack: some View {
+        Button(action: {
+            HapticManager.action()
+            isTextFieldFocused = false
+            Task { await viewModel.submitCurrentAnswer() }
+        }) {
+            Text(SharedLocalizedString.submit)
+                .font(MindsetFonts.button)
+                .foregroundStyle(
+                    viewModel.canProceed
+                    ? MindsetColors.textOnAccent(for: colorScheme)
+                    : MindsetColors.textDisabled(for: colorScheme)
+                )
+                .padding(.horizontal, MindsetLayout.spacing16)
+                .padding(.vertical, MindsetLayout.spacing8)
+                .background(
+                    Capsule().fill(
+                        viewModel.canProceed
+                        ? MindsetColors.accentOrange
+                        : MindsetColors.buttonDisabledBackground(for: colorScheme)
+                    )
+                )
+        }
+        .disabled(!viewModel.canProceed)
+        .buttonStyle(.automatic)
+    }
+
+    @available(iOS 26.0, *)
+    var submitButtonGlass: some View {
+        Button(action: {
+            HapticManager.action()
+            isTextFieldFocused = false
+            Task { await viewModel.submitCurrentAnswer() }
+        }) {
+            Text(SharedLocalizedString.submit)
+                .font(MindsetFonts.button)
+                .foregroundStyle(
+                    viewModel.canProceed
+                    ? MindsetColors.textOnAccent(for: colorScheme)
+                    : MindsetColors.textDisabled(for: colorScheme)
+                )
+                .padding(.horizontal, MindsetLayout.spacing20)
+                .padding(.vertical, MindsetLayout.spacing12)
+        }
+        .disabled(!viewModel.canProceed)
+        .glassEffect(
+            .regular.interactive().tint(
+                viewModel.canProceed
+                ? MindsetColors.accentOrange
+                : MindsetColors.buttonDisabledBackground(for: colorScheme)
+            ),
+            in: .capsule
+        )
+    }
+    
+    var lightBulbButton: some View {
+        Button {
+            HapticManager.selection()
+            viewModel.toggleCoachTip()
+        } label: {
+            Image(systemName: viewModel.isCoachTipVisible ? "lightbulb.fill" : "lightbulb")
+                .font(MindsetFonts.body)
+                .foregroundStyle(
+                    viewModel.isCoachTipVisible
+                    ? MindsetColors.labelAccent(for: colorScheme)
+                    : MindsetColors.textSecondaryAdaptive(for: colorScheme)
+                )
+                .frame(
+                    width: MindsetLayout.iconButtonLarge,
+                    height: MindsetLayout.iconButtonLarge
+                )
+        }
     }
 
     @ViewBuilder
