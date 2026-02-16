@@ -14,10 +14,10 @@ public struct AddMindsetUseCase: Sendable {
     }
     
     public func execute(entry: MindsetEntry) async throws {
-        // Business Rule: Ensure the user actually wrote something in their responses
         let totalCharacters = entry.responses.reduce(0) { $0 + $1.userText.count }
         
-        guard totalCharacters > 10 else {
+        // Business Rule: Ensure the user actually wrote something in their responses
+        guard totalCharacters > 9 else {
             throw DomainError.incompleteRitual
         }
         
