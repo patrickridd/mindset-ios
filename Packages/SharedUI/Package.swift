@@ -25,6 +25,9 @@ let package = Package(
             name: "SharedUI",
             dependencies: [
                 .product(name: "SharedUtils", package: "SharedUtils")
+            ],
+            resources: [
+                .process("Resources")
             ]
         ),
         .testTarget(

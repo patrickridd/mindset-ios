@@ -21,7 +21,7 @@ public struct AIReflectionCard: View {
             HStack {
                 Image(systemName: "sparkles")
                     .foregroundStyle(MindsetColors.accentOrange)
-                Text("AI REFLECTION")
+                Text(SharedStrings.AIReflection.title)
                     .font(MindsetFonts.labelUppercase)
                     .tracking(1)
             }

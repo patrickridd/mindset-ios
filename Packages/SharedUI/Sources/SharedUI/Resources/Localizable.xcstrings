@@ -1,0 +1,18 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "ritual.aiReflection.title" : {
+      "comment" : "AI reflection card title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI Reflection"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.1"
+}

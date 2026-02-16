@@ -40,12 +40,6 @@ public enum FeatureMindsetStrings {
         public static let xpEarned = String(localized: "ritual.success.xpEarned", bundle: .module, comment: "XP earned message")
     }
     
-    // MARK: - AI Reflection
-    
-    public enum AIReflection {
-        public static let title = String(localized: "ritual.aiReflection.title", bundle: .module, comment: "AI reflection card title")
-    }
-    
     // MARK: - Categories
     
     public enum Categories {
