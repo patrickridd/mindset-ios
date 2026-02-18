@@ -9,6 +9,7 @@ import Domain
 import Foundation
 import Observation
 import SharedUtils
+import SharedLocalization
 
 @MainActor
 @Observable
@@ -82,6 +83,10 @@ public final class MorningRitualViewModel {
         self.onDismiss = onDismiss
 
         Task { await prepareRitual() }
+    }
+
+    public var isLastStep: Bool {
+        currentStepIndex >= prompts.count - 1
     }
 
     public func dismiss() {
@@ -240,5 +245,24 @@ public final class MorningRitualViewModel {
             isLoading = false
             DebugLogger.shared.add("❌ Ritual save failed: \(error.localizedDescription)")
         }
+    }
+    
+    // MARK: Footer Button logic
+    
+    public var shouldDisplayFooterButton: Bool {
+        isCurrentPromptSubmitted
+    }
+
+    public var isFooterButtonDisabled: Bool {
+        !canProceed || isAiThinking || isLoading
+    }
+
+    public var footerButtonText: String {
+        isAiThinking ? FeatureMindsetStrings.MorningRitual.analyzing
+        : isLastStep ? "\(FeatureMindsetStrings.MorningRitual.complete)" : SharedLocalizedString.continue
+    }
+
+    public var showFooterButtonEnabledStyle: Bool {
+        isAiThinking || canProceed
     }
 }

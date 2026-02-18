@@ -252,7 +252,7 @@ private extension MorningRitualView {
     var footerOverlay: some View {
         VStack {
             Spacer()
-            footerButtons
+            footerButton
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .blur(radius: viewModel.isCoachTipVisible ? 3 : 0, opaque: false)
@@ -376,43 +376,29 @@ private extension MorningRitualView {
         .focused($isTextFieldFocused)
     }
 
-    var footerButtons: some View {
+    var footerButton: some View {
         VStack {
-            if !viewModel.prompts.isEmpty && viewModel.isCurrentPromptSubmitted {
-                let isLastStep = viewModel.currentStepIndex == viewModel.prompts.count - 1
-                let checkmark: String = viewModel.canProceed ? "✅" : "☑️"
-                let isDisabled =
-                    !viewModel.canProceed || viewModel.isAiThinking || viewModel.isLoading
-                let isAnalyzing = viewModel.isAiThinking
-                let showEnabledStyle = isAnalyzing || viewModel.canProceed
-
+            if viewModel.shouldDisplayFooterButton {
                 Button(action: {
                     withAnimation(.easeInOut(duration: 0.35)) {
                         viewModel.nextStep()
                     }
                 }) {
                     HStack(spacing: MindsetLayout.spacing10) {
-                        if isAnalyzing {
+                        if viewModel.isAiThinking {
                             ProgressView()
                                 .tint(.white)
                         }
-
-                        Text(
-                            isAnalyzing
-                                ? FeatureMindsetStrings.MorningRitual.analyzing
-                                : (isLastStep
-                                    ? "\(FeatureMindsetStrings.MorningRitual.complete) \(checkmark)"
-                                    : SharedLocalizedString.continue)
-                        )
+                        Text(viewModel.footerButtonText)
                         .bold()
 
-                        if !isLastStep && !isAnalyzing {
+                        if !viewModel.isLastStep && !viewModel.isAiThinking {
                             Image(systemName: "chevron.right")
                         }
                     }
                     .frame(maxWidth: .infinity)
                     .foregroundStyle(
-                        showEnabledStyle
+                        viewModel.showFooterButtonEnabledStyle
                             ? MindsetColors.textOnAccent(for: colorScheme)
                             : MindsetColors.textDisabled(for: colorScheme)
                     )
@@ -420,13 +406,13 @@ private extension MorningRitualView {
                     .background(
                         RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
                             .fill(
-                                showEnabledStyle
+                                viewModel.showFooterButtonEnabledStyle
                                     ? MindsetColors.accentOrange
                                     : MindsetColors.buttonDisabledBackground(for: colorScheme))
                     )
                 }
                 .buttonStyle(.plain)
-                .disabled(isDisabled)
+                .disabled(viewModel.isFooterButtonDisabled)
                 .padding()
             }
         }
