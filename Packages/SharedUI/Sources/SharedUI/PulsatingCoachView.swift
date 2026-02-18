@@ -8,12 +8,16 @@
 import SwiftUI
 import SharedUtils
 
-struct PulsatingCoachView: View {
+public struct PulsatingCoachView: View {
     let emoji: String
     @State private var pulseScale: CGFloat = 1.0
     @State private var glowOpacity: Double = 0.5
     
-    var body: some View {
+    public init(emoji: String) {
+        self.emoji = emoji
+    }
+    
+    public var body: some View {
         ZStack {
             // Subtle glow/halo behind the emoji
             Circle()

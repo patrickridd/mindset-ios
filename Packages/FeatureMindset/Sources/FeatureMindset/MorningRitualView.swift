@@ -317,11 +317,19 @@ private extension MorningRitualView {
         if let prompt = viewModel.currentPrompt {
             VStack(spacing: MindsetLayout.spacing24) {
                 VStack(spacing: MindsetLayout.spacing16) {
-                    if viewModel.shouldAnimateCurrentPrompt {
+                    if viewModel.isGeneratingPrompt {
+                        VStack(spacing: MindsetLayout.spacing16) {
+                            PulsatingCoachView(emoji: "🧘‍♂️")
+                            ShimmerPlaceholderView()
+                                .padding(.horizontal, MindsetLayout.paddingSmall)
+                        }
+                        .transition(.opacity.combined(with: .scale(scale: 0.95)))
+                    } else if viewModel.shouldAnimateCurrentPrompt {
                         TypewriterText(
                             text: prompt.questionText,
                             font: MindsetFonts.promptQuestion,
                             color: MindsetColors.textPrimaryAdaptive(for: colorScheme),
+                            isHapticEnabled: false,
                             onComplete: {
                                 viewModel.markCurrentPromptAnimated()
                             }
@@ -329,6 +337,7 @@ private extension MorningRitualView {
                         .multilineTextAlignment(.leading)
                         .lineSpacing(MindsetLayout.spacing4)
                         .padding(.horizontal, MindsetLayout.paddingSmall)
+                        .transition(.opacity.combined(with: .move(edge: .bottom)))
                     } else {
                         Text(prompt.questionText)
                             .font(MindsetFonts.promptQuestion)
@@ -338,6 +347,8 @@ private extension MorningRitualView {
                             .padding(.horizontal, MindsetLayout.paddingSmall)
                     }
                 }
+                .animation(.spring(response: 0.4, dampingFraction: 0.8), value: viewModel.isGeneratingPrompt)
+                .animation(.spring(response: 0.4, dampingFraction: 0.8), value: viewModel.shouldAnimateCurrentPrompt)
                 .padding(.top)
 
                 textEditor(promptId: prompt.id)

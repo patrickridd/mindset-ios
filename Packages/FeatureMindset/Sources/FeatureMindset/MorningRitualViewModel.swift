@@ -31,6 +31,7 @@ public final class MorningRitualViewModel {
 
     // Typewriter Animation State
     public var animatedPromptIds: Set<String> = []
+    public var isGeneratingPrompt: Bool = false
 
     // UI State
     public var isLoading: Bool = false
@@ -59,7 +60,7 @@ public final class MorningRitualViewModel {
 
     public var shouldAnimateCurrentPrompt: Bool {
         guard let promptId = currentPrompt?.id else { return false }
-        return !animatedPromptIds.contains(promptId)
+        return !isGeneratingPrompt && !animatedPromptIds.contains(promptId)
     }
 
     public enum NavigationState {
@@ -85,10 +86,6 @@ public final class MorningRitualViewModel {
         Task { await prepareRitual() }
     }
 
-    public var isLastStep: Bool {
-        currentStepIndex >= prompts.count - 1
-    }
-
     public func dismiss() {
         onDismiss?()
     }
@@ -102,6 +99,7 @@ public final class MorningRitualViewModel {
         self.isCurrentPromptSubmitted = false
         self.maxProgressAchieved = 0.0
         self.animatedPromptIds = []
+        self.isGeneratingPrompt = false
 
         do {
             let profile = try await userRepository.fetchUserProfile()
@@ -116,6 +114,9 @@ public final class MorningRitualViewModel {
             self.prompts = promptEngine.fetchPrompts(for: nil, completedCount: 0)
         }
         isLoading = false
+        
+        // Trigger generation animation for first prompt
+        await startPromptGeneration()
     }
 
     // MARK: - Navigation Logic
@@ -127,7 +128,8 @@ public final class MorningRitualViewModel {
 
     public var canProceed: Bool {
         guard let currentId = currentPrompt?.id else { return false }
-        return (answers[currentId]?.count ?? 0) >= 3
+        let currentAnswerCount = answers[currentId]?.count ?? 0
+        return currentAnswerCount >= 3
     }
 
     /// Progress for the step progress bar (0...1). First step shows a small nub (0.025).
@@ -145,12 +147,41 @@ public final class MorningRitualViewModel {
         }
         return maxProgressAchieved
     }
+    
+    public var shouldDisplayFooterButton: Bool {
+        return isCurrentPromptSubmitted
+    }
+    
+    public var isLastStep: Bool {
+        return currentStepIndex >= prompts.count - 1
+    }
+    
+    public var footerButtonText: String {
+        if isAiThinking {
+            return FeatureMindsetStrings.MorningRitual.analyzing
+        } else if isLastStep {
+            return FeatureMindsetStrings.MorningRitual.complete
+        } else {
+            return SharedLocalizedString.continue
+        }
+    }
+    
+    public var showFooterButtonEnabledStyle: Bool {
+        return !isAiThinking
+    }
+    
+    public var isFooterButtonDisabled: Bool {
+        return isAiThinking
+    }
 
     public func nextStep() {
         isCoachTipVisible = false
         isCurrentPromptSubmitted = false
         if currentStepIndex < prompts.count - 1 {
             currentStepIndex += 1
+            Task {
+                await startPromptGeneration()
+            }
         } else {
             Task {
                 await completeRitual()
@@ -165,6 +196,12 @@ public final class MorningRitualViewModel {
     public func markCurrentPromptAnimated() {
         guard let promptId = currentPrompt?.id else { return }
         animatedPromptIds.insert(promptId)
+    }
+    
+    private func startPromptGeneration() async {
+        isGeneratingPrompt = true
+        try? await Task.sleep(for: .seconds(1.0))
+        isGeneratingPrompt = false
     }
 
     public func submitCurrentAnswer() async {
@@ -245,24 +282,5 @@ public final class MorningRitualViewModel {
             isLoading = false
             DebugLogger.shared.add("❌ Ritual save failed: \(error.localizedDescription)")
         }
-    }
-    
-    // MARK: Footer Button logic
-    
-    public var shouldDisplayFooterButton: Bool {
-        isCurrentPromptSubmitted
-    }
-
-    public var isFooterButtonDisabled: Bool {
-        !canProceed || isAiThinking || isLoading
-    }
-
-    public var footerButtonText: String {
-        isAiThinking ? FeatureMindsetStrings.MorningRitual.analyzing
-        : isLastStep ? "\(FeatureMindsetStrings.MorningRitual.complete)" : SharedLocalizedString.continue
-    }
-
-    public var showFooterButtonEnabledStyle: Bool {
-        isAiThinking || canProceed
     }
 }

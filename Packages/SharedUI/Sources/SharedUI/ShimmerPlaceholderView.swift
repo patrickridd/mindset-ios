@@ -9,6 +9,8 @@ import SwiftUI
 
 public struct ShimmerPlaceholderView: View {
     
+    public init() {}
+    
     public var body: some View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing8) {
             RoundedRectangle(cornerRadius: MindsetLayout.radiusSmall).fill(.gray.opacity(0.2))
