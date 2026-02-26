@@ -9,49 +9,79 @@ import SwiftUI
 import SharedUtils
 
 public struct PulsatingCoachView: View {
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var isPulsing: Bool = false
+
     let emoji: String
-    @State private var pulseScale: CGFloat = 1.0
-    @State private var glowOpacity: Double = 0.5
+    let enableHaptics: Bool
     
-    public init(emoji: String) {
+    private enum Constants {
+        static let animationDuration: CGFloat = 0.8
+        static let pulseScaleMin: CGFloat = 1.0
+        static let pulseScaleMax: CGFloat = 1.2
+        static let glowOpacityMin: Double = 0.3
+        static let glowOpacityMax: Double = 0.8
+        static let emojiFontSize: CGFloat = 48
+    }
+    
+    private var currentScale: CGFloat {
+        isPulsing ? Constants.pulseScaleMax : Constants.pulseScaleMin
+    }
+    private var currentGlowOpacity: Double {
+        isPulsing ? Constants.glowOpacityMax : Constants.glowOpacityMin
+    }
+    
+    public init(emoji: String, enableHaptics: Bool = true) {
         self.emoji = emoji
+        self.enableHaptics = enableHaptics
     }
     
     public var body: some View {
         ZStack {
-            // Subtle glow/halo behind the emoji
-            Circle()
-                .fill(.indigo.opacity(0.5))
-                .frame(width: MindsetLayout.iconExtraLarge, height: MindsetLayout.iconExtraLarge)
-                .scaleEffect(pulseScale * 1.2)
-                .opacity(glowOpacity)
-
-            // The Coach Icon
-            Text(emoji)
-                .font(MindsetFonts.bodyMedium)
-                .scaleEffect(pulseScale)
+            glowEffect
+            emojiView
         }
-        .task {
-            // Synchronized Animation and Haptics
-            while !Task.isCancelled {
-                withAnimation(.easeInOut(duration: 0.8)) {
-                    pulseScale = 1.2
-                    glowOpacity = 0.8
+        .onAppear {
+            guard !reduceMotion else { return }
+            Task {
+                while !Task.isCancelled {
+                    isPulsing = true
+                    if enableHaptics {
+                        // Haptic fires at the peak of the pulse
+                        try? await Task.sleep(for: .milliseconds(Int(Constants.animationDuration * 1000)))
+                        HapticManager.tick()
+                    }
+                    try? await Task.sleep(for: .milliseconds(Int(Constants.animationDuration * 1000)))
+                    
+                    isPulsing = false
+                    try? await Task.sleep(for: .milliseconds(Int(Constants.animationDuration * 1000)))
                 }
-                // Trigger soft haptic at peak of pulse
-                HapticManager.tick() 
-                
-                try? await Task.sleep(for: .milliseconds(800))
-                
-                withAnimation(.easeInOut(duration: 0.8)) {
-                    pulseScale = 1.0
-                    glowOpacity = 0.3
-                }
-                
-                try? await Task.sleep(for: .milliseconds(800))
             }
         }
     }
+    
+    @ViewBuilder
+    private var glowEffect: some View {
+        Circle()
+            .fill(.indigo.opacity(0.5))
+            .frame(width: MindsetLayout.iconExtraLarge, height: MindsetLayout.iconExtraLarge)
+            .scaleEffect(currentScale * 1.2)
+            .opacity(currentGlowOpacity)
+            .animation(.easeInOut(duration: Constants.animationDuration), value: isPulsing)
+    }
+    
+    @ViewBuilder
+    private var emojiView: some View {
+        Text(emoji)
+            .font(.system(size: Constants.emojiFontSize))
+            .scaleEffect(currentScale)
+            .animation(.easeInOut(duration: Constants.animationDuration), value: isPulsing)
+    }
+}
+
+#Preview {
+    PulsatingCoachView(emoji: "🧘‍♂️")
 }
 
 #Preview {
