@@ -12,6 +12,7 @@ public struct PulsatingCoachView: View {
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var isPulsing: Bool = false
+    @State private var animationTask: Task<Void, Never>? = nil
 
     let emoji: String
     let enableHaptics: Bool
@@ -44,7 +45,7 @@ public struct PulsatingCoachView: View {
         }
         .onAppear {
             guard !reduceMotion else { return }
-            Task {
+            animationTask = Task {
                 while !Task.isCancelled {
                     isPulsing = true
                     if enableHaptics {
@@ -58,6 +59,9 @@ public struct PulsatingCoachView: View {
                     try? await Task.sleep(for: .milliseconds(Int(Constants.animationDuration * 1000)))
                 }
             }
+        }
+        .onDisappear {
+            animationTask?.cancel()
         }
     }
     
@@ -78,10 +82,6 @@ public struct PulsatingCoachView: View {
             .scaleEffect(currentScale)
             .animation(.easeInOut(duration: Constants.animationDuration), value: isPulsing)
     }
-}
-
-#Preview {
-    PulsatingCoachView(emoji: "🧘‍♂️")
 }
 
 #Preview {
