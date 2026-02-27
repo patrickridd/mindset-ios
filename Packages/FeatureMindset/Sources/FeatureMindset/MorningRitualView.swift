@@ -46,6 +46,32 @@ private extension MorningRitualView {
     private static let promptAnimationSpringResponse: Double = 0.4
     private static let promptAnimationSpringDamping: Double = 0.8
     private static let scaleTransitionFactor: CGFloat = 0.94
+    private static let placeholderExitOffset: CGFloat = -10  // Small upward offset for smooth exit
+}
+
+// MARK: - Prompt Content Phase
+private extension MorningRitualView {
+    enum PromptContentPhase: CaseIterable, Identifiable {
+        case generating
+        case typing
+        case `static`
+
+        var id: Self { self }
+    }
+
+    var currentPromptContentPhase: PromptContentPhase {
+        guard viewModel.currentPrompt != nil else {
+            return .generating
+        }
+
+        if viewModel.isGeneratingPrompt {
+            return .generating
+        } else if viewModel.shouldAnimateCurrentPrompt {
+            return .typing
+        } else {
+            return .static
+        }
+    }
 }
 
 // MARK: - Body Composition
@@ -349,50 +375,59 @@ private extension MorningRitualView {
         if let prompt = viewModel.currentPrompt {
             VStack(spacing: MindsetLayout.spacing24) {
                 VStack(spacing: MindsetLayout.spacing16) {
-                    if viewModel.isGeneratingPrompt {
-                        VStack(spacing: MindsetLayout.spacing16) {
-                            PulsatingCoachView(emoji: "🧘‍♂️")
-                            ShimmerPlaceholderView()
-                                .padding(.horizontal, MindsetLayout.paddingSmall)
-                        }
-                        .transition(.opacity.combined(with: .scale(scale: 0.95)))
-                    } else if viewModel.shouldAnimateCurrentPrompt {
-                        TypewriterText(
-                            text: prompt.questionText,
-                            font: MindsetFonts.promptQuestion,
-                            color: MindsetColors.textPrimaryAdaptive(for: colorScheme),
-                            isHapticEnabled: false,
-                            onComplete: {
-                                viewModel.markCurrentPromptAnimated()
+                    Group {
+                        switch currentPromptContentPhase {
+                        case .generating:
+                            VStack(spacing: MindsetLayout.spacing16) {
+                                PulsatingCoachView(emoji: "🧘‍♂️")
+                                ShimmerPlaceholderView()
+                                    .padding(.horizontal, MindsetLayout.paddingSmall)
                             }
-                        )
-                        .multilineTextAlignment(.leading)
-                        .lineSpacing(MindsetLayout.spacing4)
-                        .padding(.horizontal, MindsetLayout.paddingSmall)
-                        .transition(.opacity.combined(with: .move(edge: .bottom)))
-                    } else {
-                        Text(prompt.questionText)
-                            .font(MindsetFonts.promptQuestion)
-                            .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
+                            .transition(
+                                .asymmetric(
+                                    insertion: .opacity.combined(with: .scale(scale: 0.95)),
+                                    removal: .opacity.combined(with: .scale(scale: 0.8)).combined(
+                                        with: .offset(y: Self.placeholderExitOffset))
+                                )
+                            )
+
+                        case .typing:
+                            TypewriterText(
+                                text: prompt.questionText,
+                                font: MindsetFonts.promptQuestion,
+                                color: MindsetColors.textPrimaryAdaptive(for: colorScheme),
+                                isHapticEnabled: false,
+                                onComplete: {
+                                    viewModel.markCurrentPromptAnimated()
+                                }
+                            )
                             .multilineTextAlignment(.leading)
                             .lineSpacing(MindsetLayout.spacing4)
                             .padding(.horizontal, MindsetLayout.paddingSmall)
+                            .transition(.opacity.combined(with: .move(edge: .bottom)))
+
+                        case .static:
+                            Text(prompt.questionText)
+                                .font(MindsetFonts.promptQuestion)
+                                .foregroundStyle(
+                                    MindsetColors.textPrimaryAdaptive(for: colorScheme)
+                                )
+                                .multilineTextAlignment(.leading)
+                                .lineSpacing(MindsetLayout.spacing4)
+                                .padding(.horizontal, MindsetLayout.paddingSmall)
+                        }
                     }
+                    .id(currentPromptContentPhase)  // Stabilize identity for phase transitions
+                    .animation(
+                        .spring(
+                            response: Self.promptAnimationSpringResponse,
+                            dampingFraction: Self.promptAnimationSpringDamping),
+                        value: currentPromptContentPhase
+                    )
                 }
-                .animation(
-                    .spring(
-                        response: Self.promptAnimationSpringResponse,
-                        dampingFraction: Self.promptAnimationSpringDamping),
-                    value: viewModel.isGeneratingPrompt
-                )
-                .animation(
-                    .spring(
-                        response: Self.promptAnimationSpringResponse,
-                        dampingFraction: Self.promptAnimationSpringDamping),
-                    value: viewModel.shouldAnimateCurrentPrompt
-                )
                 .padding(.top)
 
+                // textEditor should be outside the Group to be always present and not part of the phase transition
                 textEditor(promptId: prompt.id)
 
                 if (viewModel.isAiThinking || viewModel.currentAiReflection != nil)
@@ -404,7 +439,6 @@ private extension MorningRitualView {
                     )
                     .padding(.top)
                 }
-                Spacer(minLength: MindsetLayout.spacerBottomMinLength)
             }
             .id(prompt.id)
             .transition(stepTransition)
