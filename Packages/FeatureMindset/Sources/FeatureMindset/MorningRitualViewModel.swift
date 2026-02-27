@@ -40,7 +40,8 @@ public final class MorningRitualViewModel {
     public var isCoachTipVisible: Bool = false
     public var isCurrentPromptSubmitted: Bool = false
     public var maxProgressAchieved: Double = 0.0
-
+    public var isRitualCompleteAnimationDone: Bool = false
+    
     public var onNavigate: ((NavigationState) -> Void)?
 
     public var isAiThinking: Bool = false
@@ -61,6 +62,10 @@ public final class MorningRitualViewModel {
     public var shouldAnimateCurrentPrompt: Bool {
         guard let promptId = currentPrompt?.id else { return false }
         return !isGeneratingPrompt && !animatedPromptIds.contains(promptId)
+    }
+    
+    public var  displayRitualSuccessAnimation: Bool {
+        isRitualComplete && !isRitualCompleteAnimationDone
     }
 
     public enum NavigationState {
@@ -184,9 +189,7 @@ public final class MorningRitualViewModel {
                 await startPromptGeneration()
             }
         } else {
-            Task {
-                await completeRitual()
-            }
+            isRitualComplete = true
         }
     }
 
@@ -231,11 +234,6 @@ public final class MorningRitualViewModel {
     // MARK: - Completion
 
     public func completeRitual() async {
-        isRitualComplete = true
-        isLoading = true
-
-        try? await Task.sleep(for: .seconds(0.5))  // Simulate "calculation"
-
         do {
             // 1. Map current answers and reflections into PromptResponse objects
             let currentResponses = prompts.compactMap { prompt -> PromptResponse? in
@@ -278,9 +276,7 @@ public final class MorningRitualViewModel {
             } else {
                 onNavigate?(.paywall)
             }
-            isLoading = false
         } catch {
-            isLoading = false
             DebugLogger.shared.add("❌ Ritual save failed: \(error.localizedDescription)")
         }
     }
