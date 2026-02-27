@@ -86,7 +86,7 @@ private extension MorningRitualView {
 
     @ViewBuilder
     var mainContentOrLoading: some View {
-        if viewModel.isLoading && viewModel.prompts.isEmpty {
+        if viewModel.isLoading && viewModel.prompts.isEmpty || viewModel.isRitualCompleteAnimationDone {
             initialLoadingOverlay
         } else if viewModel.displayRitualSuccessAnimation {
             MindsetAnimation(name: "Checkmark-Success-Animation", loopMode: .playOnce) {
@@ -98,7 +98,6 @@ private extension MorningRitualView {
                     await viewModel.completeRitual()
                 }
             }
-            .frame(width: 250, height: 250)
         } else {
             mainContentStack
         }

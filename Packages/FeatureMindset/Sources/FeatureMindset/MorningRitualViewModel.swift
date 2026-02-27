@@ -234,6 +234,7 @@ public final class MorningRitualViewModel {
     // MARK: - Completion
 
     public func completeRitual() async {
+        isLoading = true
         do {
             // 1. Map current answers and reflections into PromptResponse objects
             let currentResponses = prompts.compactMap { prompt -> PromptResponse? in
@@ -276,8 +277,10 @@ public final class MorningRitualViewModel {
             } else {
                 onNavigate?(.paywall)
             }
+            isLoading = false
         } catch {
             DebugLogger.shared.add("❌ Ritual save failed: \(error.localizedDescription)")
+            isLoading = false
         }
     }
 }
