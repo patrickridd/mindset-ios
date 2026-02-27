@@ -8,6 +8,9 @@ import SharedUI
 import SwiftUI
 
 public struct AIReflectionCard: View {
+    
+    @Environment(\.colorScheme) private var colorScheme
+
     let reflection: String?
     let isThinking: Bool
 
@@ -33,7 +36,7 @@ public struct AIReflectionCard: View {
                 TypewriterText(
                     text: reflection,
                     font: MindsetFonts.subheadline,
-                    color: MindsetColors.textPrimary
+                    color: MindsetColors.textPrimaryAdaptive(for: colorScheme)
                 )
                 .fixedSize(horizontal: false, vertical: true)
                 .transition(
