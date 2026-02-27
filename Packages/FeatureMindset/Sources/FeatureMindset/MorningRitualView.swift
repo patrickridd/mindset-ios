@@ -35,6 +35,8 @@ private extension MorningRitualView {
     private static let coachTipBottomPadding: CGFloat = 100
     private static let scrollViewBottomSpacerHeight: CGFloat = 100
     private static let blurRadius: CGFloat = 3
+    private static let phaseContainerMinHeight: CGFloat =
+        MindsetLayout.iconExtraLarge + MindsetLayout.spacing24
 
     // Animation Timing
     private static let animationDelayShort: Double = 0.1
@@ -374,7 +376,7 @@ private extension MorningRitualView {
     var ritualContent: some View {
         if let prompt = viewModel.currentPrompt {
             VStack(spacing: MindsetLayout.spacing24) {
-                VStack(spacing: MindsetLayout.spacing16) {
+                ZStack(alignment: .topLeading) {
                     Group {
                         switch currentPromptContentPhase {
                         case .generating:
@@ -404,7 +406,7 @@ private extension MorningRitualView {
                             .multilineTextAlignment(.leading)
                             .lineSpacing(MindsetLayout.spacing4)
                             .padding(.horizontal, MindsetLayout.paddingSmall)
-                            .transition(.opacity.combined(with: .move(edge: .bottom)))
+                            .transition(.opacity)
 
                         case .static:
                             Text(prompt.questionText)
@@ -415,16 +417,19 @@ private extension MorningRitualView {
                                 .multilineTextAlignment(.leading)
                                 .lineSpacing(MindsetLayout.spacing4)
                                 .padding(.horizontal, MindsetLayout.paddingSmall)
+                                .transition(.opacity)
                         }
                     }
-                    .id(currentPromptContentPhase)  // Stabilize identity for phase transitions
-                    .animation(
-                        .spring(
-                            response: Self.promptAnimationSpringResponse,
-                            dampingFraction: Self.promptAnimationSpringDamping),
-                        value: currentPromptContentPhase
-                    )
                 }
+                .frame(maxWidth: .infinity, alignment: .topLeading)
+                .frame(minHeight: Self.phaseContainerMinHeight, alignment: .topLeading)
+                .id(currentPromptContentPhase)  // Stabilize identity for phase transitions
+                .animation(
+                    .spring(
+                        response: Self.promptAnimationSpringResponse,
+                        dampingFraction: Self.promptAnimationSpringDamping),
+                    value: currentPromptContentPhase
+                )
                 .padding(.top)
 
                 // textEditor should be outside the Group to be always present and not part of the phase transition

@@ -19,6 +19,7 @@ public struct PulsatingCoachView: View {
 
     private enum Constants {
         static let animationDuration: CGFloat = 0.8
+        static let windDownDuration: CGFloat = 0.18
         static let pulseScaleMin: CGFloat = 1.0
         static let pulseScaleMax: CGFloat = 1.2
         static let glowOpacityMin: Double = 0.3
@@ -64,7 +65,11 @@ public struct PulsatingCoachView: View {
             }
         }
         .onDisappear {
+            withAnimation(.easeOut(duration: Constants.windDownDuration)) {
+                isPulsing = false
+            }
             animationTask?.cancel()
+            animationTask = nil
         }
     }
 
