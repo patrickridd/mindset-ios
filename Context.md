@@ -407,3 +407,28 @@ Perfect for rapid UI development, SwiftUI previews, and testing user flows witho
 5. Update `MindsetApp.swift` to use factory method
 
 See `docs/guides/SERVICE_FACTORY_GUIDE.md` for complete documentation.
+
+## 19. Architecture Quick-Start (The "AI Handshake")
+
+When building new features, the AI MUST strictly follow this "Golden Path" to maintain the $10k MRR quality standard:
+
+### 1. The "Protocol-First" workflow
+- **Step A (Domain):** Define the data structure and a `Protocol` for the logic.
+- **Step B (Data):** Create the `SD` (SwiftData) persistence or API implementation.
+- **Step C (Main):** Register the new service in `ServiceFactory.swift`.
+- **Step D (Feature):** Inject the Protocol into the ViewModel.
+
+### 2. The "View Composition" Law
+- Keep the `body` under 20 lines.
+- Move all sub-components to a `private extension` at the bottom of the file.
+- Use `HapticManager` in the View closure, never in the ViewModel logic.
+
+### 3. The "Pure Logic" VM
+- ViewModels are strictly for state and business logic.
+- **Forbidden:** No `import SwiftUI`, no `Color`, no `print()`, no `HapticManager`.
+
+### 4. Zero-Leak Localization
+- If the AI sees a string like `"Hello"`, it must stop and look for the equivalent in `SharedLocalization` or `FeatureStrings`.
+
+### 5. AI-Ready Previews
+- Use `ServiceFactory.mock` to ensure SwiftUI Previews work instantly without network or API keys.
