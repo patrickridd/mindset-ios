@@ -1,0 +1,34 @@
+---
+description: Skill for implementing Lottie animations using SharedUI standards
+globs: ["**/*View.swift", "Packages/SharedUI/**"]
+---
+
+# Skill: Mindset Lottie Integration
+
+Use this skill when the user wants to add, update, or implement a Lottie animation.
+
+## 1. Asset Management
+- Animations must be stored in the `SharedUI` package under `Resources/Animations/`.
+- Prefer `.lottie` files (dotLottie) for performance. 
+- File naming convention: `anim_[feature]_[action].lottie` (e.g., `anim_onboarding_reveal.lottie`).
+
+## 2. Implementation Pattern
+Always use the `MindsetAnimation` wrapper from `SharedUI`. Do NOT use raw `LottieView` in Feature modules.
+
+### Correct Implementation:
+```swift
+import SwiftUI
+import SharedUI
+
+struct RevealView: View {
+    var body: some View {
+        VStack {
+            MindsetAnimation(name: "anim_onboarding_reveal")
+                .frame(width: 300, height: 300)
+                .onAppear {
+                    // 3. Haptic Integration
+                    HapticManager.action() 
+                }
+        }
+    }
+}

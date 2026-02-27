@@ -8,3 +8,9 @@ globs: "**/*View.swift", "**/SharedUI/**", "**/Components/**", "**/Styles/**"
 - **Haptics:** `HapticManager` only in Views, never ViewModels.
 - **Liquid Glass:** Follow Apple's Liquid Glass 2026 UI standards.
 - **Injection:** Wrap views in `#if DEBUG` with `@ObserveInjection` and `.enableInjection()`.
+
+## Lottie & Motion
+- **Tool:** Use `LottieView` from the Lottie library (Native SwiftUI).
+- **Component:** Prefer the `MindsetAnimation` wrapper in `SharedUI`.
+- **Haptics:** Always trigger `HapticManager.tick()` or `success()` in sync with key animation frames if the animation represents an achievement (XP, Level Up, Archetype Reveal).
+- **Formats:** Prefer `.lottie` over `.json` for better performance.
