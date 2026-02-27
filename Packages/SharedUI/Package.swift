@@ -16,6 +16,7 @@ let package = Package(
         )
     ],
     dependencies: [
+        .package(url: "https://github.com/airbnb/lottie-spm.git", from: "4.5.0"),
         .package(path: "../SharedUtils")
     ],
     targets: [
@@ -24,6 +25,7 @@ let package = Package(
         .target(
             name: "SharedUI",
             dependencies: [
+                .product(name: "Lottie", package: "lottie-spm"),
                 .product(name: "SharedUtils", package: "SharedUtils")
             ],
             resources: [
