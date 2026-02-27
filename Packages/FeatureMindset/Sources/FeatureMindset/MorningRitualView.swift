@@ -385,6 +385,7 @@ private extension MorningRitualView {
                                 ShimmerPlaceholderView()
                                     .padding(.horizontal, MindsetLayout.paddingSmall)
                             }
+                            .padding(.top, MindsetLayout.spacing12)
                             .transition(
                                 .asymmetric(
                                     insertion: .opacity.combined(with: .scale(scale: 0.95)),
@@ -405,9 +406,8 @@ private extension MorningRitualView {
                             )
                             .multilineTextAlignment(.leading)
                             .lineSpacing(MindsetLayout.spacing4)
-                            .padding(.horizontal, MindsetLayout.paddingSmall)
+                            .padding([.horizontal, .top], MindsetLayout.paddingSmall)
                             .transition(.opacity)
-
                         case .static:
                             Text(prompt.questionText)
                                 .font(MindsetFonts.promptQuestion)
@@ -416,7 +416,7 @@ private extension MorningRitualView {
                                 )
                                 .multilineTextAlignment(.leading)
                                 .lineSpacing(MindsetLayout.spacing4)
-                                .padding(.horizontal, MindsetLayout.paddingSmall)
+                                .padding([.horizontal, .top], MindsetLayout.paddingSmall)
                                 .transition(.opacity)
                         }
                     }
