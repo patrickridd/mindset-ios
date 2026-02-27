@@ -6,5 +6,5 @@
 //
 
 #if DEBUG
-@_exported import Inject // @_exported makes it available to anyone who imports SharedUtils
+    @_exported import Inject  // @_exported makes it available to anyone who imports SharedUtils
 #endif

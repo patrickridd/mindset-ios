@@ -5,9 +5,9 @@
 //  Created by patrick ridd on 1/9/26.
 //
 
-import SwiftData
 import Domain
 import Foundation
+import SwiftData
 
 @Model
 public final class SDUserProfile {
@@ -16,7 +16,7 @@ public final class SDUserProfile {
     public var primaryGoal: String
     public var createdAt: Date
     public var overwhelmedFrequency: String
-    
+
     // Onboarding quiz results (raw values for optional enums)
     public var headspaceRaw: String?
     public var mentalMuscleRaw: String?
@@ -49,23 +49,26 @@ public final class SDUserProfile {
     }
 
     // MARK: - Mapping
-    
+
     /// Converts SwiftData storage model back to the clean Domain struct
     public func toDomain() -> UserProfile {
         UserProfile(
             id: id,
             userName: bestSelfName,
             primaryGoal: primaryGoal,
-            overwhelmedFrequency: UserProfile.OverwhelmedFrequency(rawValue: overwhelmedFrequency) ?? .sometimes,
+            overwhelmedFrequency: UserProfile.OverwhelmedFrequency(rawValue: overwhelmedFrequency)
+                ?? .sometimes,
             headspace: headspaceRaw.flatMap { UserProfile.Headspace(rawValue: $0) },
             mentalMuscle: mentalMuscleRaw.flatMap { UserProfile.MentalMuscle(rawValue: $0) },
-            responseToSetback: responseToSetbackRaw.flatMap { UserProfile.ResponseToSetback(rawValue: $0) },
+            responseToSetback: responseToSetbackRaw.flatMap {
+                UserProfile.ResponseToSetback(rawValue: $0)
+            },
             habitGoal: habitGoalRaw.flatMap { UserProfile.HabitGoal(rawValue: $0) },
             aiCoachTone: aiCoachToneRaw.flatMap { UserProfile.AICoachTone(rawValue: $0) },
             createdAt: createdAt
         )
     }
-    
+
     /// Static helper to create a storage model from a Domain struct
     public static func fromDomain(_ domain: UserProfile) -> SDUserProfile {
         SDUserProfile(

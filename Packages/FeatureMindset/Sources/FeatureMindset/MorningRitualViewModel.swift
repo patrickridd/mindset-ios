@@ -8,8 +8,8 @@
 import Domain
 import Foundation
 import Observation
-import SharedUtils
 import SharedLocalization
+import SharedUtils
 
 @MainActor
 @Observable
@@ -114,7 +114,7 @@ public final class MorningRitualViewModel {
             self.prompts = promptEngine.fetchPrompts(for: nil, completedCount: 0)
         }
         isLoading = false
-        
+
         // Trigger generation animation for first prompt
         await startPromptGeneration()
     }
@@ -138,7 +138,8 @@ public final class MorningRitualViewModel {
         let baseProgress = Double(currentStepIndex) / Double(prompts.count)
         if isCurrentPromptSubmitted && currentStepIndex < prompts.count - 1 {
             // If current prompt is submitted, and it's not the last step, show progress for the next step
-            maxProgressAchieved = max(maxProgressAchieved, Double(currentStepIndex + 1) / Double(prompts.count))
+            maxProgressAchieved = max(
+                maxProgressAchieved, Double(currentStepIndex + 1) / Double(prompts.count))
         } else if isCurrentPromptSubmitted && currentStepIndex == prompts.count - 1 {
             // If it's the last step and submitted, show full progress
             maxProgressAchieved = max(maxProgressAchieved, 1.0)
@@ -147,15 +148,15 @@ public final class MorningRitualViewModel {
         }
         return maxProgressAchieved
     }
-    
+
     public var shouldDisplayFooterButton: Bool {
         return isCurrentPromptSubmitted
     }
-    
+
     public var isLastStep: Bool {
         return currentStepIndex >= prompts.count - 1
     }
-    
+
     public var footerButtonText: String {
         if isAiThinking {
             return FeatureMindsetStrings.MorningRitual.analyzing
@@ -165,11 +166,11 @@ public final class MorningRitualViewModel {
             return SharedLocalizedString.continue
         }
     }
-    
+
     public var showFooterButtonEnabledStyle: Bool {
         return !isAiThinking
     }
-    
+
     public var isFooterButtonDisabled: Bool {
         return isAiThinking
     }
@@ -197,7 +198,7 @@ public final class MorningRitualViewModel {
         guard let promptId = currentPrompt?.id else { return }
         animatedPromptIds.insert(promptId)
     }
-    
+
     private func startPromptGeneration() async {
         isGeneratingPrompt = true
         try? await Task.sleep(for: .seconds(1.0))

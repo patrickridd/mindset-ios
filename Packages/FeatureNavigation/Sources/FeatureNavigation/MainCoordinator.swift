@@ -63,7 +63,7 @@ public final class MainCoordinator {
     private let userProfileRepository: UserRepository
     // Add this to manage the internal stack of the Mindset modal
     public var mindsetPath = NavigationPath()
-    
+
     public init(
         authService: AuthService,
         subscriptionService: SubscriptionService,
@@ -135,7 +135,7 @@ public final class MainCoordinator {
     }
 
     public func startMorningMindset() {
-        mindsetPath = NavigationPath() // Reset the path
+        mindsetPath = NavigationPath()  // Reset the path
         set(rootState: .home)
         set(fullScreenState: .mindset)
     }

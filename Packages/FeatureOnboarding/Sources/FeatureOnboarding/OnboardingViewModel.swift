@@ -5,8 +5,8 @@
 //  Created by patrick ridd on 1/11/26.
 //
 
-import Foundation
 import Domain
+import Foundation
 import Observation
 
 @Observable
@@ -90,29 +90,31 @@ public final class OnboardingViewModel {
 
     private func startCalculation() {
         isCalculating = true
-        
+
         Task {
             let profile = buildUserProfile()
             try? await userRepository.saveUserProfile(profile)
-            
+
             try? await Task.sleep(for: .seconds(2.5))
-            
+
             isCalculating = false
             // Notify completion - MainCoordinator will handle Auth → Paywall → Home flow
             onboardingFinished?()
         }
     }
-    
+
     private func buildUserProfile() -> UserProfile {
         let headspace = answers[.headspace].flatMap { UserProfile.Headspace(rawValue: $0) }
         let mentalMuscle = answers[.mentalMuscle].flatMap { UserProfile.MentalMuscle(rawValue: $0) }
-        let responseToSetback = answers[.responseToSetback].flatMap { UserProfile.ResponseToSetback(rawValue: $0) }
+        let responseToSetback = answers[.responseToSetback].flatMap {
+            UserProfile.ResponseToSetback(rawValue: $0)
+        }
         let habitGoal = answers[.habitGoal].flatMap { UserProfile.HabitGoal(rawValue: $0) }
         let aiCoachTone = answers[.aiCoachTone].flatMap { UserProfile.AICoachTone(rawValue: $0) }
-        
+
         let overwhelmedFrequency = headspace.map { mapHeadspaceToOverwhelmed($0) } ?? .sometimes
         let primaryGoal = mentalMuscle?.rawValue ?? "Build a healthier mindset"
-        
+
         return UserProfile(
             userName: "",
             primaryGoal: primaryGoal,
@@ -124,9 +126,11 @@ public final class OnboardingViewModel {
             aiCoachTone: aiCoachTone
         )
     }
-    
+
     /// Legacy mapping for backward compatibility with PromptEngine
-    private func mapHeadspaceToOverwhelmed(_ headspace: UserProfile.Headspace) -> UserProfile.OverwhelmedFrequency {
+    private func mapHeadspaceToOverwhelmed(_ headspace: UserProfile.Headspace)
+        -> UserProfile.OverwhelmedFrequency
+    {
         switch headspace {
         case .overwhelmed: return .often
         case .restless: return .sometimes

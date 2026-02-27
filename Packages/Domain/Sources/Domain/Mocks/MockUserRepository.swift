@@ -8,7 +8,10 @@
 public final class MockUserRepository: UserRepository {
     private let mockProfile: UserProfile?
 
-    public init(mockProfile: UserProfile? = UserProfile(userName: "Patrick", primaryGoal: "Feel more confident", overwhelmedFrequency: .often)) {
+    public init(
+        mockProfile: UserProfile? = UserProfile(
+            userName: "Patrick", primaryGoal: "Feel more confident", overwhelmedFrequency: .often)
+    ) {
         self.mockProfile = mockProfile
     }
 

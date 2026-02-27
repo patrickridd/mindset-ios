@@ -6,11 +6,12 @@
 //
 
 import Testing
+
 @testable import FeatureUserProfile
 
 @Suite("UserProfile Tests")
 struct FeatureUserProfileTests {
-    
+
     @Test("UserProfile initializes correctly")
     func userProfileInitializes() async throws {
         // This is a placeholder test

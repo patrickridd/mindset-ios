@@ -5,7 +5,6 @@
 //  Created by patrick ridd on 1/9/26.
 //
 
-
 import Domain
 
 public final class SDUserRepository: UserRepository {

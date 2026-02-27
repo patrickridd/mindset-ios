@@ -21,10 +21,10 @@ public enum AuthCredential: Sendable {
         accessToken: String? = nil,
         fullName: String? = nil
     )
-    
+
     /// Email and password credential
     case email(email: String, password: String)
-    
+
     /// Anonymous credential for trial/testing without account
     case anonymous
 }
@@ -36,17 +36,17 @@ public protocol AuthService: Sendable {
     /// - Parameter credential: Authentication credential (OAuth, email, or anonymous)
     /// - Returns: Authenticated user ID
     func signIn(with credential: AuthCredential) async throws -> String
-    
+
     /// Get the current authenticated user ID if available
     /// - Returns: User ID if signed in, nil otherwise
     func getCurrentUserID() async -> String?
-    
+
     /// Sign out the current user
     func signOut() async throws
-    
+
     /// Check if user is currently authenticated
     func isAuthenticated() async -> Bool
-    
+
     /// Handle OAuth callback URL (e.g., from Safari after Google Sign In)
     /// - Parameter url: The callback URL from the OAuth flow
     /// - Returns: True if the URL was handled, false otherwise

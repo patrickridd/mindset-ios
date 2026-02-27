@@ -5,9 +5,9 @@
 //  Created by patrick ridd on 1/6/26.
 //
 
+import Domain
 import Foundation
 import SwiftData
-import Domain
 
 @MainActor
 public final class SDMindsetRepository: MindsetRepository {

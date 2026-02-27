@@ -22,23 +22,25 @@ public final class GeminiAIService: AIAnalysisService, @unchecked Sendable {
         DebugLogger.shared.add("🤖 Sending history to Gemini 2.0 Flash...")
         // We provide a "System Instruction" to keep Gemini in 'Coach Mode'
         let systemPrompt = """
-        You are a high-performance mindset coach. 
-        The user is performing a \(prompt.category) exercise.
-        The question asked was: "\(prompt.questionText)"
-        The user answered: "\(answer)"
-        
-        Provide a 1-sentence, encouraging, and insightful reflection. 
-        Focus on psychological growth. Do not use emojis.
-        """
-        
+            You are a high-performance mindset coach. 
+            The user is performing a \(prompt.category) exercise.
+            The question asked was: "\(prompt.questionText)"
+            The user answered: "\(answer)"
+
+            Provide a 1-sentence, encouraging, and insightful reflection. 
+            Focus on psychological growth. Do not use emojis.
+            """
+
         let response = try await model.generateContent(systemPrompt)
-        
+
         DebugLogger.shared.add("✅ Received: \(response.text ?? "Empty")")
 
         guard let text = response.text else {
-            throw NSError(domain: "GeminiError", code: 0, userInfo: [NSLocalizedDescriptionKey: "No response text"])
+            throw NSError(
+                domain: "GeminiError", code: 0,
+                userInfo: [NSLocalizedDescriptionKey: "No response text"])
         }
-        
+
         return text.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }

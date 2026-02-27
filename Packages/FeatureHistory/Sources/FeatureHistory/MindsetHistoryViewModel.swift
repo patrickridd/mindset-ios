@@ -6,8 +6,8 @@
 //
 
 import Domain
-import Observation
 import Foundation
+import Observation
 import SharedUtils
 
 @Observable

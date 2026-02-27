@@ -13,7 +13,7 @@ let package = Package(
         .library(
             name: "SharedUtils",
             targets: ["SharedUtils"]
-        ),
+        )
     ],
     dependencies: [
         .package(url: "https://github.com/krzysztofzablocki/Inject.git", from: "1.2.0")

@@ -8,16 +8,16 @@
 import Foundation
 
 public struct UserProfile: Sendable {
-    
+
     public let id: UUID
     public var userName: String
     public var primaryGoal: String
     public let createdAt: Date
     /// Legacy field; prefer `headspace` when available. Kept for migration.
     public var overwhelmedFrequency: OverwhelmedFrequency
-    
+
     // MARK: - Onboarding Quiz Results (MLP)
-    
+
     /// Q1: Sets prompt difficulty
     public var headspace: Headspace?
     /// Q2: Weights archetype (Stoic vs. Positive Psych)
@@ -52,16 +52,16 @@ public struct UserProfile: Sendable {
         self.aiCoachTone = aiCoachTone
         self.createdAt = createdAt
     }
-    
+
     public enum OverwhelmedFrequency: String, Codable, CaseIterable, Sendable {
         case rarely = "Rarely"
         case sometimes = "Sometimes"
         case often = "Often"
         case always = "Always"
     }
-    
+
     // MARK: - Onboarding Enums
-    
+
     /// Q1: Difficulty of prompts
     public enum Headspace: String, Codable, CaseIterable, Sendable {
         case restless = "Restless"
@@ -69,7 +69,7 @@ public struct UserProfile: Sendable {
         case overwhelmed = "Overwhelmed"
         case content = "Content"
     }
-    
+
     /// Q2: Archetype weighting (Stoic vs. Positive Psych)
     public enum MentalMuscle: String, Codable, CaseIterable, Sendable {
         case resilience = "Resilience"
@@ -77,7 +77,7 @@ public struct UserProfile: Sendable {
         case purpose = "Purpose"
         case calm = "Calm"
     }
-    
+
     /// Q3: CBT vs. Stoic intervention needs
     public enum ResponseToSetback: String, Codable, CaseIterable, Sendable {
         case blameMyself = "Blame myself"
@@ -85,14 +85,14 @@ public struct UserProfile: Sendable {
         case getStuck = "Get stuck"
         case blameOthers = "Blame others"
     }
-    
+
     /// Q4: Notification timing and XP goals
     public enum HabitGoal: String, Codable, CaseIterable, Sendable {
         case consistency = "Consistency"
         case deepReflection = "Deep Reflection"
         case betterSleep = "Better Sleep"
     }
-    
+
     /// Q5: AI feedback tone
     public enum AICoachTone: String, Codable, CaseIterable, Sendable {
         case sageReflective = "The Sage (Reflective)"

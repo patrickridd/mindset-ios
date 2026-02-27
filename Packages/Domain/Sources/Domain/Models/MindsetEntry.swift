@@ -10,14 +10,14 @@ import Foundation
 public struct MindsetEntry: Identifiable, Sendable {
     public let id: UUID
     public let date: Date
-    
+
     // The individual prompt-response pairs (The children)
     public let responses: [PromptResponse]
-    
+
     // Daily Metadata (What you wanted to keep)
     public var archetypeTag: String?
     public var sentimentScore: Double?
-    
+
     public init(
         id: UUID = UUID(),
         date: Date = Date(),
@@ -40,7 +40,7 @@ public struct PromptResponse: Identifiable, Sendable {
     public let category: PromptCategory
     public let userText: String
     public let aiReflection: String?
-    
+
     public init(
         id: UUID = UUID(),
         promptId: String,

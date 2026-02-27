@@ -6,8 +6,8 @@
 //
 
 import Domain
-import SwiftData
 import Foundation
+import SwiftData
 
 @MainActor
 public final class SDPersistenceService: PersistenceService {
@@ -22,7 +22,7 @@ public final class SDPersistenceService: PersistenceService {
         // 1. Check if one exists (to maintain our 'Unique' constraint)
         let descriptor = FetchDescriptor<SDUserProfile>()
         let existing = try modelContext.fetch(descriptor).first
-        
+
         if let existing {
             // Update existing
             existing.bestSelfName = profile.userName
@@ -55,7 +55,9 @@ public final class SDPersistenceService: PersistenceService {
     }
 
     public func fetchAllMindsetEntries() async throws -> [Domain.MindsetEntry] {
-        let descriptor = FetchDescriptor<SDMindsetEntry>(sortBy: [SortDescriptor(\SDMindsetEntry.date, order: .reverse)])
+        let descriptor = FetchDescriptor<SDMindsetEntry>(sortBy: [
+            SortDescriptor(\SDMindsetEntry.date, order: .reverse)
+        ])
         let dbEntries = try modelContext.fetch(descriptor)
         return dbEntries.map { $0.toDomain() }
     }

@@ -9,13 +9,13 @@ import UIKit
 
 @MainActor
 public enum HapticManager {
-    
+
     // Keep a single instance to avoid re-initialization overhead during loops
     private static let softGenerator = UIImpactFeedbackGenerator(style: .soft)
     private static let lightGenerator = UIImpactFeedbackGenerator(style: .light)
-    
+
     // MARK: - Semantic APIs (prefer these)
-    
+
     /// Call this before starting a typewriter animation to "warm up" the engine
     public static func prepareTypewriter() {
         softGenerator.prepare()
@@ -28,7 +28,7 @@ public enum HapticManager {
         // We re-prepare immediately so the next tap is ready to go
         softGenerator.prepare()
     }
-    
+
     /// Use for significant punctuation in a stream (ends of sentences).
     public static func typewriterEmphasis() {
         lightGenerator.impactOccurred()
@@ -63,7 +63,7 @@ public enum HapticManager {
         generator.prepare()
         generator.impactOccurred()
     }
-    
+
     public static func notification(_ type: UINotificationFeedbackGenerator.FeedbackType) {
         let generator = UINotificationFeedbackGenerator()
         generator.prepare()

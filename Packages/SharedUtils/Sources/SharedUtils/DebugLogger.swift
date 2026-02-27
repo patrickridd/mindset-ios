@@ -5,7 +5,6 @@
 //  Created by patrick ridd on 1/25/26.
 //
 
-
 import Foundation
 import Observation
 
@@ -14,8 +13,8 @@ public final class DebugLogger: @unchecked Sendable {
     public static let shared = DebugLogger()
     public var logs: [String] = []
 
-    private init() {} // Singleton
-    
+    private init() {}  // Singleton
+
     public func add(_ message: String) {
         let timestamp = Date().formatted(.dateTime.hour().minute().second())
         // Keep it thread-safe and on the main actor for UI updates

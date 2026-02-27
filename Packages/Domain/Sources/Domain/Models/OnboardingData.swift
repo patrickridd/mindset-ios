@@ -10,7 +10,7 @@ public struct OnboardingData: Sendable {
     public var overwhelmFrequency: String = ""
     public var bestSelfName: String = ""
     public var primaryGoal: String = ""
-    
+
     public init(goal: String = "", overwhelmFrequency: String = "") {
         self.goal = goal
         self.overwhelmFrequency = overwhelmFrequency

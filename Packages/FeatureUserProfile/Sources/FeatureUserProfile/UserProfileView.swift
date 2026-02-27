@@ -5,46 +5,46 @@
 //  Created by Mindset Team on 2/1/26.
 //
 
-import SwiftUI
 import Domain
 import SharedUI
 import SharedUtils
+import SwiftUI
 
 public struct UserProfileView: View {
-#if DEBUG
-    @ObserveInjection var inject
-#endif
-    
+    #if DEBUG
+        @ObserveInjection var inject
+    #endif
+
     @State private var viewModel: UserProfileViewModel
     @Environment(\.colorScheme) private var colorScheme
-    
+
     public init(viewModel: UserProfileViewModel) {
         self._viewModel = State(initialValue: viewModel)
     }
-    
+
     public var body: some View {
         ZStack {
             // Background
             MindsetColors.backgroundGrouped(for: colorScheme)
                 .ignoresSafeArea()
-            
+
             ScrollView {
                 VStack(spacing: MindsetLayout.spacing24) {
                     // Profile Header
                     profileHeader
-                    
+
                     // Account Section
                     accountSection
-                    
+
                     // Sign Out Button
                     signOutButton
-                    
+
                     Spacer()
                 }
                 .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
                 .padding(.top, MindsetLayout.spacing30)
             }
-            
+
             // Loading overlay
             if viewModel.isSigningOut {
                 loadingOverlay
@@ -73,11 +73,11 @@ public struct UserProfileView: View {
                 Text(error)
             }
         }
-#if DEBUG
-        .enableInjection()
-#endif
+        #if DEBUG
+            .enableInjection()
+        #endif
     }
-    
+
     private var profileHeader: some View {
         VStack(spacing: MindsetLayout.spacing16) {
             // Avatar
@@ -85,17 +85,17 @@ public struct UserProfileView: View {
                 Circle()
                     .fill(MindsetColors.accentOrange.opacity(colorScheme == .dark ? 0.15 : 0.2))
                     .frame(width: 100, height: 100)
-                
+
                 Image(systemName: "person.crop.circle.fill")
                     .font(.system(size: 60))
                     .foregroundStyle(MindsetColors.accentOrange)
             }
-            
+
             // Display Name
             Text(viewModel.displayName ?? "Mindset User")
                 .font(MindsetFonts.featureTitle)
                 .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
-            
+
             // User ID (truncated)
             if let userID = viewModel.userID {
                 Text("ID: \(userID.prefix(8))...")
@@ -106,14 +106,14 @@ public struct UserProfileView: View {
         .frame(maxWidth: .infinity)
         .padding(.vertical, MindsetLayout.spacing24)
     }
-    
+
     private var accountSection: some View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing12) {
             Text("Account")
                 .font(MindsetFonts.sectionHeader)
                 .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
                 .padding(.horizontal, MindsetLayout.paddingMedium)
-            
+
             VStack(spacing: 0) {
                 accountRow(
                     icon: "checkmark.shield.fill",
@@ -122,12 +122,12 @@ public struct UserProfileView: View {
                     color: MindsetColors.successEmerald,
                     colorScheme: colorScheme
                 )
-                
+
                 Rectangle()
                     .fill(MindsetColors.stoicSlateSoft)
                     .frame(height: 1)
                     .padding(.leading, 60)
-                
+
                 accountRow(
                     icon: "icloud.fill",
                     title: "Cloud Sync",
@@ -142,34 +142,36 @@ public struct UserProfileView: View {
             )
         }
     }
-    
-    private func accountRow(icon: String, title: String, subtitle: String, color: Color, colorScheme: ColorScheme) -> some View {
+
+    private func accountRow(
+        icon: String, title: String, subtitle: String, color: Color, colorScheme: ColorScheme
+    ) -> some View {
         HStack(spacing: MindsetLayout.spacing16) {
             ZStack {
                 Circle()
                     .fill(color.opacity(colorScheme == .dark ? 0.15 : 0.2))
                     .frame(width: 44, height: 44)
-                
+
                 Image(systemName: icon)
                     .font(.system(size: 20))
                     .foregroundStyle(color)
             }
-            
+
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .font(MindsetFonts.bodyMedium)
                     .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
-                
+
                 Text(subtitle)
                     .font(MindsetFonts.caption)
                     .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
             }
-            
+
             Spacer()
         }
         .padding(MindsetLayout.paddingMedium)
     }
-    
+
     private var signOutButton: some View {
         Button {
             HapticManager.selection()
@@ -178,7 +180,7 @@ public struct UserProfileView: View {
             HStack(spacing: MindsetLayout.spacing12) {
                 Image(systemName: "rectangle.portrait.and.arrow.right")
                     .font(.system(size: 18))
-                
+
                 Text("Sign Out")
                     .font(MindsetFonts.button)
             }
@@ -191,22 +193,24 @@ public struct UserProfileView: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
-                    .stroke(MindsetColors.accentCoral.opacity(colorScheme == .dark ? 0.3 : 0.4), lineWidth: 1)
+                    .stroke(
+                        MindsetColors.accentCoral.opacity(colorScheme == .dark ? 0.3 : 0.4),
+                        lineWidth: 1)
             )
         }
         .disabled(viewModel.isSigningOut)
     }
-    
+
     private var loadingOverlay: some View {
         ZStack {
             Color.black.opacity(0.6)
                 .ignoresSafeArea()
-            
+
             VStack(spacing: MindsetLayout.spacing20) {
                 ProgressView()
                     .tint(MindsetColors.accentOrange)
                     .scaleEffect(1.5)
-                
+
                 Text("Signing out...")
                     .font(MindsetFonts.button)
                     .foregroundStyle(MindsetColors.textPrimary)

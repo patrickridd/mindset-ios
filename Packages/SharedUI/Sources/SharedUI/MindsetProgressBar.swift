@@ -11,7 +11,7 @@ import SwiftUI
 public struct MindsetProgressBar: View {
     let progress: Double
     let animationInterval: Double
-    
+
     let backgroundFillColor: Color
     public init(backgroundFillColor: Color, progress: Double, animationInterval: Double = 0.5) {
         self.backgroundFillColor = backgroundFillColor

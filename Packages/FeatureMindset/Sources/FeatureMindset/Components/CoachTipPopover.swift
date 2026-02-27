@@ -11,19 +11,19 @@ import SwiftUI
 struct CoachTipPopover: View {
     @Environment(\.colorScheme) private var colorScheme
     let tip: String
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing12) {
             HStack(spacing: MindsetLayout.spacing8) {
                 Image(systemName: "lightbulb.fill")
                     .font(MindsetFonts.body)
                     .foregroundStyle(MindsetColors.accentOrange)
-                
+
                 Text(FeatureMindsetStrings.MorningRitual.coachTip)
                     .font(MindsetFonts.label.weight(.semibold))
                     .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
             }
-            
+
             Text(tip)
                 .font(MindsetFonts.callout)
                 .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))

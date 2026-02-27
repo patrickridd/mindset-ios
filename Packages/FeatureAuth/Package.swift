@@ -8,7 +8,7 @@ let package = Package(
         .library(
             name: "FeatureAuth",
             targets: ["FeatureAuth"]
-        ),
+        )
     ],
     dependencies: [
         .package(name: "Domain", path: "../Domain"),

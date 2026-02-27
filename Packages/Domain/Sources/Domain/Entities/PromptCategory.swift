@@ -5,37 +5,36 @@
 //  Created by patrick ridd on 1/11/26.
 //
 
-
 public enum PromptCategory: String, Codable, CaseIterable, Sendable {
     // Retrospective (Looking Back)
     case gratitude
     case credit
-    
+
     // Present-Tense (Current Experience)
     case savoring
     case kindness
-    
+
     // Prospective (Looking Forward)
     case bestPossibleSelf
     case futureSelf
-    
+
     // Existential/Deep (Foundational)
     case signatureStrength
     case mementoMori
     case stoic
-    
+
     /// The user-facing name for the "Skill Tree"
     public var displayName: String {
         switch self {
-        case .gratitude:        return "Gratitude"
-        case .credit:           return "Self-Credit"
-        case .savoring:         return "Present Savoring"
-        case .kindness:         return "Acts of Kindness"
+        case .gratitude: return "Gratitude"
+        case .credit: return "Self-Credit"
+        case .savoring: return "Present Savoring"
+        case .kindness: return "Acts of Kindness"
         case .bestPossibleSelf: return "Best Possible Self"
-        case .futureSelf:       return "Future Identity"
+        case .futureSelf: return "Future Identity"
         case .signatureStrength: return "Core Strengths"
-        case .mementoMori:      return "Perspective"
-        case .stoic:            return "Mental Resilience"
+        case .mementoMori: return "Perspective"
+        case .stoic: return "Mental Resilience"
         }
     }
 
@@ -49,7 +48,7 @@ public enum PromptCategory: String, Codable, CaseIterable, Sendable {
         case .signatureStrength, .stoic:
             return 20
         case .bestPossibleSelf, .mementoMori:
-            return 25 // These require deep visualization/writing
+            return 25  // These require deep visualization/writing
         }
     }
 

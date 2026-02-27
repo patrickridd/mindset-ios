@@ -11,17 +11,18 @@ import SwiftUI
 
 public struct MindsetHistoryView: View {
     @State private var viewModel: MindsetHistoryViewModel
-    
+
     public init(viewModel: MindsetHistoryViewModel) {
         self._viewModel = State(initialValue: viewModel)
     }
-    
+
     public var body: some View {
         NavigationStack {
             Group {
                 if viewModel.entries.isEmpty {
-                    ContentUnavailableView("No Rituals Yet", 
-                        systemImage: "book.closed", 
+                    ContentUnavailableView(
+                        "No Rituals Yet",
+                        systemImage: "book.closed",
                         description: Text("Complete your first ritual to see your history."))
                 } else {
                     List(viewModel.entries, id: \.id) { entry in
@@ -34,7 +35,7 @@ public struct MindsetHistoryView: View {
             .task { await viewModel.fetchHistory() }
         }
     }
-    
+
     private func historyRow(for entry: MindsetEntry) -> some View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing12) {
             HStack {
@@ -49,7 +50,7 @@ public struct MindsetHistoryView: View {
                     .background(Capsule().fill(MindsetColors.accentOrangeSoft))
                     .foregroundStyle(MindsetColors.accentOrange)
             }
-            
+
             // Show the first AI reflection as a "highlight"
             if let firstReflection = entry.responses.first?.aiReflection {
                 Text("\"\(firstReflection)\"")
@@ -64,5 +65,6 @@ public struct MindsetHistoryView: View {
 }
 
 #Preview {
-    MindsetHistoryView(viewModel: MindsetHistoryViewModel(repository: MockMindsetRepository(days: 2)))
+    MindsetHistoryView(
+        viewModel: MindsetHistoryViewModel(repository: MockMindsetRepository(days: 2)))
 }

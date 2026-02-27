@@ -13,7 +13,7 @@ let package = Package(
         .library(
             name: "FeatureOnboarding",
             targets: ["FeatureOnboarding"]
-        ),
+        )
     ],
     dependencies: [
         .package(path: "../Domain"),

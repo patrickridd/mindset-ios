@@ -12,7 +12,7 @@ public struct MainTabView: View {
     private let dashboardView: AnyView
     private let historyView: AnyView
     private let profileView: AnyView
-    
+
     public init(
         coordinator: MainCoordinator,
         dashboardView: AnyView,
@@ -24,17 +24,17 @@ public struct MainTabView: View {
         self.historyView = historyView
         self.profileView = profileView
     }
-    
+
     public var body: some View {
         TabView(selection: $coordinator.selectedTab) {
             dashboardView
                 .tabItem { Label("Today", systemImage: "sun.max.fill") }
                 .tag(MainCoordinator.Tab.dashboard)
-            
+
             historyView
                 .tabItem { Label("History", systemImage: "calendar") }
                 .tag(MainCoordinator.Tab.history)
-            
+
             profileView
                 .tabItem { Label("Profile", systemImage: "person.crop.circle") }
                 .tag(MainCoordinator.Tab.profile)

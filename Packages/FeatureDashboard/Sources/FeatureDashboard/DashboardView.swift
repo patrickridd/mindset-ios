@@ -126,7 +126,7 @@ private extension DashboardView {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             Capsule()
-            .fill(MindsetColors.backgroundSecondary(for: colorScheme))
+                .fill(MindsetColors.backgroundSecondary(for: colorScheme))
         )
     }
 

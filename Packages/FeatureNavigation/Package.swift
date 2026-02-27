@@ -13,10 +13,10 @@ let package = Package(
         .library(
             name: "FeatureNavigation",
             targets: ["FeatureNavigation"]
-        ),
+        )
     ],
     dependencies: [
-        .package(path: "../Domain"),
+        .package(path: "../Domain")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.

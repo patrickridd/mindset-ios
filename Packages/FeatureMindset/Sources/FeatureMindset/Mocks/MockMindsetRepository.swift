@@ -15,8 +15,9 @@ public final class MockMindsetRepository: MindsetRepository, @unchecked Sendable
     public init(days: Int) {
         let calendar = Calendar.current
         self.mockEntries = (0..<days).map { i in
-            let date = calendar.startOfDay(for: calendar.date(byAdding: .day, value: -i, to: Date())!)
-            
+            let date = calendar.startOfDay(
+                for: calendar.date(byAdding: .day, value: -i, to: Date())!)
+
             return MindsetEntry(
                 id: UUID(),
                 date: date,

@@ -15,7 +15,7 @@ public struct AIReflectionCard: View {
         self.reflection = reflection
         self.isThinking = isThinking
     }
-    
+
     public var body: some View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing12) {
             HStack {
@@ -25,7 +25,7 @@ public struct AIReflectionCard: View {
                     .font(MindsetFonts.labelUppercase)
                     .tracking(1)
             }
-            
+
             if isThinking {
                 // Shimmering placeholder logic
                 ShimmerPlaceholderView()
@@ -47,7 +47,9 @@ public struct AIReflectionCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: MindsetLayout.radiusCard))
-        .overlay(RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).stroke(MindsetColors.stoicSlateSoft, lineWidth: MindsetLayout.borderWidth))
+        .overlay(
+            RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).stroke(
+                MindsetColors.stoicSlateSoft, lineWidth: MindsetLayout.borderWidth))
     }
 }
 

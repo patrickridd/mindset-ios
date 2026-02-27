@@ -13,7 +13,7 @@ let package = Package(
         .library(
             name: "SharedLocalization",
             targets: ["SharedLocalization"]
-        ),
+        )
     ],
     targets: [
         .target(

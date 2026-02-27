@@ -5,8 +5,8 @@
 //  Created by patrick ridd on 1/30/26.
 //
 
-import Foundation
 import Domain
+import Foundation
 
 /// A single onboarding quiz question with options and mapping to UserProfile fields.
 public struct OnboardingQuestion: Sendable {
@@ -15,7 +15,7 @@ public struct OnboardingQuestion: Sendable {
     public let options: [String]
     /// Maps option index to the value stored in UserProfile
     public let logic: Logic
-    
+
     public enum Logic: Sendable {
         case headspace
         case mentalMuscle
@@ -23,7 +23,7 @@ public struct OnboardingQuestion: Sendable {
         case habitGoal
         case aiCoachTone
     }
-    
+
     public init(id: Int, questionText: String, options: [String], logic: Logic) {
         self.id = id
         self.questionText = questionText
@@ -35,7 +35,7 @@ public struct OnboardingQuestion: Sendable {
 // MARK: - Quiz Definition (MLP Spec)
 
 extension OnboardingQuestion {
-    
+
     /// All 5 onboarding questions per MLP spec.
     public static let allQuestions: [OnboardingQuestion] = [
         OnboardingQuestion(
@@ -72,6 +72,6 @@ extension OnboardingQuestion {
                 "The Friend (Casual)",
             ],
             logic: .aiCoachTone
-        )
+        ),
     ]
 }

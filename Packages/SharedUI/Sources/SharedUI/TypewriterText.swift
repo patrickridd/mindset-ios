@@ -17,13 +17,13 @@ public struct TypewriterText: View {
     let color: Color
     let isHapticEnabled: Bool
     let onComplete: (() -> Void)?
-    
+
     @State private var displayedText: String = ""
     @State private var isAnimating: Bool = false
     @State private var showCursor: Bool = false
-    
+
     @Environment(\.accessibilityReduceMotion) private var accessibilityReduceMotion
-    
+
     public init(
         text: String,
         font: Font,
@@ -37,7 +37,7 @@ public struct TypewriterText: View {
         self.isHapticEnabled = isHapticEnabled
         self.onComplete = onComplete
     }
-    
+
     public var body: some View {
         Text(text)
             .font(font)
@@ -54,16 +54,16 @@ public struct TypewriterText: View {
                 await animateSequence()
             }
     }
-    
+
     private func animateSequence() async {
         displayedText = ""
-        
+
         if accessibilityReduceMotion {
             displayedText = text
             onComplete?()
             return
         }
-        
+
         isAnimating = true
         let cursorBlink = Task { @MainActor in
             while !Task.isCancelled {
@@ -71,30 +71,30 @@ public struct TypewriterText: View {
                 try? await Task.sleep(for: .milliseconds(500))
             }
         }
-        
+
         HapticManager.prepareTypewriter()
-        HapticManager.action() // Initial "Let's go" tap
-        
+        HapticManager.action()  // Initial "Let's go" tap
+
         let words = text.components(separatedBy: " ")
         for (index, word) in words.enumerated() {
             if Task.isCancelled { break }
-            
+
             displayedText += word + (index == words.count - 1 ? "" : " ")
             triggerSmartHaptic(for: word)
-            
+
             let delay = delay(for: word) + Int.random(in: -12...12)
             try? await Task.sleep(for: .milliseconds(max(30, delay)))
         }
-        
+
         cursorBlink.cancel()
         showCursor = false
         isAnimating = false
-        
-        try? await Task.sleep(for: .milliseconds(80)) // Wait for last word to fade in
-        
+
+        try? await Task.sleep(for: .milliseconds(80))  // Wait for last word to fade in
+
         onComplete?()
     }
-    
+
     private func triggerSmartHaptic(for word: String) {
         guard isHapticEnabled else { return }
         if word.contains(".") || word.contains("?") {
@@ -117,7 +117,7 @@ public struct TypewriterText: View {
             return 55
         }
     }
-    
+
 }
 
 // MARK: - Preview
@@ -133,7 +133,7 @@ public struct TypewriterText: View {
         )
         .multilineTextAlignment(.leading)
         .padding()
-        
+
         TypewriterText(
             text: "Reflect on a moment when you felt truly present.",
             font: .body,

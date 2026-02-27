@@ -6,6 +6,7 @@
 //
 
 import Domain
+
 // import Purchases // RevenueCat SDK
 
 public final class RevenueCatSubscriptionService: SubscriptionService {
@@ -18,7 +19,7 @@ public final class RevenueCatSubscriptionService: SubscriptionService {
         // Look up customer info in RevenueCat
         // let customerInfo = try? await Purchases.shared.customerInfo()
         // return customerInfo?.entitlements["pro"]?.isActive == true
-        return false // Default
+        return false  // Default
     }
 
     public func purchasePro() async throws -> Bool {
@@ -27,7 +28,7 @@ public final class RevenueCatSubscriptionService: SubscriptionService {
     }
 
     // MARK: - SubscriptionService
-    
+
     public func restorePurchases() async throws -> Bool {
         false
     }

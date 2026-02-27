@@ -11,7 +11,7 @@ import SwiftUI
 
 public struct PaywallView: View {
     @State private var viewModel: PaywallViewModel
-    
+
     public init(viewModel: PaywallViewModel) {
         self._viewModel = State(initialValue: viewModel)
     }

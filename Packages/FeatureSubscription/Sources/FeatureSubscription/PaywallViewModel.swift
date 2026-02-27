@@ -5,8 +5,8 @@
 //  Created by patrick ridd on 1/11/26.
 //
 
-import Foundation
 import Domain
+import Foundation
 import Observation
 
 @Observable
@@ -15,7 +15,7 @@ public final class PaywallViewModel {
     private let subscriptionService: SubscriptionService
     public var isLoading = false
     public var errorMessage: String?
-    
+
     public var onPurchaseFinished: (() -> Void)?
 
     public init(subscriptionService: SubscriptionService, onPurchaseFinished: (() -> Void)?) {

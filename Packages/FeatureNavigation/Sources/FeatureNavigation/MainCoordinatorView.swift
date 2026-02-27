@@ -5,8 +5,8 @@
 //  Created by patrick ridd on 1/7/26.
 //
 
-import SwiftUI
 import Domain
+import SwiftUI
 
 public protocol MainViewFactory {
     func makeSignInView() -> AnyView
@@ -31,10 +31,10 @@ public struct MainCoordinatorView: View {
         ZStack {
             // Root Layer
             switch coordinator.rootState {
-            case .auth:       factory.makeSignInView()
+            case .auth: factory.makeSignInView()
             case .onboarding: factory.makeOnboardingView()
-            case .home:       factory.makeHomeView()
-            case .loading:    factory.makeLoadingView()
+            case .home: factory.makeHomeView()
+            case .loading: factory.makeLoadingView()
             }
         }
         // Full Screen Cover Layer (paywall, mindset ritual, ritualSuccess)
@@ -44,7 +44,7 @@ public struct MainCoordinatorView: View {
                 factory.makePaywallView()
             case .mindset:
                 factory.makeMindsetView()
-            case .ritualSuccess(archetype: let archetype, xp: let xp):
+            case .ritualSuccess(let archetype, let xp):
                 factory.makeRitualSuccessView(archetype: archetype, xp: xp)
             }
         }
