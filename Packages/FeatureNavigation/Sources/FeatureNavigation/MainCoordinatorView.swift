@@ -13,8 +13,11 @@ public protocol MainViewFactory {
     func makeSignInView() -> AnyView
     func makeOnboardingView() -> AnyView
     func makePaywallView() -> AnyView
-    func makeHomeView() -> AnyView
-    func makeMindsetView() -> AnyView
+    func makeTabView() -> AnyView
+    func makeDashboardView() -> AnyView
+    func makeMindsetHistoryView() -> AnyView
+    func makeUserProfileView() -> AnyView
+    func makeMindsetRitualView() -> AnyView
     func makeRitualSuccessView(archetype: String, xp: Int) -> AnyView
     func makeLoadingView() -> AnyView
 }
@@ -34,7 +37,7 @@ public struct MainCoordinatorView: View {
             switch coordinator.rootState {
             case .auth: factory.makeSignInView()
             case .onboarding: factory.makeOnboardingView()
-            case .home: factory.makeHomeView()
+            case .home: factory.makeTabView()
             case .loading: factory.makeLoadingView()
             }
         }
@@ -44,7 +47,7 @@ public struct MainCoordinatorView: View {
             case .paywall:
                 factory.makePaywallView()
             case .mindset:
-                factory.makeMindsetView()
+                factory.makeMindsetRitualView()
             case .ritualSuccess(let archetype, let xp):
                 factory.makeRitualSuccessView(archetype: archetype, xp: xp)
             }

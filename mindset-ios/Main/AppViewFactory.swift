@@ -73,7 +73,18 @@ struct AppViewFactory: MainViewFactory {
         )
     }
 
-    func makeHomeView() -> AnyView {
+    func makeTabView() -> AnyView {
+        AnyView(
+            MainTabView(
+                coordinator: coordinator,
+                dashboardView: makeDashboardView(),
+                historyView: makeMindsetHistoryView(),
+                profileView: makeUserProfileView()
+            )
+        )
+    }
+    
+    func makeDashboardView() -> AnyView {
         let dashboardViewModel = DashboardViewModel(
             userRepository: userRepository,
             mindsetRepository: mindsetRepository,
@@ -85,27 +96,7 @@ struct AppViewFactory: MainViewFactory {
             onSeeHistory: {
                 coordinator.set(tab: .history)
             })
-
-        let historyViewModel = MindsetHistoryViewModel(repository: mindsetRepository)
-
-        let profileViewModel = UserProfileViewModel(
-            authService: authService,
-            userRepository: userRepository,
-            onNavigateToSecurity: {
-                
-            },
-            onSignOut: {
-                coordinator.signOutCompleted()
-            }
-        )
-
-        return AnyView(
-            MainTabView(
-                coordinator: coordinator,
-                dashboardView: AnyView(DashboardView(viewModel: dashboardViewModel)),
-                historyView: AnyView(MindsetHistoryView(viewModel: historyViewModel)),
-                profileView: AnyView(UserProfileView(viewModel: profileViewModel)))
-        )
+        return AnyView(DashboardView(viewModel: dashboardViewModel))
     }
 
     func makeUserProfileView() -> AnyView {
@@ -122,7 +113,12 @@ struct AppViewFactory: MainViewFactory {
         return AnyView(UserProfileView(viewModel: profileViewModel))
     }
 
-    func makeMindsetView() -> AnyView {
+    func makeMindsetHistoryView() -> AnyView {
+        let viewModel = MindsetHistoryViewModel(repository: mindsetRepository)
+        return AnyView(MindsetHistoryView(viewModel: viewModel))
+    }
+
+    func makeMindsetRitualView() -> AnyView {
         let aiService = serviceFactory.makeAIService()
         let viewModel = MorningRitualViewModel(
             userRepository: userRepository,
