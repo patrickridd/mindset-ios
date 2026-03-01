@@ -24,6 +24,9 @@ public struct DebugWatermarkModifier: ViewModifier {
                         .foregroundStyle(DebugSettings.shared.useMocks ? .purple : .orange)
 //                        .glassEffect(.regular, in: .capsule) // Using your Liquid Glass style
                         .opacity(0.2)
+                    Text("v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")")
+                        .font(.system(size: 8))
+                        .foregroundStyle(.secondary)
                 }
                 .padding(.trailing, MindsetLayout.paddingMedium)
                 .padding(.top)
