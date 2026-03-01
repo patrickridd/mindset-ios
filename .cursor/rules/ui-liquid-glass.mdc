@@ -1,0 +1,12 @@
+---
+description: Styling rules for the "Liquid Glass" design system.
+globs: **/*View.swift
+alwaysApply: false
+---
+# UI: Liquid Glass System
+
+- **Glass Effects:** Use the `.glassEffect()` modifier (available in iOS 26) for cards and buttons.
+- **Fallback:** Always provide a standard background fallback for versions below iOS 26.
+- **Cards:** Use `RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)` with glass materials.
+- **Hierarchy:** Use `MindsetColors` and `MindsetFonts` constants exclusively. No hardcoded hex codes or system font sizes.
+- **Interactive Elements:** Buttons should use `.interactive()` glass tints and trigger `HapticManager`.

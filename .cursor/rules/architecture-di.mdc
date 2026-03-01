@@ -1,0 +1,12 @@
+---
+description: Rules for Dependency Injection and the App Composition Root.
+globs: **/*.swift
+alwaysApply: true
+---
+# Architecture: Dependency Injection
+
+- **Composition Root:** All dependencies must be initialized in `AppDependencyContainer`.
+- **Constructor Injection:** Avoid using `static shared` singletons. Pass dependencies through initializers.
+- **Service Factory:** Use `ServiceFactory` to instantiate services. Never instantiate `FirebaseAuthService` or `MockAuthService` directly in a View or ViewModel.
+- **Protocols:** Always depend on Protocols (e.g., `AuthService`) rather than concrete types.
+- **Soft Restart:** When core settings (like Mocks) change, post `.restartApp` to re-initialize the `AppDependencyContainer`.

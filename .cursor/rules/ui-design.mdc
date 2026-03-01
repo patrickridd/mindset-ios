@@ -3,14 +3,20 @@ description: Rules for SwiftUI, Design System, and Haptics
 globs: "**/*View.swift", "**/SharedUI/**", "**/Components/**", "**/Styles/**"
 ---
 # Design System & UI
-- **Tokens:** ALWAYS use `MindsetColors`, `MindsetFonts`, and `MindsetLayout`. No magic numbers.
-- **Structure:** Keep `body` minimal. Use private extensions for `// MARK: - Subviews`.
-- **Haptics:** `HapticManager` only in Views, never ViewModels.
-- **Liquid Glass:** Follow Apple's Liquid Glass 2026 UI standards.
+- **Tokens:** ALWAYS use `MindsetColors`, `MindsetFonts`, and `MindsetLayout`. No magic numbers or hardcoded hex.
+- **Structure:** Keep `body` minimal. Use private extensions for `// MARK: - Subviews` and `// MARK: - Body Composition`.
+- **Haptics:** `HapticManager` only in Views (onAppear or button actions), never in ViewModels or Use Cases.
+- **Liquid Glass:** Use the `.mindsetCard()` and `.mindsetButton()` semantic modifiers from `SharedUI`. 
+- **Platform Safety:** Handle iOS 26+ `.glassEffect` vs. legacy backgrounds internally within `SharedUI` modifiers. Feature views should never check `#available`.
 
 ## Lottie & Motion
 - **Tool:** Use `LottieView` from the Lottie library (Native SwiftUI).
-- **Component:** Prefer the `MindsetAnimation` wrapper in `SharedUI`.
-- **Haptics:** Always trigger `HapticManager.tick()` or `success()` in sync with key animation frames if the animation represents an achievement (XP, Level Up, Archetype Reveal).
-- **Formats:** Prefer `.lottie` over `.json` for better performance.
-- **Resources:** Lottie animation files should be stored in the `Resources` folder within the `SharedUI` package and accessed via `Bundle.module`.
+- **Component:** ALWAYS use the `MindsetAnimation` wrapper in `SharedUI`.
+- **Async Loading:** Because `.lottie` files are compressed, they MUST be loaded via the `async` initializer: `LottieView { try await DotLottieFile.named(name, bundle: .module) }`.
+- **Syncing:** Trigger `HapticManager.success()` or `action()` in the `onCompleted` closure of `MindsetAnimation` for transitions.
+- **Resources:** Animations live in `Packages/SharedUI/Sources/SharedUI/Resources/`.
+
+## Layout Constraints
+- **Screen Padding:** Always use `MindsetLayout.paddingScreenHorizontal`.
+- **Navigation:** For row-based navigation in Glass cards, use `AccountNavigationRow` with a chevron instead of standard `List`.
+- **Status:** Use `.mindsetDebugOverlay()` at the app root to visualize the Mock/Production environment.

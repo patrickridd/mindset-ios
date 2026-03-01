@@ -1,0 +1,11 @@
+---
+description: Rules for handling Debug tools and Mock services.
+globs: **/*.swift
+alwaysApply: false
+---
+# Debug & Mocking
+
+- **Debug Toggle:** Use `DebugSettings.shared.useMocks` to determine service flavor.
+- **Mocking:** Every new Service Protocol must have a corresponding `Mock` implementation (e.g., `MockAIService`).
+- **Watermark:** The `.mindsetDebugOverlay()` must be present at the root to show the current environment.
+- **Conditional Code:** Wrap all debug-only UI (like the Mock Toggle) in `#if DEBUG` macros to ensure it is stripped from production.
