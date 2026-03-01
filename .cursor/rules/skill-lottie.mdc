@@ -1,34 +1,31 @@
 ---
-description: Skill for implementing Lottie animations using SharedUI standards
+description: Skill for implementing high-performance .lottie animations using Async loading
 globs: ["**/*View.swift", "Packages/SharedUI/**"]
 ---
 
-# Skill: Mindset Lottie Integration
+# Skill: Mindset Lottie Integration (2026 dotLottie Standard)
 
-Use this skill when the user wants to add, update, or implement a Lottie animation.
+Use this skill when implementing or updating animations to ensure "Premium" performance and $10k MRR quality.
 
 ## 1. Asset Management
-- Animations must be stored in the `SharedUI` package under `Resources/Animations/`.
-- Prefer `.lottie` files (dotLottie) for performance. 
-- File naming convention: `anim_[feature]_[action].lottie` (e.g., `anim_onboarding_reveal.lottie`).
+- **Standard:** Use `.lottie` (dotLottie) files for 80% smaller size and better performance.
+- **Location:** `Packages/SharedUI/Sources/SharedUI/Resources/`
+- **Bundle Access:** Always use `Bundle.module` as assets live in the SharedUI package.
 
-## 2. Implementation Pattern
-Always use the `MindsetAnimation` wrapper from `SharedUI`. Do NOT use raw `LottieView` in Feature modules.
+## 2. Implementation Pattern (The "Async" Standard)
+Because `.lottie` files are compressed archives, they MUST be loaded asynchronously to prevent UI hangs and "frozen" first frames.
 
 ### Correct Implementation:
 ```swift
-import SwiftUI
-import SharedUI
-
-struct RevealView: View {
-    var body: some View {
-        VStack {
-            MindsetAnimation(name: "anim_onboarding_reveal")
-                .frame(width: 300, height: 300)
-                .onAppear {
-                    // 3. Haptic Integration
-                    HapticManager.action() 
-                }
-        }
-    }
+LottieView {
+    // 2026 Best Practice: Async decompression of dotLottie archive
+    try await DotLottieFile.named(name, bundle: .module)
+}
+.configure { lottie in
+    lottie.animationSpeed = speed
+    lottie.configuration.renderingEngine = .mainThread // Most stable for dotLottie
+}
+.playbackMode(isPlaying ? .playing(.fromProgress(0, toProgress: 1, loopMode: loopMode)) : .paused)
+.animationDidFinish { completed in
+    if completed { onCompleted?() }
 }

@@ -14,3 +14,4 @@ globs: "**/*View.swift", "**/SharedUI/**", "**/Components/**", "**/Styles/**"
 - **Component:** Prefer the `MindsetAnimation` wrapper in `SharedUI`.
 - **Haptics:** Always trigger `HapticManager.tick()` or `success()` in sync with key animation frames if the animation represents an achievement (XP, Level Up, Archetype Reveal).
 - **Formats:** Prefer `.lottie` over `.json` for better performance.
+- **Resources:** Lottie animation files should be stored in the `Resources` folder within the `SharedUI` package and accessed via `Bundle.module`.
