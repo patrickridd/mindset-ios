@@ -15,7 +15,8 @@ import SharedUtils
 public final class UserProfileViewModel {
     public var isSigningOut = false
     public var showSignOutConfirmation = false
-    public var errorMessage: String?
+    var showRestartAlert = false
+    var errorMessage: String?
 
     private let authService: AuthService
     private let userRepository: UserRepository
@@ -30,8 +31,8 @@ public final class UserProfileViewModel {
         get { DebugSettings.shared.useMocks }
         set {
             DebugSettings.shared.useMocks = newValue
-            // Trigger haptic or log here since it's a debug action
-            DebugLogger.shared.add("🧪 Debug: Mocks set to \(newValue)")
+            showRestartAlert = true
+            DebugLogger.shared.add("🧪 Environment swapped to: \(newValue ? "Mock" : "Production")")
         }
     }
 
@@ -76,7 +77,6 @@ public final class UserProfileViewModel {
     }
     
     func navigateToSecurity() {
-        HapticManager.selection()
         onNavigateToSecurity()
     }
 
@@ -103,5 +103,9 @@ public final class UserProfileViewModel {
 
     public func dismissError() {
         errorMessage = nil
+    }
+
+    public func restartForMockServices() {
+        NotificationCenter.default.post(name: .restartApp, object: nil)
     }
 }

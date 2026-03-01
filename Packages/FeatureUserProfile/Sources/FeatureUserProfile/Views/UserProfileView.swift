@@ -12,13 +12,10 @@ import SharedUtils
 import SwiftUI
 
 public struct UserProfileView: View {
-    #if DEBUG
-        @ObserveInjection var inject
-    #endif
-
+    
     @Bindable var viewModel: UserProfileViewModel
     @Environment(\.colorScheme) private var colorScheme
-
+    
     public init(viewModel: UserProfileViewModel) {
         self.viewModel = viewModel
     }
@@ -55,7 +52,7 @@ public struct UserProfileView: View {
                     viewModel.cancelSignOut()
                 }
             )
-            .presentationDetents([.height(300)])
+            .presentationDetents([.medium])
             .presentationDragIndicator(.visible)
             .presentationCornerRadius(MindsetLayout.radiusCardLarge)
         }
@@ -74,9 +71,14 @@ public struct UserProfileView: View {
                 Text(error)
             }
         }
-        #if DEBUG
-            .enableInjection()
-        #endif
+        .alert("Restart Required", isPresented: $viewModel.showRestartAlert) {
+            Button("OK", role: .cancel) {
+                HapticManager.action()
+                viewModel.restartForMockServices()
+            }
+        } message: {
+            Text("To switch between Mock and Real services, please close and restart the app.")
+        }
     }
 }
 

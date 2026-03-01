@@ -21,6 +21,10 @@ import Data
 
 @main
 struct MindsetApp: App {
+    
+    /// Give the entire app tree a unique ID
+    @State private var appRootID = UUID()
+
     /// Repository/Persistence
     let container: ModelContainer
     let persistence: SDPersistenceService
@@ -100,6 +104,13 @@ struct MindsetApp: App {
     var body: some Scene {
         WindowGroup {
             MainCoordinatorView(coordinator: coordinator, factory: viewFactory)
+                .id(appRootID) // Changing this forces SwiftUI to discard EVERYTHING and restart
+                .onReceive(NotificationCenter.default.publisher(for: .restartApp)) { _ in
+                    // When the notification hits, we generate a new ID
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        appRootID = UUID()
+                    }
+                }
                 .withDebugOverlay()
                 .onOpenURL { url in
                     // Delegate OAuth callback handling to AuthService (clean architecture!)

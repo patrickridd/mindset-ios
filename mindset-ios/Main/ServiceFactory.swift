@@ -5,26 +5,29 @@
 //  Created by AI Assistant
 //
 
-import Foundation
-import Domain
 import Data
+import Domain
+import SharedUtils
 
 /// Configuration for which services to use (real vs mock)
 struct ServiceConfiguration {
     let useRealServices: Bool
     
     #if DEBUG
-    /// In Debug builds, default to mock services
-    static let `default` = ServiceConfiguration(useRealServices: false)
+    /// In Debug, we check the user's manual toggle.
+    /// If useMocks is true, we return a mock config.
+    static var `default`: ServiceConfiguration {
+        // useMocks == true means useRealServices == false
+        let shouldMock = DebugSettings.shared.useMocks
+        DebugLogger.shared.add("🧪 We are in: \(shouldMock ? "MOCK" : "PROD") Environment")
+        return ServiceConfiguration(useRealServices: !shouldMock)
+    }
     #else
-    /// In Release builds, always use real services
+    /// In Release, we ignore DebugSettings and always use Real Services.
     static let `default` = ServiceConfiguration(useRealServices: true)
     #endif
     
-    /// Force real services (useful for debug testing with real backends)
     static let production = ServiceConfiguration(useRealServices: true)
-    
-    /// Force mock services (useful for previews and UI testing)
     static let mock = ServiceConfiguration(useRealServices: false)
 }
 
