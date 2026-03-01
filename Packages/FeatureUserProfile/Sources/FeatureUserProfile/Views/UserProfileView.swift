@@ -194,15 +194,19 @@ extension UserProfileView {
 #if DEBUG
     private var debugSection: some View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing12) {
-            Text("DEBUG TOOLS")
+            Text(FeatureUserProfileStrings.DebugTools.title)
                 .font(MindsetFonts.sectionHeader)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
                 .padding(.horizontal, MindsetLayout.paddingMedium)
-            
+
             VStack(spacing: 0) {
-                Toggle("Use Mock Services", isOn: $viewModel.useMocks)
-                    .font(MindsetFonts.bodyMedium)
-                    .padding(MindsetLayout.paddingMedium)
+                AccountNavigationRow(
+                    icon: "wrench.and.screwdriver.fill",
+                    title: FeatureUserProfileStrings.DebugTools.title,
+                    subtitle: FeatureUserProfileStrings.DebugTools.rowSubtitle,
+                    color: MindsetColors.stoicSlate,
+                    action: { viewModel.navigateToDebugTools() }
+                )
             }
             .mindsetCard()
         }

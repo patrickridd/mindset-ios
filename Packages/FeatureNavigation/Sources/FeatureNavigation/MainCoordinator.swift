@@ -61,8 +61,10 @@ public final class MainCoordinator {
     private let subscriptionService: SubscriptionService
     private let mindsetRepository: MindsetRepository
     private let userProfileRepository: UserRepository
-    // Add this to manage the internal stack of the Mindset modal
+    // Manages the internal push stack of the Mindset modal
     public var mindsetPath = NavigationPath()
+    // Manages the internal push stack of the Profile tab
+    public var profilePath = NavigationPath()
 
     public init(
         authService: AuthService,

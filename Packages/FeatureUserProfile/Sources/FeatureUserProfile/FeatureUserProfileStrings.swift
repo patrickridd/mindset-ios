@@ -81,6 +81,23 @@ public enum FeatureUserProfileStrings {
             comment: "Loading overlay text shown while signing out is in progress")
     }
 
+    // MARK: - Debug Tools
+
+    public enum DebugTools {
+        public static let title = String(
+            localized: "profile.debugTools.title", bundle: .module,
+            comment: "Navigation title for the Debug Tools screen")
+        public static let sectionHeader = String(
+            localized: "profile.debugTools.sectionHeader", bundle: .module,
+            comment: "Section header label above the debug toggles card")
+        public static let useMockServices = String(
+            localized: "profile.debugTools.useMockServices", bundle: .module,
+            comment: "Toggle label for switching between mock and real services")
+        public static let rowSubtitle = String(
+            localized: "profile.debugTools.rowSubtitle", bundle: .module,
+            comment: "Subtitle shown on the Debug Tools navigation row in the profile screen")
+    }
+
     // MARK: - Account Section
 
     public enum Account {

@@ -104,13 +104,33 @@ struct AppViewFactory: MainViewFactory {
             authService: authService,
             userRepository: userRepository,
             onNavigateToSecurity: {
-                
+                coordinator.profilePath.append(ProfileDestination.security)
             },
             onSignOut: {
                 coordinator.signOutCompleted()
+            },
+            onNavigateToDebugTools: {
+                #if DEBUG
+                coordinator.profilePath.append(ProfileDestination.debugTools)
+                #endif
             }
         )
-        return AnyView(UserProfileView(viewModel: profileViewModel))
+
+        return AnyView(
+            NavigationStack(path: Bindable(coordinator).profilePath) {
+                UserProfileView(viewModel: profileViewModel)
+                    .navigationDestination(for: ProfileDestination.self) { destination in
+                        switch destination {
+                        case .debugTools:
+                            DebugToolsView(viewModel: profileViewModel)
+                        case .security:
+                            EmptyView()
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
+            }
+        )
     }
 
     func makeMindsetHistoryView() -> AnyView {

@@ -22,6 +22,7 @@ public final class UserProfileViewModel {
     private let userRepository: UserRepository
     private let onSignOut: () -> Void
     private var onNavigateToSecurity: () -> Void
+    private var onNavigateToDebugTools: () -> Void
 
     public var userID: String?
     public var displayName: String?
@@ -44,12 +45,14 @@ public final class UserProfileViewModel {
         authService: AuthService,
         userRepository: UserRepository,
         onNavigateToSecurity: @escaping () -> Void,
-        onSignOut: @escaping () -> Void
+        onSignOut: @escaping () -> Void,
+        onNavigateToDebugTools: @escaping () -> Void = {}
     ) {
         self.authService = authService
         self.userRepository = userRepository
         self.onSignOut = onSignOut
         self.onNavigateToSecurity = onNavigateToSecurity
+        self.onNavigateToDebugTools = onNavigateToDebugTools
         Task {
             await loadUserInfo()
         }
@@ -82,6 +85,10 @@ public final class UserProfileViewModel {
     
     func navigateToSecurity() {
         onNavigateToSecurity()
+    }
+
+    func navigateToDebugTools() {
+        onNavigateToDebugTools()
     }
 
     public func signOut() async {
