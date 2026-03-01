@@ -1,5 +1,5 @@
 //
-//  DebugOverlay+Presentation.swift
+//  Mindset+Presentation.swift
 //  SharedUI
 //
 //  Created by patrick ridd on 2/28/26.
@@ -8,7 +8,7 @@
 import SwiftUI
 
 public extension View {
-    func debugSheet<Item: Identifiable, Content: View>(
+    func mindsetSheet<Item: Identifiable, Content: View>(
         item: Binding<Item?>,
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping (Item) -> Content
@@ -19,7 +19,7 @@ public extension View {
         }
     }
 
-    func debugFullScreenCover<Item: Identifiable, Content: View>(
+    func mindsetFullScreenCover<Item: Identifiable, Content: View>(
         item: Binding<Item?>,
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping (Item) -> Content
