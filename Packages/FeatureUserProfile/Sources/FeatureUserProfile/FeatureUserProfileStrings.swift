@@ -69,7 +69,10 @@ public enum FeatureUserProfileStrings {
     public enum SignOut {
         public static let confirmationTitle = String(
             localized: "profile.signOut.confirmationTitle", bundle: .module,
-            comment: "Confirmation dialog title asking user to confirm sign out")
+            comment: "Bottom sheet title asking user to confirm sign out")
+        public static let confirmationSubtitle = String(
+            localized: "profile.signOut.confirmationSubtitle", bundle: .module,
+            comment: "Bottom sheet subtitle below the sign out confirmation title")
         public static let errorTitle = String(
             localized: "profile.signOut.errorTitle", bundle: .module,
             comment: "Alert title shown when sign out fails")

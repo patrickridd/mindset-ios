@@ -146,13 +146,25 @@
       }
     },
     "profile.signOut.confirmationTitle" : {
-      "comment" : "Confirmation dialog title asking user to confirm sign out",
+      "comment" : "Bottom sheet title asking user to confirm sign out",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Are you sure you want to sign out?"
+            "value" : "Sign Out?"
+          }
+        }
+      }
+    },
+    "profile.signOut.confirmationSubtitle" : {
+      "comment" : "Bottom sheet subtitle below the sign out confirmation title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can sign back in at any time."
           }
         }
       }

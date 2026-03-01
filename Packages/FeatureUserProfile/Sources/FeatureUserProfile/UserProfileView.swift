@@ -43,19 +43,18 @@ public struct UserProfileView: View {
                 .opacity(viewModel.isSigningOut ? 1 : 0)
                 .animation(.easeInOut(duration: 0.2), value: viewModel.isSigningOut)
         }
-        .confirmationDialog(
-            FeatureUserProfileStrings.SignOut.confirmationTitle,
-            isPresented: $viewModel.showSignOutConfirmation,
-            titleVisibility: .visible
-        ) {
-            Button(SharedLocalizedString.Auth.signOut, role: .destructive) {
-                Task {
-                    await viewModel.signOut()
+        .sheet(isPresented: $viewModel.showSignOutConfirmation) {
+            SignOutConfirmationSheet(
+                onConfirm: {
+                    Task { await viewModel.signOut() }
+                },
+                onCancel: {
+                    viewModel.cancelSignOut()
                 }
-            }
-            Button(SharedLocalizedString.cancel, role: .cancel) {
-                viewModel.cancelSignOut()
-            }
+            )
+            .presentationDetents([.height(300)])
+            .presentationDragIndicator(.visible)
+            .presentationCornerRadius(MindsetLayout.radiusCardLarge)
         }
         .alert(
             FeatureUserProfileStrings.SignOut.errorTitle,
@@ -259,6 +258,91 @@ private struct AccountRow: View {
             Spacer()
         }
         .padding(MindsetLayout.paddingMedium)
+    }
+}
+
+// MARK: - SignOutConfirmationSheet
+
+private struct SignOutConfirmationSheet: View {
+    let onConfirm: () -> Void
+    let onCancel: () -> Void
+
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        VStack(spacing: MindsetLayout.spacing24) {
+            VStack(spacing: MindsetLayout.spacing8) {
+                Text(FeatureUserProfileStrings.SignOut.confirmationTitle)
+                    .font(MindsetFonts.promptHeadline)
+                    .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
+                    .multilineTextAlignment(.center)
+
+                Text(FeatureUserProfileStrings.SignOut.confirmationSubtitle)
+                    .font(MindsetFonts.caption)
+                    .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
+                    .multilineTextAlignment(.center)
+            }
+
+            VStack(spacing: MindsetLayout.spacing12) {
+                confirmButton
+                cancelButton
+            }
+        }
+        .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
+        .padding(.vertical, MindsetLayout.spacing24)
+        .frame(maxWidth: .infinity)
+        .background(MindsetColors.backgroundGrouped(for: colorScheme))
+    }
+
+    @ViewBuilder
+    private var confirmButton: some View {
+        let base = Button {
+            HapticManager.action()
+            dismiss()
+            onConfirm()
+        } label: {
+            Text(SharedLocalizedString.Auth.signOut)
+                .font(MindsetFonts.button)
+                .foregroundStyle(MindsetColors.accentCoral)
+                .frame(maxWidth: .infinity)
+                .frame(height: MindsetLayout.buttonHeight)
+        }
+
+        if #available(iOS 26, *) {
+            base
+                .glassEffect(
+                    .regular.tint(MindsetColors.accentCoral.opacity(0.15)).interactive(),
+                    in: .rect(cornerRadius: MindsetLayout.radiusButton)
+                )
+        } else {
+            base
+                .background(
+                    RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
+                        .fill(MindsetColors.accentCoral.opacity(colorScheme == .dark ? 0.1 : 0.15))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
+                                .stroke(
+                                    MindsetColors.accentCoral.opacity(
+                                        colorScheme == .dark ? 0.3 : 0.4),
+                                    lineWidth: MindsetLayout.borderWidth)
+                        )
+                )
+        }
+    }
+
+    private var cancelButton: some View {
+        Button {
+            HapticManager.selection()
+            dismiss()
+            onCancel()
+        } label: {
+            Text(SharedLocalizedString.cancel)
+                .font(MindsetFonts.bodyMedium)
+                .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
+                .frame(maxWidth: .infinity)
+                .frame(height: MindsetLayout.spacing40)
+        }
     }
 }
 
