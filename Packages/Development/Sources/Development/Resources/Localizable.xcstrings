@@ -1,6 +1,24 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "🌐 PROD MODE" : {
+
+    },
+    "🧪 MOCK MODE" : {
+
+    },
+    "development.debugTools.restartingApp" : {
+      "comment" : "Alert title shown when the app is about to restart after toggling services",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restarting App"
+          }
+        }
+      }
+    },
     "development.debugTools.sectionHeader" : {
       "comment" : "Section header label above the debug toggles card on the Debug Tools screen",
       "extractionState" : "manual",
@@ -25,17 +43,8 @@
         }
       }
     },
-    "development.debugTools.restartingApp" : {
-      "comment" : "Alert title shown when the app is about to restart after toggling services",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Restarting App"
-          }
-        }
-      }
+    "v%@" : {
+
     }
   },
   "version" : "1.0"

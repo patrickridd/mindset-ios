@@ -5,6 +5,7 @@
 //  Created by patrick ridd on 1/25/26.
 //
 
+import SharedUI
 import SharedUtils
 import SwiftUI
 

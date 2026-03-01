@@ -14,6 +14,7 @@ let package = Package(
         )
     ],
     dependencies: [
+        .package(path: "../Data"),
         .package(path: "../Domain"),
         .package(path: "../SharedLocalization"),
         .package(path: "../SharedUI"),
@@ -23,6 +24,7 @@ let package = Package(
         .target(
             name: "Development",
             dependencies: [
+                .product(name: "Data", package: "Data"),
                 .product(name: "Domain", package: "Domain"),
                 .product(name: "SharedLocalization", package: "SharedLocalization"),
                 .product(name: "SharedUI", package: "SharedUI"),

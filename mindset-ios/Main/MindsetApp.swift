@@ -5,6 +5,9 @@
 //  Created by patrick ridd on 1/2/26.
 //
 
+#if DEBUG
+import Development
+#endif
 import Domain
 import FeatureNavigation
 import SharedUI
@@ -22,8 +25,7 @@ struct MindsetApp: App {
                 coordinator: dependencyContainer.coordinator,
                 factory: dependencyContainer.viewFactory
             )
-            .withDebugOverlay()
-            .withEnvWatermark()
+            .modifier(DebugWrapper())
             .onReceive(NotificationCenter.default.publisher(for: .restartApp)) { _ in
                 dependencyContainer = AppDependencyContainer()
                 

@@ -6,6 +6,7 @@
 //
 
 import Domain
+import SharedUI
 import SwiftUI
 
 public struct DebugWatermarkModifier: ViewModifier {
@@ -19,10 +20,9 @@ public struct DebugWatermarkModifier: ViewModifier {
             VStack {
                 HStack {
                     Spacer()
-                    Text(DebugSettings.shared.useMocks ? "🧪 MOCK MODE" : "🌐 REAL SERVICES")
+                    Text(DebugSettings.shared.useMocks ? "🧪 MOCK MODE" : "🌐 PROD MODE")
                         .font(MindsetFonts.debugFont.bold())
                         .foregroundStyle(DebugSettings.shared.useMocks ? .purple : .orange)
-//                        .glassEffect(.regular, in: .capsule) // Using your Liquid Glass style
                         .opacity(0.2)
                     Text("v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")")
                         .font(.system(size: 8))

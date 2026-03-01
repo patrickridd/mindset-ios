@@ -5,6 +5,9 @@
 //  Created by patrick ridd on 1/7/26.
 //
 
+#if DEBUG
+import Development
+#endif
 import Domain
 import SharedUI
 import SwiftUI
@@ -60,5 +63,29 @@ public struct MainCoordinatorView: View {
             }
         }
         .animation(.default, value: coordinator.rootState)
+    }
+}
+
+public extension View {
+    func mindsetSheet<Item: Identifiable, Content: View>(
+        item: Binding<Item?>,
+        onDismiss: (() -> Void)? = nil,
+        @ViewBuilder content: @escaping (Item) -> Content
+    ) -> some View {
+        sheet(item: item, onDismiss: onDismiss) { item in
+            content(item)
+                .modifier(DebugWrapper())
+        }
+    }
+
+    func mindsetFullScreenCover<Item: Identifiable, Content: View>(
+        item: Binding<Item?>,
+        onDismiss: (() -> Void)? = nil,
+        @ViewBuilder content: @escaping (Item) -> Content
+    ) -> some View {
+        fullScreenCover(item: item, onDismiss: onDismiss) { item in
+            content(item)
+                .modifier(DebugWrapper())
+        }
     }
 }

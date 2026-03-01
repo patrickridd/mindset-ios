@@ -6,6 +6,7 @@
 //
 
 import Data
+import Development
 import Domain
 import SharedUtils
 
@@ -19,7 +20,7 @@ struct ServiceConfiguration {
     static var `default`: ServiceConfiguration {
         // useMocks == true means useRealServices == false
         let shouldMock = DebugSettings.shared.useMocks
-        DebugLogger.shared.add("🧪 We are in: \(shouldMock ? "MOCK" : "PROD") Environment")
+        DebugLogger.shared.add("We are in: \(shouldMock ? " 🧪 MOCK" : "🌐 PROD") Environment")
         return ServiceConfiguration(useRealServices: !shouldMock)
     }
     #else
