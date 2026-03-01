@@ -47,8 +47,8 @@ public final class MorningRitualViewModel {
     public var isAiThinking: Bool = false
     public var earnedXP: Int = 0
     public var generatedArchetype: String = "The Explorer"
-    public var isShowingSuccess: Bool = false
     private var onDismiss: (() -> Void)?
+    private var isPremium: Bool = false
 
     public var shouldShowTextField: Bool {
         currentStepIndex < prompts.count
@@ -87,8 +87,11 @@ public final class MorningRitualViewModel {
         self.aiService = aiService
         self.onNavigate = onNavigate
         self.onDismiss = onDismiss
-
+        Task {
+            self.isPremium = await subscriptionService.checkSubscriptionStatus()
+        }
         Task { await prepareRitual() }
+       
     }
 
     public func dismiss() {
@@ -190,6 +193,9 @@ public final class MorningRitualViewModel {
             }
         } else {
             isRitualComplete = true
+            Task {
+                await saveMindsetEntry()
+            }
         }
     }
 
@@ -233,8 +239,7 @@ public final class MorningRitualViewModel {
 
     // MARK: - Completion
 
-    public func completeRitual() async {
-        isLoading = true
+    public func saveMindsetEntry() async {
         do {
             // 1. Map current answers and reflections into PromptResponse objects
             let currentResponses = prompts.compactMap { prompt -> PromptResponse? in
@@ -266,21 +271,17 @@ public final class MorningRitualViewModel {
                 archetypeTag: self.generatedArchetype,
                 sentimentScore: 0.8  // In production, this would come from an AI sentiment analysis call
             )
-
             try await addMindsetUseCase.execute(entry: entry)
-
-            // 4. Handle Subscription Gate and Navigation
-            let isPremium = await subscriptionService.checkSubscriptionStatus()
-
-            if isPremium {
-                onNavigate?(.success(archetype: generatedArchetype, xp: earnedXP))
-            } else {
-                onNavigate?(.paywall)
-            }
-            isLoading = false
         } catch {
             DebugLogger.shared.add("❌ Ritual save failed: \(error.localizedDescription)")
-            isLoading = false
+        }
+    }
+
+    public func completeRitual() {
+        if isPremium {
+            onNavigate?(.success(archetype: generatedArchetype, xp: earnedXP))
+        } else {
+            onNavigate?(.paywall)
         }
     }
 }

@@ -93,9 +93,7 @@ private extension MorningRitualView {
                 // This triggers automatically when the .lottie file ends
                 withAnimation(.easeInOut(duration: 0.5)) {
                     viewModel.isRitualCompleteAnimationDone = true
-                }
-                Task {
-                    await viewModel.completeRitual()
+                    viewModel.completeRitual()
                 }
             }
         } else {
