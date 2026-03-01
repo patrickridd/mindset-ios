@@ -71,13 +71,13 @@ public struct UserProfileView: View {
                 Text(error)
             }
         }
-        .alert("Restart Required", isPresented: $viewModel.showRestartAlert) {
-            Button("OK", role: .cancel) {
+        .alert("Restarting App", isPresented: $viewModel.showRestartAlert) {
+            Button(SharedLocalizedString.ok, role: .cancel) {
                 HapticManager.action()
-                viewModel.restartForMockServices()
+                viewModel.restartApp()
             }
         } message: {
-            Text("To switch between Mock and Real services, please close and restart the app.")
+            Text(viewModel.environmentDescription)
         }
     }
 }

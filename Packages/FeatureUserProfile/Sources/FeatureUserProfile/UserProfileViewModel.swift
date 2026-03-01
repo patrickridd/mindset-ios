@@ -32,8 +32,12 @@ public final class UserProfileViewModel {
         set {
             DebugSettings.shared.useMocks = newValue
             showRestartAlert = true
-            DebugLogger.shared.add("🧪 Environment swapped to: \(newValue ? "Mock" : "Production")")
+            DebugLogger.shared.add(environmentDescription)
         }
+    }
+    
+    var environmentDescription: String {
+        "Toggled to: \(DebugSettings.shared.useMocks ? " 🧪 Debug (mocks)" : " 🌐 Production")"
     }
 
     public init(
@@ -105,7 +109,7 @@ public final class UserProfileViewModel {
         errorMessage = nil
     }
 
-    public func restartForMockServices() {
+    func restartApp() {
         NotificationCenter.default.post(name: .restartApp, object: nil)
     }
 }

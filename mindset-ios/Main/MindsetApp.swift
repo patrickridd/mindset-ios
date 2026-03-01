@@ -5,125 +5,37 @@
 //  Created by patrick ridd on 1/2/26.
 //
 
-import Foundation
-import SwiftUI
-import SharedUI
-import SharedUtils
-import SwiftData
-import FirebaseCore
-import FeatureNavigation
-import FeatureDashboard
-import FeatureOnboarding
-import FeatureSubscription
-import FeatureMindset
 import Domain
-import Data
+import FeatureNavigation
+import SharedUI
+import SwiftData
+import SwiftUI
 
 @main
 struct MindsetApp: App {
-    
-    /// Give the entire app tree a unique ID
     @State private var appRootID = UUID()
-
-    /// Repository/Persistence
-    let container: ModelContainer
-    let persistence: SDPersistenceService
-    let mindsetRepository: MindsetRepository
-    let userRepository: UserRepository
-    
-    /// Use Cases
-    let getStreakUseCase: GetStreakUseCase
-    let addMindsetUseCase: AddMindsetUseCase
-    let getYesterdayGoalUseCase: GetYesterdayGoalUseCase
-    
-    /// Services
-    let subscriptionService: SubscriptionService
-    let authService: AuthService
-
-    @State private var coordinator: MainCoordinator
-    private let viewFactory: AppViewFactory
-    
-    /// Service configuration (Debug = mock, Release = real)
-    private let serviceFactory: ServiceFactory
-
-    init() {
-        // 0. Service Configuration
-        // In Debug builds, uses mock services by default
-        // In Release builds, always uses real services
-        // To force real services in Debug: ServiceFactory(config: .production)
-        serviceFactory = ServiceFactory(config: .default)
-        
-        // 1. Initialize Firebase FIRST (before any Firebase services)
-        // Only needed if using real services
-        if serviceFactory.config.useRealServices {
-            FirebaseApp.configure()
-        }
-        
-        // 2. Bottom Level: Database
-        container = try! ModelContainer(for: SDUserProfile.self, SDMindsetEntry.self)
-        
-        // 3. Level 2: Raw Persistence Driver
-        persistence = SDPersistenceService(modelContext: container.mainContext)
-        
-        // 4. Level 3: Domain-Specific Repositories (real or mock)
-        mindsetRepository = serviceFactory.makeMindsetRepository(persistence: persistence)
-        userRepository = serviceFactory.makeUserRepository(persistence: persistence)
-        
-        // 5. Level 4: Business Logic (Use Cases)
-        getStreakUseCase = GetStreakUseCase(repository: mindsetRepository)
-        addMindsetUseCase = AddMindsetUseCase(repository: mindsetRepository)
-        getYesterdayGoalUseCase = GetYesterdayGoalUseCase(repository: mindsetRepository)
-
-        // 6. Services (real or mock based on config)
-        subscriptionService = serviceFactory.makeSubscriptionService()
-        authService = serviceFactory.makeAuthService()
-        
-        let coord = MainCoordinator(
-            authService: authService,
-            subscriptionService: subscriptionService,
-            mindsetRepository: mindsetRepository,
-            userRepository: userRepository
-        )
-                
-        _coordinator = State(initialValue: coord)
-                
-        // Initialize the factory with all the dependencies it needs to "assemble" views
-        self.viewFactory = AppViewFactory(
-            coordinator: coord,
-            authService: authService,
-            userRepository: userRepository,
-            mindsetRepository: mindsetRepository,
-            getStreakUseCase: getStreakUseCase,
-            addMindsetUseCase: addMindsetUseCase,
-            getYesterdayGoalUseCase: getYesterdayGoalUseCase,
-            subscriptionService: subscriptionService,
-            serviceFactory: serviceFactory
-        )
-    }
+    @State private var dependencyContainer = AppDependencyContainer()
 
     var body: some Scene {
         WindowGroup {
-            MainCoordinatorView(coordinator: coordinator, factory: viewFactory)
-                .id(appRootID) // Changing this forces SwiftUI to discard EVERYTHING and restart
-                .onReceive(NotificationCenter.default.publisher(for: .restartApp)) { _ in
-                    // When the notification hits, we generate a new ID
-                    withAnimation(.easeInOut(duration: 0.3)) {
-                        appRootID = UUID()
-                    }
+            MainCoordinatorView(
+                coordinator: dependencyContainer.coordinator,
+                factory: dependencyContainer.viewFactory
+            )
+            .withDebugOverlay()
+            .withEnvWatermark()
+            .onReceive(NotificationCenter.default.publisher(for: .restartApp)) { _ in
+                dependencyContainer = AppDependencyContainer()
+                
+                withAnimation(.easeInOut(duration: 0.5)) {
+                    appRootID = UUID()
                 }
-                .withDebugOverlay()
-                .withEnvWatermark()
-                .onOpenURL { url in
-                    // Delegate OAuth callback handling to AuthService (clean architecture!)
-                    // AuthService abstracts the provider-specific logic (Firebase, etc.)
-                    let handled = authService.handleAuthCallback(url: url)
-                    if handled {
-                        DebugLogger.shared.add("✅ AuthService handled OAuth callback: \(url.scheme ?? "unknown")://...")
-                    } else {
-                        DebugLogger.shared.add("⚠️ Unhandled URL: \(url)")
-                    }
-                }
+            }
+            .onOpenURL { url in
+                _ = dependencyContainer.authService.handleAuthCallback(url: url)
+            }
+            .id(appRootID)
         }
-        .modelContainer(container)
+        .modelContainer(dependencyContainer.container)
     }
 }
