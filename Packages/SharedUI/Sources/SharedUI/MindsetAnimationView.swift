@@ -8,8 +8,12 @@
 import Lottie
 import SwiftUI
 
-public struct MindsetAnimation: View {
-    let name: String
+public enum MindsetAnimation: String {
+    case checkmarkSuccess = "Checkmark-Animation"
+}
+
+public struct MindsetAnimationView: View {
+    let animation: MindsetAnimation
     let loopMode: LottieLoopMode
     let speed: Double
     let onCompleted: (() -> Void)?
@@ -17,12 +21,12 @@ public struct MindsetAnimation: View {
     @State private var isPlaying = false
     
     public init(
-        name: String,
+        animation: MindsetAnimation,
         loopMode: LottieLoopMode = .playOnce,
         speed: Double = 1.0,
         onCompleted: (() -> Void)? = nil
     ) {
-        self.name = name
+        self.animation = animation
         self.loopMode = loopMode
         self.speed = speed
         self.onCompleted = onCompleted
@@ -30,7 +34,7 @@ public struct MindsetAnimation: View {
 
     public var body: some View {
         LottieView {
-            try await DotLottieFile.named(name, bundle: .module)
+            try await DotLottieFile.named(animation.rawValue, bundle: .module)
         }
         .configure { lottie in
             lottie.animationSpeed = speed
@@ -48,5 +52,5 @@ public struct MindsetAnimation: View {
 }
 
 #Preview {
-    MindsetAnimation(name: "Checkmark-Animation")
+    MindsetAnimationView(animation: .checkmarkSuccess)
 }
