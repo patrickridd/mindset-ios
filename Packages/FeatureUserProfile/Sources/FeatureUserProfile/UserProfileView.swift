@@ -271,28 +271,34 @@ private struct SignOutConfirmationSheet: View {
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
-        VStack(spacing: MindsetLayout.spacing24) {
-            VStack(spacing: MindsetLayout.spacing8) {
-                Text(FeatureUserProfileStrings.SignOut.confirmationTitle)
-                    .font(MindsetFonts.promptHeadline)
-                    .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
-                    .multilineTextAlignment(.center)
+        ZStack {
+            MindsetColors.backgroundGrouped(for: colorScheme)
+                .opacity(0.5)
+                .ignoresSafeArea()
 
-                Text(FeatureUserProfileStrings.SignOut.confirmationSubtitle)
-                    .font(MindsetFonts.caption)
-                    .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
-                    .multilineTextAlignment(.center)
-            }
+            VStack(spacing: MindsetLayout.spacing24) {
+                VStack(spacing: MindsetLayout.spacing8) {
+                    Text(FeatureUserProfileStrings.SignOut.confirmationTitle)
+                        .font(MindsetFonts.promptHeadline)
+                        .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
+                        .multilineTextAlignment(.center)
 
-            VStack(spacing: MindsetLayout.spacing12) {
-                confirmButton
-                cancelButton
+                    Text(FeatureUserProfileStrings.SignOut.confirmationSubtitle)
+                        .font(MindsetFonts.caption)
+                        .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
+                        .multilineTextAlignment(.center)
+                }
+
+                VStack(spacing: MindsetLayout.spacing12) {
+                    confirmButton
+                    cancelButton
+                }
             }
+            .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
+            .padding(.vertical, MindsetLayout.paddingXLarge)
+            .padding(.top, MindsetLayout.spacing40)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }
-        .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
-        .padding(.vertical, MindsetLayout.spacing24)
-        .frame(maxWidth: .infinity)
-        .background(MindsetColors.backgroundGrouped(for: colorScheme))
     }
 
     @ViewBuilder
@@ -356,3 +362,4 @@ private struct SignOutConfirmationSheet: View {
     )
     return UserProfileView(viewModel: viewModel)
 }
+
