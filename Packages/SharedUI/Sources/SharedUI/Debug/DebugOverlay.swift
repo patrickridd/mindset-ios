@@ -43,7 +43,7 @@ private extension DebugOverlay {
             withAnimation(.spring(response: 0.35)) { isExpanded.toggle() }
         } label: {
             Image(systemName: isExpanded ? "xmark.circle.fill" : "terminal.fill")
-                .font(.system(size: MindsetLayout.iconSmall, weight: .medium))
+                .font(MindsetFonts.debugFont.weight(.medium))
                 .symbolRenderingMode(.hierarchical)
                 .foregroundStyle(.secondary)
                 .frame(
@@ -76,7 +76,7 @@ private extension DebugOverlay {
             .frame(maxWidth: .infinity, alignment: .leading)
             .lineLimit(nil)
             .multilineTextAlignment(.leading)
-            .font(.system(size: Constants.logFontSize, design: .monospaced))
+            .font(MindsetFonts.debugFont)
             .foregroundStyle(.primary)
             .padding(MindsetLayout.paddingSmall)
             .background(Color.primary.opacity(0.05))
@@ -89,7 +89,6 @@ private extension DebugOverlay {
 
 private extension DebugOverlay {
     enum Constants {
-        static let logFontSize: CGFloat = 10
         static let panelMaxHeight: CGFloat = 200
         static let panelMaxWidth: CGFloat = 320
     }

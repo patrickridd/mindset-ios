@@ -112,6 +112,7 @@ struct MindsetApp: App {
                     }
                 }
                 .withDebugOverlay()
+                .withEnvWatermark()
                 .onOpenURL { url in
                     // Delegate OAuth callback handling to AuthService (clean architecture!)
                     // AuthService abstracts the provider-specific logic (Firebase, etc.)

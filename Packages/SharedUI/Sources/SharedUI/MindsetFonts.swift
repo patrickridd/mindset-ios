@@ -75,4 +75,7 @@ public enum MindsetFonts {
 
     /// Stat values
     public static let statValue = Font.headline
+    
+    public static let debugFont: Font = .system(size: 10, weight: .regular, design: .monospaced)
+    
 }
