@@ -120,7 +120,6 @@ extension UserProfileView {
                 .padding(.horizontal, MindsetLayout.paddingMedium)
 
             accountCardRows
-                .mindsetCard()
         }
     }
 
@@ -147,33 +146,10 @@ extension UserProfileView {
                 color: MindsetColors.successEmerald
             )
         }
+        .mindsetCard()
     }
 
-    @ViewBuilder
     private var signOutButton: some View {
-        if #available(iOS 26, *) {
-            signOutButtonBase
-                .glassEffect(
-                    .regular.tint(MindsetColors.accentCoral.opacity(0.15)).interactive(),
-                    in: .rect(cornerRadius: MindsetLayout.radiusButton)
-                )
-        } else {
-            signOutButtonBase
-                .background(
-                    RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
-                        .fill(MindsetColors.accentCoral.opacity(colorScheme == .dark ? 0.1 : 0.15))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
-                                .stroke(
-                                    MindsetColors.accentCoral.opacity(
-                                        colorScheme == .dark ? 0.3 : 0.4),
-                                    lineWidth: MindsetLayout.borderWidth)
-                        )
-                )
-        }
-    }
-
-    private var signOutButtonBase: some View {
         Button {
             HapticManager.selection()
             viewModel.confirmSignOut()
@@ -190,6 +166,7 @@ extension UserProfileView {
             .frame(height: MindsetLayout.buttonHeight)
         }
         .disabled(viewModel.isSigningOut)
+        .mindsetDestructiveButton()
     }
 
     private var loadingOverlay: some View {

@@ -50,7 +50,7 @@ struct SignOutConfirmationSheet: View {
 
     @ViewBuilder
     private var confirmButton: some View {
-        let button = Button {
+        Button {
             HapticManager.action()
             dismiss()
             onConfirm()
@@ -61,27 +61,7 @@ struct SignOutConfirmationSheet: View {
                 .frame(maxWidth: .infinity)
                 .frame(height: MindsetLayout.buttonHeight)
         }
-
-        if #available(iOS 26, *) {
-            button
-                .glassEffect(
-                    .regular.tint(MindsetColors.accentCoral.opacity(0.15)).interactive(),
-                    in: .rect(cornerRadius: MindsetLayout.radiusButton)
-                )
-        } else {
-            button
-                .background(
-                    RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
-                        .fill(MindsetColors.accentCoral.opacity(colorScheme == .dark ? 0.1 : 0.15))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
-                                .stroke(
-                                    MindsetColors.accentCoral.opacity(
-                                        colorScheme == .dark ? 0.3 : 0.4),
-                                    lineWidth: MindsetLayout.borderWidth)
-                        )
-                )
-        }
+        .mindsetButton()
     }
 
     private var cancelButton: some View {

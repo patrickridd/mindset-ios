@@ -10,3 +10,14 @@ alwaysApply: false
 - **Cards:** Use `RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)` with glass materials.
 - **Hierarchy:** Use `MindsetColors` and `MindsetFonts` constants exclusively. No hardcoded hex codes or system font sizes.
 - **Interactive Elements:** Buttons should use `.interactive()` glass tints and trigger `HapticManager`.
+
+## Semantic Glass Rules
+- Use `.mindsetCard()` for grouping data or static UI sections.
+- Use `.mindsetButton(color:)` for primary/secondary interactive actions.
+- Use `.mindsetDestructiveButton()` specifically for Sign Out or Delete actions.
+- Never write `#available(iOS 26, *)` in Feature views; the modifiers in SharedUI handle the logic.
+
+## Technical Implementation Notes (iOS 26)
+- **Type Name:** Use `Glass` (the struct), not `GlassMaterial`.
+- **API Signature:** `.glassEffect(.regular.tint(color).interactive(bool), in: .rect(cornerRadius: n))`
+- **Chaining:** Interactivity and Tints are chained directly on the `.regular` or `.clear` static properties of `Glass`.
