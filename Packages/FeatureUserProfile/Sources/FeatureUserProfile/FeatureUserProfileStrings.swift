@@ -15,6 +15,14 @@ public enum FeatureUserProfileStrings {
     public static let title = String(
         localized: "profile.title", bundle: .module, comment: "Profile screen title")
 
+    public static let defaultUserName = String(
+        localized: "profile.defaultUserName", bundle: .module,
+        comment: "Fallback display name when no user name is set")
+
+    public static let userIdPrefix = String(
+        localized: "profile.userIdPrefix", bundle: .module,
+        comment: "Label prefix shown before the truncated user ID")
+
     // MARK: - Stats
 
     public enum Stats {
@@ -54,5 +62,36 @@ public enum FeatureUserProfileStrings {
         public static let reminderTime = String(
             localized: "profile.preferences.reminderTime", bundle: .module,
             comment: "Reminder time preference")
+    }
+
+    // MARK: - Sign Out
+
+    public enum SignOut {
+        public static let confirmationTitle = String(
+            localized: "profile.signOut.confirmationTitle", bundle: .module,
+            comment: "Confirmation dialog title asking user to confirm sign out")
+        public static let errorTitle = String(
+            localized: "profile.signOut.errorTitle", bundle: .module,
+            comment: "Alert title shown when sign out fails")
+        public static let signingOut = String(
+            localized: "profile.signOut.signingOut", bundle: .module,
+            comment: "Loading overlay text shown while signing out is in progress")
+    }
+
+    // MARK: - Account Section
+
+    public enum Account {
+        public static let signedInTitle = String(
+            localized: "profile.account.signedInTitle", bundle: .module,
+            comment: "Row title indicating the user is signed in")
+        public static let signedInSubtitle = String(
+            localized: "profile.account.signedInSubtitle", bundle: .module,
+            comment: "Row subtitle reassuring the user their data is secure")
+        public static let cloudSyncTitle = String(
+            localized: "profile.account.cloudSyncTitle", bundle: .module,
+            comment: "Row title indicating cloud sync is active")
+        public static let cloudSyncSubtitle = String(
+            localized: "profile.account.cloudSyncSubtitle", bundle: .module,
+            comment: "Row subtitle indicating all devices are synced")
     }
 }

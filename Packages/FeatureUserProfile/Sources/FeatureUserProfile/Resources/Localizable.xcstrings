@@ -120,6 +120,114 @@
           }
         }
       }
+    },
+    "profile.defaultUserName" : {
+      "comment" : "Fallback display name when no user name is set",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mindset User"
+          }
+        }
+      }
+    },
+    "profile.userIdPrefix" : {
+      "comment" : "Label prefix shown before the truncated user ID",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID:"
+          }
+        }
+      }
+    },
+    "profile.signOut.confirmationTitle" : {
+      "comment" : "Confirmation dialog title asking user to confirm sign out",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you sure you want to sign out?"
+          }
+        }
+      }
+    },
+    "profile.signOut.errorTitle" : {
+      "comment" : "Alert title shown when sign out fails",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign Out Error"
+          }
+        }
+      }
+    },
+    "profile.signOut.signingOut" : {
+      "comment" : "Loading overlay text shown while signing out is in progress",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signing out..."
+          }
+        }
+      }
+    },
+    "profile.account.signedInTitle" : {
+      "comment" : "Row title indicating the user is signed in",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signed In"
+          }
+        }
+      }
+    },
+    "profile.account.signedInSubtitle" : {
+      "comment" : "Row subtitle reassuring the user their data is secure",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your data is secure"
+          }
+        }
+      }
+    },
+    "profile.account.cloudSyncTitle" : {
+      "comment" : "Row title indicating cloud sync is active",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud Sync"
+          }
+        }
+      }
+    },
+    "profile.account.cloudSyncSubtitle" : {
+      "comment" : "Row subtitle indicating all devices are synced",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All devices synced"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

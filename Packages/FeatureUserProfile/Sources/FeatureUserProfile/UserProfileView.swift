@@ -6,6 +6,7 @@
 //
 
 import Domain
+import SharedLocalization
 import SharedUI
 import SharedUtils
 import SwiftUI
@@ -15,57 +16,55 @@ public struct UserProfileView: View {
         @ObserveInjection var inject
     #endif
 
-    @State private var viewModel: UserProfileViewModel
+    @Bindable var viewModel: UserProfileViewModel
     @Environment(\.colorScheme) private var colorScheme
 
     public init(viewModel: UserProfileViewModel) {
-        self._viewModel = State(initialValue: viewModel)
+        self.viewModel = viewModel
     }
 
     public var body: some View {
         ZStack {
-            // Background
             MindsetColors.backgroundGrouped(for: colorScheme)
                 .ignoresSafeArea()
 
             ScrollView {
                 VStack(spacing: MindsetLayout.spacing24) {
-                    // Profile Header
                     profileHeader
-
-                    // Account Section
                     accountSection
-
-                    // Sign Out Button
                     signOutButton
-
                     Spacer()
                 }
                 .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
                 .padding(.top, MindsetLayout.spacing30)
             }
 
-            // Loading overlay
-            if viewModel.isSigningOut {
-                loadingOverlay
-            }
+            loadingOverlay
+                .opacity(viewModel.isSigningOut ? 1 : 0)
+                .animation(.easeInOut(duration: 0.2), value: viewModel.isSigningOut)
         }
         .confirmationDialog(
-            "Are you sure you want to sign out?",
+            FeatureUserProfileStrings.SignOut.confirmationTitle,
             isPresented: $viewModel.showSignOutConfirmation,
             titleVisibility: .visible
         ) {
-            Button("Sign Out", role: .destructive) {
+            Button(SharedLocalizedString.Auth.signOut, role: .destructive) {
                 Task {
                     await viewModel.signOut()
                 }
             }
-            Button("Cancel", role: .cancel) {
+            Button(SharedLocalizedString.cancel, role: .cancel) {
                 viewModel.cancelSignOut()
             }
         }
-        .alert("Sign Out Error", isPresented: .constant(viewModel.errorMessage != nil)) {
-            Button("OK") {
+        .alert(
+            FeatureUserProfileStrings.SignOut.errorTitle,
+            isPresented: Binding(
+                get: { viewModel.errorMessage != nil },
+                set: { if !$0 { viewModel.dismissError() } }
+            )
+        ) {
+            Button(SharedLocalizedString.ok) {
                 viewModel.dismissError()
             }
         } message: {
@@ -77,28 +76,30 @@ public struct UserProfileView: View {
             .enableInjection()
         #endif
     }
+}
+
+// MARK: - Subviews
+
+extension UserProfileView {
 
     private var profileHeader: some View {
         VStack(spacing: MindsetLayout.spacing16) {
-            // Avatar
             ZStack {
                 Circle()
                     .fill(MindsetColors.accentOrange.opacity(colorScheme == .dark ? 0.15 : 0.2))
-                    .frame(width: 100, height: 100)
+                    .frame(width: MindsetLayout.avatarSize, height: MindsetLayout.avatarSize)
 
                 Image(systemName: "person.crop.circle.fill")
-                    .font(.system(size: 60))
+                    .font(.system(size: MindsetLayout.avatarIconSize))
                     .foregroundStyle(MindsetColors.accentOrange)
             }
 
-            // Display Name
-            Text(viewModel.displayName ?? "Mindset User")
+            Text(viewModel.displayName ?? FeatureUserProfileStrings.defaultUserName)
                 .font(MindsetFonts.featureTitle)
                 .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
 
-            // User ID (truncated)
             if let userID = viewModel.userID {
-                Text("ID: \(userID.prefix(8))...")
+                Text("\(FeatureUserProfileStrings.userIdPrefix) \(userID.prefix(8))...")
                     .font(MindsetFonts.caption)
                     .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
             }
@@ -109,94 +110,91 @@ public struct UserProfileView: View {
 
     private var accountSection: some View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing12) {
-            Text("Account")
+            Text(SharedLocalizedString.Auth.account)
                 .font(MindsetFonts.sectionHeader)
                 .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
                 .padding(.horizontal, MindsetLayout.paddingMedium)
 
-            VStack(spacing: 0) {
-                accountRow(
-                    icon: "checkmark.shield.fill",
-                    title: "Signed In",
-                    subtitle: "Your data is secure",
-                    color: MindsetColors.successEmerald,
-                    colorScheme: colorScheme
-                )
+            accountCard
+        }
+    }
 
-                Rectangle()
-                    .fill(MindsetColors.stoicSlateSoft)
-                    .frame(height: 1)
-                    .padding(.leading, 60)
-
-                accountRow(
-                    icon: "icloud.fill",
-                    title: "Cloud Sync",
-                    subtitle: "All devices synced",
-                    color: MindsetColors.accentBlue,
-                    colorScheme: colorScheme
+    @ViewBuilder
+    private var accountCard: some View {
+        if #available(iOS 26, *) {
+            accountCardRows
+                .glassEffect(.regular, in: .rect(cornerRadius: MindsetLayout.radiusCard))
+        } else {
+            accountCardRows
+                .background(
+                    RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
+                        .fill(MindsetColors.backgroundCard(for: colorScheme))
                 )
-            }
-            .background(
-                RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
-                    .fill(MindsetColors.backgroundCard(for: colorScheme))
+        }
+    }
+
+    private var accountCardRows: some View {
+        VStack(spacing: 0) {
+            AccountRow(
+                icon: "checkmark.shield.fill",
+                title: FeatureUserProfileStrings.Account.signedInTitle,
+                subtitle: FeatureUserProfileStrings.Account.signedInSubtitle,
+                color: MindsetColors.successEmerald
+            )
+
+            Rectangle()
+                .fill(MindsetColors.stoicSlateSoft)
+                .frame(height: MindsetLayout.borderWidth)
+                .padding(.leading, MindsetLayout.iconButtonLarge + MindsetLayout.spacing16)
+
+            AccountRow(
+                icon: "icloud.fill",
+                title: FeatureUserProfileStrings.Account.cloudSyncTitle,
+                subtitle: FeatureUserProfileStrings.Account.cloudSyncSubtitle,
+                color: MindsetColors.accentBlue
             )
         }
     }
 
-    private func accountRow(
-        icon: String, title: String, subtitle: String, color: Color, colorScheme: ColorScheme
-    ) -> some View {
-        HStack(spacing: MindsetLayout.spacing16) {
-            ZStack {
-                Circle()
-                    .fill(color.opacity(colorScheme == .dark ? 0.15 : 0.2))
-                    .frame(width: 44, height: 44)
-
-                Image(systemName: icon)
-                    .font(.system(size: 20))
-                    .foregroundStyle(color)
-            }
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(MindsetFonts.bodyMedium)
-                    .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
-
-                Text(subtitle)
-                    .font(MindsetFonts.caption)
-                    .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
-            }
-
-            Spacer()
+    @ViewBuilder
+    private var signOutButton: some View {
+        if #available(iOS 26, *) {
+            signOutButtonBase
+                .glassEffect(
+                    .regular.tint(MindsetColors.accentCoral.opacity(0.15)).interactive(),
+                    in: .rect(cornerRadius: MindsetLayout.radiusButton)
+                )
+        } else {
+            signOutButtonBase
+                .background(
+                    RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
+                        .fill(MindsetColors.accentCoral.opacity(colorScheme == .dark ? 0.1 : 0.15))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
+                                .stroke(
+                                    MindsetColors.accentCoral.opacity(
+                                        colorScheme == .dark ? 0.3 : 0.4),
+                                    lineWidth: MindsetLayout.borderWidth)
+                        )
+                )
         }
-        .padding(MindsetLayout.paddingMedium)
     }
 
-    private var signOutButton: some View {
+    private var signOutButtonBase: some View {
         Button {
             HapticManager.selection()
             viewModel.confirmSignOut()
         } label: {
             HStack(spacing: MindsetLayout.spacing12) {
                 Image(systemName: "rectangle.portrait.and.arrow.right")
-                    .font(.system(size: 18))
+                    .font(.system(size: MindsetLayout.iconLarge))
 
-                Text("Sign Out")
+                Text(SharedLocalizedString.Auth.signOut)
                     .font(MindsetFonts.button)
             }
             .foregroundStyle(MindsetColors.accentCoral)
             .frame(maxWidth: .infinity)
             .frame(height: MindsetLayout.buttonHeight)
-            .background(
-                RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
-                    .fill(MindsetColors.accentCoral.opacity(colorScheme == .dark ? 0.1 : 0.15))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
-                    .stroke(
-                        MindsetColors.accentCoral.opacity(colorScheme == .dark ? 0.3 : 0.4),
-                        lineWidth: 1)
-            )
         }
         .disabled(viewModel.isSigningOut)
     }
@@ -211,7 +209,7 @@ public struct UserProfileView: View {
                     .tint(MindsetColors.accentOrange)
                     .scaleEffect(1.5)
 
-                Text("Signing out...")
+                Text(FeatureUserProfileStrings.SignOut.signingOut)
                     .font(MindsetFonts.button)
                     .foregroundStyle(MindsetColors.textPrimary)
             }
@@ -221,6 +219,46 @@ public struct UserProfileView: View {
                     .fill(MindsetColors.backgroundDarkSoft)
             )
         }
+    }
+}
+
+// MARK: - AccountRow
+
+private struct AccountRow: View {
+    let icon: String
+    let title: String
+    let subtitle: String
+    let color: Color
+
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        HStack(spacing: MindsetLayout.spacing16) {
+            ZStack {
+                Circle()
+                    .fill(color.opacity(colorScheme == .dark ? 0.15 : 0.2))
+                    .frame(
+                        width: MindsetLayout.iconButtonLarge,
+                        height: MindsetLayout.iconButtonLarge)
+
+                Image(systemName: icon)
+                    .font(.system(size: MindsetLayout.iconLarge))
+                    .foregroundStyle(color)
+            }
+
+            VStack(alignment: .leading, spacing: MindsetLayout.spacing4) {
+                Text(title)
+                    .font(MindsetFonts.bodyMedium)
+                    .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
+
+                Text(subtitle)
+                    .font(MindsetFonts.caption)
+                    .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
+            }
+
+            Spacer()
+        }
+        .padding(MindsetLayout.paddingMedium)
     }
 }
 
