@@ -8,24 +8,24 @@
 import Domain
 
 public final class MockSubscriptionService: SubscriptionService, @unchecked Sendable {
-    public var isPremium: Bool
+    public var isPro: Bool
 
-    public init(isPremium: Bool = true) {
-        self.isPremium = isPremium
+    public init(isPro: Bool = false) {
+        self.isPro = isPro
     }
 
     public func checkSubscriptionStatus() async -> Bool {
         // Simulate a network delay
         try? await Task.sleep(for: .seconds(0.5))
-        return isPremium
+        return isPro
     }
 
     public func restorePurchases() async throws -> Bool {
-        return isPremium
+        return isPro
     }
 
     public func purchasePro() async throws -> Bool {
-        isPremium = true
-        return isPremium
+        isPro = true
+        return isPro
     }
 }

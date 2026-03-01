@@ -48,7 +48,7 @@ public final class MorningRitualViewModel {
     public var earnedXP: Int = 0
     public var generatedArchetype: String = "The Explorer"
     private var onDismiss: (() -> Void)?
-    private var isPremium: Bool = false
+    private var isPro: Bool = false
 
     public var shouldShowTextField: Bool {
         currentStepIndex < prompts.count
@@ -88,7 +88,7 @@ public final class MorningRitualViewModel {
         self.onNavigate = onNavigate
         self.onDismiss = onDismiss
         Task {
-            self.isPremium = await subscriptionService.checkSubscriptionStatus()
+            self.isPro = await subscriptionService.checkSubscriptionStatus()
         }
         Task { await prepareRitual() }
        
@@ -278,7 +278,7 @@ public final class MorningRitualViewModel {
     }
 
     public func completeRitual() {
-        if isPremium {
+        if isPro {
             onNavigate?(.success(archetype: generatedArchetype, xp: earnedXP))
         } else {
             onNavigate?(.paywall)
