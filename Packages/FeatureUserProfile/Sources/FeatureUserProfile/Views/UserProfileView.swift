@@ -114,43 +114,32 @@ extension UserProfileView {
                 .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
                 .padding(.horizontal, MindsetLayout.paddingMedium)
 
-            accountCard
-        }
-    }
-
-    @ViewBuilder
-    private var accountCard: some View {
-        if #available(iOS 26, *) {
             accountCardRows
-                .glassEffect(.regular, in: .rect(cornerRadius: MindsetLayout.radiusCard))
-        } else {
-            accountCardRows
-                .background(
-                    RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
-                        .fill(MindsetColors.backgroundCard(for: colorScheme))
-                )
+                .mindsetCard()
         }
     }
 
     private var accountCardRows: some View {
         VStack(spacing: 0) {
+            // A Row that navigates
+            AccountNavigationRow(
+                icon: "person.badge.key.fill",
+                title: "Security Settings",
+                subtitle: "Manage your recovery keys",
+                color: MindsetColors.accentOrange,
+                action: {
+             //       viewModel.navigateToSecurity()
+                }
+            )
+
+            divider // Your existing Rectangle() divider
+
+            // A static row (like your current "Signed In" indicator)
             AccountRow(
                 icon: "checkmark.shield.fill",
                 title: FeatureUserProfileStrings.Account.signedInTitle,
                 subtitle: FeatureUserProfileStrings.Account.signedInSubtitle,
                 color: MindsetColors.successEmerald
-            )
-
-            Rectangle()
-                .fill(MindsetColors.stoicSlateSoft)
-                .frame(height: MindsetLayout.borderWidth)
-                .padding(.leading, MindsetLayout.iconButtonLarge + MindsetLayout.spacing16)
-
-            AccountRow(
-                icon: "icloud.fill",
-                title: FeatureUserProfileStrings.Account.cloudSyncTitle,
-                subtitle: FeatureUserProfileStrings.Account.cloudSyncSubtitle,
-                color: MindsetColors.accentBlue
             )
         }
     }
@@ -219,45 +208,11 @@ extension UserProfileView {
             )
         }
     }
-}
-
-// MARK: - AccountRow
-
-private struct AccountRow: View {
-    let icon: String
-    let title: String
-    let subtitle: String
-    let color: Color
-
-    @Environment(\.colorScheme) private var colorScheme
-
-    var body: some View {
-        HStack(spacing: MindsetLayout.spacing16) {
-            ZStack {
-                Circle()
-                    .fill(color.opacity(colorScheme == .dark ? 0.15 : 0.2))
-                    .frame(
-                        width: MindsetLayout.iconButtonLarge,
-                        height: MindsetLayout.iconButtonLarge)
-
-                Image(systemName: icon)
-                    .font(.system(size: MindsetLayout.iconLarge))
-                    .foregroundStyle(color)
-            }
-
-            VStack(alignment: .leading, spacing: MindsetLayout.spacing4) {
-                Text(title)
-                    .font(MindsetFonts.bodyMedium)
-                    .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
-
-                Text(subtitle)
-                    .font(MindsetFonts.caption)
-                    .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
-            }
-
-            Spacer()
-        }
-        .padding(MindsetLayout.paddingMedium)
+    
+    private var divider: some View {
+        MindsetColors.stoicSlateSoft
+            .frame(height: 0.5)
+            .padding(.leading, MindsetLayout.iconButtonLarge + MindsetLayout.spacing30)
     }
 }
 

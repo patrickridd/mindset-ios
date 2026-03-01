@@ -50,7 +50,7 @@ struct SignOutConfirmationSheet: View {
 
     @ViewBuilder
     private var confirmButton: some View {
-        let base = Button {
+        let button = Button {
             HapticManager.action()
             dismiss()
             onConfirm()
@@ -63,13 +63,13 @@ struct SignOutConfirmationSheet: View {
         }
 
         if #available(iOS 26, *) {
-            base
+            button
                 .glassEffect(
                     .regular.tint(MindsetColors.accentCoral.opacity(0.15)).interactive(),
                     in: .rect(cornerRadius: MindsetLayout.radiusButton)
                 )
         } else {
-            base
+            button
                 .background(
                     RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
                         .fill(MindsetColors.accentCoral.opacity(colorScheme == .dark ? 0.1 : 0.15))
