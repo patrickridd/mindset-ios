@@ -8,6 +8,7 @@
 import Domain
 import Foundation
 import Observation
+import SharedUtils
 
 @Observable
 @MainActor
@@ -19,19 +20,31 @@ public final class UserProfileViewModel {
     private let authService: AuthService
     private let userRepository: UserRepository
     private let onSignOut: () -> Void
+    private var onNavigateToSecurity: () -> Void
 
     public var userID: String?
     public var displayName: String?
 
+    // This property acts as the UI state
+    var useMocks: Bool {
+        get { DebugSettings.shared.useMocks }
+        set {
+            DebugSettings.shared.useMocks = newValue
+            // Trigger haptic or log here since it's a debug action
+            DebugLogger.shared.add("🧪 Debug: Mocks set to \(newValue)")
+        }
+    }
+
     public init(
         authService: AuthService,
         userRepository: UserRepository,
+        onNavigateToSecurity: @escaping () -> Void,
         onSignOut: @escaping () -> Void
     ) {
         self.authService = authService
         self.userRepository = userRepository
         self.onSignOut = onSignOut
-
+        self.onNavigateToSecurity = onNavigateToSecurity
         Task {
             await loadUserInfo()
         }
@@ -52,12 +65,19 @@ public final class UserProfileViewModel {
         }
     }
 
+    // MARK: Navigation State
+    
     public func confirmSignOut() {
         showSignOutConfirmation = true
     }
 
     public func cancelSignOut() {
         showSignOutConfirmation = false
+    }
+    
+    func navigateToSecurity() {
+        HapticManager.selection()
+        onNavigateToSecurity()
     }
 
     public func signOut() async {

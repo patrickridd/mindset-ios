@@ -91,6 +91,9 @@ struct AppViewFactory: MainViewFactory {
         let profileViewModel = UserProfileViewModel(
             authService: authService,
             userRepository: userRepository,
+            onNavigateToSecurity: {
+                
+            },
             onSignOut: {
                 coordinator.signOutCompleted()
             }
@@ -103,6 +106,20 @@ struct AppViewFactory: MainViewFactory {
                 historyView: AnyView(MindsetHistoryView(viewModel: historyViewModel)),
                 profileView: AnyView(UserProfileView(viewModel: profileViewModel)))
         )
+    }
+
+    func makeUserProfileView() -> AnyView {
+        let profileViewModel = UserProfileViewModel(
+            authService: authService,
+            userRepository: userRepository,
+            onNavigateToSecurity: {
+                
+            },
+            onSignOut: {
+                coordinator.signOutCompleted()
+            }
+        )
+        return AnyView(UserProfileView(viewModel: profileViewModel))
     }
 
     func makeMindsetView() -> AnyView {

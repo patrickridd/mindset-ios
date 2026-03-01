@@ -32,6 +32,9 @@ public struct UserProfileView: View {
                 VStack(spacing: MindsetLayout.spacing24) {
                     profileHeader
                     accountSection
+                    #if DEBUG
+                    debugSection
+                    #endif
                     signOutButton
                     Spacer()
                 }
@@ -209,6 +212,24 @@ extension UserProfileView {
         }
     }
     
+#if DEBUG
+    private var debugSection: some View {
+        VStack(alignment: .leading, spacing: MindsetLayout.spacing12) {
+            Text("DEBUG TOOLS")
+                .font(MindsetFonts.sectionHeader)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, MindsetLayout.paddingMedium)
+            
+            VStack(spacing: 0) {
+                Toggle("Use Mock Services", isOn: $viewModel.useMocks)
+                    .font(MindsetFonts.bodyMedium)
+                    .padding(MindsetLayout.paddingMedium)
+            }
+            .mindsetCard()
+        }
+    }
+#endif
+
     private var divider: some View {
         MindsetColors.stoicSlateSoft
             .frame(height: 0.5)
@@ -222,6 +243,7 @@ extension UserProfileView {
     let viewModel = UserProfileViewModel(
         authService: mockAuthService,
         userRepository: mockUserRepository,
+        onNavigateToSecurity: {},
         onSignOut: {}
     )
     return UserProfileView(viewModel: viewModel)
