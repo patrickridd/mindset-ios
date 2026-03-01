@@ -52,7 +52,7 @@ public struct UserProfileView: View {
                     viewModel.cancelSignOut()
                 }
             )
-            .presentationDetents([.medium])
+            .presentationDetents([.height(MindsetLayout.detentSmall)])
             .presentationDragIndicator(.visible)
             .presentationCornerRadius(MindsetLayout.radiusCardLarge)
         }

@@ -74,4 +74,8 @@ public enum MindsetLayout {
     public static let shadowRadius: CGFloat = 5
     public static let shadowY: CGFloat = -5
     public static let glowBlurRadius: CGFloat = 20
+    
+    // MARK: - Detents
+    
+    public static let detentSmall: CGFloat = 250
 }
