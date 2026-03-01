@@ -6,6 +6,7 @@
 //
 
 import Domain
+import SharedUI
 import SwiftUI
 
 public protocol MainViewFactory {
@@ -38,7 +39,7 @@ public struct MainCoordinatorView: View {
             }
         }
         // Full Screen Cover Layer (paywall, mindset ritual, ritualSuccess)
-        .fullScreenCover(item: $coordinator.fullScreenState) { state in
+        .debugFullScreenCover(item: $coordinator.fullScreenState) { state in
             switch state {
             case .paywall:
                 factory.makePaywallView()
@@ -49,7 +50,7 @@ public struct MainCoordinatorView: View {
             }
         }
         // Sheet Layer (for other modals)
-        .sheet(item: $coordinator.sheetState) { state in
+        .debugSheet(item: $coordinator.sheetState) { state in
             switch state {
             case .ritualSuccess(let archetype, let xp):
                 factory.makeRitualSuccessView(archetype: archetype, xp: xp)
