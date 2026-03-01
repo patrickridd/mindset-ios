@@ -89,7 +89,7 @@ private extension MorningRitualView {
         if viewModel.isLoading && viewModel.prompts.isEmpty || viewModel.isRitualCompleteAnimationDone {
             initialLoadingOverlay
         } else if viewModel.displayRitualSuccessAnimation {
-            MindsetAnimation(name: "Checkmark-Success-Animation", loopMode: .playOnce) {
+            MindsetAnimation(name: "Checkmark-Animation", loopMode: .playOnce) {
                 // This triggers automatically when the .lottie file ends
                 withAnimation(.easeInOut(duration: 0.5)) {
                     viewModel.isRitualCompleteAnimationDone = true

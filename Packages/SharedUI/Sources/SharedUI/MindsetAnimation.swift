@@ -27,27 +27,26 @@ public struct MindsetAnimation: View {
         self.speed = speed
         self.onCompleted = onCompleted
     }
-    
+
     public var body: some View {
-        LottieView(animation: .named(name, bundle: .module))
-            .configure { lottie in
-                lottie.animationSpeed = speed
-                lottie.contentMode = .scaleAspectFit
-            }
-            .playbackMode(isPlaying ? .playing(.fromProgress(0, toProgress: 1, loopMode: loopMode)) : .paused)
-            .animationDidFinish { completed in
-                if completed {
-                    onCompleted?()
-                }
-            }
-            .resizable()
-            .scaledToFit()
-            .onAppear {
-                isPlaying = true
-            }
+        LottieView {
+            try await DotLottieFile.named(name, bundle: .module)
+        }
+        .configure { lottie in
+            lottie.animationSpeed = speed
+            lottie.contentMode = .scaleAspectFit
+            lottie.configuration.renderingEngine = .mainThread
+        }
+        .playbackMode(isPlaying ? .playing(.fromProgress(0, toProgress: 1, loopMode: loopMode)) : .paused)
+        .animationDidFinish { completed in
+            if completed { onCompleted?() }
+        }
+        .resizable()
+        .scaledToFit()
+        .onAppear { isPlaying = true }
     }
 }
 
 #Preview {
-    MindsetAnimation(name: "Checkmark-Success-Animation")
+    MindsetAnimation(name: "Checkmark-Animation")
 }
