@@ -205,30 +205,6 @@
         }
       }
     },
-    "profile.debugTools.sectionHeader" : {
-      "comment" : "Section header label above the debug toggles card",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Debug"
-          }
-        }
-      }
-    },
-    "profile.debugTools.useMockServices" : {
-      "comment" : "Toggle label for switching between mock and real services",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Use Mock Services"
-          }
-        }
-      }
-    },
     "profile.debugTools.rowSubtitle" : {
       "comment" : "Subtitle shown on the Debug Tools navigation row in the profile screen",
       "extractionState" : "manual",

@@ -71,14 +71,6 @@ public struct UserProfileView: View {
                 Text(error)
             }
         }
-        .alert("Restarting App", isPresented: $viewModel.showRestartAlert) {
-            Button(SharedLocalizedString.ok, role: .cancel) {
-                HapticManager.action()
-                viewModel.restartApp()
-            }
-        } message: {
-            Text(viewModel.environmentDescription)
-        }
     }
 }
 

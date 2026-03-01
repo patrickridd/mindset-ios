@@ -20,6 +20,7 @@
 		21AAACCD2F1DEF3600BFF7D4 /* FeatureHistory in Frameworks */ = {isa = PBXBuildFile; productRef = 21AAACCC2F1DEF3600BFF7D4 /* FeatureHistory */; };
 		21B9DED32F0F5BE6000FA365 /* FeatureSubscription in Frameworks */ = {isa = PBXBuildFile; productRef = 21B9DED22F0F5BE6000FA365 /* FeatureSubscription */; };
 		21BA432D2F0DEDEF0013B0C9 /* FeatureMindset in Frameworks */ = {isa = PBXBuildFile; productRef = 21BA432C2F0DEDEF0013B0C9 /* FeatureMindset */; };
+		21BB0A4A2F54FA2200958F2B /* Development in Frameworks */ = {isa = PBXBuildFile; productRef = 21BB0A492F54FA2200958F2B /* Development */; };
 		21D3BCC02F2FE115005A8D2F /* FeatureAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 21D3BCBF2F2FE115005A8D2F /* FeatureAuth */; };
 		21F0B9E02F0F67B1008710CE /* FeatureDashboard in Frameworks */ = {isa = PBXBuildFile; productRef = 21F0B9DF2F0F67B1008710CE /* FeatureDashboard */; };
 /* End PBXBuildFile section */
@@ -97,6 +98,7 @@
 				214565412F3034E500C4DB49 /* FirebaseAuth in Frameworks */,
 				21AAACCD2F1DEF3600BFF7D4 /* FeatureHistory in Frameworks */,
 				2134C6C22F26A14700CB6D8B /* SharedUI in Frameworks */,
+				21BB0A4A2F54FA2200958F2B /* Development in Frameworks */,
 				21F0B9E02F0F67B1008710CE /* FeatureDashboard in Frameworks */,
 				2187FBA62F0A1E5400C028A9 /* Domain in Frameworks */,
 			);
@@ -183,6 +185,7 @@
 				214565402F3034E500C4DB49 /* FirebaseAuth */,
 				214565422F3034F600C4DB49 /* FirebaseFirestore */,
 				213E05A72F3045D4009223A6 /* FeatureUserProfile */,
+				21BB0A492F54FA2200958F2B /* Development */,
 			);
 			productName = "mindset-ios";
 			productReference = 21DE280D2F08CCB900266CF8 /* mindset-ios.app */;
@@ -282,6 +285,7 @@
 				2145653F2F3034C300C4DB49 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				21E0DB3E2F30362E004FC166 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				213E05A62F3045BA009223A6 /* XCLocalSwiftPackageReference "Packages/FeatureUserProfile" */,
+				21791F122F54F53A00049A55 /* XCLocalSwiftPackageReference "Packages/Development" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 21DE280E2F08CCB900266CF8 /* Products */;
@@ -706,6 +710,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/SharedUI;
 		};
+		21791F122F54F53A00049A55 /* XCLocalSwiftPackageReference "Packages/Development" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/Development;
+		};
 		2187FBA42F0A1E4C00C028A9 /* XCLocalSwiftPackageReference "Packages/Domain" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/Domain;
@@ -831,6 +839,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 21BA432B2F0DEDD70013B0C9 /* XCLocalSwiftPackageReference "Packages/FeatureMindset" */;
 			productName = FeatureMindset;
+		};
+		21BB0A492F54FA2200958F2B /* Development */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 21791F122F54F53A00049A55 /* XCLocalSwiftPackageReference "Packages/Development" */;
+			productName = Development;
 		};
 		21D3BCBF2F2FE115005A8D2F /* FeatureAuth */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -1,0 +1,42 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "development.debugTools.sectionHeader" : {
+      "comment" : "Section header label above the debug toggles card on the Debug Tools screen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Debug"
+          }
+        }
+      }
+    },
+    "development.debugTools.useMockServices" : {
+      "comment" : "Toggle label for switching between mock and real services",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use Mock Services"
+          }
+        }
+      }
+    },
+    "development.debugTools.restartingApp" : {
+      "comment" : "Alert title shown when the app is about to restart after toggling services",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restarting App"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

@@ -7,6 +7,9 @@
 
 import Data
 import Domain
+#if DEBUG
+import Development
+#endif
 import FeatureAuth
 import FeatureDashboard
 import FeatureHistory
@@ -115,17 +118,21 @@ struct AppViewFactory: MainViewFactory {
                 #endif
             }
         )
+        #if DEBUG
+        let debugViewModel = DebugToolsViewModel()
+        #endif
 
         return AnyView(
             NavigationStack(path: Bindable(coordinator).profilePath) {
                 UserProfileView(viewModel: profileViewModel)
                     .navigationDestination(for: ProfileDestination.self) { destination in
                         switch destination {
+                        #if DEBUG
                         case .debugTools:
-                            DebugToolsView(viewModel: profileViewModel)
+                            DebugToolsView(viewModel: debugViewModel)
+                                .navigationTitle(FeatureUserProfileStrings.DebugTools.title)
+                        #endif
                         case .security:
-                            EmptyView()
-                        @unknown default:
                             EmptyView()
                         }
                     }

@@ -8,14 +8,12 @@
 import Domain
 import Foundation
 import Observation
-import SharedUtils
 
 @Observable
 @MainActor
 public final class UserProfileViewModel {
     public var isSigningOut = false
     public var showSignOutConfirmation = false
-    var showRestartAlert = false
     var errorMessage: String?
 
     private let authService: AuthService
@@ -26,20 +24,6 @@ public final class UserProfileViewModel {
 
     public var userID: String?
     public var displayName: String?
-
-    // This property acts as the UI state
-    var useMocks: Bool {
-        get { DebugSettings.shared.useMocks }
-        set {
-            DebugSettings.shared.useMocks = newValue
-            showRestartAlert = true
-            DebugLogger.shared.add(environmentDescription)
-        }
-    }
-    
-    var environmentDescription: String {
-        "Toggled to: \(DebugSettings.shared.useMocks ? " 🧪 Debug (mocks)" : " 🌐 Production")"
-    }
 
     public init(
         authService: AuthService,
@@ -114,9 +98,5 @@ public final class UserProfileViewModel {
 
     public func dismissError() {
         errorMessage = nil
-    }
-
-    func restartApp() {
-        NotificationCenter.default.post(name: .restartApp, object: nil)
     }
 }

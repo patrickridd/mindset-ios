@@ -1,19 +1,18 @@
 //
 //  DebugToolsView.swift
-//  FeatureUserProfile
+//  Development
 //
 
-#if DEBUG
-import Domain
+import SharedLocalization
 import SharedUI
 import SharedUtils
 import SwiftUI
 
 public struct DebugToolsView: View {
-    @Bindable var viewModel: UserProfileViewModel
+    @Bindable var viewModel: DebugToolsViewModel
     @Environment(\.colorScheme) private var colorScheme
 
-    public init(viewModel: UserProfileViewModel) {
+    public init(viewModel: DebugToolsViewModel) {
         self.viewModel = viewModel
     }
 
@@ -33,14 +32,13 @@ public struct DebugToolsView: View {
                 .padding(.top, MindsetLayout.spacing30)
             }
         }
-        .navigationTitle(FeatureUserProfileStrings.DebugTools.title)
         .navigationBarTitleDisplayMode(.inline)
-        .alert("Restarting App", isPresented: $viewModel.showRestartAlert) {
+        .alert(DevelopmentStrings.DebugTools.restartingApp, isPresented: $viewModel.showRestartAlert) {
             Button(role: .cancel) {
                 HapticManager.action()
                 viewModel.restartApp()
             } label: {
-                Text("OK")
+                Text(SharedLocalizedString.ok)
             }
         } message: {
             Text(viewModel.environmentDescription)
@@ -53,13 +51,13 @@ public struct DebugToolsView: View {
 private extension DebugToolsView {
     var servicesSection: some View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing12) {
-            Text(FeatureUserProfileStrings.DebugTools.sectionHeader)
+            Text(DevelopmentStrings.DebugTools.sectionHeader)
                 .font(MindsetFonts.sectionHeader)
                 .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
                 .padding(.horizontal, MindsetLayout.paddingMedium)
 
             VStack(spacing: 0) {
-                Toggle(FeatureUserProfileStrings.DebugTools.useMockServices, isOn: $viewModel.useMocks)
+                Toggle(DevelopmentStrings.DebugTools.useMockServices, isOn: $viewModel.useMocks)
                     .font(MindsetFonts.bodyMedium)
                     .tint(MindsetColors.accentOrange)
                     .padding(MindsetLayout.paddingMedium)
@@ -71,14 +69,7 @@ private extension DebugToolsView {
 
 #Preview {
     NavigationStack {
-        DebugToolsView(
-            viewModel: UserProfileViewModel(
-                authService: MockAuthService(),
-                userRepository: MockUserRepository(),
-                onNavigateToSecurity: {},
-                onSignOut: {}
-            )
-        )
+        DebugToolsView(viewModel: DebugToolsViewModel())
+            .navigationTitle("Debug Tools")
     }
 }
-#endif
