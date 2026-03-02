@@ -26,6 +26,12 @@ public struct MorningRitualView: View {
             mainContentOrLoading
             coachTipOverlay
         }
+        .animation(
+            .spring(
+                response: Self.springAnimationResponse,
+                dampingFraction: Self.springAnimationDamping),
+            value: viewModel.isCoachTipVisible
+        )
     }
 }
 
@@ -311,11 +317,7 @@ private extension MorningRitualView {
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .blur(radius: viewModel.isCoachTipVisible ? Self.blurRadius : 0, opaque: false)
-        .animation(
-            viewModel.isCoachTipVisible
-                ? .easeIn(duration: Self.animationDurationBlur) : .linear(duration: 0),
-            value: viewModel.isCoachTipVisible
-        )
+        .animation(.easeIn(duration: Self.animationDurationBlur), value: viewModel.isCoachTipVisible)
     }
 
     var keyboardBarOverlay: some View {
@@ -354,11 +356,6 @@ private extension MorningRitualView {
                     removal: .opacity
                 )
             )
-            .animation(
-                .spring(
-                    response: Self.springAnimationResponse,
-                    dampingFraction: Self.springAnimationDamping),
-                value: viewModel.isCoachTipVisible)
         }
     }
 
@@ -428,9 +425,11 @@ private extension MorningRitualView {
                         reflection: viewModel.currentAiReflection,
                         isThinking: viewModel.isAiThinking
                     )
+                    .transition(.opacity.combined(with: .offset(y: Self.promptFadeInOffsetY)))
                     .padding(.top)
                 }
             }
+            .animation(.easeOut(duration: Self.promptFadeInDuration), value: viewModel.isAiThinking)
             .id(prompt.id)
             .transition(stepTransition)
         }
@@ -489,8 +488,15 @@ private extension MorningRitualView {
                 .buttonStyle(.plain)
                 .disabled(viewModel.isFooterButtonDisabled)
                 .padding()
+                .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
+        .animation(
+            .spring(
+                response: Self.springAnimationResponse,
+                dampingFraction: Self.springAnimationDamping),
+            value: viewModel.shouldDisplayFooterButton
+        )
     }
 
     private func handleNextStep() {
