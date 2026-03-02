@@ -123,7 +123,7 @@ extension UserProfileView {
                 title: "Security Settings",
                 subtitle: "Manage your recovery keys",
                 color: MindsetColors.accentOrange,
-                action: {
+                navigationAction: {
              //       viewModel.navigateToSecurity()
                 }
             )
@@ -197,7 +197,7 @@ extension UserProfileView {
                     title: FeatureUserProfileStrings.DebugTools.title,
                     subtitle: FeatureUserProfileStrings.DebugTools.rowSubtitle,
                     color: MindsetColors.stoicSlate,
-                    action: { viewModel.navigateToDebugTools() }
+                    navigationAction: { viewModel.navigateToDebugTools() }
                 )
             }
             .mindsetCard()
