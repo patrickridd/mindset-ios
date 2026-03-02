@@ -34,7 +34,7 @@ public struct UserProfileView: View {
                     #endif
                     signOutButton
                 }
-                .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
+                .padding(.horizontal, MindsetLayout.paddingMedium)
                 .padding(.top, MindsetLayout.spacing30)
             }
 
@@ -122,8 +122,8 @@ extension UserProfileView {
         VStack(spacing: 0) {
             AccountNavigationRow(
                 icon: "person.badge.key.fill",
-                title: "Security Settings",
-                subtitle: "Manage your recovery keys",
+                title: "Security and Privacy",
+                subtitle: "Password, device security, data protection",
                 color: MindsetColors.accentOrange,
                 navigationAction: { viewModel.navigateToSecurity() }
             )
