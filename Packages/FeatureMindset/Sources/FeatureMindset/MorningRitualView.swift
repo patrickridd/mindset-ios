@@ -307,7 +307,7 @@ private extension MorningRitualView {
                 }
             }
         }
-        .scrollDismissesKeyboard(.interactively)
+        .scrollDismissesKeyboard(.never)
     }
 
     var footerOverlay: some View {
