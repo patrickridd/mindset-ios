@@ -45,8 +45,8 @@ private extension MorningRitualView {
     private static let animationDurationNextStep: Double = 0.35
     private static let springAnimationResponse: Double = 0.35
     private static let springAnimationDamping: Double = 0.82
-    private static let promptAnimationSpringResponse: Double = 0.4
-    private static let promptAnimationSpringDamping: Double = 0.8
+    private static let promptFadeInDuration: Double = 0.55
+    private static let promptFadeInOffsetY: CGFloat = 10
     private static let scaleTransitionFactor: CGFloat = 0.94
     private static let placeholderExitOffset: CGFloat = -10  // Small upward offset for smooth exit
 }
@@ -55,24 +55,16 @@ private extension MorningRitualView {
 private extension MorningRitualView {
     enum PromptContentPhase: CaseIterable, Identifiable {
         case generating
-        case typing
         case `static`
 
         var id: Self { self }
     }
 
     var currentPromptContentPhase: PromptContentPhase {
-        guard viewModel.currentPrompt != nil else {
+        guard viewModel.currentPrompt != nil, !viewModel.isGeneratingPrompt else {
             return .generating
         }
-
-        if viewModel.isGeneratingPrompt {
-            return .generating
-        } else if viewModel.shouldAnimateCurrentPrompt {
-            return .typing
-        } else {
-            return .static
-        }
+        return .static
     }
 }
 
@@ -402,20 +394,6 @@ private extension MorningRitualView {
                                 )
                             )
 
-                        case .typing:
-                            TypewriterText(
-                                text: prompt.questionText,
-                                font: MindsetFonts.promptQuestion,
-                                color: MindsetColors.textPrimaryAdaptive(for: colorScheme),
-                                isHapticEnabled: false,
-                                onComplete: {
-                                    viewModel.markCurrentPromptAnimated()
-                                }
-                            )
-                            .multilineTextAlignment(.leading)
-                            .lineSpacing(MindsetLayout.spacing4)
-                            .padding([.horizontal, .top], MindsetLayout.paddingSmall)
-                            .transition(.opacity)
                         case .static:
                             Text(prompt.questionText)
                                 .font(MindsetFonts.promptQuestion)
@@ -425,17 +403,17 @@ private extension MorningRitualView {
                                 .multilineTextAlignment(.leading)
                                 .lineSpacing(MindsetLayout.spacing4)
                                 .padding([.horizontal, .top], MindsetLayout.paddingSmall)
-                                .transition(.opacity)
+                                .transition(
+                                    .opacity.combined(with: .offset(y: Self.promptFadeInOffsetY))
+                                )
+                                .onAppear { viewModel.markCurrentPromptAnimated() }
                         }
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .topLeading)
                 .frame(minHeight: Self.phaseContainerMinHeight, alignment: .topLeading)
-                .id(currentPromptContentPhase)  // Stabilize identity for phase transitions
                 .animation(
-                    .spring(
-                        response: Self.promptAnimationSpringResponse,
-                        dampingFraction: Self.promptAnimationSpringDamping),
+                    .easeOut(duration: Self.promptFadeInDuration),
                     value: currentPromptContentPhase
                 )
                 .padding(.top)
