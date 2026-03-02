@@ -15,25 +15,33 @@ struct AccountNavigationRow: View {
     let subtitle: String
     let color: Color
     let navigationAction: () -> Void
-    
+
     @Environment(\.colorScheme) private var colorScheme
-    
+
     var body: some View {
-        Button(action: {
-            HapticManager.selection()
-            navigationAction()
-        }) {
-            HStack(spacing: MindsetLayout.spacing16) {
+        Button(action: handleTap) {
+            HStack(spacing: 0) {
                 AccountRow(icon: icon, title: title, subtitle: subtitle, color: color)
-                
-                Spacer()
-                
-                Image(systemName: "chevron.right")
-                    .font(MindsetFonts.bodyMedium)
-                    .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
-                    .padding(.trailing)
+                chevronIcon
             }
         }
+        .buttonStyle(.plain)
+    }
+
+    private func handleTap() {
+        HapticManager.selection()
+        navigationAction()
+    }
+}
+
+// MARK: - Subviews
+
+extension AccountNavigationRow {
+    private var chevronIcon: some View {
+        Image(systemName: "chevron.right")
+            .font(MindsetFonts.bodyMedium)
+            .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
+            .padding(.trailing, MindsetLayout.paddingMedium)
     }
 }
 
