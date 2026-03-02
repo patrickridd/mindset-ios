@@ -8,7 +8,6 @@
 import Domain
 import Foundation
 import Observation
-import SharedUtils
 
 @Observable
 @MainActor
@@ -18,6 +17,7 @@ public final class DashboardViewModel {
     private let mindsetRepository: MindsetRepository
     private let getStreakUseCase: GetStreakUseCase
     private let getYesterdayGoalUseCase: GetYesterdayGoalUseCase
+    private let logger: AppLogger
 
     // UI State
     public var userProfile: UserProfile?
@@ -42,6 +42,7 @@ public final class DashboardViewModel {
         mindsetRepository: MindsetRepository,
         getStreakUseCase: GetStreakUseCase,
         getYesterdayGoalUseCase: GetYesterdayGoalUseCase,
+        logger: AppLogger,
         onStartMindset: @escaping () -> Void,
         onSeeHistory: @escaping () -> Void
     ) {
@@ -49,6 +50,7 @@ public final class DashboardViewModel {
         self.mindsetRepository = mindsetRepository
         self.getStreakUseCase = getStreakUseCase
         self.getYesterdayGoalUseCase = getYesterdayGoalUseCase
+        self.logger = logger
         self.onStartMindset = onStartMindset
         self.onSeeHistory = onSeeHistory
     }
@@ -82,7 +84,7 @@ public final class DashboardViewModel {
             self.yesterdayGoal = bridgeResult ?? "Yesterday was a great start. Ready to go again?"
 
         } catch {
-            DebugLogger.shared.add("❌ Dashboard load failed: \(error.localizedDescription)")
+            logger.log("❌ Dashboard load failed: \(error.localizedDescription)")
             // Fallback: If fetch fails, we keep existing values or set defaults
         }
 

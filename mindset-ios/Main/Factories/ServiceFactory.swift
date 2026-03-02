@@ -13,21 +13,19 @@ import SharedUtils
 /// Configuration for which services to use (real vs mock)
 struct ServiceConfiguration {
     let useRealServices: Bool
-    
+
     #if DEBUG
     /// In Debug, we check the user's manual toggle.
     /// If useMocks is true, we return a mock config.
     static var `default`: ServiceConfiguration {
-        // useMocks == true means useRealServices == false
         let shouldMock = DebugSettings.shared.useMocks
-        DebugLogger.shared.add("We are in: \(shouldMock ? " 🧪 MOCK" : "🌐 PROD") Environment")
         return ServiceConfiguration(useRealServices: !shouldMock)
     }
     #else
     /// In Release, we ignore DebugSettings and always use Real Services.
     static let `default` = ServiceConfiguration(useRealServices: true)
     #endif
-    
+
     static let production = ServiceConfiguration(useRealServices: true)
     static let mock = ServiceConfiguration(useRealServices: false)
 }
@@ -35,9 +33,12 @@ struct ServiceConfiguration {
 /// Factory for creating app services with real or mock implementations
 struct ServiceFactory {
     let config: ServiceConfiguration
-    
-    init(config: ServiceConfiguration = .default) {
+    private let logger: AppLogger
+
+    init(config: ServiceConfiguration = .default, logger: AppLogger) {
         self.config = config
+        self.logger = logger
+        logger.log("We are in: \(config.useRealServices ? "🌐 PROD" : "🧪 MOCK") Environment")
     }
     
     // MARK: - Service Creation
@@ -61,7 +62,7 @@ struct ServiceFactory {
     func makeAIService() -> AIAnalysisService {
         if config.useRealServices {
             let apiKey = AppConfig.geminiAPIKey
-            return GeminiAIService(apiKey: apiKey)
+            return GeminiAIService(apiKey: apiKey, logger: logger)
         } else {
             return MockAIService()
         }

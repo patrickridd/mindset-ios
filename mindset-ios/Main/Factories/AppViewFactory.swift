@@ -18,7 +18,6 @@ import FeatureNavigation
 import FeatureOnboarding
 import FeatureSubscription
 import FeatureUserProfile
-import SharedUtils
 import SharedUI
 import SwiftUI
 
@@ -32,16 +31,16 @@ struct AppViewFactory: MainViewFactory {
     let getYesterdayGoalUseCase: GetYesterdayGoalUseCase
     let subscriptionService: SubscriptionService
     let serviceFactory: ServiceFactory
+    let logger: AppLogger
 
     func makeSignInView() -> AnyView {
         let viewModel = SignInViewModel(
             authService: authService,
+            logger: logger,
             onSignInSuccess: { userID in
-                DebugLogger.shared.add("✅ User signed in: \(userID)")
                 coordinator.signInCompleted()
             },
             onSkip: {
-                DebugLogger.shared.add("⏭️ User skipped sign in (anonymous)")
                 coordinator.signInCompleted()
             }
         )
@@ -93,6 +92,7 @@ struct AppViewFactory: MainViewFactory {
             mindsetRepository: mindsetRepository,
             getStreakUseCase: getStreakUseCase,
             getYesterdayGoalUseCase: getYesterdayGoalUseCase,
+            logger: logger,
             onStartMindset: {
                 coordinator.startMorningMindset()
             },
@@ -141,7 +141,7 @@ struct AppViewFactory: MainViewFactory {
     }
 
     func makeMindsetHistoryView() -> AnyView {
-        let viewModel = MindsetHistoryViewModel(repository: mindsetRepository)
+        let viewModel = MindsetHistoryViewModel(repository: mindsetRepository, logger: logger)
         return AnyView(MindsetHistoryView(viewModel: viewModel))
     }
 
@@ -152,6 +152,7 @@ struct AppViewFactory: MainViewFactory {
             addMindsetUseCase: addMindsetUseCase,
             subscriptionService: subscriptionService,
             aiService: aiService,
+            logger: logger,
             onNavigate: { state in
                 switch state {
                 case .success(let archetype, let xp):

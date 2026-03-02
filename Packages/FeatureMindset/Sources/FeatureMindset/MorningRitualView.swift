@@ -533,6 +533,7 @@ private extension MorningRitualView {
             ),
             subscriptionService: Domain.MockSubscriptionService(),
             aiService: Domain.MockAIService(),
+            logger: DebugLogger.shared,
             onNavigate: { _ in },
             onDismiss: {}
         )

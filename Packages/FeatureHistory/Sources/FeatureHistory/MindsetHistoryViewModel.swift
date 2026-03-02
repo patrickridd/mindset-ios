@@ -8,17 +8,18 @@
 import Domain
 import Foundation
 import Observation
-import SharedUtils
 
 @Observable
 @MainActor
 public final class MindsetHistoryViewModel {
     private let repository: MindsetRepository
+    private let logger: AppLogger
     public var entries: [MindsetEntry] = []
     public var isLoading = false
 
-    public init(repository: MindsetRepository) {
+    public init(repository: MindsetRepository, logger: AppLogger) {
         self.repository = repository
+        self.logger = logger
     }
 
     public func fetchHistory() async {
@@ -26,7 +27,7 @@ public final class MindsetHistoryViewModel {
         do {
             self.entries = try await repository.fetchAllEntries()
         } catch {
-            DebugLogger.shared.add("❌ History load failed: \(error.localizedDescription)")
+            logger.log("❌ History load failed: \(error.localizedDescription)")
         }
         isLoading = false
     }

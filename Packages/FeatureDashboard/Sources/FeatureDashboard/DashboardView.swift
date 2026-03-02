@@ -197,6 +197,7 @@ private extension DashboardView {
         mindsetRepository: mindsetRepository,
         getStreakUseCase: GetStreakUseCase(repository: mindsetRepository),
         getYesterdayGoalUseCase: GetYesterdayGoalUseCase(repository: mindsetRepository),
+        logger: DebugLogger.shared,
         onStartMindset: {},
         onSeeHistory: {})
     DashboardView(viewModel: viewModel)

@@ -255,6 +255,7 @@ public struct SignInView: View {
     let mockAuthService = MockAuthService()
     let viewModel = SignInViewModel(
         authService: mockAuthService,
+        logger: DebugLogger.shared,
         onSignInSuccess: { _ in },
         onSkip: {}
     )

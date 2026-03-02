@@ -7,6 +7,7 @@
 
 import Domain
 import SharedUI
+import SharedUtils
 import SwiftUI
 
 public struct MindsetHistoryView: View {
@@ -66,5 +67,5 @@ public struct MindsetHistoryView: View {
 
 #Preview {
     MindsetHistoryView(
-        viewModel: MindsetHistoryViewModel(repository: MockMindsetRepository(days: 2)))
+        viewModel: MindsetHistoryViewModel(repository: MockMindsetRepository(days: 2), logger: DebugLogger.shared))
 }

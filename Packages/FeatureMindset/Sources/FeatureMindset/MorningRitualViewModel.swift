@@ -9,7 +9,6 @@ import Domain
 import Foundation
 import Observation
 import SharedLocalization
-import SharedUtils
 
 @MainActor
 @Observable
@@ -20,6 +19,7 @@ public final class MorningRitualViewModel {
     private let subscriptionService: SubscriptionService
     private let promptEngine = PromptEngine()
     private let aiService: AIAnalysisService
+    private let logger: AppLogger
 
     // Dynamic Content
     public var prompts: [MindsetPrompt] = []
@@ -78,6 +78,7 @@ public final class MorningRitualViewModel {
         addMindsetUseCase: AddMindsetUseCase,
         subscriptionService: SubscriptionService,
         aiService: AIAnalysisService,
+        logger: AppLogger,
         onNavigate: ((NavigationState) -> Void)?,
         onDismiss: (() -> Void)? = nil
     ) {
@@ -85,6 +86,7 @@ public final class MorningRitualViewModel {
         self.addMindsetUseCase = addMindsetUseCase
         self.subscriptionService = subscriptionService
         self.aiService = aiService
+        self.logger = logger
         self.onNavigate = onNavigate
         self.onDismiss = onDismiss
         Task {
@@ -118,7 +120,7 @@ public final class MorningRitualViewModel {
             // Assigning to self.prompts triggers the UI update
             self.prompts = newPrompts
         } catch {
-            DebugLogger.shared.add("❌ Ritual setup failed: \(error.localizedDescription)")
+            logger.log("❌ Ritual setup failed: \(error.localizedDescription)")
             self.prompts = promptEngine.fetchPrompts(for: nil, completedCount: 0)
         }
         isLoading = false
@@ -273,7 +275,7 @@ public final class MorningRitualViewModel {
             )
             try await addMindsetUseCase.execute(entry: entry)
         } catch {
-            DebugLogger.shared.add("❌ Ritual save failed: \(error.localizedDescription)")
+            logger.log("❌ Ritual save failed: \(error.localizedDescription)")
         }
     }
 
