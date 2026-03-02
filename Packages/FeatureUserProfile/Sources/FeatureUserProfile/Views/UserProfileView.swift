@@ -12,10 +12,10 @@ import SharedUtils
 import SwiftUI
 
 public struct UserProfileView: View {
-    
-    @Bindable var viewModel: UserProfileViewModel
+
+    @Bindable private var viewModel: UserProfileViewModel
     @Environment(\.colorScheme) private var colorScheme
-    
+
     public init(viewModel: UserProfileViewModel) {
         self.viewModel = viewModel
     }
@@ -33,7 +33,6 @@ public struct UserProfileView: View {
                     debugSection
                     #endif
                     signOutButton
-                    Spacer()
                 }
                 .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
                 .padding(.top, MindsetLayout.spacing30)
@@ -45,12 +44,8 @@ public struct UserProfileView: View {
         }
         .sheet(isPresented: $viewModel.showSignOutConfirmation) {
             SignOutConfirmationSheet(
-                onConfirm: {
-                    Task { await viewModel.signOut() }
-                },
-                onCancel: {
-                    viewModel.cancelSignOut()
-                }
+                onConfirm: confirmAndSignOut,
+                onCancel: viewModel.cancelSignOut
             )
             .presentationDetents([.height(MindsetLayout.detentSmall)])
             .presentationDragIndicator(.visible)
@@ -72,6 +67,14 @@ public struct UserProfileView: View {
             }
         }
     }
+
+    private var avatarBackgroundOpacity: Double {
+        colorScheme == .dark ? 0.15 : 0.2
+    }
+
+    private func confirmAndSignOut() {
+        Task { await viewModel.signOut() }
+    }
 }
 
 // MARK: - Subviews
@@ -82,7 +85,7 @@ extension UserProfileView {
         VStack(spacing: MindsetLayout.spacing16) {
             ZStack {
                 Circle()
-                    .fill(MindsetColors.accentOrange.opacity(colorScheme == .dark ? 0.15 : 0.2))
+                    .fill(MindsetColors.accentOrange.opacity(avatarBackgroundOpacity))
                     .frame(width: MindsetLayout.avatarSize, height: MindsetLayout.avatarSize)
 
                 Image(systemName: "person.crop.circle.fill")
@@ -117,20 +120,16 @@ extension UserProfileView {
 
     private var accountCardRows: some View {
         VStack(spacing: 0) {
-            // A Row that navigates
             AccountNavigationRow(
                 icon: "person.badge.key.fill",
                 title: "Security Settings",
                 subtitle: "Manage your recovery keys",
                 color: MindsetColors.accentOrange,
-                navigationAction: {
-             //       viewModel.navigateToSecurity()
-                }
+                navigationAction: { viewModel.navigateToSecurity() }
             )
 
-            divider // Your existing Rectangle() divider
+            divider
 
-            // A static row (like your current "Signed In" indicator)
             AccountRow(
                 icon: "checkmark.shield.fill",
                 title: FeatureUserProfileStrings.Account.signedInTitle,
@@ -191,15 +190,13 @@ extension UserProfileView {
                 .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
                 .padding(.horizontal, MindsetLayout.paddingMedium)
 
-            VStack(spacing: 0) {
-                AccountNavigationRow(
-                    icon: "wrench.and.screwdriver.fill",
-                    title: FeatureUserProfileStrings.DebugTools.title,
-                    subtitle: FeatureUserProfileStrings.DebugTools.rowSubtitle,
-                    color: MindsetColors.stoicSlate,
-                    navigationAction: { viewModel.navigateToDebugTools() }
-                )
-            }
+            AccountNavigationRow(
+                icon: "wrench.and.screwdriver.fill",
+                title: FeatureUserProfileStrings.DebugTools.title,
+                subtitle: FeatureUserProfileStrings.DebugTools.rowSubtitle,
+                color: MindsetColors.stoicSlate,
+                navigationAction: { viewModel.navigateToDebugTools() }
+            )
             .mindsetCard()
         }
     }
