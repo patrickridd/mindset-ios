@@ -10,3 +10,8 @@ alwaysApply: true
 - **Service Factory:** Use `ServiceFactory` to instantiate services. Never instantiate `FirebaseAuthService` or `MockAuthService` directly in a View or ViewModel.
 - **Protocols:** Always depend on Protocols (e.g., `AuthService`) rather than concrete types.
 - **Soft Restart:** When core settings (like Mocks) change, post `.restartApp` to re-initialize the `AppDependencyContainer`.
+
+# Logging Pattern
+- **Definition:** Protocols for logging (e.g., `AppLogger`) live in the **Domain**.
+- **Implementation:** Concrete loggers (e.g., `DebugLogger`) live in **SharedUtils**.
+- **Injection:** Use Cases must never access `DebugLogger.shared` directly. They must receive an `AppLogger` via their initializer.

@@ -16,6 +16,7 @@ let package = Package(
         )
     ],
     dependencies: [
+        .package(path: "../Domain"),
         .package(url: "https://github.com/krzysztofzablocki/Inject.git", from: "1.2.0")
     ],
     targets: [
@@ -24,6 +25,7 @@ let package = Package(
         .target(
             name: "SharedUtils",
             dependencies: [
+                .product(name: "Domain", package: "Domain"),
                 .product(name: "Inject", package: "Inject")
             ]
         ),
