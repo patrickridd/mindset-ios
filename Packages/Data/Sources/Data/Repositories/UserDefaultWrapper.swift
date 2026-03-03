@@ -9,7 +9,7 @@
 import Foundation
 
 @propertyWrapper
-public struct UserDefault<Value> {
+public struct UserDefaultWrapper<Value> {
     private let key: String
     private let defaultValue: Value
     private let container: UserDefaults

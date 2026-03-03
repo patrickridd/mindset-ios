@@ -8,4 +8,5 @@
 public protocol UserRepository: Sendable {
     func fetchUserProfile() async throws -> UserProfile?
     func saveUserProfile(_ profile: UserProfile) async throws
+    func isOnboardingComplete() async -> Bool
 }

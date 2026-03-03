@@ -60,7 +60,6 @@ public final class MainCoordinator {
     public var sheetState: SheetState?
     public var selectedTab: Tab = .dashboard
 
-    private let appDefaults: any AppDefaults
     private let authService: AuthService
     private let subscriptionService: SubscriptionService
     private let mindsetRepository: MindsetRepository
@@ -71,13 +70,11 @@ public final class MainCoordinator {
     public var profilePath = NavigationPath()
 
     public init(
-        appDefaults: any AppDefaults,
         authService: AuthService,
         subscriptionService: SubscriptionService,
         mindsetRepository: MindsetRepository,
         userRepository: UserRepository
     ) {
-        self.appDefaults = appDefaults
         self.authService = authService
         self.subscriptionService = subscriptionService
         self.mindsetRepository = mindsetRepository
@@ -91,18 +88,9 @@ public final class MainCoordinator {
         // Quiz First, Auth Last Strategy (Duolingo-style)
 
         // 1. Check if Onboarding is complete FIRST
-        #if DEBUG
-        let onboardingComplete: Bool
-        if DebugSettings.shared.onboardingOverrideEnabled {
-            onboardingComplete = DebugSettings.shared.onboardingOverrideValue
-        } else {
-            onboardingComplete = appDefaults.onboardingComplete
-        }
-        #else
-        let onboardingComplete = appDefaults.onboardingComplete
-        #endif
-
-        if !onboardingComplete {
+        let isOboardingComplete: Bool = await userProfileRepository.isOnboardingComplete()
+        
+        if !isOboardingComplete {
             // Show onboarding (quiz + content) regardless of auth status
             set(rootState: .onboarding)
             return
@@ -142,9 +130,12 @@ public final class MainCoordinator {
     }
 
     public func onboardingFinished() {
-        // Steps 1-11 complete → now show Auth (step 12)
-        appDefaults.onboardingComplete = true
         Task {
+            if var user = try? await userProfileRepository.fetchUserProfile() {
+                user.onboarding(isComplete: true)
+                try? await userProfileRepository.saveUserProfile(user)
+            }
+
             let isAuthenticated = await authService.isAuthenticated()
 
             if !isAuthenticated {

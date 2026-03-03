@@ -8,6 +8,7 @@
 import Domain
 
 public final class SDUserRepository: UserRepository {
+
     private let persistence: PersistenceService
 
     public init(persistence: PersistenceService) {
@@ -20,5 +21,12 @@ public final class SDUserRepository: UserRepository {
 
     public func saveUserProfile(_ profile: UserProfile) async throws {
         try await persistence.saveUserProfile(profile)
+    }
+
+    public func isOnboardingComplete() async -> Bool {
+        guard let user = try? await persistence.fetchUserProfile() else {
+            return false
+        }
+        return user.isOnboardingComplete
     }
 }

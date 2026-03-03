@@ -54,13 +54,11 @@ final class AppDependencyContainer {
         let getYesterday = GetYesterdayGoalUseCase(repository: mindsetRepository)
 
         // --- 6. Services ---
-        let appDefaults = serviceFactory.makeAppDefaults()
         let subService = serviceFactory.makeSubscriptionService()
         self.authService = serviceFactory.makeAuthService()
 
         // --- 7. Coordinator & View Factory ---
         self.coordinator = MainCoordinator(
-            appDefaults: appDefaults,
             authService: authService,
             subscriptionService: subService,
             mindsetRepository: mindsetRepository,
@@ -69,7 +67,6 @@ final class AppDependencyContainer {
 
         self.viewFactory = AppViewFactory(
             coordinator: coordinator,
-            appDefaults: appDefaults,
             authService: authService,
             userRepository: userRepository,
             mindsetRepository: mindsetRepository,

@@ -6,13 +6,24 @@
 //
 
 public final class MockUserRepository: UserRepository {
-    private let mockProfile: UserProfile?
+    private let mockProfile: UserProfile
 
     public init(
-        mockProfile: UserProfile? = UserProfile(
-            userName: "Patrick", primaryGoal: "Feel more confident", overwhelmedFrequency: .often)
+        userName: String = "Patrick",
+        primaryGoal: String = "Feel more confident",
+        isOnboardingComplete: Bool = true,
+        overwhelmedFrequency: UserProfile.OverwhelmedFrequency = .often
     ) {
-        self.mockProfile = mockProfile
+        self.mockProfile = UserProfile(
+            userName: userName,
+            primaryGoal: primaryGoal,
+            isOnboardingComplete: isOnboardingComplete,
+            overwhelmedFrequency: overwhelmedFrequency
+        )
+    }
+
+    public func isOnboardingComplete() -> Bool {
+        mockProfile.isOnboardingComplete
     }
 
     public func fetchUserProfile() async throws -> UserProfile? {

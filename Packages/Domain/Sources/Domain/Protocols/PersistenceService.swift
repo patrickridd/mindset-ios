@@ -10,5 +10,5 @@ public protocol PersistenceService: Sendable {
     func fetchUserProfile() async throws -> UserProfile?
 
     func saveMindsetEntry(_ entry: MindsetEntry) async throws
-    func fetchAllMindsetEntries() async throws -> [MindsetEntry]  // Added this
+    func fetchAllMindsetEntries() async throws -> [MindsetEntry]
 }

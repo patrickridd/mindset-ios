@@ -23,7 +23,6 @@ import SwiftUI
 
 struct AppViewFactory: MainViewFactory {
     let coordinator: MainCoordinator
-    let appDefaults: any AppDefaults
     let authService: AuthService
     let userRepository: UserRepository
     let mindsetRepository: MindsetRepository
@@ -103,7 +102,6 @@ struct AppViewFactory: MainViewFactory {
 
     func makeUserProfileView() -> AnyView {
         let profileViewModel = UserProfileViewModel(
-            appDefaults: appDefaults,
             authService: authService,
             userRepository: userRepository,
             onNavigateToSecurity: {
@@ -119,7 +117,7 @@ struct AppViewFactory: MainViewFactory {
             }
         )
         #if DEBUG
-        let debugViewModel = DebugToolsViewModel(appDefaults: appDefaults)
+        let debugViewModel = DebugToolsViewModel()
         #endif
 
         return AnyView(

@@ -50,10 +50,6 @@ struct ServiceFactory {
             return MockAuthService()
         }
     }
-    
-    func makeAppDefaults() -> any AppDefaults {
-        return AppDefaultsStore()
-    }
 
     func makeSubscriptionService() -> any SubscriptionService {
         let base: any SubscriptionService
@@ -63,7 +59,7 @@ struct ServiceFactory {
             base = MockSubscriptionService()
         }
         #if DEBUG
-        return DebugSubscriptionServiceWrapper(wrapping: base)
+        return SubscriptionServiceDebugWrapper(wrapping: base)
         #else
         return base
         #endif
@@ -89,10 +85,16 @@ struct ServiceFactory {
     }
     
     func makeUserRepository(persistence: SDPersistenceService) -> UserRepository {
+        let base: any UserRepository
         if config.useRealServices {
-            return SDUserRepository(persistence: persistence)
+            base = SDUserRepository(persistence: persistence)
         } else {
-            return MockUserRepository()
+            base = MockUserRepository()
         }
+        #if DEBUG
+        return UserRepositoryDebugWrapper(wrapping: base)
+        #else
+        return base
+        #endif
     }
 }

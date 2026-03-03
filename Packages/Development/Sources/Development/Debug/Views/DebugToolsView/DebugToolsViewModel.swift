@@ -11,9 +11,8 @@ import SharedUtils
 @Observable
 @MainActor
 public final class DebugToolsViewModel {
+    
     public var showRestartAlert = false
-
-    private let appDefaults: any AppDefaults
     private(set) var environmentDescription: String = "Restarting to apply changes..."
     private var isInitializing = true
 
@@ -62,8 +61,7 @@ public final class DebugToolsViewModel {
         }
     }
     
-    public init(appDefaults: any AppDefaults) {
-        self.appDefaults = appDefaults
+    public init() {
         useMocks = DebugSettings.shared.useMocks
         isProOverrideEnabled = DebugSettings.shared.isProOverrideEnabled
         isProOverrideValue = DebugSettings.shared.isProOverrideValue

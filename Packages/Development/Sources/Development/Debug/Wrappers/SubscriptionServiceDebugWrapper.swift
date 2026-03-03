@@ -8,7 +8,7 @@ import Domain
 /// Decorator that intercepts `SubscriptionService` calls and applies the
 /// `DebugSettings.isProOverrideEnabled` flag before delegating to the wrapped service.
 /// Injected at the `ServiceFactory` level in `#if DEBUG` builds only.
-public final class DebugSubscriptionServiceWrapper: SubscriptionService, @unchecked Sendable {
+public final class SubscriptionServiceDebugWrapper: SubscriptionService, @unchecked Sendable {
     private let wrapped: any SubscriptionService
 
     public init(wrapping service: any SubscriptionService) {
@@ -21,8 +21,9 @@ public final class DebugSubscriptionServiceWrapper: SubscriptionService, @unchec
         }
         if overrideEnabled {
             return overrideValue
+        } else {
+            return await wrapped.checkSubscriptionStatus()
         }
-        return await wrapped.checkSubscriptionStatus()
     }
 
     public func restorePurchases() async throws -> Bool {

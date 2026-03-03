@@ -16,7 +16,6 @@ public final class UserProfileViewModel {
     public var showSignOutConfirmation = false
     var errorMessage: String?
 
-    private let appDefaults: any AppDefaults
     private let authService: AuthService
     private let userRepository: UserRepository
     private let onSignOut: () -> Void
@@ -27,14 +26,12 @@ public final class UserProfileViewModel {
     public var displayName: String?
 
     public init(
-        appDefaults: any AppDefaults,
         authService: AuthService,
         userRepository: UserRepository,
         onNavigateToSecurity: @escaping () -> Void,
         onSignOut: @escaping () -> Void,
         onNavigateToDebugTools: @escaping () -> Void = {}
     ) {
-        self.appDefaults = appDefaults
         self.authService = authService
         self.userRepository = userRepository
         self.onSignOut = onSignOut
@@ -88,7 +85,6 @@ public final class UserProfileViewModel {
             // Clear local user data
             UserDefaults.standard.removeObject(forKey: "userName")
             UserDefaults.standard.removeObject(forKey: "currentNonce")
-            appDefaults.onboardingComplete = false
 
             isSigningOut = false
             onSignOut()

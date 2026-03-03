@@ -133,7 +133,7 @@ private extension DebugToolsView {
 
 #Preview {
     NavigationStack {
-        DebugToolsView(viewModel: DebugToolsViewModel(appDefaults: MockAppDefaults()))
+        DebugToolsView(viewModel: DebugToolsViewModel())
             .navigationTitle("Debug Tools")
     }
 }
