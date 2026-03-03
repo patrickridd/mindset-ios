@@ -36,7 +36,7 @@ public struct MainTabView: View {
                 .tag(MainCoordinator.Tab.history)
 
             profileView
-                .tabItem { Label("Profile", systemImage: "person.crop.circle") }
+                .tabItem { Label(coordinator.profileTabTitle, systemImage: "person.crop.circle") }
                 .tag(MainCoordinator.Tab.profile)
         }
     }

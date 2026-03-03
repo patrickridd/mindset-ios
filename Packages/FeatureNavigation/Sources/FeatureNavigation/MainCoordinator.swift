@@ -12,6 +12,8 @@ import SwiftUI
 @MainActor
 public final class MainCoordinator {
 
+    private static let defaultProfileTabTitle = "Profile"
+
     // Exclusive primary screens
     public enum RootState {
         case auth
@@ -56,6 +58,7 @@ public final class MainCoordinator {
     public var fullScreenState: FullScreenState?
     public var sheetState: SheetState?
     public var selectedTab: Tab = .dashboard
+    public private(set) var profileTabTitle: String = MainCoordinator.defaultProfileTabTitle
 
     private let authService: AuthService
     private let subscriptionService: SubscriptionService
@@ -103,6 +106,7 @@ public final class MainCoordinator {
         }
 
         // 3. User is authenticated and onboarding complete → show home
+        refreshProfileTabTitle()
         set(rootState: .home)
 
         // 4. Check subscription status and show paywall if needed
@@ -116,7 +120,7 @@ public final class MainCoordinator {
     // Navigation Actions
 
     public func signInCompleted() {
-        // Step 12 complete → transition to home, then show Paywall (step 13) if not already Pro
+        refreshProfileTabTitle()
         set(rootState: .home)
         Task {
             let isPro = await subscriptionService.checkSubscriptionStatus()
@@ -139,6 +143,7 @@ public final class MainCoordinator {
                 set(rootState: .auth)
                 return
             } else {
+                refreshProfileTabTitle()
                 set(rootState: .home)
             }
         }
@@ -146,6 +151,7 @@ public final class MainCoordinator {
 
     public func showHomeView() {
         set(fullScreenState: nil)
+        refreshProfileTabTitle()
         set(rootState: .home)
     }
 
@@ -188,6 +194,7 @@ public final class MainCoordinator {
     public func signOutCompleted() {
         // Reset to auth screen
         set(rootState: .auth)
+        profileTabTitle = MainCoordinator.defaultProfileTabTitle
     }
 
     private func set(rootState: RootState) {
@@ -200,5 +207,13 @@ public final class MainCoordinator {
 
     private func set(sheetState: SheetState?) {
         withAnimation { self.sheetState = sheetState }
+    }
+
+    private func refreshProfileTabTitle() {
+        Task { @MainActor [userProfileRepository] in
+            let userName = (try? await userProfileRepository.fetchUserProfile()?.userName) ?? ""
+            let trimmed = userName.trimmingCharacters(in: .whitespacesAndNewlines)
+            profileTabTitle = trimmed.isEmpty ? MainCoordinator.defaultProfileTabTitle : trimmed
+        }
     }
 }
