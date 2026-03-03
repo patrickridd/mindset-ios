@@ -43,6 +43,42 @@
         }
       }
     },
+    "development.debugTools.sectionHeaderSubscription" : {
+      "comment" : "Section header above the isPro override card on the Debug Tools screen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subscription"
+          }
+        }
+      }
+    },
+    "development.debugTools.isProOverrideToggle" : {
+      "comment" : "Toggle label that enables or disables the isPro debug override",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Override isPro"
+          }
+        }
+      }
+    },
+    "development.debugTools.isProOverrideValue" : {
+      "comment" : "Toggle label that sets the overridden isPro value (Pro / Free)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "isPro Value (Pro / Free)"
+          }
+        }
+      }
+    },
     "v%@" : {
 
     }

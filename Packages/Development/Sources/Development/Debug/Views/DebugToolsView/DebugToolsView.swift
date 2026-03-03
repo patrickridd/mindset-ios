@@ -26,6 +26,7 @@ public struct DebugToolsView: View {
             ScrollView {
                 VStack(spacing: MindsetLayout.spacing24) {
                     servicesSection
+                    subscriptionSection
                     Spacer()
                 }
                 .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
@@ -63,6 +64,34 @@ private extension DebugToolsView {
                     .padding(MindsetLayout.paddingMedium)
             }
             .mindsetCard()
+        }
+    }
+
+    var subscriptionSection: some View {
+        VStack(alignment: .leading, spacing: MindsetLayout.spacing12) {
+            Text(DevelopmentStrings.DebugTools.sectionHeaderSubscription)
+                .font(MindsetFonts.sectionHeader)
+                .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
+                .padding(.horizontal, MindsetLayout.paddingMedium)
+
+            VStack(spacing: 0) {
+                Toggle(DevelopmentStrings.DebugTools.isProOverrideToggle, isOn: $viewModel.isProOverrideEnabled)
+                    .font(MindsetFonts.bodyMedium)
+                    .tint(MindsetColors.accentOrange)
+                    .padding(MindsetLayout.paddingMedium)
+
+                if viewModel.isProOverrideEnabled {
+                    Divider()
+                        .padding(.horizontal, MindsetLayout.paddingMedium)
+
+                    Toggle(DevelopmentStrings.DebugTools.isProOverrideValue, isOn: $viewModel.isProOverrideValue)
+                        .font(MindsetFonts.bodyMedium)
+                        .tint(MindsetColors.accentOrange)
+                        .padding(MindsetLayout.paddingMedium)
+                }
+            }
+            .mindsetCard()
+            .animation(.easeInOut(duration: 0.2), value: viewModel.isProOverrideEnabled)
         }
     }
 }

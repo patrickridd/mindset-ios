@@ -16,5 +16,11 @@ public final class DebugSettings {
     @UserDefault(key: "com.mindset.debug.useMocks", defaultValue: false)
     public var useMocks: Bool
 
+    @UserDefault(key: "com.mindset.debug.isProOverrideEnabled", defaultValue: false)
+    public var isProOverrideEnabled: Bool
+
+    @UserDefault(key: "com.mindset.debug.isProOverrideValue", defaultValue: false)
+    public var isProOverrideValue: Bool
+
     private init() {}
 }

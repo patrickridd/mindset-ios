@@ -51,12 +51,18 @@ struct ServiceFactory {
         }
     }
     
-    func makeSubscriptionService() -> SubscriptionService {
+    func makeSubscriptionService() -> any SubscriptionService {
+        let base: any SubscriptionService
         if config.useRealServices {
-            return RevenueCatSubscriptionService()
+            base = RevenueCatSubscriptionService()
         } else {
-            return MockSubscriptionService()
+            base = MockSubscriptionService()
         }
+        #if DEBUG
+        return DebugSubscriptionServiceWrapper(wrapping: base)
+        #else
+        return base
+        #endif
     }
     
     func makeAIService() -> AIAnalysisService {

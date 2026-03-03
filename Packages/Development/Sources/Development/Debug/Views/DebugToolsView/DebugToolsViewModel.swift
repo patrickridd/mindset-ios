@@ -22,11 +22,28 @@ public final class DebugToolsViewModel {
         }
     }
 
+    public var isProOverrideEnabled: Bool = false {
+        didSet {
+            DebugSettings.shared.isProOverrideEnabled = isProOverrideEnabled
+            DebugLogger.shared.add("isPro override \(isProOverrideEnabled ? "enabled" : "disabled")")
+        }
+    }
+
+    public var isProOverrideValue: Bool = false {
+        didSet {
+            DebugSettings.shared.isProOverrideValue = isProOverrideValue
+            DebugLogger.shared.add("isPro override value set to: \(isProOverrideValue)")
+        }
+    }
+
     public var environmentDescription: String {
         "Toggled to: \(DebugSettings.shared.useMocks ? "🧪 Debug (mocks)" : "🌐 Production")"
     }
 
-    public init() {}
+    public init() {
+        isProOverrideEnabled = DebugSettings.shared.isProOverrideEnabled
+        isProOverrideValue = DebugSettings.shared.isProOverrideValue
+    }
 
     public func restartApp() {
         NotificationCenter.default.post(name: .restartApp, object: nil)
