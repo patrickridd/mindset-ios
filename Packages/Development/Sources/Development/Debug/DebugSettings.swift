@@ -22,5 +22,11 @@ public final class DebugSettings {
     @UserDefault(key: "com.mindset.debug.isProOverrideValue", defaultValue: false)
     public var isProOverrideValue: Bool
 
+    @UserDefault(key: "com.mindset.debug.onboardingOverrideEnabled", defaultValue: false)
+    public var onboardingOverrideEnabled: Bool
+
+    @UserDefault(key: "com.mindset.debug.onboardingOverrideValue", defaultValue: true)
+    public var onboardingOverrideValue: Bool
+
     private init() {}
 }

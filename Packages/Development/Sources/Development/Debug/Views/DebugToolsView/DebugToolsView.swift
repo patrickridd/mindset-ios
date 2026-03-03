@@ -3,6 +3,7 @@
 //  Development
 //
 
+import Domain
 import SharedLocalization
 import SharedUI
 import SharedUtils
@@ -27,6 +28,7 @@ public struct DebugToolsView: View {
                 VStack(spacing: MindsetLayout.spacing24) {
                     servicesSection
                     subscriptionSection
+                    onboardingSection
                     Spacer()
                 }
                 .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
@@ -67,6 +69,39 @@ private extension DebugToolsView {
         }
     }
 
+    var onboardingSection: some View {
+        VStack(alignment: .leading, spacing: MindsetLayout.spacing12) {
+            Text(DevelopmentStrings.DebugTools.sectionHeaderOnboarding)
+                .font(MindsetFonts.sectionHeader)
+                .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
+                .padding(.horizontal, MindsetLayout.paddingMedium)
+
+            VStack(spacing: 0) {
+                Toggle(DevelopmentStrings.DebugTools.onboardingOverrideToggle, isOn: $viewModel.onboardingOverrideEnabled)
+                    .font(MindsetFonts.bodyMedium)
+                    .tint(MindsetColors.accentOrange)
+                    .padding(MindsetLayout.paddingMedium)
+
+                if viewModel.onboardingOverrideEnabled {
+                    Divider()
+                        .padding(.horizontal, MindsetLayout.paddingMedium)
+
+                    Toggle(DevelopmentStrings.DebugTools.onboardingOverrideValue, isOn: $viewModel.onboardingOverrideValue)
+                        .font(MindsetFonts.bodyMedium)
+                        .tint(MindsetColors.accentOrange)
+                        .padding(MindsetLayout.paddingMedium)
+                }
+            }
+            .mindsetCard()
+            .animation(.easeInOut(duration: 0.2), value: viewModel.onboardingOverrideEnabled)
+
+            Text(DevelopmentStrings.DebugTools.onboardingAppliesNextLaunch)
+                .font(MindsetFonts.caption)
+                .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
+                .padding(.horizontal, MindsetLayout.paddingMedium)
+        }
+    }
+
     var subscriptionSection: some View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing12) {
             Text(DevelopmentStrings.DebugTools.sectionHeaderSubscription)
@@ -98,7 +133,7 @@ private extension DebugToolsView {
 
 #Preview {
     NavigationStack {
-        DebugToolsView(viewModel: DebugToolsViewModel())
+        DebugToolsView(viewModel: DebugToolsViewModel(appDefaults: MockAppDefaults()))
             .navigationTitle("Debug Tools")
     }
 }

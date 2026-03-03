@@ -79,6 +79,66 @@
         }
       }
     },
+    "development.debugTools.sectionHeaderOnboarding" : {
+      "comment" : "Section header above the onboarding override card on the Debug Tools screen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Onboarding"
+          }
+        }
+      }
+    },
+    "development.debugTools.onboardingCompleteToggle" : {
+      "comment" : "Toggle label that sets the onboardingComplete flag and triggers a restart",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Onboarding Complete"
+          }
+        }
+      }
+    },
+    "development.debugTools.onboardingOverrideToggle" : {
+      "comment" : "Toggle label that enables or disables the onboarding completion override",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Override Onboarding"
+          }
+        }
+      }
+    },
+    "development.debugTools.onboardingOverrideValue" : {
+      "comment" : "Toggle label that sets the overridden onboarding completion value",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Onboarding Complete"
+          }
+        }
+      }
+    },
+    "development.debugTools.onboardingAppliesNextLaunch" : {
+      "comment" : "Helper text shown below the onboarding override toggles (takes effect next launch)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applies next launch"
+          }
+        }
+      }
+    },
     "v%@" : {
 
     }

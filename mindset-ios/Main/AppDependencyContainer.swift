@@ -27,7 +27,7 @@ final class AppDependencyContainer {
     let coordinator: MainCoordinator
     let viewFactory: AppViewFactory
     let container: ModelContainer
-    
+
     init() {
         // --- 1. Logger (Composition Root owns the single instance) ---
         let logger: AppLogger = DebugLogger.shared
@@ -39,7 +39,7 @@ final class AppDependencyContainer {
             // but you can wrap it in a 'if FirebaseApp.app() == nil' if needed.
             if FirebaseApp.app() == nil { FirebaseApp.configure() }
         }
-        
+
         // --- 3. Persistence ---
         self.container = try! ModelContainer(for: SDUserProfile.self, SDMindsetEntry.self)
         let persistence = SDPersistenceService(modelContext: container.mainContext)
@@ -54,11 +54,13 @@ final class AppDependencyContainer {
         let getYesterday = GetYesterdayGoalUseCase(repository: mindsetRepository)
 
         // --- 6. Services ---
+        let appDefaults = serviceFactory.makeAppDefaults()
         let subService = serviceFactory.makeSubscriptionService()
         self.authService = serviceFactory.makeAuthService()
 
         // --- 7. Coordinator & View Factory ---
         self.coordinator = MainCoordinator(
+            appDefaults: appDefaults,
             authService: authService,
             subscriptionService: subService,
             mindsetRepository: mindsetRepository,
@@ -67,6 +69,7 @@ final class AppDependencyContainer {
 
         self.viewFactory = AppViewFactory(
             coordinator: coordinator,
+            appDefaults: appDefaults,
             authService: authService,
             userRepository: userRepository,
             mindsetRepository: mindsetRepository,

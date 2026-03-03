@@ -51,6 +51,10 @@ struct ServiceFactory {
         }
     }
     
+    func makeAppDefaults() -> any AppDefaults {
+        return AppDefaultsStore()
+    }
+
     func makeSubscriptionService() -> any SubscriptionService {
         let base: any SubscriptionService
         if config.useRealServices {

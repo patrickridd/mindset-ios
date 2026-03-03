@@ -23,6 +23,7 @@ import SwiftUI
 
 struct AppViewFactory: MainViewFactory {
     let coordinator: MainCoordinator
+    let appDefaults: any AppDefaults
     let authService: AuthService
     let userRepository: UserRepository
     let mindsetRepository: MindsetRepository
@@ -54,7 +55,6 @@ struct AppViewFactory: MainViewFactory {
         let viewModel = OnboardingViewModel(
             userRepository: userRepository,
             onboardingFinished: {
-                // Let MainCoordinator handle Auth → Paywall → Home flow
                 coordinator.onboardingFinished()
             })
 
@@ -67,7 +67,6 @@ struct AppViewFactory: MainViewFactory {
         let viewModel = PaywallViewModel(
             subscriptionService: subscriptionService,
             onPurchaseFinished: {
-                // Dismiss paywall overlay - already at .home root state
                 coordinator.dismissFullScreen()
             })
         return AnyView(
@@ -104,6 +103,7 @@ struct AppViewFactory: MainViewFactory {
 
     func makeUserProfileView() -> AnyView {
         let profileViewModel = UserProfileViewModel(
+            appDefaults: appDefaults,
             authService: authService,
             userRepository: userRepository,
             onNavigateToSecurity: {
@@ -119,7 +119,7 @@ struct AppViewFactory: MainViewFactory {
             }
         )
         #if DEBUG
-        let debugViewModel = DebugToolsViewModel()
+        let debugViewModel = DebugToolsViewModel(appDefaults: appDefaults)
         #endif
 
         return AnyView(
