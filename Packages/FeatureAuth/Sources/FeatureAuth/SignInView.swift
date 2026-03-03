@@ -12,10 +12,6 @@ import SharedUtils
 import SwiftUI
 
 public struct SignInView: View {
-    #if DEBUG
-        @ObserveInjection var inject
-    #endif
-
     @State private var viewModel: SignInViewModel
     @Environment(\.colorScheme) private var colorScheme
 
@@ -162,9 +158,6 @@ public struct SignInView: View {
                 errorAlert(message: errorMessage)
             }
         }
-        #if DEBUG
-            .enableInjection()
-        #endif
     }
 
     private func benefitRow(icon: String, text: String) -> some View {

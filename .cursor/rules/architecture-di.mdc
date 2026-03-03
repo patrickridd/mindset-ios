@@ -11,6 +11,13 @@ alwaysApply: true
 - **Protocols:** Always depend on Protocols (e.g., `AuthService`) rather than concrete types.
 - **Soft Restart:** When core settings (like Mocks) change, post `.restartApp` to re-initialize the `AppDependencyContainer`.
 
+# Build Configuration Policy (`#if DEBUG`)
+- **No `#if DEBUG` in Features:** Do **not** use `#if DEBUG` inside Feature modules (`Packages/Feature*/Sources/**`).
+- **Composition Root owns branching:** Prefer all build-configuration checks in the **Composition Root** (`AppDependencyContainer` / `ServiceFactory` / `MindsetApp`).
+- **Development package exception:** `#if DEBUG` is allowed inside `Packages/Development/Sources/Development/**` (debug-only wrappers, overlays, tools).
+- **Inject configuration instead of branching:** If a Feature needs “debug vs release” behavior, represent it as an injected value/protocol (e.g., `AppConfiguration`, feature flags, or a `DebugCapabilities` protocol) and pass it through initializers.
+- **Debug UI is attached at the root:** Any debug-only wrappers, overlays, or tool entry points should be applied by the Composition Root (optionally via the `Development` module), not inside Feature Views/ViewModels.
+
 # Logging Pattern
 - **Definition:** Protocols for logging (e.g., `AppLogger`) live in the **Domain**.
 - **Implementation:** Concrete loggers (e.g., `DebugLogger`) live in **SharedUtils**.

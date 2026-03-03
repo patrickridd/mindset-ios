@@ -29,9 +29,9 @@ public struct UserProfileView: View {
                 VStack(spacing: MindsetLayout.spacing24) {
                     profileHeader
                     accountSection
-                    #if DEBUG
-                    debugSection
-                    #endif
+                    if viewModel.isDebugToolsAvailable {
+                        debugSection
+                    }
                     signOutButton
                 }
                 .padding(.horizontal, MindsetLayout.paddingMedium)
@@ -182,7 +182,6 @@ extension UserProfileView {
         }
     }
     
-#if DEBUG
     private var debugSection: some View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing12) {
             Text(FeatureUserProfileStrings.DebugTools.title)
@@ -200,7 +199,6 @@ extension UserProfileView {
             .mindsetCard()
         }
     }
-#endif
 
     private var divider: some View {
         MindsetColors.stoicSlateSoft

@@ -8,4 +8,5 @@ alwaysApply: true
 - **Tech:** Swift 6, SwiftUI, SwiftData (SD prefix for models), Firebase Auth.
 - **Architecture:** Modular (Feature -> Domain -> Data). No cross-feature imports.
 - **Service Pattern:** ALWAYS use `ServiceFactory`. Use Mocks for Previews/Debug.
+- **Build Config Policy:** Do **not** use `#if DEBUG` inside Feature modules (`Packages/Feature*/Sources/**`). Build-configuration checks are allowed in the **Composition Root** (e.g., `mindset-ios/Main/` such as `AppDependencyContainer` / `ServiceFactory` / `MindsetApp`) and in the **Development package** (`Packages/Development/Sources/Development/**`). Inject plain values/protocols into Features.
 - **Rules Management:** Refer to specialized rules in `.cursor/rules/*.mdc`.

@@ -11,10 +11,6 @@ import SharedUtils
 import SwiftUI
 
 public struct OnboardingView: View {
-    #if DEBUG
-        @ObserveInjection var inject
-    #endif
-
     @State private var viewModel: OnboardingViewModel
 
     public init(viewModel: OnboardingViewModel) {
@@ -54,9 +50,6 @@ public struct OnboardingView: View {
                 }
             }
         }
-        #if DEBUG
-            .enableInjection()
-        #endif
     }
 }
 

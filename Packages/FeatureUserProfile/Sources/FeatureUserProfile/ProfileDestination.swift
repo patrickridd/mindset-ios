@@ -9,8 +9,5 @@
 /// closures wired in `AppViewFactory`
 public enum ProfileDestination: Hashable {
     case security
-
-    #if DEBUG
     case debugTools
-    #endif
 }

@@ -14,6 +14,7 @@ import Observation
 public final class UserProfileViewModel {
     public var isSigningOut = false
     public var showSignOutConfirmation = false
+    public let isDebugToolsAvailable: Bool
     var errorMessage: String?
 
     private let authService: AuthService
@@ -28,12 +29,14 @@ public final class UserProfileViewModel {
     public init(
         authService: AuthService,
         userRepository: UserRepository,
+        isDebugToolsAvailable: Bool = false,
         onNavigateToSecurity: @escaping () -> Void,
         onSignOut: @escaping () -> Void,
         onNavigateToDebugTools: @escaping () -> Void = {}
     ) {
         self.authService = authService
         self.userRepository = userRepository
+        self.isDebugToolsAvailable = isDebugToolsAvailable
         self.onSignOut = onSignOut
         self.onNavigateToSecurity = onNavigateToSecurity
         self.onNavigateToDebugTools = onNavigateToDebugTools
@@ -72,6 +75,7 @@ public final class UserProfileViewModel {
     }
 
     func navigateToDebugTools() {
+        guard isDebugToolsAvailable else { return }
         onNavigateToDebugTools()
     }
 

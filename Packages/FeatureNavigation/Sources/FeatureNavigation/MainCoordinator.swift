@@ -6,9 +6,6 @@
 //
 
 import Domain
-#if DEBUG
-import Development
-#endif
 import SwiftUI
 
 @Observable

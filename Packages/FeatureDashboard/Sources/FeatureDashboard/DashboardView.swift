@@ -12,10 +12,6 @@ import SwiftUI
 
 public struct DashboardView: View {
 
-    #if DEBUG
-        @ObserveInjection var inject
-    #endif
-
     @Environment(\.colorScheme) private var colorScheme
     @State private var viewModel: DashboardViewModel
 
@@ -55,9 +51,6 @@ public struct DashboardView: View {
                 await viewModel.loadDashboardData()
             }
         }
-        #if DEBUG
-            .enableInjection()
-        #endif
     }
 }
 

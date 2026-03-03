@@ -8,4 +8,4 @@ alwaysApply: false
 - **Debug Toggle:** Use `DebugSettings.shared.useMocks` to determine service flavor.
 - **Mocking:** Every new Service Protocol must have a corresponding `Mock` implementation (e.g., `MockAIService`).
 - **Watermark:** The `.mindsetDebugOverlay()` must be present at the root to show the current environment.
-- **Conditional Code:** Wrap all debug-only UI (like the Mock Toggle) in `#if DEBUG` macros to ensure it is stripped from production.
+- **Conditional Code:** Use `#if DEBUG` in the **Composition Root** and inside `Packages/Development/Sources/Development/**`. Do **not** add `#if DEBUG` inside Feature modules.

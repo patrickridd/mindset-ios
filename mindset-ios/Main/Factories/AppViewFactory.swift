@@ -19,7 +19,21 @@ import FeatureOnboarding
 import FeatureSubscription
 import FeatureUserProfile
 import SharedUI
+import SharedUtils
 import SwiftUI
+
+#if DEBUG
+private struct DebugPresentationWrapper: View {
+    @ObserveInjection var inject
+    let content: AnyView
+
+    var body: some View {
+        content
+            .enableInjection()
+            .modifier(DebugWrapper())
+    }
+}
+#endif
 
 struct AppViewFactory: MainViewFactory {
     let coordinator: MainCoordinator
@@ -32,6 +46,14 @@ struct AppViewFactory: MainViewFactory {
     let subscriptionService: SubscriptionService
     let serviceFactory: ServiceFactory
     let logger: AppLogger
+
+    func decoratePresentedView(_ view: AnyView) -> AnyView {
+        #if DEBUG
+        AnyView(DebugPresentationWrapper(content: view))
+        #else
+        view
+        #endif
+    }
 
     func makeSignInView() -> AnyView {
         let viewModel = SignInViewModel(
@@ -101,9 +123,18 @@ struct AppViewFactory: MainViewFactory {
     }
 
     func makeUserProfileView() -> AnyView {
+        let isDebugToolsAvailable: Bool = {
+            #if DEBUG
+            return true
+            #else
+            return false
+            #endif
+        }()
+
         let profileViewModel = UserProfileViewModel(
             authService: authService,
             userRepository: userRepository,
+            isDebugToolsAvailable: isDebugToolsAvailable,
             onNavigateToSecurity: {
                 coordinator.profilePath.append(ProfileDestination.security)
             },
@@ -111,9 +142,7 @@ struct AppViewFactory: MainViewFactory {
                 coordinator.signOutCompleted()
             },
             onNavigateToDebugTools: {
-                #if DEBUG
                 coordinator.profilePath.append(ProfileDestination.debugTools)
-                #endif
             }
         )
         #if DEBUG
@@ -125,11 +154,13 @@ struct AppViewFactory: MainViewFactory {
                 UserProfileView(viewModel: profileViewModel)
                     .navigationDestination(for: ProfileDestination.self) { destination in
                         switch destination {
-                        #if DEBUG
                         case .debugTools:
+                            #if DEBUG
                             DebugToolsView(viewModel: debugViewModel)
                                 .navigationTitle(FeatureUserProfileStrings.DebugTools.title)
-                        #endif
+                            #else
+                            EmptyView()
+                            #endif
                         case .security:
                             EmptyView()
                         }
