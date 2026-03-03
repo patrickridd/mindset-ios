@@ -25,7 +25,7 @@ struct AccountNavigationRow: View {
                 chevronIcon
             }
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.automatic)
     }
 
     private func handleTap() {
