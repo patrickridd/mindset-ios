@@ -15,11 +15,10 @@ let package = Package(
             targets: ["FeatureNavigation"]
         )
     ],
-    
+
     dependencies: [
         .package(path: "../Domain"),
-        .package(path: "../Development"),
-        .package(path: "../SharedUI"),
+        .package(path: "../SharedLocalization"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -28,8 +27,10 @@ let package = Package(
             name: "FeatureNavigation",
             dependencies: [
                 .product(name: "Domain", package: "Domain"),
-                .product(name: "Development", package: "Development"),
-                .product(name: "SharedUI", package: "SharedUI"),
+                .product(name: "SharedLocalization", package: "SharedLocalization"),
+            ],
+            resources: [
+                .process("Resources")
             ]
         ),
         .testTarget(

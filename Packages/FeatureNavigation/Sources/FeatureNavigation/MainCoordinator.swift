@@ -12,8 +12,6 @@ import SwiftUI
 @MainActor
 public final class MainCoordinator {
 
-    private static let defaultProfileTabTitle = "Profile"
-
     // Exclusive primary screens
     public enum RootState {
         case auth
@@ -58,7 +56,7 @@ public final class MainCoordinator {
     public var fullScreenState: FullScreenState?
     public var sheetState: SheetState?
     public var selectedTab: Tab = .dashboard
-    public private(set) var profileTabTitle: String = MainCoordinator.defaultProfileTabTitle
+    public private(set) var profileTabTitle: String = ""
 
     private let authService: AuthService
     private let subscriptionService: SubscriptionService
@@ -89,7 +87,7 @@ public final class MainCoordinator {
 
         // 1. Check if Onboarding is complete FIRST
         let isOboardingComplete: Bool = await userProfileRepository.isOnboardingComplete()
-        
+
         if !isOboardingComplete {
             // Show onboarding (quiz + content) regardless of auth status
             set(rootState: .onboarding)
@@ -194,7 +192,7 @@ public final class MainCoordinator {
     public func signOutCompleted() {
         // Reset to auth screen
         set(rootState: .auth)
-        profileTabTitle = MainCoordinator.defaultProfileTabTitle
+        profileTabTitle = ""
     }
 
     private func set(rootState: RootState) {
@@ -213,7 +211,7 @@ public final class MainCoordinator {
         Task { @MainActor [userProfileRepository] in
             let userName = (try? await userProfileRepository.fetchUserProfile()?.userName) ?? ""
             let trimmed = userName.trimmingCharacters(in: .whitespacesAndNewlines)
-            profileTabTitle = trimmed.isEmpty ? MainCoordinator.defaultProfileTabTitle : trimmed
+            profileTabTitle = trimmed
         }
     }
 }

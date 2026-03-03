@@ -5,8 +5,6 @@
 //  Created by patrick ridd on 1/7/26.
 //
 
-import Domain
-import SharedUI
 import SwiftUI
 
 public protocol MainViewFactory {

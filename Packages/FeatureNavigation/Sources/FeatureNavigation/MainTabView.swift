@@ -5,6 +5,7 @@
 //  Created by patrick ridd on 1/20/26.
 //
 
+import SharedLocalization
 import SwiftUI
 
 public struct MainTabView: View {
@@ -28,15 +29,37 @@ public struct MainTabView: View {
     public var body: some View {
         TabView(selection: $coordinator.selectedTab) {
             dashboardView
-                .tabItem { Label("Today", systemImage: "sun.max.fill") }
+                .tabItem {
+                    Label {
+                        Text(FeatureNavigationStrings.Tab.today)
+                    } icon: {
+                        Image(systemName: "sun.max.fill")
+                    }
+                }
                 .tag(MainCoordinator.Tab.dashboard)
 
             historyView
-                .tabItem { Label("History", systemImage: "calendar") }
+                .tabItem {
+                    Label {
+                        Text(FeatureNavigationStrings.Tab.history)
+                    } icon: {
+                        Image(systemName: "calendar")
+                    }
+                }
                 .tag(MainCoordinator.Tab.history)
 
             profileView
-                .tabItem { Label(coordinator.profileTabTitle, systemImage: "person.crop.circle") }
+                .tabItem {
+                    Label {
+                        Text(
+                            coordinator.profileTabTitle.isEmpty
+                                ? SharedLocalizedString.Auth.profile
+                                : coordinator.profileTabTitle
+                        )
+                    } icon: {
+                        Image(systemName: "person.crop.circle")
+                    }
+                }
                 .tag(MainCoordinator.Tab.profile)
         }
     }
