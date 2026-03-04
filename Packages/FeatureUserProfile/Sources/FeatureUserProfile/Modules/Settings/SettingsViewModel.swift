@@ -45,12 +45,16 @@ public final class SettingsViewModel {
         }
     }
 
-    public func confirmSignOut() {
+    public func presentConfirmSignOut() {
         guard !isBusy else { return }
         activeSheet = .signOut
     }
 
     public func cancelSignOut() {
+        dismissConfirmationSheet()
+    }
+
+    public func dismissConfirmationSheet() {
         activeSheet = nil
     }
 
@@ -58,7 +62,7 @@ public final class SettingsViewModel {
         guard !isBusy else { return }
 
         isSigningOut = true
-        activeSheet = nil
+        dismissConfirmationSheet()
 
         do {
             try await authService.signOut()
@@ -75,20 +79,20 @@ public final class SettingsViewModel {
         }
     }
 
-    public func confirmDeleteAccount() {
+    public func presentDeleteAccountConfirmation() {
         guard !isBusy else { return }
         activeSheet = .deleteAccount
     }
 
     public func cancelDeleteAccount() {
-        activeSheet = nil
+        dismissConfirmationSheet()
     }
 
     public func deleteAccount() async {
         guard !isBusy else { return }
 
         isDeletingAccount = true
-        activeSheet = nil
+        dismissConfirmationSheet()
 
         do {
             try await authService.deleteCurrentUser()

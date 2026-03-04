@@ -105,7 +105,7 @@ extension SettingsView {
     private var signOutButton: some View {
         Button {
             HapticManager.selection()
-            viewModel.confirmSignOut()
+            viewModel.presentConfirmSignOut()
         } label: {
             HStack(spacing: MindsetLayout.spacing12) {
                 Image(systemName: "rectangle.portrait.and.arrow.right")
@@ -126,7 +126,7 @@ extension SettingsView {
     private var deleteAccountButton: some View {
         Button {
             HapticManager.selection()
-            viewModel.confirmDeleteAccount()
+            viewModel.presentDeleteAccountConfirmation()
         } label: {
             HStack(spacing: MindsetLayout.spacing12) {
                 Image(systemName: "trash.fill")
