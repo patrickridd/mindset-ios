@@ -16,12 +16,12 @@ public final class MainCoordinator {
     public enum RootState {
         case auth
         case onboarding
-        case home
+        case mainTabView
         case loading
     }
 
     // Modals and Overlays (Identifiable for SwiftUI item-based presentation)
-    /// Mindset is a full-screen overlay so home stays alive—avoids Dashboard reload on dismiss.
+    /// Mindset is a full-screen overlay so MainTabView stays alive—avoids Dashboard reload on dismiss.
     public enum FullScreenState: Identifiable {
         case paywall
         case mindset
@@ -103,9 +103,9 @@ public final class MainCoordinator {
             return
         }
 
-        // 3. User is authenticated and onboarding complete → show home
+        // 3. User is authenticated and onboarding complete → show mainTabView
         refreshProfileTabTitle()
-        set(rootState: .home)
+        set(rootState: .mainTabView)
 
         // 4. Check subscription status and show paywall if needed
         let isPro = await subscriptionService.checkSubscriptionStatus()
@@ -119,7 +119,7 @@ public final class MainCoordinator {
 
     public func signInCompleted() {
         refreshProfileTabTitle()
-        set(rootState: .home)
+        set(rootState: .mainTabView)
         Task {
             let isPro = await subscriptionService.checkSubscriptionStatus()
             if !isPro {
@@ -142,24 +142,24 @@ public final class MainCoordinator {
                 return
             } else {
                 refreshProfileTabTitle()
-                set(rootState: .home)
+                set(rootState: .mainTabView)
             }
         }
     }
 
-    public func showHomeView() {
+    public func showMainTabView() {
         set(fullScreenState: nil)
         refreshProfileTabTitle()
-        set(rootState: .home)
+        set(rootState: .mainTabView)
     }
 
     public func subscriptionPurchased() {
-        set(rootState: .home)
+        set(rootState: .mainTabView)
     }
 
     public func startMorningMindset() {
         mindsetPath = NavigationPath()  // Reset the path
-        set(rootState: .home)
+        set(rootState: .mainTabView)
         set(fullScreenState: .mindset)
     }
 

@@ -190,7 +190,7 @@ struct AppViewFactory: MainViewFactory {
                     coordinator.showPaywall()
                 }
             },
-            onDismiss: { coordinator.showHomeView() })
+            onDismiss: { coordinator.showMainTabView() })
 
         return AnyView(
             // Bind the stack to the coordinator's path
@@ -208,7 +208,7 @@ struct AppViewFactory: MainViewFactory {
     func makeRitualSuccessView(archetype: String, xp: Int) -> AnyView {
         AnyView(
             RitualSuccessView(archetype: archetype, xpEarned: xp) {
-                coordinator.showHomeView()
+                coordinator.showMainTabView()
                 coordinator.dismissSheet()
             })
     }

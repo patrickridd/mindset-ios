@@ -43,7 +43,7 @@ public struct MainCoordinatorView: View {
             switch coordinator.rootState {
             case .auth: factory.decoratePresentedView(factory.makeSignInView())
             case .onboarding: factory.decoratePresentedView(factory.makeOnboardingView())
-            case .home: factory.decoratePresentedView(factory.makeTabView())
+            case .mainTabView: factory.decoratePresentedView(factory.makeTabView())
             case .loading: factory.decoratePresentedView(factory.makeLoadingView())
             }
         }
