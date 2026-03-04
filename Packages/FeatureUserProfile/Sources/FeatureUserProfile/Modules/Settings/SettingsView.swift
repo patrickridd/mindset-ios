@@ -51,9 +51,6 @@ public struct SettingsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .sheet(item: $viewModel.activeSheet) { sheet in
             confirmationSheet(for: sheet)
-            .presentationDetents([.height(MindsetLayout.detentSmall)])
-            .presentationDragIndicator(.visible)
-            .presentationCornerRadius(MindsetLayout.radiusCardLarge)
         }
         .alert(
             Text(viewModel.errorTitle),
