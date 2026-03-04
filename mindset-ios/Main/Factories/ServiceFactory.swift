@@ -76,7 +76,7 @@ struct ServiceFactory {
     
     // MARK: - Repository Creation
     
-    func makeMindsetRepository(persistence: SDPersistenceService) -> MindsetRepository {
+    func makeMindsetRepository(persistence: any PersistenceService) -> MindsetRepository {
         if config.useRealServices {
             return SDMindsetRepository(persistence: persistence)
         } else {
@@ -84,7 +84,7 @@ struct ServiceFactory {
         }
     }
     
-    func makeUserRepository(persistence: SDPersistenceService) -> UserRepository {
+    func makeUserRepository(persistence: any PersistenceService) -> UserRepository {
         let base: any UserRepository
         if config.useRealServices {
             base = SDUserRepository(persistence: persistence)

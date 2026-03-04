@@ -54,7 +54,7 @@ public struct MindsetGlassModifier: ViewModifier {
         case .card:
             return .clear
         case .button, .destructive:
-            return baseBrandColor.opacity(0.15)
+            return baseBrandColor.opacity(0.1)
         }
     }
     
@@ -66,7 +66,7 @@ public struct MindsetGlassModifier: ViewModifier {
         case .button(let color):
             return color
         case .destructive:
-            return MindsetColors.accentCoral
+            return MindsetColors.accentDestructiveRed
         }
     }
     

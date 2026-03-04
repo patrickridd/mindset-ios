@@ -47,6 +47,26 @@ public final class FirebaseAuthService: AuthService {
         try Auth.auth().signOut()
     }
 
+    public func deleteCurrentUser() async throws {
+        guard let user = Auth.auth().currentUser else {
+            throw NSError(
+                domain: "FirebaseAuthService",
+                code: -1,
+                userInfo: [NSLocalizedDescriptionKey: "No authenticated user"]
+            )
+        }
+        
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            user.delete { error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: ())
+                }
+            }
+        }
+    }
+
     public func isAuthenticated() async -> Bool {
         return Auth.auth().currentUser != nil
     }

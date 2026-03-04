@@ -45,6 +45,7 @@ struct AppViewFactory: MainViewFactory {
     let getYesterdayGoalUseCase: GetYesterdayGoalUseCase
     let subscriptionService: SubscriptionService
     let serviceFactory: ServiceFactory
+    let persistence: PersistenceService
     let logger: AppLogger
 
     func decoratePresentedView(_ view: AnyView) -> AnyView {
@@ -162,6 +163,7 @@ struct AppViewFactory: MainViewFactory {
                             SettingsView(
                                 viewModel: SettingsViewModel(
                                     authService: authService,
+                                    persistence: persistence,
                                     onSignOut: {
                                         coordinator.signOutCompleted()
                                     }

@@ -81,6 +81,29 @@ public enum FeatureUserProfileStrings {
             comment: "Loading overlay text shown while signing out is in progress")
     }
 
+    // MARK: - Delete Account
+
+    public enum DeleteAccount {
+        public static let buttonTitle = String(
+            localized: "profile.deleteAccount.buttonTitle", bundle: .module,
+            comment: "Button title for Delete Account in Settings")
+        public static let confirmationTitle = String(
+            localized: "profile.deleteAccount.confirmationTitle", bundle: .module,
+            comment: "Bottom sheet title asking user to confirm account deletion")
+        public static let confirmationSubtitle = String(
+            localized: "profile.deleteAccount.confirmationSubtitle", bundle: .module,
+            comment: "Bottom sheet subtitle warning the user about deleting their account")
+        public static let confirmButton = String(
+            localized: "profile.deleteAccount.confirmButton", bundle: .module,
+            comment: "Confirm button title for Delete Account confirmation sheet")
+        public static let deleting = String(
+            localized: "profile.deleteAccount.deleting", bundle: .module,
+            comment: "Loading overlay text shown while account deletion is in progress")
+        public static let errorTitle = String(
+            localized: "profile.deleteAccount.errorTitle", bundle: .module,
+            comment: "Alert title shown when account deletion fails")
+    }
+
     // MARK: - Debug Tools (profile row only — screen strings live in Development package)
 
     public enum DebugTools {

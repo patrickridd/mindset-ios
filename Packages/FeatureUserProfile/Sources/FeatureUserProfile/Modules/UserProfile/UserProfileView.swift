@@ -80,7 +80,7 @@ extension UserProfileView {
                 .font(MindsetFonts.sectionHeader)
                 .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
                 .padding(.horizontal, MindsetLayout.paddingMedium)
-
+            
             accountCardRows
         }
     }
@@ -89,19 +89,10 @@ extension UserProfileView {
         VStack(spacing: 0) {
             AccountNavigationRow(
                 icon: "person.badge.key.fill",
-                title: "Security and Privacy",
-                subtitle: "Password, device security, data protection",
+                title: "Settings",
+                subtitle: "Security, privacy, data protection",
                 color: MindsetColors.accentOrange,
                 navigationAction: { viewModel.navigateToSecurity() }
-            )
-
-            divider
-
-            AccountRow(
-                icon: "checkmark.shield.fill",
-                title: FeatureUserProfileStrings.Account.signedInTitle,
-                subtitle: FeatureUserProfileStrings.Account.signedInSubtitle,
-                color: MindsetColors.successEmerald
             )
         }
         .mindsetCard()

@@ -155,6 +155,9 @@ public enum MindsetColors {
     /// Blue accent — cloud sync, information, calm highlights
     public static let accentBlue = Color(red: 0.25, green: 0.55, blue: 0.95)
 
+    /// Red accent — delete account, permanent destructive actions
+    public static let accentDestructiveRed = Color.red
+
     // MARK: - Success & Growth
 
     /// Success green — bright, growth, accomplishment

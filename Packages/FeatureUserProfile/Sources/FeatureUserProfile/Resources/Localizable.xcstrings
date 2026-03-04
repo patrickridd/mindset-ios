@@ -193,6 +193,78 @@
         }
       }
     },
+    "profile.deleteAccount.buttonTitle" : {
+      "comment" : "Button title for Delete Account in Settings",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Account"
+          }
+        }
+      }
+    },
+    "profile.deleteAccount.confirmationTitle" : {
+      "comment" : "Bottom sheet title asking user to confirm account deletion",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete account?"
+          }
+        }
+      }
+    },
+    "profile.deleteAccount.confirmationSubtitle" : {
+      "comment" : "Bottom sheet subtitle warning the user about deleting their account",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This permanently deletes your account and clears your data from this device."
+          }
+        }
+      }
+    },
+    "profile.deleteAccount.confirmButton" : {
+      "comment" : "Confirm button title for Delete Account confirmation sheet",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Account"
+          }
+        }
+      }
+    },
+    "profile.deleteAccount.deleting" : {
+      "comment" : "Loading overlay text shown while account deletion is in progress",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deleting account..."
+          }
+        }
+      }
+    },
+    "profile.deleteAccount.errorTitle" : {
+      "comment" : "Alert title shown when account deletion fails",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Account Error"
+          }
+        }
+      }
+    },
     "profile.debugTools.title" : {
       "comment" : "Navigation title for the Debug Tools screen",
       "extractionState" : "manual",

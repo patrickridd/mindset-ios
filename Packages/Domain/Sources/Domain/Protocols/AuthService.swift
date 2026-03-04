@@ -44,6 +44,11 @@ public protocol AuthService: Sendable {
     /// Sign out the current user
     func signOut() async throws
 
+    /// Permanently delete the currently authenticated user account.
+    ///
+    /// Implementations may require a recent login and should surface that error to callers.
+    func deleteCurrentUser() async throws
+
     /// Check if user is currently authenticated
     func isAuthenticated() async -> Bool
 

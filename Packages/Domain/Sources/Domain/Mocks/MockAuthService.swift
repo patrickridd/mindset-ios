@@ -19,6 +19,7 @@ public final class MockAuthService: AuthService {
     public private(set) var signInCalled = false
     public private(set) var lastCredential: AuthCredential?
     public private(set) var signOutCalled = false
+    public private(set) var deleteCurrentUserCalled = false
 
     public init(
         shouldSucceed: Bool = true,
@@ -67,6 +68,19 @@ public final class MockAuthService: AuthService {
                 domain: "MockAuthService",
                 code: -1,
                 userInfo: [NSLocalizedDescriptionKey: "Mock sign out failed"]
+            )
+        }
+    }
+
+    public func deleteCurrentUser() async throws {
+        deleteCurrentUserCalled = true
+        try await Task.sleep(for: signInDelay)
+
+        if !shouldSucceed {
+            throw NSError(
+                domain: "MockAuthService",
+                code: -1,
+                userInfo: [NSLocalizedDescriptionKey: "Mock delete account failed"]
             )
         }
     }

@@ -27,29 +27,36 @@ public struct SettingsView: View {
 
             ScrollView {
                 VStack(spacing: MindsetLayout.spacing24) {
+                    AccountRow(
+                        icon: "checkmark.shield.fill",
+                        title: FeatureUserProfileStrings.Account.signedInTitle,
+                        subtitle: FeatureUserProfileStrings.Account.signedInSubtitle,
+                        color: MindsetColors.successEmerald
+                    )
+
+                    Divider()
+                    
                     signOutButton
+                    deleteAccountButton
                 }
                 .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
                 .padding(.top, MindsetLayout.spacing30)
             }
 
             loadingOverlay
-                .opacity(viewModel.isSigningOut ? 1 : 0)
-                .animation(.easeInOut(duration: 0.2), value: viewModel.isSigningOut)
+                .opacity(viewModel.isBusy ? 1 : 0)
+                .animation(.easeInOut(duration: 0.2), value: viewModel.isBusy)
         }
         .navigationTitle("Security and Privacy")
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $viewModel.showSignOutConfirmation) {
-            SignOutConfirmationSheet(
-                onConfirm: confirmAndSignOut,
-                onCancel: viewModel.cancelSignOut
-            )
+        .sheet(item: $viewModel.activeSheet) { sheet in
+            confirmationSheet(for: sheet)
             .presentationDetents([.height(MindsetLayout.detentSmall)])
             .presentationDragIndicator(.visible)
             .presentationCornerRadius(MindsetLayout.radiusCardLarge)
         }
         .alert(
-            FeatureUserProfileStrings.SignOut.errorTitle,
+            Text(viewModel.errorTitle),
             isPresented: Binding(
                 get: { viewModel.errorMessage != nil },
                 set: { if !$0 { viewModel.dismissError() } }
@@ -68,6 +75,30 @@ public struct SettingsView: View {
     private func confirmAndSignOut() {
         Task { await viewModel.signOut() }
     }
+
+    private func confirmAndDeleteAccount() {
+        Task { await viewModel.deleteAccount() }
+    }
+
+    @ViewBuilder
+    private func confirmationSheet(for sheet: SettingsSheet) -> some View {
+        switch sheet {
+        case .signOut:
+            SignOutConfirmationSheet(
+                onConfirm: confirmAndSignOut,
+                onCancel: viewModel.cancelSignOut
+            )
+        case .deleteAccount:
+            ConfirmationSheet(
+                title: FeatureUserProfileStrings.DeleteAccount.confirmationTitle,
+                subtitle: FeatureUserProfileStrings.DeleteAccount.confirmationSubtitle,
+                confirmTitle: FeatureUserProfileStrings.DeleteAccount.confirmButton,
+                confirmStyle: .destructive,
+                onConfirm: confirmAndDeleteAccount,
+                onCancel: viewModel.cancelDeleteAccount
+            )
+        }
+    }
 }
 
 // MARK: - Subviews
@@ -85,12 +116,34 @@ extension SettingsView {
 
                 Text(SharedLocalizedString.Auth.signOut)
                     .font(MindsetFonts.button)
+                    .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
             }
             .foregroundStyle(MindsetColors.accentCoral)
             .frame(maxWidth: .infinity)
             .frame(height: MindsetLayout.buttonHeight)
         }
-        .disabled(viewModel.isSigningOut)
+        .disabled(viewModel.isBusy)
+        .mindsetButton()
+    }
+
+    private var deleteAccountButton: some View {
+        Button {
+            HapticManager.selection()
+            viewModel.confirmDeleteAccount()
+        } label: {
+            HStack(spacing: MindsetLayout.spacing12) {
+                Image(systemName: "trash.fill")
+                    .font(.system(size: MindsetLayout.iconLarge))
+
+                Text(FeatureUserProfileStrings.DeleteAccount.buttonTitle)
+                    .font(MindsetFonts.button)
+                    .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
+            }
+            .foregroundStyle(MindsetColors.accentDestructiveRed)
+            .frame(maxWidth: .infinity)
+            .frame(height: MindsetLayout.buttonHeight)
+        }
+        .disabled(viewModel.isBusy)
         .mindsetDestructiveButton()
     }
 
@@ -104,7 +157,7 @@ extension SettingsView {
                     .tint(MindsetColors.accentOrange)
                     .scaleEffect(1.5)
 
-                Text(FeatureUserProfileStrings.SignOut.signingOut)
+                Text(viewModel.busyOverlayText)
                     .font(MindsetFonts.button)
                     .foregroundStyle(MindsetColors.textPrimary)
             }
@@ -121,7 +174,16 @@ extension SettingsView {
     SettingsView(
         viewModel: SettingsViewModel(
             authService: MockAuthService(),
+            persistence: PreviewPersistenceService(),
             onSignOut: {}
         )
     )
+}
+
+private struct PreviewPersistenceService: PersistenceService {
+    func saveUserProfile(_ profile: UserProfile) async throws {}
+    func fetchUserProfile() async throws -> UserProfile? { nil }
+    func saveMindsetEntry(_ entry: MindsetEntry) async throws {}
+    func fetchAllMindsetEntries() async throws -> [MindsetEntry] { [] }
+    func deleteAllUserData() async throws {}
 }

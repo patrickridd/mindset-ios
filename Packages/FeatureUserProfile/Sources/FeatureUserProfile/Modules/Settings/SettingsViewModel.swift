@@ -13,33 +13,52 @@ import Observation
 @MainActor
 public final class SettingsViewModel {
     public var isSigningOut = false
-    public var showSignOutConfirmation = false
+    public var isDeletingAccount = false
+    var activeSheet: SettingsSheet?
+
+    var errorTitle = FeatureUserProfileStrings.SignOut.errorTitle
     var errorMessage: String?
 
     private let authService: AuthService
+    private let persistence: PersistenceService
     private let onSignOut: () -> Void
 
     public init(
         authService: AuthService,
+        persistence: PersistenceService,
         onSignOut: @escaping () -> Void
     ) {
         self.authService = authService
+        self.persistence = persistence
         self.onSignOut = onSignOut
     }
 
+    var isBusy: Bool {
+        isSigningOut || isDeletingAccount
+    }
+
+    var busyOverlayText: String {
+        if isDeletingAccount {
+            FeatureUserProfileStrings.DeleteAccount.deleting
+        } else {
+            FeatureUserProfileStrings.SignOut.signingOut
+        }
+    }
+
     public func confirmSignOut() {
-        showSignOutConfirmation = true
+        guard !isBusy else { return }
+        activeSheet = .signOut
     }
 
     public func cancelSignOut() {
-        showSignOutConfirmation = false
+        activeSheet = nil
     }
 
     public func signOut() async {
-        guard !isSigningOut else { return }
+        guard !isBusy else { return }
 
         isSigningOut = true
-        showSignOutConfirmation = false
+        activeSheet = nil
 
         do {
             try await authService.signOut()
@@ -51,11 +70,55 @@ public final class SettingsViewModel {
             onSignOut()
         } catch {
             isSigningOut = false
+            errorTitle = FeatureUserProfileStrings.SignOut.errorTitle
             errorMessage = "Failed to sign out: \(error.localizedDescription)"
+        }
+    }
+
+    public func confirmDeleteAccount() {
+        guard !isBusy else { return }
+        activeSheet = .deleteAccount
+    }
+
+    public func cancelDeleteAccount() {
+        activeSheet = nil
+    }
+
+    public func deleteAccount() async {
+        guard !isBusy else { return }
+
+        isDeletingAccount = true
+        activeSheet = nil
+
+        do {
+            try await authService.deleteCurrentUser()
+            try await persistence.deleteAllUserData()
+
+            UserDefaults.standard.removeObject(forKey: "userName")
+            UserDefaults.standard.removeObject(forKey: "currentNonce")
+
+            isDeletingAccount = false
+            onSignOut()
+        } catch {
+            isDeletingAccount = false
+            errorTitle = FeatureUserProfileStrings.DeleteAccount.errorTitle
+            errorMessage = "Failed to delete account: \(error.localizedDescription)"
         }
     }
 
     public func dismissError() {
         errorMessage = nil
+    }
+}
+
+enum SettingsSheet: Identifiable {
+    case signOut
+    case deleteAccount
+
+    var id: Int {
+        switch self {
+        case .signOut: 0
+        case .deleteAccount: 1
+        }
     }
 }

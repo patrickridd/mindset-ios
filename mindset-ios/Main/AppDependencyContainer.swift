@@ -27,6 +27,7 @@ final class AppDependencyContainer {
     let coordinator: MainCoordinator
     let viewFactory: AppViewFactory
     let container: ModelContainer
+    let persistence: PersistenceService
 
     init() {
         // --- 1. Logger (Composition Root owns the single instance) ---
@@ -42,7 +43,7 @@ final class AppDependencyContainer {
 
         // --- 3. Persistence ---
         self.container = try! ModelContainer(for: SDUserProfile.self, SDMindsetEntry.self)
-        let persistence = SDPersistenceService(modelContext: container.mainContext)
+        self.persistence = SDPersistenceService(modelContext: container.mainContext)
 
         // --- 4. Repositories ---
         self.mindsetRepository = serviceFactory.makeMindsetRepository(persistence: persistence)
@@ -75,6 +76,7 @@ final class AppDependencyContainer {
             getYesterdayGoalUseCase: getYesterday,
             subscriptionService: subService,
             serviceFactory: serviceFactory,
+            persistence: persistence,
             logger: logger
         )
     }

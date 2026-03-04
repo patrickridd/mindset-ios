@@ -1,5 +1,5 @@
 //
-//  SignOutConfirmationSheet.swift
+//  ConfirmationSheet.swift
 //  FeatureUserProfile
 //
 //  Created by patrick ridd on 3/1/26.
@@ -10,7 +10,16 @@ import SharedUI
 import SharedUtils
 import SwiftUI
 
-struct SignOutConfirmationSheet: View {
+enum ConfirmationSheetConfirmStyle {
+    case standard
+    case destructive
+}
+
+struct ConfirmationSheet: View {
+    let title: String
+    let subtitle: String
+    let confirmTitle: String
+    let confirmStyle: ConfirmationSheetConfirmStyle
     let onConfirm: () -> Void
     let onCancel: () -> Void
 
@@ -25,12 +34,12 @@ struct SignOutConfirmationSheet: View {
 
             VStack(spacing: MindsetLayout.spacing24) {
                 VStack(spacing: MindsetLayout.spacing8) {
-                    Text(FeatureUserProfileStrings.SignOut.confirmationTitle)
+                    Text(title)
                         .font(MindsetFonts.promptHeadline)
                         .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
                         .multilineTextAlignment(.center)
 
-                    Text(FeatureUserProfileStrings.SignOut.confirmationSubtitle)
+                    Text(subtitle)
                         .font(MindsetFonts.caption)
                         .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
                         .multilineTextAlignment(.center)
@@ -55,13 +64,13 @@ struct SignOutConfirmationSheet: View {
             dismiss()
             onConfirm()
         } label: {
-            Text(SharedLocalizedString.Auth.signOut)
+            Text(confirmTitle)
                 .font(MindsetFonts.button)
                 .foregroundStyle(MindsetColors.accentCoral)
                 .frame(maxWidth: .infinity)
                 .frame(height: MindsetLayout.buttonHeight)
         }
-        .mindsetButton()
+        .confirmationSheetConfirmStyle(confirmStyle)
     }
 
     private var cancelButton: some View {
@@ -77,4 +86,47 @@ struct SignOutConfirmationSheet: View {
                 .frame(height: MindsetLayout.spacing40)
         }
     }
+}
+
+private extension View {
+    @ViewBuilder
+    func confirmationSheetConfirmStyle(_ style: ConfirmationSheetConfirmStyle) -> some View {
+        switch style {
+        case .standard:
+            self.mindsetButton()
+        case .destructive:
+            self.mindsetDestructiveButton()
+        }
+    }
+}
+
+struct SignOutConfirmationSheet: View {
+    let onConfirm: () -> Void
+    let onCancel: () -> Void
+
+    var body: some View {
+        ConfirmationSheet(
+            title: FeatureUserProfileStrings.SignOut.confirmationTitle,
+            subtitle: FeatureUserProfileStrings.SignOut.confirmationSubtitle,
+            confirmTitle: SharedLocalizedString.Auth.signOut,
+            confirmStyle: .standard,
+            onConfirm: onConfirm,
+            onCancel: onCancel
+        )
+    }
+}
+
+#Preview("Sign Out") {
+    SignOutConfirmationSheet(onConfirm: {} , onCancel: {})
+}
+
+#Preview("Delete Account") {
+    ConfirmationSheet(
+        title: FeatureUserProfileStrings.DeleteAccount.confirmationTitle,
+        subtitle: FeatureUserProfileStrings.DeleteAccount.confirmationSubtitle,
+        confirmTitle: FeatureUserProfileStrings.DeleteAccount.confirmButton,
+        confirmStyle: .destructive,
+        onConfirm: {},
+        onCancel: {}
+    )
 }

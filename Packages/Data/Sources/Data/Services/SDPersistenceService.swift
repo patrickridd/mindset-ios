@@ -62,4 +62,20 @@ public final class SDPersistenceService: PersistenceService {
         let dbEntries = try modelContext.fetch(descriptor)
         return dbEntries.map { $0.toDomain() }
     }
+
+    public func deleteAllUserData() async throws {
+        let profileDescriptor = FetchDescriptor<SDUserProfile>()
+        let profiles = try modelContext.fetch(profileDescriptor)
+        for profile in profiles {
+            modelContext.delete(profile)
+        }
+
+        let entryDescriptor = FetchDescriptor<SDMindsetEntry>()
+        let entries = try modelContext.fetch(entryDescriptor)
+        for entry in entries {
+            modelContext.delete(entry)
+        }
+
+        try modelContext.save()
+    }
 }

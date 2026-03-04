@@ -11,4 +11,8 @@ public protocol PersistenceService: Sendable {
 
     func saveMindsetEntry(_ entry: MindsetEntry) async throws
     func fetchAllMindsetEntries() async throws -> [MindsetEntry]
+
+    /// Delete all locally persisted user data (profile + journal history).
+    /// Used for account deletion and privacy resets.
+    func deleteAllUserData() async throws
 }
