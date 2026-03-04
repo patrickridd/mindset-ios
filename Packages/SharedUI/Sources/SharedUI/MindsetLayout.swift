@@ -77,5 +77,6 @@ public enum MindsetLayout {
     
     // MARK: - Detents
     
+    public static let detentMinimum: CGFloat = 150
     public static let detentSmall: CGFloat = 300
 }

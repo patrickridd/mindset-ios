@@ -29,6 +29,7 @@ struct ConfirmationSheet: View {
 
     @State private var measuredContentHeight: CGFloat = MindsetLayout.detentSmall
     @State private var availableHeight: CGFloat = 0
+    @State private var detentSelection: PresentationDetent = .height(MindsetLayout.detentSmall)
 
     var body: some View {
         ZStack {
@@ -46,6 +47,7 @@ struct ConfirmationSheet: View {
                         withTransaction(transaction) {
                             measuredContentHeight = clamped
                         }
+                        syncDetentSelectionIfNeeded()
                     }
 
                 Spacer(minLength: 0)
@@ -56,10 +58,14 @@ struct ConfirmationSheet: View {
             guard height > 0 else { return }
             availableHeight = height
             measuredContentHeight = clampDetentHeight(measuredContentHeight)
+            syncDetentSelectionIfNeeded()
         }
-        .presentationDetents(detents)
+        .presentationDetents(detents, selection: $detentSelection)
         .presentationDragIndicator(.visible)
         .presentationCornerRadius(MindsetLayout.radiusCardLarge)
+        .onAppear {
+            syncDetentSelectionIfNeeded()
+        }
     }
 
     private var detents: Set<PresentationDetent> {
@@ -80,7 +86,19 @@ struct ConfirmationSheet: View {
     }
 
     private func clampDetentHeight(_ height: CGFloat) -> CGFloat {
-        min(max(height, MindsetLayout.detentSmall), detentMaxHeight)
+        min(max(height, MindsetLayout.detentMinimum), detentMaxHeight)
+    }
+
+    private func syncDetentSelectionIfNeeded() {
+        if dynamicTypeSize.isAccessibilitySize {
+            detentSelection = .large
+            return
+        }
+
+        // If the user expanded to `.large`, don't fight them.
+        if detentSelection == .large { return }
+
+        detentSelection = .height(measuredContentHeight)
     }
 
     private var content: some View {
