@@ -31,15 +31,17 @@ public final class DebugToolsViewModel {
 
     public var isProOverrideEnabled: Bool = false {
         didSet {
+            guard !isInitializing else { return }
             DebugSettings.shared.isProOverrideEnabled = isProOverrideEnabled
-            DebugLogger.shared.add("isPro override \(isProOverrideEnabled ? "enabled" : "disabled")")
+            DebugLogger.shared.add("isPro OVERRIDE turned \(isProOverrideEnabled ? "💡ON" : "🚫OFF")")
         }
     }
 
     public var isProOverrideValue: Bool = false {
         didSet {
+            guard !isInitializing else { return }
             DebugSettings.shared.isProOverrideValue = isProOverrideValue
-            DebugLogger.shared.add("isPro override value set to: \(isProOverrideValue)")
+            DebugLogger.shared.add("isPro override VALUE: \(isProOverrideValue ? "💎 Enabled" : "📵 Disabled")")
         }
     }
 
@@ -48,7 +50,7 @@ public final class DebugToolsViewModel {
             guard !isInitializing else { return }
             DebugSettings.shared.onboardingOverrideEnabled = onboardingOverrideEnabled
             DebugLogger.shared.add(
-                "Onboarding override \(onboardingOverrideEnabled ? "enabled" : "disabled")"
+                "Onboarding OVERRIDE \(onboardingOverrideEnabled ? "💡ON" : "🚫OFF")"
             )
         }
     }
@@ -57,7 +59,7 @@ public final class DebugToolsViewModel {
         didSet {
             guard !isInitializing else { return }
             DebugSettings.shared.onboardingOverrideValue = onboardingOverrideValue
-            DebugLogger.shared.add("Onboarding override value set to: \(onboardingOverrideValue)")
+            DebugLogger.shared.add("Onboarding override VALUE set to: \(onboardingOverrideValue ? "✅ Completed" : "❌ Not completed")")
         }
     }
     

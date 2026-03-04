@@ -79,7 +79,7 @@ private extension DebugToolsView {
             VStack(spacing: 0) {
                 Toggle(DevelopmentStrings.DebugTools.onboardingOverrideToggle, isOn: $viewModel.onboardingOverrideEnabled)
                     .font(MindsetFonts.bodyMedium)
-                    .tint(MindsetColors.accentOrangeSoft)
+                    .tint(.green)
                     .padding(MindsetLayout.paddingMedium)
 
                 if viewModel.onboardingOverrideEnabled {
@@ -112,7 +112,7 @@ private extension DebugToolsView {
             VStack(spacing: 0) {
                 Toggle(DevelopmentStrings.DebugTools.isProOverrideToggle, isOn: $viewModel.isProOverrideEnabled)
                     .font(MindsetFonts.bodyMedium)
-                    .tint(MindsetColors.accentOrangeSoft)
+                    .tint(.green)
                     .padding(MindsetLayout.paddingMedium)
 
                 if viewModel.isProOverrideEnabled {
