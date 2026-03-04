@@ -162,7 +162,7 @@ struct AppViewFactory: MainViewFactory {
                             EmptyView()
                             #endif
                         case .security:
-                            EmptyView()
+                            SettingsView(viewModel: SettingsViewModel())
                         }
                     }
             }
