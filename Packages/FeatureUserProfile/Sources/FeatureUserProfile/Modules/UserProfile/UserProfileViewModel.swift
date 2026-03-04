@@ -12,14 +12,10 @@ import Observation
 @Observable
 @MainActor
 public final class UserProfileViewModel {
-    public var isSigningOut = false
-    public var showSignOutConfirmation = false
     public let isDebugToolsAvailable: Bool
-    var errorMessage: String?
 
     private let authService: AuthService
     private let userRepository: UserRepository
-    private let onSignOut: () -> Void
     private var onNavigateToSecurity: () -> Void
     private var onNavigateToDebugTools: () -> Void
 
@@ -31,13 +27,11 @@ public final class UserProfileViewModel {
         userRepository: UserRepository,
         isDebugToolsAvailable: Bool = false,
         onNavigateToSecurity: @escaping () -> Void,
-        onSignOut: @escaping () -> Void,
         onNavigateToDebugTools: @escaping () -> Void = {}
     ) {
         self.authService = authService
         self.userRepository = userRepository
         self.isDebugToolsAvailable = isDebugToolsAvailable
-        self.onSignOut = onSignOut
         self.onNavigateToSecurity = onNavigateToSecurity
         self.onNavigateToDebugTools = onNavigateToDebugTools
         Task {
@@ -62,14 +56,6 @@ public final class UserProfileViewModel {
 
     // MARK: Navigation State
     
-    public func confirmSignOut() {
-        showSignOutConfirmation = true
-    }
-
-    public func cancelSignOut() {
-        showSignOutConfirmation = false
-    }
-    
     func navigateToSecurity() {
         onNavigateToSecurity()
     }
@@ -77,29 +63,5 @@ public final class UserProfileViewModel {
     func navigateToDebugTools() {
         guard isDebugToolsAvailable else { return }
         onNavigateToDebugTools()
-    }
-
-    public func signOut() async {
-        isSigningOut = true
-        showSignOutConfirmation = false
-
-        do {
-            try await authService.signOut()
-
-            // Clear local user data
-            UserDefaults.standard.removeObject(forKey: "userName")
-            UserDefaults.standard.removeObject(forKey: "currentNonce")
-
-            isSigningOut = false
-            onSignOut()
-
-        } catch {
-            isSigningOut = false
-            errorMessage = "Failed to sign out: \(error.localizedDescription)"
-        }
-    }
-
-    public func dismissError() {
-        errorMessage = nil
     }
 }

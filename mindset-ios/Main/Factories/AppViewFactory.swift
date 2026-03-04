@@ -138,9 +138,6 @@ struct AppViewFactory: MainViewFactory {
             onNavigateToSecurity: {
                 coordinator.profilePath.append(ProfileDestination.security)
             },
-            onSignOut: {
-                coordinator.signOutCompleted()
-            },
             onNavigateToDebugTools: {
                 coordinator.profilePath.append(ProfileDestination.debugTools)
             }
@@ -162,7 +159,14 @@ struct AppViewFactory: MainViewFactory {
                             EmptyView()
                             #endif
                         case .security:
-                            SettingsView(viewModel: SettingsViewModel())
+                            SettingsView(
+                                viewModel: SettingsViewModel(
+                                    authService: authService,
+                                    onSignOut: {
+                                        coordinator.signOutCompleted()
+                                    }
+                                )
+                            )
                         }
                     }
             }

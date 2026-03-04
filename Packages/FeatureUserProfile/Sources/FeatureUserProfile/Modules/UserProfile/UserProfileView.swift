@@ -8,7 +8,6 @@
 import Domain
 import SharedLocalization
 import SharedUI
-import SharedUtils
 import SwiftUI
 
 public struct UserProfileView: View {
@@ -32,38 +31,9 @@ public struct UserProfileView: View {
                     if viewModel.isDebugToolsAvailable {
                         debugSection
                     }
-                    signOutButton
                 }
                 .padding(.horizontal, MindsetLayout.paddingMedium)
                 .padding(.top, MindsetLayout.spacing30)
-            }
-
-            loadingOverlay
-                .opacity(viewModel.isSigningOut ? 1 : 0)
-                .animation(.easeInOut(duration: 0.2), value: viewModel.isSigningOut)
-        }
-        .sheet(isPresented: $viewModel.showSignOutConfirmation) {
-            SignOutConfirmationSheet(
-                onConfirm: confirmAndSignOut,
-                onCancel: viewModel.cancelSignOut
-            )
-            .presentationDetents([.height(MindsetLayout.detentSmall)])
-            .presentationDragIndicator(.visible)
-            .presentationCornerRadius(MindsetLayout.radiusCardLarge)
-        }
-        .alert(
-            FeatureUserProfileStrings.SignOut.errorTitle,
-            isPresented: Binding(
-                get: { viewModel.errorMessage != nil },
-                set: { if !$0 { viewModel.dismissError() } }
-            )
-        ) {
-            Button(SharedLocalizedString.ok) {
-                viewModel.dismissError()
-            }
-        } message: {
-            if let error = viewModel.errorMessage {
-                Text(error)
             }
         }
     }
@@ -72,9 +42,6 @@ public struct UserProfileView: View {
         colorScheme == .dark ? 0.15 : 0.2
     }
 
-    private func confirmAndSignOut() {
-        Task { await viewModel.signOut() }
-    }
 }
 
 // MARK: - Subviews
@@ -139,48 +106,6 @@ extension UserProfileView {
         }
         .mindsetCard()
     }
-
-    private var signOutButton: some View {
-        Button {
-            HapticManager.selection()
-            viewModel.confirmSignOut()
-        } label: {
-            HStack(spacing: MindsetLayout.spacing12) {
-                Image(systemName: "rectangle.portrait.and.arrow.right")
-                    .font(.system(size: MindsetLayout.iconLarge))
-
-                Text(SharedLocalizedString.Auth.signOut)
-                    .font(MindsetFonts.button)
-            }
-            .foregroundStyle(MindsetColors.accentCoral)
-            .frame(maxWidth: .infinity)
-            .frame(height: MindsetLayout.buttonHeight)
-        }
-        .disabled(viewModel.isSigningOut)
-        .mindsetDestructiveButton()
-    }
-
-    private var loadingOverlay: some View {
-        ZStack {
-            Color.black.opacity(0.6)
-                .ignoresSafeArea()
-
-            VStack(spacing: MindsetLayout.spacing20) {
-                ProgressView()
-                    .tint(MindsetColors.accentOrange)
-                    .scaleEffect(1.5)
-
-                Text(FeatureUserProfileStrings.SignOut.signingOut)
-                    .font(MindsetFonts.button)
-                    .foregroundStyle(MindsetColors.textPrimary)
-            }
-            .padding(MindsetLayout.paddingCard)
-            .background(
-                RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
-                    .fill(MindsetColors.backgroundDarkSoft)
-            )
-        }
-    }
     
     private var debugSection: some View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing12) {
@@ -213,8 +138,7 @@ extension UserProfileView {
     let viewModel = UserProfileViewModel(
         authService: mockAuthService,
         userRepository: mockUserRepository,
-        onNavigateToSecurity: {},
-        onSignOut: {}
+        onNavigateToSecurity: {}
     )
     return UserProfileView(viewModel: viewModel)
 }
