@@ -7,6 +7,7 @@
 
 import Data
 import Domain
+import Foundation
 #if DEBUG
 import Development
 #endif
@@ -132,6 +133,8 @@ struct AppViewFactory: MainViewFactory {
             #endif
         }()
 
+        let privacyPolicyURL = URL(string: "https://mindset.app/privacy")!
+
         let profileViewModel = UserProfileViewModel(
             authService: authService,
             userRepository: userRepository,
@@ -166,9 +169,14 @@ struct AppViewFactory: MainViewFactory {
                                     persistence: persistence,
                                     onSignOut: {
                                         coordinator.signOutCompleted()
+                                    },
+                                    onNavigateToPrivacyPolicy: {
+                                        coordinator.profilePath.append(ProfileDestination.privacyPolicy)
                                     }
                                 )
                             )
+                        case .privacyPolicy:
+                            PrivacyPolicyView(url: privacyPolicyURL)
                         }
                     }
             }

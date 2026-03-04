@@ -22,15 +22,18 @@ public final class SettingsViewModel {
     private let authService: AuthService
     private let persistence: PersistenceService
     private let onSignOut: () -> Void
+    private let onNavigateToPrivacyPolicy: () -> Void
 
     public init(
         authService: AuthService,
         persistence: PersistenceService,
-        onSignOut: @escaping () -> Void
+        onSignOut: @escaping () -> Void,
+        onNavigateToPrivacyPolicy: @escaping () -> Void
     ) {
         self.authService = authService
         self.persistence = persistence
         self.onSignOut = onSignOut
+        self.onNavigateToPrivacyPolicy = onNavigateToPrivacyPolicy
     }
 
     var isBusy: Bool {
@@ -112,6 +115,11 @@ public final class SettingsViewModel {
 
     public func dismissError() {
         errorMessage = nil
+    }
+
+    public func navigateToPrivacyPolicy() {
+        guard !isBusy else { return }
+        onNavigateToPrivacyPolicy()
     }
 }
 

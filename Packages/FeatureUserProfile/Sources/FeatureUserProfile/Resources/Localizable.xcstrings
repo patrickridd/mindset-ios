@@ -1,6 +1,42 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "profile.legal.privacyPolicyNavTitle" : {
+      "comment" : "Navigation bar title for the Privacy Policy screen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy Policy"
+          }
+        }
+      }
+    },
+    "profile.legal.privacyPolicySubtitle" : {
+      "comment" : "Row subtitle for Privacy Policy navigation row in Settings",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How we handle your data"
+          }
+        }
+      }
+    },
+    "profile.legal.privacyPolicyTitle" : {
+      "comment" : "Row title for Privacy Policy navigation row in Settings",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy Policy"
+          }
+        }
+      }
+    },
     "profile.title" : {
       "comment" : "Profile screen title",
       "extractionState" : "manual",

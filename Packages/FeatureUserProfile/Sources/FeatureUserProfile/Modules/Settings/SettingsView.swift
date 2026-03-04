@@ -27,15 +27,7 @@ public struct SettingsView: View {
 
             ScrollView {
                 VStack(spacing: MindsetLayout.spacing24) {
-                    AccountRow(
-                        icon: "checkmark.shield.fill",
-                        title: FeatureUserProfileStrings.Account.signedInTitle,
-                        subtitle: FeatureUserProfileStrings.Account.signedInSubtitle,
-                        color: MindsetColors.successEmerald
-                    )
-
-                    Divider()
-                    
+                    securityAndPrivacyCard
                     signOutButton
                     deleteAccountButton
                 }
@@ -77,6 +69,10 @@ public struct SettingsView: View {
         Task { await viewModel.deleteAccount() }
     }
 
+    private func privacyPolicyTapped() {
+        viewModel.navigateToPrivacyPolicy()
+    }
+
     @ViewBuilder
     private func confirmationSheet(for sheet: SettingsSheet) -> some View {
         switch sheet {
@@ -101,6 +97,29 @@ public struct SettingsView: View {
 // MARK: - Subviews
 
 extension SettingsView {
+
+    private var securityAndPrivacyCard: some View {
+        VStack(spacing: 0) {
+            AccountRow(
+                icon: "checkmark.shield.fill",
+                title: FeatureUserProfileStrings.Account.signedInTitle,
+                subtitle: FeatureUserProfileStrings.Account.signedInSubtitle,
+                color: MindsetColors.successEmerald
+            )
+
+            rowDivider
+
+            AccountNavigationRow(
+                icon: "hand.raised.fill",
+                title: FeatureUserProfileStrings.Legal.privacyPolicyTitle,
+                subtitle: FeatureUserProfileStrings.Legal.privacyPolicySubtitle,
+                color: MindsetColors.stoicSlate,
+                navigationAction: privacyPolicyTapped
+            )
+            .disabled(viewModel.isBusy)
+        }
+        .mindsetCard()
+    }
 
     private var signOutButton: some View {
         Button {
@@ -165,6 +184,12 @@ extension SettingsView {
             )
         }
     }
+
+    private var rowDivider: some View {
+        MindsetColors.stoicSlateSoft
+            .frame(height: 0.5)
+            .padding(.leading, MindsetLayout.iconButtonLarge + MindsetLayout.spacing30)
+    }
 }
 
 #Preview {
@@ -172,7 +197,8 @@ extension SettingsView {
         viewModel: SettingsViewModel(
             authService: MockAuthService(),
             persistence: PreviewPersistenceService(),
-            onSignOut: {}
+            onSignOut: {},
+            onNavigateToPrivacyPolicy: {}
         )
     )
 }

@@ -131,4 +131,18 @@ public enum FeatureUserProfileStrings {
             localized: "profile.account.cloudSyncSubtitle", bundle: .module,
             comment: "Row subtitle indicating all devices are synced")
     }
+
+    // MARK: - Legal
+
+    public enum Legal {
+        public static let privacyPolicyTitle = String(
+            localized: "profile.legal.privacyPolicyTitle", bundle: .module,
+            comment: "Row title for Privacy Policy navigation row in Settings")
+        public static let privacyPolicySubtitle = String(
+            localized: "profile.legal.privacyPolicySubtitle", bundle: .module,
+            comment: "Row subtitle for Privacy Policy navigation row in Settings")
+        public static let privacyPolicyNavTitle = String(
+            localized: "profile.legal.privacyPolicyNavTitle", bundle: .module,
+            comment: "Navigation bar title for the Privacy Policy screen")
+    }
 }
