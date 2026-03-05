@@ -2,6 +2,9 @@
 description: Rules for SwiftUI, Design System, and Haptics
 globs: "**/*View.swift", "**/SharedUI/**", "**/Components/**", "**/Styles/**"
 ---
+
+# SwiftUI
+- **Standards** */mindset-ios/.agents/skills/swiftui-expert-skill 
 # Design System & UI
 - **Tokens:** ALWAYS use `MindsetColors`, `MindsetFonts`, and `MindsetLayout`. No magic numbers or hardcoded hex.
 - **Structure:** Keep `body` minimal. Use private extensions for `// MARK: - Subviews` and `// MARK: - Body Composition`.
