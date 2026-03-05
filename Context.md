@@ -82,12 +82,12 @@
 - Custom plan + social proof = maximize perceived value before ask
 
 ## 5. Tech Stack (2026 Standards)
-- **UI:** SwiftUI (latest) using `@Observable` and `Swift Concurrency`.
+- **UI:** SwiftUI Use "*/mindset-ios/.agents/skills/swiftui-expert-skill" as standards guide
 - **AI:** Gemini 2.0 Flash (`GoogleGenerativeAI`).
 - **Data:** SwiftData for local persistence, Firebase Firestore for cloud sync.
 - **Auth:** Firebase Auth (Sign in with Apple, anonymous fallback).
 - **Subscriptions:** RevenueCat (already integrated).
-- **Architecture:** Modular (Domain, Data, Feature modules).
+- **Architecture:** Modular (Domain, Data, Feature modules). Use ".cursor/rules/architecture-di.mdc" as guide
 - **Navigation:** Coordinator Pattern.
 
 ## 6. Critical Build Configurations
