@@ -7,7 +7,10 @@
 
 import Foundation
 
-/// Mock implementation of AuthService for testing and previews
+/// Mock implementation of AuthService for testing and previews.
+///
+/// **@MainActor justification:** Used only in previews and tests, which run on MainActor.
+/// Production uses FirebaseAuthService (nonisolated).
 @MainActor
 public final class MockAuthService: AuthService {
 

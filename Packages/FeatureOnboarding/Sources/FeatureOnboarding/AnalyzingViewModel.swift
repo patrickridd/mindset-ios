@@ -20,6 +20,7 @@ public final class AnalyzingViewModel {
 
         signInTask = Task { [authService, logger] in
             logger.log("🧪 Onboarding analyzing started: attempting anonymous sign-in")
+            guard !Task.isCancelled else { return }
             do {
                 try await authService.signInAnonymously()
             } catch {

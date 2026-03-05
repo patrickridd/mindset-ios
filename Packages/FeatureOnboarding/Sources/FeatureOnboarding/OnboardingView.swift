@@ -129,14 +129,9 @@ private extension OnboardingView {
                             && option == viewModel.selectedAnswerForCurrentStep)
                     Button {
                         HapticManager.selection()
-                        viewModel.selectedOption = option
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-                            viewModel.isGoingBack = false
-                            DispatchQueue.main.async {
-                                withAnimation(.easeInOut(duration: 0.35)) {
-                                    viewModel.selectOption(option)
-                                }
-                                viewModel.selectedOption = nil
+                        viewModel.handleOptionSelected(option) {
+                            withAnimation(.easeInOut(duration: 0.35)) {
+                                viewModel.selectOption(option)
                             }
                         }
                     } label: {

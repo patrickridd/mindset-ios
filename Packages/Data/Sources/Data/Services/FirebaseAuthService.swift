@@ -14,6 +14,10 @@ public typealias DomainAuthCredential = Domain.AuthCredential
 public typealias DomainAuthProvider = Domain.AuthProvider
 typealias FirebaseAuthCredential = FirebaseAuth.AuthCredential
 
+/// Firebase implementation of AuthService.
+///
+/// **Sendable safety invariant:** All methods are async and stateless; `logger` is only called
+/// from within those methods. No shared mutable state. Safe to use from any isolation domain.
 public final class FirebaseAuthService: AuthService, Sendable {
 
     private let logger: AppLogger

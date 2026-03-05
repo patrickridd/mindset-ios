@@ -45,6 +45,20 @@ public final class OnboardingViewModel {
         self.onboardingFinished = onboardingFinished
     }
 
+    /// Handles option tap: selection state, delayed advance. Caller (View) owns haptics and animation.
+    /// - Parameters:
+    ///   - option: The selected option string
+    ///   - onAdvance: Closure to run when advancing (View wraps selectOption in withAnimation here)
+    public func handleOptionSelected(_ option: String, onAdvance: @escaping () -> Void) {
+        selectedOption = option
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(350))
+            isGoingBack = false
+            onAdvance()
+            selectedOption = nil
+        }
+    }
+
     public func selectOption(_ option: String) {
         let question = questions[currentStep]
         answers[question.logic] = option
@@ -98,26 +112,27 @@ public final class OnboardingViewModel {
         isCalculating = true
 
         Task {
+            try? Task.checkCancellation()
             let wasAuthenticated = await authService.isAuthenticated()
 
             // Start progressive auth as soon as the analyzing step begins.
             startAnalyzingIfNeeded()
 
-            let delayTask = Task {
-                try? await Task.sleep(for: .seconds(2.5))
-            }
+            async let delay: Void = delayForAnalyzing()
 
             var profile = buildUserProfile()
 
             // Ensure the user has a Firebase uid before onboarding completes.
             await analyzingViewModel.waitForSignInIfStarted()
+            try? Task.checkCancellation()
 
             let isAuthenticatedNow = await authService.isAuthenticated()
-            profile.isAnonymous = !wasAuthenticated && isAuthenticatedNow
+            profile.isAccountSecured = !wasAuthenticated && isAuthenticatedNow
 
             try? await userRepository.saveUserProfile(profile)
+            try? Task.checkCancellation()
 
-            await delayTask.value
+            _ = await delay
 
             isCalculating = false
             // Notify completion - MainCoordinator will handle Auth → Paywall → Home flow
@@ -127,6 +142,10 @@ public final class OnboardingViewModel {
 
     public func startAnalyzingIfNeeded() {
         analyzingViewModel.startIfNeeded()
+    }
+
+    private func delayForAnalyzing() async {
+        try? await Task.sleep(for: .seconds(2.5))
     }
 
     private func buildUserProfile() -> UserProfile {

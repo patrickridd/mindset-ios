@@ -9,6 +9,10 @@ import Domain
 import Foundation
 import Observation
 
+/// Debug logger for auth lifecycle and app events.
+///
+/// **@unchecked Sendable safety invariant:** All mutations to `logs` occur on MainActor via
+/// `Task { @MainActor in ... }`. `log()` is safe to call from any isolation domain.
 @Observable
 public final class DebugLogger: AppLogger, @unchecked Sendable {
     public static let shared = DebugLogger()
