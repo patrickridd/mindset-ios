@@ -18,6 +18,9 @@ public final class MockAuthService: AuthService {
     // Track calls for testing
     public private(set) var signInCalled = false
     public private(set) var lastCredential: AuthCredential?
+    public private(set) var signInAnonymouslyCalled = false
+    public private(set) var linkAccountCalled = false
+    public private(set) var lastLinkProvider: AuthProvider?
     public private(set) var signOutCalled = false
     public private(set) var deleteCurrentUserCalled = false
 
@@ -72,6 +75,25 @@ public final class MockAuthService: AuthService {
         }
     }
 
+    public func signInAnonymously() async throws {
+        signInAnonymouslyCalled = true
+        _ = try await signIn(with: .anonymous)
+    }
+
+    public func linkAccount(with provider: AuthProvider) async throws {
+        linkAccountCalled = true
+        lastLinkProvider = provider
+        try await Task.sleep(for: signInDelay)
+
+        if !shouldSucceed {
+            throw NSError(
+                domain: "MockAuthService",
+                code: -1,
+                userInfo: [NSLocalizedDescriptionKey: "Mock link account failed"]
+            )
+        }
+    }
+
     public func deleteCurrentUser() async throws {
         deleteCurrentUserCalled = true
         try await Task.sleep(for: signInDelay)
@@ -91,7 +113,6 @@ public final class MockAuthService: AuthService {
 
     nonisolated public func handleAuthCallback(url: URL) -> Bool {
         // Mock implementation - always return true for testing
-        print("📱 [MockAuthService] Handling auth callback: \(url)")
         return true
     }
 }

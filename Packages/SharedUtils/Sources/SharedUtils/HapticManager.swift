@@ -5,6 +5,7 @@
 //  Standardized haptics for the app. Use the semantic APIs below for consistency.
 //
 
+#if canImport(UIKit)
 import UIKit
 
 @MainActor
@@ -70,3 +71,17 @@ public enum HapticManager {
         generator.notificationOccurred(type)
     }
 }
+#else
+import Foundation
+
+@MainActor
+public enum HapticManager {
+    public static func prepareTypewriter() {}
+    public static func typewriterTick() {}
+    public static func typewriterEmphasis() {}
+    public static func selection() {}
+    public static func action() {}
+    public static func success() {}
+    public static func tick() {}
+}
+#endif

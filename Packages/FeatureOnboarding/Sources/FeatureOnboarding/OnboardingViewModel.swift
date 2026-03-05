@@ -13,6 +13,8 @@ import Observation
 @MainActor
 public final class OnboardingViewModel {
     private let userRepository: UserRepository
+    private let authService: AuthService
+    private let analyzingViewModel: AnalyzingViewModel
     public var onboardingFinished: (() -> Void)?
 
     public var currentStep = 0
@@ -33,9 +35,13 @@ public final class OnboardingViewModel {
 
     public init(
         userRepository: UserRepository,
+        authService: AuthService,
+        analyzingViewModel: AnalyzingViewModel,
         onboardingFinished: (() -> Void)?
     ) {
         self.userRepository = userRepository
+        self.authService = authService
+        self.analyzingViewModel = analyzingViewModel
         self.onboardingFinished = onboardingFinished
     }
 
@@ -92,15 +98,35 @@ public final class OnboardingViewModel {
         isCalculating = true
 
         Task {
-            let profile = buildUserProfile()
+            let wasAuthenticated = await authService.isAuthenticated()
+
+            // Start progressive auth as soon as the analyzing step begins.
+            startAnalyzingIfNeeded()
+
+            let delayTask = Task {
+                try? await Task.sleep(for: .seconds(2.5))
+            }
+
+            var profile = buildUserProfile()
+
+            // Ensure the user has a Firebase uid before onboarding completes.
+            await analyzingViewModel.waitForSignInIfStarted()
+
+            let isAuthenticatedNow = await authService.isAuthenticated()
+            profile.isAnonymous = !wasAuthenticated && isAuthenticatedNow
+
             try? await userRepository.saveUserProfile(profile)
 
-            try? await Task.sleep(for: .seconds(2.5))
+            await delayTask.value
 
             isCalculating = false
             // Notify completion - MainCoordinator will handle Auth → Paywall → Home flow
             onboardingFinished?()
         }
+    }
+
+    public func startAnalyzingIfNeeded() {
+        analyzingViewModel.startIfNeeded()
     }
 
     private func buildUserProfile() -> UserProfile {

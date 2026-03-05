@@ -29,6 +29,7 @@ public final class SDPersistenceService: PersistenceService {
             existing.primaryGoal = profile.primaryGoal
             existing.overwhelmedFrequency = profile.overwhelmedFrequency.rawValue
             existing.isOnboardingComplete = profile.isOnboardingComplete
+            existing.isAnonymous = profile.isAnonymous
             existing.headspaceRaw = profile.headspace?.rawValue
             existing.mentalMuscleRaw = profile.mentalMuscle?.rawValue
             existing.responseToSetbackRaw = profile.responseToSetback?.rawValue

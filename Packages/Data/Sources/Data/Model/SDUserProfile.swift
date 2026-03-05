@@ -16,6 +16,7 @@ public final class SDUserProfile {
     public var primaryGoal: String
     public var createdAt: Date
     public var isOnboardingComplete: Bool
+    public var isAnonymous: Bool
     public var overwhelmedFrequency: String
 
     // Onboarding quiz results (raw values for optional enums)
@@ -30,6 +31,7 @@ public final class SDUserProfile {
         bestSelfName: String,
         primaryGoal: String,
         isOnboardingComplete: Bool,
+        isAnonymous: Bool = false,
         overwhelmedFrequency: String,
         headspaceRaw: String? = nil,
         mentalMuscleRaw: String? = nil,
@@ -42,6 +44,7 @@ public final class SDUserProfile {
         self.bestSelfName = bestSelfName
         self.primaryGoal = primaryGoal
         self.isOnboardingComplete = isOnboardingComplete
+        self.isAnonymous = isAnonymous
         self.overwhelmedFrequency = overwhelmedFrequency
         self.headspaceRaw = headspaceRaw
         self.mentalMuscleRaw = mentalMuscleRaw
@@ -60,6 +63,7 @@ public final class SDUserProfile {
             userName: bestSelfName,
             primaryGoal: primaryGoal,
             isOnboardingComplete: isOnboardingComplete,
+            isAnonymous: isAnonymous,
             overwhelmedFrequency: UserProfile.OverwhelmedFrequency(rawValue: overwhelmedFrequency)
                 ?? .sometimes,
             headspace: headspaceRaw.flatMap { UserProfile.Headspace(rawValue: $0) },
@@ -80,6 +84,7 @@ public final class SDUserProfile {
             bestSelfName: domain.userName,
             primaryGoal: domain.primaryGoal,
             isOnboardingComplete: domain.isOnboardingComplete,
+            isAnonymous: domain.isAnonymous,
             overwhelmedFrequency: domain.overwhelmedFrequency.rawValue,
             headspaceRaw: domain.headspace?.rawValue,
             mentalMuscleRaw: domain.mentalMuscle?.rawValue,

@@ -29,6 +29,13 @@ public enum AuthCredential: Sendable {
     case anonymous
 }
 
+/// Provider used to link a permanent account to an existing session (e.g., link Apple to anonymous).
+///
+/// This stays provider-agnostic by reusing `AuthCredential` as the payload.
+public enum AuthProvider: Sendable {
+    case credential(AuthCredential)
+}
+
 /// Authentication service protocol for user sign-in and identity management
 /// Protocol is provider-agnostic - implementations handle specific providers (Firebase, Supabase, etc.)
 public protocol AuthService: Sendable {
@@ -43,6 +50,17 @@ public protocol AuthService: Sendable {
 
     /// Sign out the current user
     func signOut() async throws
+
+    /// Sign in anonymously (used for progressive authentication during onboarding).
+    ///
+    /// Implementations should be idempotent (no-op if already authenticated).
+    func signInAnonymously() async throws
+
+    /// Link a permanent account to the currently authenticated user (typically anonymous).
+    ///
+    /// Implementations must throw a domain error when the credential is already in use so UI can
+    /// guide the user to switch accounts instead of linking.
+    func linkAccount(with provider: AuthProvider) async throws
 
     /// Permanently delete the currently authenticated user account.
     ///

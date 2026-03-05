@@ -11,7 +11,7 @@
 - **Domain** (`Packages/Domain`): Entities, Models, Protocols, UseCases, Logic (PromptEngine, PromptLibrary), Services (AIAnalysisService), Mocks, Errors. Pure business logic; no UI, no framework types for persistence.
 - **Data** (`Packages/Data`): `SD*` types — Repositories (SDMindsetRepository, SDUserRepository), Services (GeminiAIService, SDPersistenceService, RevenueCatSubscriptionService, FirebaseAuthService, FirebaseSyncService), Model (SDMindsetEntry, SDPromptResponse, SDUserProfile), AppConfig, UserDefault property wrapper.
 - **Feature modules:** FeatureDashboard, FeatureHistory, FeatureMindset, FeatureOnboarding, FeatureAuth, FeatureSubscription — each has View(s) and ViewModel(s). FeatureMindset has Components (e.g. AIReflectionCard) and Mocks for previews.
-- **Shared:** SharedUI (MindsetColors, MindsetFonts, MindsetLayout, DebugOverlay), SharedUtils (DebugLogger, HapticManager, InjectionBootstrap), SharedLocalization (common localized strings).
+- **Shared:** SharedUI (MindsetColors, MindsetFonts, MindsetLayout), SharedUtils (DebugLogger, HapticManager, InjectionBootstrap), SharedLocalization (common localized strings).
 
 ## 1. Goal & Vision
 - **Objective:** Reach $10k MRR by providing premium AI-driven daily Gratitude and Stoic reflections.
@@ -378,7 +378,7 @@ This project utilizes **Modular MDC (Markdown Cursor)** rules to ensure high-per
 | **`ui-design.mdc`** | Liquid Glass UI, `SharedUI` tokens, haptics in views, and body composition. | `**/*View.swift` |
 | **`localization.mdc`** | Enforcement of type-safe strings. No hardcoded or magic strings allowed. | `**/*.swift` |
 | **`data-persistence.mdc`** | Gemini 2.0 Flash, SwiftData (`SD` prefix), and Firebase sync logic. | `**/Data/**`, `**/Domain/**` |
-| **`service-factory.mdc`** | Dependency Injection, Mock vs. Real service logic, and App composition. | `**/Main/**`, `**/Protocols/**` |
+| **`service-factory.mdc`**  and **`architecture-di.mdc`**| Dependency Injection, Mock vs. Real service logic, and App composition. | `**/Main/**`, `**/Protocols/**` |
 
 **Developer Note:** To force the AI to adhere strictly to one of these systems during a complex task, mention the rule specifically in the prompt (e.g., *"Refactor this view according to @ui-design.mdc"*).
 
@@ -435,3 +435,6 @@ When building new features, the AI MUST strictly follow this "Golden Path" to ma
 
 ### 5. AI-Ready Previews
 - Use `ServiceFactory.mock` to ensure SwiftUI Previews work instantly without network or API keys.
+
+##20: The "Soft Restart" & State Reset
+App Reset: The app supports a "Soft Restart" via Notification.Name.restartApp. This triggers the MindsetApp to re-instantiate the AppDependencyContainer, allowing a clean swap between Mock and Production environments without a hard process kill.

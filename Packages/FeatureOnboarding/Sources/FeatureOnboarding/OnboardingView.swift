@@ -74,7 +74,9 @@ private extension OnboardingView {
             progressSection
             if viewModel.isCalculating {
                 Spacer()
-                CalculatingView()
+                CalculatingView(onAppear: {
+                    viewModel.startAnalyzingIfNeeded()
+                })
                     .padding(.bottom, MindsetLayout.paddingXLarge)
                 Spacer()
             } else {
@@ -193,6 +195,11 @@ private struct OptionButtonStyle: ButtonStyle {
 
 private struct CalculatingView: View {
     @State private var isPulsing = false
+    let onAppear: () -> Void
+
+    init(onAppear: @escaping () -> Void = {}) {
+        self.onAppear = onAppear
+    }
 
     var body: some View {
         VStack(spacing: MindsetLayout.spacing30) {
@@ -220,6 +227,9 @@ private struct CalculatingView: View {
             }
             .font(MindsetFonts.caption)
         }
+        .onAppear {
+            onAppear()
+        }
     }
 
     private func checklistRow(_ text: String, isComplete: Bool) -> some View {
@@ -244,8 +254,13 @@ private struct CalculatingView: View {
 }
 
 #Preview {
+    let logger: AppLogger = DebugLogger.shared
+    let authService = MockAuthService()
+    let analyzingViewModel = AnalyzingViewModel(authService: authService, logger: logger)
     let viewModel = OnboardingViewModel(
         userRepository: MockUserRepository(),
+        authService: authService,
+        analyzingViewModel: analyzingViewModel,
         onboardingFinished: nil
     )
     return OnboardingView(viewModel: viewModel)

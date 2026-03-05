@@ -75,8 +75,11 @@ struct AppViewFactory: MainViewFactory {
     }
 
     func makeOnboardingView() -> AnyView {
+        let analyzingViewModel = AnalyzingViewModel(authService: authService, logger: logger)
         let viewModel = OnboardingViewModel(
             userRepository: userRepository,
+            authService: authService,
+            analyzingViewModel: analyzingViewModel,
             onboardingFinished: {
                 coordinator.onboardingFinished()
             })

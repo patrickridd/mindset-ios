@@ -2,7 +2,7 @@
 //  ServiceFactory.swift
 //  mindset-ios
 //
-//  Created by AI Assistant
+//  Created by Patrick Ridd
 //
 
 import Data
@@ -45,7 +45,7 @@ struct ServiceFactory {
     
     func makeAuthService() -> AuthService {
         if config.useRealServices {
-            return FirebaseAuthService()
+            return FirebaseAuthService(logger: logger)
         } else {
             return MockAuthService()
         }

@@ -14,6 +14,7 @@ public struct UserProfile: Sendable {
     public var primaryGoal: String
     public let createdAt: Date
     public private(set) var isOnboardingComplete: Bool
+    public var isAnonymous: Bool
     
     /// Legacy field; prefer `headspace` when available. Kept for migration.
     public var overwhelmedFrequency: OverwhelmedFrequency
@@ -36,6 +37,7 @@ public struct UserProfile: Sendable {
         userName: String,
         primaryGoal: String,
         isOnboardingComplete: Bool = false,
+        isAnonymous: Bool = false,
         overwhelmedFrequency: OverwhelmedFrequency = .sometimes,
         headspace: Headspace? = nil,
         mentalMuscle: MentalMuscle? = nil,
@@ -48,6 +50,7 @@ public struct UserProfile: Sendable {
         self.userName = userName
         self.primaryGoal = primaryGoal
         self.isOnboardingComplete = isOnboardingComplete
+        self.isAnonymous = isAnonymous
         self.overwhelmedFrequency = overwhelmedFrequency
         self.headspace = headspace
         self.mentalMuscle = mentalMuscle

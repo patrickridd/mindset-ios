@@ -11,10 +11,15 @@ import Testing
 @testable import FeatureAuth
 
 struct FeatureAuthTests {
+    private struct TestLogger: AppLogger {
+        func log(_ message: String) {}
+    }
+
     @Test func signInViewModelInitializesWithAuthService() async throws {
         let mockAuthService = MockAuthService()
         let viewModel = SignInViewModel(
             authService: mockAuthService,
+            logger: TestLogger(),
             onSignInSuccess: { _ in },
             onSkip: {}
         )
@@ -28,6 +33,7 @@ struct FeatureAuthTests {
 
         let viewModel = SignInViewModel(
             authService: mockAuthService,
+            logger: TestLogger(),
             onSignInSuccess: { userID in
                 receivedUserID = userID
             },
@@ -51,6 +57,7 @@ struct FeatureAuthTests {
 
         let viewModel = SignInViewModel(
             authService: mockAuthService,
+            logger: TestLogger(),
             onSignInSuccess: { userID in
                 receivedUserID = userID
             },
