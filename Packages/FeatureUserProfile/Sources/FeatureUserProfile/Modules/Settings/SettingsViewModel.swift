@@ -22,17 +22,20 @@ public final class SettingsViewModel {
     private let authService: AuthService
     private let persistence: PersistenceService
     private let onSignOut: () -> Void
+    private let onDeleteAccount: () -> Void
     private let onNavigateToPrivacyPolicy: () -> Void
 
     public init(
         authService: AuthService,
         persistence: PersistenceService,
         onSignOut: @escaping () -> Void,
+        onDeleteAccount: @escaping () -> Void,
         onNavigateToPrivacyPolicy: @escaping () -> Void
     ) {
         self.authService = authService
         self.persistence = persistence
         self.onSignOut = onSignOut
+        self.onDeleteAccount = onDeleteAccount
         self.onNavigateToPrivacyPolicy = onNavigateToPrivacyPolicy
     }
 
@@ -105,7 +108,7 @@ public final class SettingsViewModel {
             UserDefaults.standard.removeObject(forKey: "currentNonce")
 
             isDeletingAccount = false
-            onSignOut()
+            onDeleteAccount()
         } catch {
             isDeletingAccount = false
             errorTitle = FeatureUserProfileStrings.DeleteAccount.errorTitle

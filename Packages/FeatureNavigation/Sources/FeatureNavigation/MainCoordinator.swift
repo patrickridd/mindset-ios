@@ -196,6 +196,11 @@ public final class MainCoordinator {
         profileTabTitle = ""
     }
 
+    public func accountDeleted() {
+        set(rootState: .onboarding)
+        profileTabTitle = ""
+    }
+
     private func set(rootState: RootState) {
         withAnimation { self.rootState = rootState }
     }

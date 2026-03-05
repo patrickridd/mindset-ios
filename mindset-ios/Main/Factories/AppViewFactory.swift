@@ -173,6 +173,9 @@ struct AppViewFactory: MainViewFactory {
                                     onSignOut: {
                                         coordinator.signOutCompleted()
                                     },
+                                    onDeleteAccount: {
+                                        coordinator.accountDeleted()
+                                    },
                                     onNavigateToPrivacyPolicy: {
                                         coordinator.profilePath.append(ProfileDestination.privacyPolicy)
                                     }

@@ -198,6 +198,7 @@ extension SettingsView {
             authService: MockAuthService(),
             persistence: PreviewPersistenceService(),
             onSignOut: {},
+            onDeleteAccount: {},
             onNavigateToPrivacyPolicy: {}
         )
     )
