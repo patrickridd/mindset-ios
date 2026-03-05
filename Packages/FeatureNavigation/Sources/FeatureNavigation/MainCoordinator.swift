@@ -119,6 +119,7 @@ public final class MainCoordinator {
 
     public func signInCompleted() {
         refreshProfileTabTitle()
+        set(tab: .dashboard)
         set(rootState: .mainTabView)
         Task {
             let isPro = await subscriptionService.checkSubscriptionStatus()
@@ -164,7 +165,7 @@ public final class MainCoordinator {
     }
 
     public func set(tab: Tab) {
-        selectedTab = tab
+        withAnimation { selectedTab = tab }
     }
 
     public func showPaywall() {
