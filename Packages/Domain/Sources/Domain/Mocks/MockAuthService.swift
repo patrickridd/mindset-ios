@@ -12,7 +12,7 @@ import Foundation
 /// **@MainActor justification:** Used only in previews and tests, which run on MainActor.
 /// Production uses FirebaseAuthService (nonisolated).
 @MainActor
-public final class MockAuthService: AuthService {
+public final class MockAuthService: @preconcurrency AuthService {
 
     public var shouldSucceed: Bool
     public var mockUserID: String
@@ -26,7 +26,7 @@ public final class MockAuthService: AuthService {
     public private(set) var lastLinkProvider: AuthProvider?
     public private(set) var signOutCalled = false
     public private(set) var deleteCurrentUserCalled = false
-    public private(set) var isAnonymousAccountLinked: Bool = false
+    public private(set) var isAccountLinked: Bool = false
     
     public init(
         shouldSucceed: Bool = true,
@@ -35,7 +35,7 @@ public final class MockAuthService: AuthService {
         signInDelay: Duration = .milliseconds(500)
     ) {
         self.shouldSucceed = shouldSucceed
-        self.isAnonymousAccountLinked = isAnonymousAccountLinked
+        self.isAccountLinked = isAnonymousAccountLinked
         self.mockUserID = mockUserID
         self.signInDelay = signInDelay
     }
@@ -113,12 +113,12 @@ public final class MockAuthService: AuthService {
         }
     }
 
-    public func isAuthenticated() async -> Bool {
-        return shouldSucceed
+    public func isAuthenticated() -> Bool {
+        shouldSucceed
     }
 
-    public func isAnonymousAccountLinked() async -> Bool {
-        return isAnonymousAccountLinked
+    public func isAnonymousAccountLinked() -> Bool {
+        isAccountLinked
     }
 
     nonisolated public func handleAuthCallback(url: URL) -> Bool {

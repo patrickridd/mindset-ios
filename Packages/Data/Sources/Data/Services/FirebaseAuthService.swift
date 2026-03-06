@@ -171,12 +171,12 @@ public final class FirebaseAuthService: AuthService, Sendable {
         }
     }
 
-    public func isAuthenticated() async -> Bool {
+    public func isAuthenticated() -> Bool {
         currentUser != nil
     }
 
-    public func isAnonymousAccountLinked() async -> Bool {
-        await isAuthenticated() && !isAnonymouslySignedIn
+    public func isAnonymousAccountLinked() -> Bool {
+        isAuthenticated() && !isAnonymouslySignedIn
     }
 
     public func handleAuthCallback(url: URL) -> Bool {
