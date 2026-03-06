@@ -14,9 +14,10 @@ import Observation
 @Observable
 @MainActor
 public final class SignInViewModel {
-    public var isSigningIn = false
+    public var isLoading = false
     public var errorMessage: String?
-
+    var loadingMessage: String = "Setting up..."
+    
     private let authService: AuthService
     private let logger: AppLogger
     private let onSignInSuccess: (String) -> Void  // User ID
@@ -32,6 +33,17 @@ public final class SignInViewModel {
         self.logger = logger
         self.onSignInSuccess = onSignInSuccess
         self.onSkip = onSkip
+    }
+
+    public func dismissButtonTapped() async {
+        // User already signed in
+        if let userID = await authService.getCurrentUserID() {
+            logger.log("Already Signed In ✅ - skipping sign in/up.")
+            onSignInSuccess(userID)
+        } else {
+            logger.log("Signing in anonymously 🤫...")
+            await signInAnonymously()
+        }
     }
 
     // MARK: - Sign in with Apple
@@ -69,7 +81,7 @@ public final class SignInViewModel {
     }
 
     private func signInWithFirebase(credential: ASAuthorizationAppleIDCredential) async {
-        isSigningIn = true
+        isLoading = true
 
         do {
             guard let nonce = UserDefaults.standard.string(forKey: "currentNonce") else {
@@ -111,21 +123,20 @@ public final class SignInViewModel {
             let userID = try await authService.signIn(with: authCredential)
 
             logger.log("✅ Apple sign-in successful: \(userID)")
-            isSigningIn = false
+            isLoading = false
             onSignInSuccess(userID)
 
         } catch {
             logger.log("❌ Apple sign-in failed: \(error.localizedDescription)")
-            isSigningIn = false
+            isLoading = false
             errorMessage = "Sign in failed: \(error.localizedDescription)"
         }
     }
 
-    // MARK: - Continue without account
+    // MARK: - Continue with Anonymous account
 
-    public func continueWithoutAccount() async {
-        isSigningIn = true
-
+    public func signInAnonymously() async {
+        isLoading = true
         do {
             // Create anonymous credential
             let credential = AuthCredential.anonymous
@@ -134,12 +145,12 @@ public final class SignInViewModel {
             let userID = try await authService.signIn(with: credential)
 
             logger.log("✅ Anonymous sign-in successful: \(userID)")
-            isSigningIn = false
+            isLoading = false
             onSignInSuccess(userID)
 
         } catch {
             logger.log("❌ Anonymous sign-in failed: \(error.localizedDescription)")
-            isSigningIn = false
+            isLoading = false
             errorMessage = "Anonymous sign in failed: \(error.localizedDescription)"
         }
     }
@@ -147,7 +158,7 @@ public final class SignInViewModel {
     // MARK: - Sign in with Google
 
     public func signInWithGoogle(idToken: String, accessToken: String) async {
-        isSigningIn = true
+        isLoading = true
 
         do {
             // Create generic OAuth credential (Firebase will handle the web flow)
@@ -163,12 +174,12 @@ public final class SignInViewModel {
             let userID = try await authService.signIn(with: credential)
 
             logger.log("✅ Google sign-in successful: \(userID)")
-            isSigningIn = false
+            isLoading = false
             onSignInSuccess(userID)
 
         } catch {
             logger.log("❌ Google sign-in failed: \(error.localizedDescription)")
-            isSigningIn = false
+            isLoading = false
             errorMessage = "Google sign in failed: \(error.localizedDescription)"
         }
     }
