@@ -130,6 +130,7 @@ extension SettingsView {
                 MindsetIconButton(
                     icon: "rectangle.portrait.and.arrow.right",
                     color: MindsetColors.accentCoral,
+                    iconFont: .system(size: 20),
                     leadingPadding: MindsetLayout.spacing5
                 )
                 Text(SharedLocalizedString.Auth.signOut)
@@ -152,7 +153,8 @@ extension SettingsView {
             HStack(spacing: MindsetLayout.spacing12) {
                 MindsetIconButton(
                     icon: "trash",
-                    color: MindsetColors.accentDestructiveRed
+                    color: MindsetColors.accentDestructiveRed,
+                    iconFont: .system(size: 20)
                 )
 
                 Text(FeatureUserProfileStrings.DeleteAccount.buttonTitle)

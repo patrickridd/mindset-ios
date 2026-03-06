@@ -57,6 +57,7 @@ public struct MindsetIconButton: View {
     MindsetIconButton(
         icon: "trash",
         color: MindsetColors.accentDestructiveRed,
+        iconFont: .system(size: 20)
     )
 }
 
@@ -64,6 +65,7 @@ public struct MindsetIconButton: View {
     MindsetIconButton(
         icon: "rectangle.portrait.and.arrow.forward",
         color: MindsetColors.accentOrange,
+        iconFont: .system(size: 20),
         leadingPadding: 5
     )
 }
