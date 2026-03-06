@@ -85,8 +85,8 @@ public struct SettingsView: View {
             )
         case .deleteAccount:
             ConfirmationSheet(
-                title: FeatureUserProfileStrings.DeleteAccount.confirmationTitle,
-                subtitle: FeatureUserProfileStrings.DeleteAccount.confirmationSubtitle,
+                title: viewModel.deleteAccountConfirmationTitle,
+                subtitle: viewModel.deleteAccountConfirmationSubtitle,
                 confirmTitle: FeatureUserProfileStrings.DeleteAccount.confirmButton,
                 confirmStyle: .destructive,
                 onConfirm: confirmAndDeleteAccount,
@@ -159,7 +159,7 @@ extension SettingsView {
                     iconFont: .system(size: 20)
                 )
 
-                Text(FeatureUserProfileStrings.DeleteAccount.buttonTitle)
+                Text(viewModel.deleteAccountButtonTitle)
                     .font(MindsetFonts.button)
                     .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
             }

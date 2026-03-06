@@ -1,6 +1,198 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "profile.account.cloudSyncSubtitle" : {
+      "comment" : "Row subtitle indicating all devices are synced",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All devices synced"
+          }
+        }
+      }
+    },
+    "profile.account.cloudSyncTitle" : {
+      "comment" : "Row title indicating cloud sync is active",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud Sync"
+          }
+        }
+      }
+    },
+    "profile.account.signedInSubtitle" : {
+      "comment" : "Row subtitle reassuring the user their data is secure",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your data is secure"
+          }
+        }
+      }
+    },
+    "profile.account.signedInTitle" : {
+      "comment" : "Row title indicating the user is signed in",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signed In"
+          }
+        }
+      }
+    },
+    "profile.debugTools.rowSubtitle" : {
+      "comment" : "Subtitle shown on the Debug Tools navigation row in the profile screen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Environment & service toggles"
+          }
+        }
+      }
+    },
+    "profile.debugTools.title" : {
+      "comment" : "Navigation title for the Debug Tools screen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Debug Tools"
+          }
+        }
+      }
+    },
+    "profile.defaultUserName" : {
+      "comment" : "Fallback display name when no user name is set",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mindset User"
+          }
+        }
+      }
+    },
+    "profile.deleteAccount.buttonAnonymousTitle" : {
+      "comment" : "Button title for Delete Account in Settings when signed in anonymously",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Data"
+          }
+        }
+      }
+    },
+    "profile.deleteAccount.buttonTitle" : {
+      "comment" : "Button title for Delete Account in Settings",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Account"
+          }
+        }
+      }
+    },
+    "profile.deleteAccount.confirmationAnonymousSubtitle" : {
+      "comment" : "Bottom sheet subtitle warning the user about deleting their anonymous account data",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This permanently deletes your data on device and will be unrecoverable."
+          }
+        }
+      }
+    },
+    "profile.deleteAccount.confirmationAnonymousTitle" : {
+      "comment" : "Bottom sheet title asking user to confirm anonymous account deletion",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Data?"
+          }
+        }
+      }
+    },
+    "profile.deleteAccount.confirmationSubtitle" : {
+      "comment" : "Bottom sheet subtitle warning the user about deleting their account",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This permanently deletes your account and clears your data from this device. "
+          }
+        }
+      }
+    },
+    "profile.deleteAccount.confirmationTitle" : {
+      "comment" : "Bottom sheet title asking user to confirm account deletion",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete account?"
+          }
+        }
+      }
+    },
+    "profile.deleteAccount.confirmButton" : {
+      "comment" : "Confirm button title for Delete Account confirmation sheet",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        }
+      }
+    },
+    "profile.deleteAccount.deleting" : {
+      "comment" : "Loading overlay text shown while account deletion is in progress",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deleting account..."
+          }
+        }
+      }
+    },
+    "profile.deleteAccount.errorTitle" : {
+      "comment" : "Alert title shown when account deletion fails",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Account Error"
+          }
+        }
+      }
+    },
     "profile.legal.privacyPolicyNavTitle" : {
       "comment" : "Navigation bar title for the Privacy Policy screen",
       "extractionState" : "manual",
@@ -37,102 +229,6 @@
         }
       }
     },
-    "profile.title" : {
-      "comment" : "Profile screen title",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Profile"
-          }
-        }
-      }
-    },
-    "profile.stats.title" : {
-      "comment" : "Stats section title",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your Stats"
-          }
-        }
-      }
-    },
-    "profile.stats.totalRituals" : {
-      "comment" : "Total rituals stat label",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Total Rituals"
-          }
-        }
-      }
-    },
-    "profile.stats.longestStreak" : {
-      "comment" : "Longest streak stat label",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Longest Streak"
-          }
-        }
-      }
-    },
-    "profile.subscription.title" : {
-      "comment" : "Subscription section title",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Subscription"
-          }
-        }
-      }
-    },
-    "profile.subscription.active" : {
-      "comment" : "Active subscription status",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Premium"
-          }
-        }
-      }
-    },
-    "profile.subscription.inactive" : {
-      "comment" : "Inactive subscription status",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Free"
-          }
-        }
-      }
-    },
-    "profile.preferences.title" : {
-      "comment" : "Preferences section title",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Preferences"
-          }
-        }
-      }
-    },
     "profile.preferences.notifications" : {
       "comment" : "Notifications preference",
       "extractionState" : "manual",
@@ -157,38 +253,14 @@
         }
       }
     },
-    "profile.defaultUserName" : {
-      "comment" : "Fallback display name when no user name is set",
+    "profile.preferences.title" : {
+      "comment" : "Preferences section title",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mindset User"
-          }
-        }
-      }
-    },
-    "profile.userIdPrefix" : {
-      "comment" : "Label prefix shown before the truncated user ID",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ID:"
-          }
-        }
-      }
-    },
-    "profile.signOut.confirmationTitle" : {
-      "comment" : "Bottom sheet title asking user to confirm sign out",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sign Out?"
+            "value" : "Preferences"
           }
         }
       }
@@ -201,6 +273,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "You can sign back in at any time."
+          }
+        }
+      }
+    },
+    "profile.signOut.confirmationTitle" : {
+      "comment" : "Bottom sheet title asking user to confirm sign out",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign Out?"
           }
         }
       }
@@ -229,146 +313,98 @@
         }
       }
     },
-    "profile.deleteAccount.buttonTitle" : {
-      "comment" : "Button title for Delete Account in Settings",
+    "profile.stats.longestStreak" : {
+      "comment" : "Longest streak stat label",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete Account"
+            "value" : "Longest Streak"
           }
         }
       }
     },
-    "profile.deleteAccount.confirmationTitle" : {
-      "comment" : "Bottom sheet title asking user to confirm account deletion",
+    "profile.stats.title" : {
+      "comment" : "Stats section title",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete account?"
+            "value" : "Your Stats"
           }
         }
       }
     },
-    "profile.deleteAccount.confirmationSubtitle" : {
-      "comment" : "Bottom sheet subtitle warning the user about deleting their account",
+    "profile.stats.totalRituals" : {
+      "comment" : "Total rituals stat label",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This permanently deletes your account and clears your data from this device."
+            "value" : "Total Rituals"
           }
         }
       }
     },
-    "profile.deleteAccount.confirmButton" : {
-      "comment" : "Confirm button title for Delete Account confirmation sheet",
+    "profile.subscription.active" : {
+      "comment" : "Active subscription status",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete Account"
+            "value" : "Premium"
           }
         }
       }
     },
-    "profile.deleteAccount.deleting" : {
-      "comment" : "Loading overlay text shown while account deletion is in progress",
+    "profile.subscription.inactive" : {
+      "comment" : "Inactive subscription status",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deleting account..."
+            "value" : "Free"
           }
         }
       }
     },
-    "profile.deleteAccount.errorTitle" : {
-      "comment" : "Alert title shown when account deletion fails",
+    "profile.subscription.title" : {
+      "comment" : "Subscription section title",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete Account Error"
+            "value" : "Subscription"
           }
         }
       }
     },
-    "profile.debugTools.title" : {
-      "comment" : "Navigation title for the Debug Tools screen",
+    "profile.title" : {
+      "comment" : "Profile screen title",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Debug Tools"
+            "value" : "Profile"
           }
         }
       }
     },
-    "profile.debugTools.rowSubtitle" : {
-      "comment" : "Subtitle shown on the Debug Tools navigation row in the profile screen",
+    "profile.userIdPrefix" : {
+      "comment" : "Label prefix shown before the truncated user ID",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Environment & service toggles"
-          }
-        }
-      }
-    },
-    "profile.account.signedInTitle" : {
-      "comment" : "Row title indicating the user is signed in",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Signed In"
-          }
-        }
-      }
-    },
-    "profile.account.signedInSubtitle" : {
-      "comment" : "Row subtitle reassuring the user their data is secure",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your data is secure"
-          }
-        }
-      }
-    },
-    "profile.account.cloudSyncTitle" : {
-      "comment" : "Row title indicating cloud sync is active",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cloud Sync"
-          }
-        }
-      }
-    },
-    "profile.account.cloudSyncSubtitle" : {
-      "comment" : "Row subtitle indicating all devices are synced",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "All devices synced"
+            "value" : "ID:"
           }
         }
       }

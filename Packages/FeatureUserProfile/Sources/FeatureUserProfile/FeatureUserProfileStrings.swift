@@ -84,6 +84,7 @@ public enum FeatureUserProfileStrings {
     // MARK: - Delete Account
 
     public enum DeleteAccount {
+        // Linked Account Deletion
         public static let buttonTitle = String(
             localized: "profile.deleteAccount.buttonTitle", bundle: .module,
             comment: "Button title for Delete Account in Settings")
@@ -93,6 +94,19 @@ public enum FeatureUserProfileStrings {
         public static let confirmationSubtitle = String(
             localized: "profile.deleteAccount.confirmationSubtitle", bundle: .module,
             comment: "Bottom sheet subtitle warning the user about deleting their account")
+        
+        // Anonymous Account Deletion
+        public static let buttonAnonymousTitle = String(
+            localized: "profile.deleteAccount.buttonAnonymousTitle", bundle: .module,
+            comment: "Button title for Delete Account in Settings when signed in anonymously")
+        public static let confirmationAnonymousTitle = String(
+            localized: "profile.deleteAccount.confirmationAnonymousTitle", bundle: .module,
+            comment: "Bottom sheet title asking user to confirm anonymous account deletion")
+        public static let confirmationAnonymousSubtitle = String(
+            localized: "profile.deleteAccount.confirmationAnonymousSubtitle", bundle: .module,
+            comment: "Bottom sheet subtitle warning the user about deleting their anonymous account data")
+        
+        // Confirmation Deletion Strings
         public static let confirmButton = String(
             localized: "profile.deleteAccount.confirmButton", bundle: .module,
             comment: "Confirm button title for Delete Account confirmation sheet")

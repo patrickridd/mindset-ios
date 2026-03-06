@@ -55,6 +55,26 @@ public final class SettingsViewModel {
         }
     }
 
+    // MARK: Strings
+    
+    var deleteAccountButtonTitle: String {
+        authService.isAnonymousAccountLinked() ?
+        FeatureUserProfileStrings.DeleteAccount.buttonTitle :
+        FeatureUserProfileStrings.DeleteAccount.buttonAnonymousTitle
+    }
+
+    var deleteAccountConfirmationTitle: String {
+        authService.isAnonymousAccountLinked() ?
+        FeatureUserProfileStrings.DeleteAccount.confirmationTitle :
+        FeatureUserProfileStrings.DeleteAccount.confirmationAnonymousTitle
+    }
+
+    var deleteAccountConfirmationSubtitle: String {
+        authService.isAnonymousAccountLinked() ?
+        FeatureUserProfileStrings.DeleteAccount.confirmationSubtitle :
+        FeatureUserProfileStrings.DeleteAccount.confirmationAnonymousSubtitle
+    }
+
     public func presentConfirmSignOut() {
         guard !isBusy else { return }
         activeSheet = .signOut
