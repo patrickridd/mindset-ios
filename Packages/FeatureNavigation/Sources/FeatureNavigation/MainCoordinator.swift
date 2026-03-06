@@ -198,6 +198,7 @@ public final class MainCoordinator {
 
     public func accountDeleted() {
         set(rootState: .onboarding)
+        set(tab: .dashboard)
         profileTabTitle = ""
     }
 
