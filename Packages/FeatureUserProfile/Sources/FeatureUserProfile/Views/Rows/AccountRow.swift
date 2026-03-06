@@ -18,7 +18,7 @@ struct AccountRow: View {
 
     var body: some View {
         HStack(spacing: MindsetLayout.spacing16) {
-            iconView
+            MindsetIconButton(icon: icon, color: color)
             labelStack
             Spacer()
         }
@@ -33,21 +33,6 @@ struct AccountRow: View {
 // MARK: - Subviews
 
 extension AccountRow {
-    private var iconView: some View {
-        ZStack {
-            Circle()
-                .fill(color.opacity(iconBackgroundOpacity))
-                .frame(
-                    width: MindsetLayout.iconButtonLarge,
-                    height: MindsetLayout.iconButtonLarge
-                )
-
-            Image(systemName: icon)
-                .font(.system(size: MindsetLayout.iconLarge))
-                .foregroundStyle(color)
-        }
-    }
-
     private var labelStack: some View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing4) {
             Text(title)

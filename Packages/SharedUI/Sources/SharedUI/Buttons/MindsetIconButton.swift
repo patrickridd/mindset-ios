@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct MindsetAccountButton: View {
+public struct MindsetIconButton: View {
 
     let icon: String
     let color: Color
@@ -18,7 +18,12 @@ struct MindsetAccountButton: View {
         colorScheme == .dark ? 0.15 : 0.2
     }
     
-    var body: some View {
+    public init(icon: String, color: Color) {
+        self.icon = icon
+        self.color = color
+    }
+    
+    public var body: some View {
         ZStack {
             Circle()
                 .fill(color.opacity(iconBackgroundOpacity))
@@ -35,5 +40,5 @@ struct MindsetAccountButton: View {
 }
 
 #Preview {
-    MindsetAccountButton(icon: "person.crop.circle", color: MindsetColors.accentOrange)
+    MindsetIconButton(icon: "person.crop.circle", color: MindsetColors.accentOrange)
 }
