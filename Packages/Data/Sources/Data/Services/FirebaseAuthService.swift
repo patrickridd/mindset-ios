@@ -27,6 +27,15 @@ public final class FirebaseAuthService: AuthService, Sendable {
         // Firebase should be configured in app initialization (MindsetApp.swift)
     }
 
+    // MARK: - Helper properties
+    private var currentUser: User? {
+        Auth.auth().currentUser
+    }
+
+    private var isAnonymouslySignedIn: Bool {
+        currentUser?.isAnonymous ?? false
+    }
+    
     // MARK: - AuthService Protocol
 
     public func signIn(with credential: DomainAuthCredential) async throws -> String {
@@ -58,7 +67,7 @@ public final class FirebaseAuthService: AuthService, Sendable {
     }
 
     public func getCurrentUserID() async -> String? {
-        return Auth.auth().currentUser?.uid
+        currentUser?.uid
     }
 
     public func signOut() async throws {
@@ -68,7 +77,7 @@ public final class FirebaseAuthService: AuthService, Sendable {
     }
 
     public func signInAnonymously() async throws {
-        if Auth.auth().currentUser != nil {
+        if currentUser != nil {
             logger.log("🕶️ Anonymous sign-in skipped (already authenticated)")
             return
         }
@@ -102,7 +111,7 @@ public final class FirebaseAuthService: AuthService, Sendable {
 
         logger.log("🔗 Link account started (provider: \(providerDescription))")
 
-        guard let currentUser = Auth.auth().currentUser else {
+        guard let currentUser = currentUser else {
             logger.log("❌ Link account failed: no authenticated user")
             throw Domain.AuthLinkError.notAuthenticated
         }
@@ -143,7 +152,7 @@ public final class FirebaseAuthService: AuthService, Sendable {
     }
 
     public func deleteCurrentUser() async throws {
-        guard let user = Auth.auth().currentUser else {
+        guard let user = currentUser else {
             throw NSError(
                 domain: "FirebaseAuthService",
                 code: -1,
@@ -163,7 +172,11 @@ public final class FirebaseAuthService: AuthService, Sendable {
     }
 
     public func isAuthenticated() async -> Bool {
-        return Auth.auth().currentUser != nil
+        currentUser != nil
+    }
+
+    public func isAnonymousAccountLinked() async -> Bool {
+        await isAuthenticated() && !isAnonymouslySignedIn
     }
 
     public func handleAuthCallback(url: URL) -> Bool {
@@ -277,7 +290,7 @@ public final class FirebaseAuthService: AuthService, Sendable {
     }
 
     private func updateUserProfile(displayName: String) async throws {
-        guard let user = Auth.auth().currentUser else {
+        guard let user = currentUser else {
             throw NSError(
                 domain: "FirebaseAuthService",
                 code: -1,

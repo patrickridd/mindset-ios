@@ -26,13 +26,16 @@ public final class MockAuthService: AuthService {
     public private(set) var lastLinkProvider: AuthProvider?
     public private(set) var signOutCalled = false
     public private(set) var deleteCurrentUserCalled = false
-
+    public private(set) var isAnonymousAccountLinked: Bool = false
+    
     public init(
         shouldSucceed: Bool = true,
+        isAnonymousAccountLinked: Bool = false,
         mockUserID: String = "mock-user-123",
         signInDelay: Duration = .milliseconds(500)
     ) {
         self.shouldSucceed = shouldSucceed
+        self.isAnonymousAccountLinked = isAnonymousAccountLinked
         self.mockUserID = mockUserID
         self.signInDelay = signInDelay
     }
@@ -112,6 +115,10 @@ public final class MockAuthService: AuthService {
 
     public func isAuthenticated() async -> Bool {
         return shouldSucceed
+    }
+
+    public func isAnonymousAccountLinked() async -> Bool {
+        return isAnonymousAccountLinked
     }
 
     nonisolated public func handleAuthCallback(url: URL) -> Bool {

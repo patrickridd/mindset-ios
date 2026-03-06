@@ -70,6 +70,9 @@ public protocol AuthService: Sendable {
     /// Check if user is currently authenticated
     func isAuthenticated() async -> Bool
 
+    /// Check if current user's anonymous account has been linked with provider (gmail, apple, email/password, etc...)
+    func isAnonymousAccountLinked() async -> Bool
+
     /// Handle OAuth callback URL (e.g., from Safari after Google Sign In)
     /// - Parameter url: The callback URL from the OAuth flow
     /// - Returns: True if the URL was handled, false otherwise
