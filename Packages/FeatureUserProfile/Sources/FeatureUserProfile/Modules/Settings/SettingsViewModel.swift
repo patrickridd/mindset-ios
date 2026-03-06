@@ -39,6 +39,10 @@ public final class SettingsViewModel {
         self.onNavigateToPrivacyPolicy = onNavigateToPrivacyPolicy
     }
 
+    var shouldDisplaySignOutButton: Bool  {
+        authService.isAnonymousAccountLinked()
+    }
+
     var isBusy: Bool {
         isSigningOut || isDeletingAccount
     }

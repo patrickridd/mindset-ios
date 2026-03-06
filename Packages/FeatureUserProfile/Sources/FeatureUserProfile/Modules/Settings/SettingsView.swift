@@ -28,7 +28,9 @@ public struct SettingsView: View {
             ScrollView {
                 VStack(spacing: MindsetLayout.spacing24) {
                     securityAndPrivacyCard
-                    signOutButton
+                    if viewModel.shouldDisplaySignOutButton {
+                        signOutButton
+                    }
                     deleteAccountButton
                 }
                 .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
