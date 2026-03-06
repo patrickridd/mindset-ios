@@ -127,9 +127,11 @@ extension SettingsView {
             viewModel.presentConfirmSignOut()
         } label: {
             HStack(spacing: MindsetLayout.spacing12) {
-                Image(systemName: "rectangle.portrait.and.arrow.right")
-                    .font(.system(size: MindsetLayout.iconLarge))
-
+                MindsetIconButton(
+                    icon: "rectangle.portrait.and.arrow.right",
+                    color: MindsetColors.accentCoral,
+                    leadingPadding: MindsetLayout.spacing5
+                )
                 Text(SharedLocalizedString.Auth.signOut)
                     .font(MindsetFonts.button)
                     .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
@@ -148,8 +150,10 @@ extension SettingsView {
             viewModel.presentDeleteAccountConfirmation()
         } label: {
             HStack(spacing: MindsetLayout.spacing12) {
-                Image(systemName: "trash.fill")
-                    .font(.system(size: MindsetLayout.iconLarge))
+                MindsetIconButton(
+                    icon: "trash",
+                    color: MindsetColors.accentDestructiveRed
+                )
 
                 Text(FeatureUserProfileStrings.DeleteAccount.buttonTitle)
                     .font(MindsetFonts.button)

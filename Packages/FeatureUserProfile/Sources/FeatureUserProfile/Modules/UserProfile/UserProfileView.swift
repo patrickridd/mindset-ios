@@ -50,16 +50,12 @@ extension UserProfileView {
 
     private var profileHeader: some View {
         VStack(spacing: MindsetLayout.spacing16) {
-            ZStack {
-                Circle()
-                    .fill(MindsetColors.accentOrange.opacity(avatarBackgroundOpacity))
-                    .frame(width: MindsetLayout.avatarSize, height: MindsetLayout.avatarSize)
-
-                Image(systemName: "person.crop.circle.fill")
-                    .font(.system(size: MindsetLayout.avatarIconSize))
-                    .foregroundStyle(MindsetColors.accentOrange)
-            }
-
+            MindsetIconButton(
+                icon: "person.crop.circle.fill",
+                color: MindsetColors.accentOrange,
+                circleWidthHeight: MindsetLayout.avatarSize,
+                iconFont: MindsetFonts.mindsetAvatarIconButtonFont
+            )
             Text(viewModel.displayName ?? FeatureUserProfileStrings.defaultUserName)
                 .font(MindsetFonts.featureTitle)
                 .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))

@@ -19,6 +19,12 @@ public enum MindsetFonts {
     /// Large display — Ritual success, paywall title
     public static let displayLarge = Font.system(size: 34, weight: .bold, design: .serif)
 
+    /// Button display — MindsetIconButton Font (Default)
+    public static let mindsetIconButtonFont = Font.system(size: MindsetLayout.iconLarge)
+
+    /// Button display — MindsetIconButton Font (Avatar)
+    public static let mindsetAvatarIconButtonFont = Font.system(size: MindsetLayout.avatarIconSize)
+
     /// Prompt headlines — "The Optimism Bridge", ritual step titles
     public static let promptHeadline = Font.system(.headline, design: .serif).weight(.medium)
 
