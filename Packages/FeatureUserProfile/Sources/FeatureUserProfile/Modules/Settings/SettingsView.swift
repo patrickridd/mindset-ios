@@ -108,7 +108,7 @@ extension SettingsView {
                 title: viewModel.linkAccountRow.title,
                 subtitle: viewModel.linkAccountRow.subtTitle,
                 color: viewModel.isAccountSecurelyLinked ? MindsetColors.successEmerald : MindsetColors.accentCoral,
-                navigationAction: viewModel.isAccountSecurelyLinked ? nil : nil,
+                navigationAction: viewModel.isAccountSecurelyLinked ? nil : viewModel.onNavigateToSecureAccount,
             )
             
             rowDivider

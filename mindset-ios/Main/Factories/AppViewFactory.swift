@@ -7,10 +7,6 @@
 
 import Data
 import Domain
-import Foundation
-#if DEBUG
-import Development
-#endif
 import FeatureAuth
 import FeatureDashboard
 import FeatureHistory
@@ -19,21 +15,26 @@ import FeatureNavigation
 import FeatureOnboarding
 import FeatureSubscription
 import FeatureUserProfile
+import Foundation
 import SharedUI
 import SharedUtils
 import SwiftUI
 
 #if DEBUG
-private struct DebugPresentationWrapper: View {
-    @ObserveInjection var inject
-    let content: AnyView
+    import Development
+#endif
 
-    var body: some View {
-        content
-            .enableInjection()
-            .modifier(DebugWrapper())
+#if DEBUG
+    private struct DebugPresentationWrapper: View {
+        @ObserveInjection var inject
+        let content: AnyView
+
+        var body: some View {
+            content
+                .enableInjection()
+                .modifier(DebugWrapper())
+        }
     }
-}
 #endif
 
 struct AppViewFactory: MainViewFactory {
@@ -51,9 +52,9 @@ struct AppViewFactory: MainViewFactory {
 
     func decoratePresentedView(_ view: AnyView) -> AnyView {
         #if DEBUG
-        AnyView(DebugPresentationWrapper(content: view))
+            AnyView(DebugPresentationWrapper(content: view))
         #else
-        view
+            view
         #endif
     }
 
@@ -110,7 +111,7 @@ struct AppViewFactory: MainViewFactory {
             )
         )
     }
-    
+
     func makeDashboardView() -> AnyView {
         let dashboardViewModel = DashboardViewModel(
             userRepository: userRepository,
@@ -130,9 +131,9 @@ struct AppViewFactory: MainViewFactory {
     func makeUserProfileView() -> AnyView {
         let isDebugToolsAvailable: Bool = {
             #if DEBUG
-            return true
+                return true
             #else
-            return false
+                return false
             #endif
         }()
 
@@ -150,7 +151,7 @@ struct AppViewFactory: MainViewFactory {
             }
         )
         #if DEBUG
-        let debugViewModel = DebugToolsViewModel()
+            let debugViewModel = DebugToolsViewModel()
         #endif
 
         return AnyView(
@@ -160,32 +161,58 @@ struct AppViewFactory: MainViewFactory {
                         switch destination {
                         case .debugTools:
                             #if DEBUG
-                            DebugToolsView(viewModel: debugViewModel)
-                                .navigationTitle(FeatureUserProfileStrings.DebugTools.title)
+                                DebugToolsView(viewModel: debugViewModel)
+                                    .navigationTitle(FeatureUserProfileStrings.DebugTools.title)
                             #else
-                            EmptyView()
+                                EmptyView()
                             #endif
                         case .security:
-                            SettingsView(
-                                viewModel: SettingsViewModel(
-                                    authService: authService,
-                                    persistence: persistence,
-                                    onSignOut: {
-                                        coordinator.signOutCompleted()
-                                    },
-                                    onDeleteAccount: {
-                                        coordinator.accountDeleted()
-                                    },
-                                    onNavigateToPrivacyPolicy: {
-                                        coordinator.profilePath.append(ProfileDestination.privacyPolicy)
-                                    }
-                                )
-                            )
+                            makeSettingsView()
                         case .privacyPolicy:
                             PrivacyPolicyView(url: privacyPolicyURL)
+                        case .signInView:
+                            let signInViewModel = SignInViewModel(
+                                authService: authService,
+                                logger: logger,
+                                embedInNavigationStack: false,
+                                onSignInSuccess: { _ in
+                                    if coordinator.profilePath.count > 0 {
+                                        coordinator.profilePath.removeLast()
+                                    }
+                                },
+                                onSkip: {
+                                    if coordinator.profilePath.count > 0 {
+                                        coordinator.profilePath.removeLast()
+                                    }
+                                }
+                            )
+                            SignInView(viewModel: signInViewModel)
                         }
                     }
             }
+        )
+    }
+
+    func makeSettingsView() -> AnyView {
+        return AnyView(
+            SettingsView(
+                viewModel: SettingsViewModel(
+                    authService: authService,
+                    persistence: persistence,
+                    onSignOut: {
+                        coordinator.signOutCompleted()
+                    },
+                    onDeleteAccount: {
+                        coordinator.accountDeleted()
+                    },
+                    onNavigateToPrivacyPolicy: {
+                        coordinator.profilePath.append(ProfileDestination.privacyPolicy)
+                    },
+                    onNavigateToSecureAccount: {
+                        coordinator.profilePath.append(ProfileDestination.signInView)
+                    }
+                )
+            )
         )
     }
 
@@ -240,7 +267,7 @@ struct AppViewFactory: MainViewFactory {
                     .fill(MindsetColors.accentOrange.opacity(0.15))
                     .frame(width: MindsetLayout.iconLarge, height: MindsetLayout.iconLarge)
                     .blur(radius: MindsetLayout.glowBlurRadius)
-                
+
                 ProgressView()
                     .tint(MindsetColors.accentOrange)
                     .scaleEffect(2)

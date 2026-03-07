@@ -24,19 +24,22 @@ public final class SettingsViewModel {
     private let onSignOut: () -> Void
     private let onDeleteAccount: () -> Void
     private let onNavigateToPrivacyPolicy: () -> Void
+    private(set) var onNavigateToSecureAccount: (() -> Void)?
 
     public init(
         authService: AuthService,
         persistence: PersistenceService,
         onSignOut: @escaping () -> Void,
         onDeleteAccount: @escaping () -> Void,
-        onNavigateToPrivacyPolicy: @escaping () -> Void
+        onNavigateToPrivacyPolicy: @escaping () -> Void,
+        onNavigateToSecureAccount: (() -> Void)? = nil
     ) {
         self.authService = authService
         self.persistence = persistence
         self.onSignOut = onSignOut
         self.onDeleteAccount = onDeleteAccount
         self.onNavigateToPrivacyPolicy = onNavigateToPrivacyPolicy
+        self.onNavigateToSecureAccount = onNavigateToSecureAccount
     }
 
     var isAccountSecurelyLinked: Bool {

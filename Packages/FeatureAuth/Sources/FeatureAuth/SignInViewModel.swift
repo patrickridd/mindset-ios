@@ -22,15 +22,18 @@ public final class SignInViewModel {
     private let logger: AppLogger
     private let onSignInSuccess: (String) -> Void  // User ID
     private let onSkip: () -> Void
+    let embedInNavigationStack: Bool
 
     public init(
         authService: AuthService,
         logger: AppLogger,
+        embedInNavigationStack: Bool = true,
         onSignInSuccess: @escaping (String) -> Void,
         onSkip: @escaping () -> Void
     ) {
         self.authService = authService
         self.logger = logger
+        self.embedInNavigationStack = embedInNavigationStack
         self.onSignInSuccess = onSignInSuccess
         self.onSkip = onSkip
     }
