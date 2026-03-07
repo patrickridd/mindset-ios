@@ -39,14 +39,20 @@ public final class SettingsViewModel {
         self.onNavigateToPrivacyPolicy = onNavigateToPrivacyPolicy
     }
 
-    var shouldDisplaySignOutButton: Bool  {
+    var isAccountSecurelyLinked: Bool {
         authService.isAnonymousAccountLinked()
+    }
+
+    var shouldDisplaySignOutButton: Bool  {
+        isAccountSecurelyLinked
     }
 
     var isBusy: Bool {
         isSigningOut || isDeletingAccount
     }
 
+    // MARK: Localized Strings
+    
     var busyOverlayText: String {
         if isDeletingAccount {
             FeatureUserProfileStrings.DeleteAccount.deleting
@@ -54,8 +60,6 @@ public final class SettingsViewModel {
             FeatureUserProfileStrings.SignOut.signingOut
         }
     }
-
-    // MARK: Strings
     
     var deleteAccountButtonTitle: String {
         authService.isAnonymousAccountLinked() ?
@@ -74,7 +78,21 @@ public final class SettingsViewModel {
         FeatureUserProfileStrings.DeleteAccount.confirmationSubtitle :
         FeatureUserProfileStrings.DeleteAccount.confirmationAnonymousSubtitle
     }
+    
+    var linkAccountRow: (icon: String, title: String, subtTitle: String) {
+        if isAccountSecurelyLinked  {
+            (icon: "checkmark.shield.fill",
+             title: FeatureUserProfileStrings.Account.accountSecuredRowTitle,
+             subtTitle: FeatureUserProfileStrings.Account.accountSecuredRowSubtitle)
+        }  else {
+            (icon: "shield.slash",
+             title: FeatureUserProfileStrings.Account.accountNOTSecuredRowTitle,
+             subtTitle: FeatureUserProfileStrings.Account.accountNOTSecuredRowSubtitle)
+        }
+    }
 
+    // MARK: - Actions
+    
     public func presentConfirmSignOut() {
         guard !isBusy else { return }
         activeSheet = .signOut

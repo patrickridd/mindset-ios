@@ -14,7 +14,7 @@ struct AccountNavigationRow: View {
     let title: String
     let subtitle: String
     let color: Color
-    let navigationAction: () -> Void
+    let navigationAction: (() -> Void)?
 
     @Environment(\.colorScheme) private var colorScheme
 
@@ -22,15 +22,19 @@ struct AccountNavigationRow: View {
         Button(action: handleTap) {
             HStack(spacing: 0) {
                 AccountRow(icon: icon, title: title, subtitle: subtitle, color: color)
-                chevronIcon
+                if navigationAction != nil {
+                    chevronIcon
+                }
             }
         }
         .buttonStyle(.automatic)
     }
 
     private func handleTap() {
-        HapticManager.selection()
-        navigationAction()
+        if let navigationAction {
+            HapticManager.selection()
+            navigationAction()
+        }
     }
 }
 

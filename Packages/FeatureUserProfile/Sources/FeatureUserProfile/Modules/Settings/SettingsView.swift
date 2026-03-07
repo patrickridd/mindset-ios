@@ -100,15 +100,17 @@ public struct SettingsView: View {
 
 extension SettingsView {
 
+    
     private var securityAndPrivacyCard: some View {
         VStack(spacing: 0) {
-            AccountRow(
-                icon: "checkmark.shield.fill",
-                title: FeatureUserProfileStrings.Account.signedInTitle,
-                subtitle: FeatureUserProfileStrings.Account.signedInSubtitle,
-                color: MindsetColors.successEmerald
+            AccountNavigationRow(
+                icon: viewModel.linkAccountRow.icon,
+                title: viewModel.linkAccountRow.title,
+                subtitle: viewModel.linkAccountRow.subtTitle,
+                color: viewModel.isAccountSecurelyLinked ? MindsetColors.successEmerald : MindsetColors.accentCoral,
+                navigationAction: viewModel.isAccountSecurelyLinked ? nil : nil,
             )
-
+            
             rowDivider
 
             AccountNavigationRow(
@@ -200,10 +202,22 @@ extension SettingsView {
     }
 }
 
-#Preview {
+#Preview("Securely Linked Account") {
     SettingsView(
         viewModel: SettingsViewModel(
-            authService: MockAuthService(),
+            authService: MockAuthService(isAnonymousAccountLinked: true),
+            persistence: PreviewPersistenceService(),
+            onSignOut: {},
+            onDeleteAccount: {},
+            onNavigateToPrivacyPolicy: {}
+        )
+    )
+}
+
+#Preview("Anonymous Account") {
+    SettingsView(
+        viewModel: SettingsViewModel(
+            authService: MockAuthService(isAnonymousAccountLinked: false),
             persistence: PreviewPersistenceService(),
             onSignOut: {},
             onDeleteAccount: {},

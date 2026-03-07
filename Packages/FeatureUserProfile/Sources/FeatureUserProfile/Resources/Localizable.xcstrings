@@ -1,6 +1,54 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "profile.account.accountNOTSecuredRowSubtitle" : {
+      "comment" : "Row subtitle that points the user to where they can secure their acount",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secure your data and account across devices"
+          }
+        }
+      }
+    },
+    "profile.account.accountNOTSecuredRowTitle" : {
+      "comment" : "Row title that points the user to where they can secure their acount",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secure your Account"
+          }
+        }
+      }
+    },
+    "profile.account.accountSecuredRowSubtitle" : {
+      "comment" : "Row subtitle reassuring the user their data is secures across devices",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data secured and accessible across your different devices."
+          }
+        }
+      }
+    },
+    "profile.account.accountSecuredRowTitle" : {
+      "comment" : "Row title indicating the user's Account is saved and linked across devices",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Account Secured"
+          }
+        }
+      }
+    },
     "profile.account.cloudSyncSubtitle" : {
       "comment" : "Row subtitle indicating all devices are synced",
       "extractionState" : "manual",
@@ -21,30 +69,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cloud Sync"
-          }
-        }
-      }
-    },
-    "profile.account.signedInSubtitle" : {
-      "comment" : "Row subtitle reassuring the user their data is secure",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your data is secure"
-          }
-        }
-      }
-    },
-    "profile.account.signedInTitle" : {
-      "comment" : "Row title indicating the user is signed in",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Signed In"
           }
         }
       }

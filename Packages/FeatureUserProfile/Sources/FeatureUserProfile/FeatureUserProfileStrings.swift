@@ -132,18 +132,31 @@ public enum FeatureUserProfileStrings {
     // MARK: - Account Section
 
     public enum Account {
-        public static let signedInTitle = String(
-            localized: "profile.account.signedInTitle", bundle: .module,
-            comment: "Row title indicating the user is signed in")
-        public static let signedInSubtitle = String(
-            localized: "profile.account.signedInSubtitle", bundle: .module,
-            comment: "Row subtitle reassuring the user their data is secure")
+        // Account Secured Row
+        public static let accountSecuredRowTitle = String(
+            localized: "profile.account.accountSecuredRowTitle", bundle: .module,
+            comment: "Row title indicating the user's Account is saved and linked across devices")
+        public static let accountSecuredRowSubtitle = String(
+            localized: "profile.account.accountSecuredRowSubtitle", bundle: .module,
+            comment: "Row subtitle reassuring the user their data is secures across devices")
+        
+        
+        public static let accountNOTSecuredRowTitle = String(
+            localized: "profile.account.accountNOTSecuredRowTitle", bundle: .module,
+            comment: "Row title that points the user to where they can secure their acount")
+        
+        public static let accountNOTSecuredRowSubtitle = String(
+            localized: "profile.account.accountNOTSecuredRowSubtitle", bundle: .module,
+            comment: "Row subtitle that points the user to where they can secure their acount")
+        
         public static let cloudSyncTitle = String(
             localized: "profile.account.cloudSyncTitle", bundle: .module,
             comment: "Row title indicating cloud sync is active")
         public static let cloudSyncSubtitle = String(
             localized: "profile.account.cloudSyncSubtitle", bundle: .module,
             comment: "Row subtitle indicating all devices are synced")
+
+        
     }
 
     // MARK: - Legal

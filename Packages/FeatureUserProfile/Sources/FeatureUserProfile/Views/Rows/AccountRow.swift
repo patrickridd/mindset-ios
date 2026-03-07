@@ -42,6 +42,7 @@ extension AccountRow {
             Text(subtitle)
                 .font(MindsetFonts.caption)
                 .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
+                .multilineTextAlignment(.leading)
         }
     }
 }
