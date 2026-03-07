@@ -43,7 +43,7 @@ public struct OnboardingView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(role: .cancel) {
                         HapticManager.selection()
-                        viewModel.dismiss()
+                        viewModel.skipOnboarding()
                     } label: {
                         Image(systemName: "xmark")
                     }
@@ -81,6 +81,9 @@ private extension OnboardingView {
                 Spacer()
             } else {
                 questionContent
+                Spacer()
+                
+                skipButton
             }
             Spacer()
         }
@@ -173,6 +176,22 @@ private extension OnboardingView {
                     : .move(edge: .leading).combined(with: .opacity)
             )
         )
+    }
+
+    var skipButton: some View {
+        // Continue without account (optional)
+        Button {
+            HapticManager.selection()
+            viewModel.skipOnboarding()
+        } label: {
+            Text("Skip onboarding for now?")
+                .font(MindsetFonts.button)
+                .foregroundStyle(MindsetColors.accentBlue)
+                .lineLimit(nil)
+                .multilineTextAlignment(.center)
+                .padding(.vertical, MindsetLayout.paddingMedium)
+        }
+        .disabled(viewModel.isCalculating)
     }
 }
 

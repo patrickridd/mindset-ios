@@ -62,7 +62,7 @@ struct AppViewFactory: MainViewFactory {
         let viewModel = SignInViewModel(
             authService: authService,
             logger: logger,
-            onSignInSuccess: { userID in
+            onSignInSuccess: { _ in
                 coordinator.signInCompleted()
             },
             onSkip: {

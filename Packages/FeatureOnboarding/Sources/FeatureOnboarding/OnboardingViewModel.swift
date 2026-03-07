@@ -135,7 +135,6 @@ public final class OnboardingViewModel {
             _ = await delay
 
             isCalculating = false
-            // Notify completion - MainCoordinator will handle Auth → Paywall → Home flow
             onboardingFinished?()
         }
     }
@@ -184,7 +183,14 @@ public final class OnboardingViewModel {
         }
     }
 
-    public func dismiss() {
+    public func skipOnboarding() {
         onboardingFinished?()
+        Task {
+            // Create anonymous credential
+            let credential = AuthCredential.anonymous
+
+            // Sign in via AuthService protocol
+            _ = try await authService.signIn(with: credential)
+        }
     }
 }

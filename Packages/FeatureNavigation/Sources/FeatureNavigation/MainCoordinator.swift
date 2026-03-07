@@ -138,12 +138,11 @@ public final class MainCoordinator {
 
             let isAuthenticated = await authService.isAuthenticated()
 
-            if !isAuthenticated {
-                set(rootState: .auth)
-                return
-            } else {
+            if isAuthenticated {
                 refreshProfileTabTitle()
                 set(rootState: .mainTabView)
+            } else {
+                set(rootState: .auth)
             }
         }
     }

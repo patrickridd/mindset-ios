@@ -40,6 +40,11 @@ public final class FirebaseAuthService: AuthService, Sendable {
 
     public func signIn(with credential: DomainAuthCredential) async throws -> String {
         logger.log("🔐 Auth sign-in started")
+        if isAuthenticated(), let userId = await getCurrentUserID() {
+            logger.log("ℹ️ User is already signed in - uid=\(userId)")
+            return userId
+        }
+        
         do {
             let uid: String
             switch credential {

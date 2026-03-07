@@ -137,23 +137,7 @@ public struct SignInView: View {
                             .frame(height: 1)
                     }
                     .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
-
-                    // Continue without account (optional)
-                    Button {
-                        HapticManager.selection()
-                        Task {
-                            await viewModel.dismissButtonTapped()
-                        }
-                    } label: {
-                        Text("Continue without account")
-                            .font(MindsetFonts.button)
-                            .foregroundStyle(MindsetColors.textSecondary)
-                            .lineLimit(nil)
-                            .multilineTextAlignment(.center)
-                            .padding(.vertical, MindsetLayout.paddingMedium)
-                    }
-                    .disabled(viewModel.isLoading)
-
+                    
                     // Bottom spacing
                     Color.clear.frame(height: MindsetLayout.spacing30)
                 }
