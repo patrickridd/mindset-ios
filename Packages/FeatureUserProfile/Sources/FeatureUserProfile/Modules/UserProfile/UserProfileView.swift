@@ -123,7 +123,7 @@ extension UserProfileView {
     let mockAuthService = MockAuthService()
     let mockUserRepository = MockUserRepository()
     let viewModel = UserProfileViewModel(
-        authService: mockAuthService,
+        authStateQuery: mockAuthService,
         userRepository: mockUserRepository,
         onNavigateToSecurity: {}
     )

@@ -35,7 +35,7 @@ let package = Package(
         ),
         .testTarget(
             name: "FeatureAuthTests",
-            dependencies: ["FeatureAuth"]
+            dependencies: ["FeatureAuth", "SharedUtils"]
         ),
     ]
 )

@@ -203,9 +203,11 @@ extension SettingsView {
 }
 
 #Preview("Securely Linked Account") {
-    SettingsView(
+    let mockAuth = MockAuthService(isAnonymousAccountLinked: true)
+    return SettingsView(
         viewModel: SettingsViewModel(
-            authService: MockAuthService(isAnonymousAccountLinked: true),
+            authSessionManagement: mockAuth,
+            authStateQuery: mockAuth,
             persistence: PreviewPersistenceService(),
             appleSignInNonceStorage: AppleSignInNonceStorage(),
             onSignOut: {},
@@ -216,9 +218,11 @@ extension SettingsView {
 }
 
 #Preview("Anonymous Account") {
-    SettingsView(
+    let mockAuth = MockAuthService(isAnonymousAccountLinked: false)
+    return SettingsView(
         viewModel: SettingsViewModel(
-            authService: MockAuthService(isAnonymousAccountLinked: false),
+            authSessionManagement: mockAuth,
+            authStateQuery: mockAuth,
             persistence: PreviewPersistenceService(),
             appleSignInNonceStorage: AppleSignInNonceStorage(),
             onSignOut: {},

@@ -60,7 +60,7 @@ final class AppDependencyContainer {
 
         // --- 7. Coordinator & View Factory ---
         self.coordinator = MainCoordinator(
-            authService: authService,
+            authStateQuery: authService,
             subscriptionService: subService,
             mindsetRepository: mindsetRepository,
             userRepository: userRepository

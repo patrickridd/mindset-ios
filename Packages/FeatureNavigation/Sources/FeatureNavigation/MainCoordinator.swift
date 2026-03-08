@@ -58,7 +58,7 @@ public final class MainCoordinator {
     public var selectedTab: Tab = .dashboard
     public private(set) var profileTabTitle: String = ""
 
-    private let authService: AuthService
+    private let authStateQuery: AuthStateQuery
     private let subscriptionService: SubscriptionService
     private let mindsetRepository: MindsetRepository
     private let userProfileRepository: UserRepository
@@ -68,12 +68,12 @@ public final class MainCoordinator {
     public var profilePath = NavigationPath()
 
     public init(
-        authService: AuthService,
+        authStateQuery: AuthStateQuery,
         subscriptionService: SubscriptionService,
         mindsetRepository: MindsetRepository,
         userRepository: UserRepository
     ) {
-        self.authService = authService
+        self.authStateQuery = authStateQuery
         self.subscriptionService = subscriptionService
         self.mindsetRepository = mindsetRepository
         self.userProfileRepository = userRepository
@@ -95,8 +95,8 @@ public final class MainCoordinator {
         }
 
         // 2. Check if user's anonymous account has been linked
-        let isAuthenticated = await authService.isAuthenticated()
-        let isAnonymousAccountLinked = await authService.isAnonymousAccountLinked()
+        let isAuthenticated = await authStateQuery.isAuthenticated()
+        let isAnonymousAccountLinked = await authStateQuery.isAnonymousAccountLinked()
         if !isAnonymousAccountLinked {
             // Onboarding complete but not signed in yet → show auth
             set(rootState: .auth)
@@ -136,7 +136,7 @@ public final class MainCoordinator {
                 try? await userProfileRepository.saveUserProfile(user)
             }
 
-            let isAuthenticated = await authService.isAuthenticated()
+            let isAuthenticated = await authStateQuery.isAuthenticated()
 
             if isAuthenticated {
                 refreshProfileTabTitle()

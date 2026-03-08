@@ -20,7 +20,8 @@ public final class SettingsViewModel {
     var errorTitle = FeatureUserProfileStrings.SignOut.errorTitle
     var errorMessage: String?
 
-    private let authService: AuthService
+    private let authSessionManagement: AuthSessionManagement
+    private let authStateQuery: AuthStateQuery
     private let persistence: PersistenceService
     private let appleSignInNonceStorage: AppleSignInNonceStorageProtocol
     private let onSignOut: () -> Void
@@ -29,7 +30,8 @@ public final class SettingsViewModel {
     private(set) var onNavigateToSecureAccount: (() -> Void)?
 
     public init(
-        authService: AuthService,
+        authSessionManagement: AuthSessionManagement,
+        authStateQuery: AuthStateQuery,
         persistence: PersistenceService,
         appleSignInNonceStorage: AppleSignInNonceStorageProtocol,
         onSignOut: @escaping () -> Void,
@@ -37,7 +39,8 @@ public final class SettingsViewModel {
         onNavigateToPrivacyPolicy: @escaping () -> Void,
         onNavigateToSecureAccount: (() -> Void)? = nil
     ) {
-        self.authService = authService
+        self.authSessionManagement = authSessionManagement
+        self.authStateQuery = authStateQuery
         self.persistence = persistence
         self.appleSignInNonceStorage = appleSignInNonceStorage
         self.onSignOut = onSignOut
@@ -47,7 +50,7 @@ public final class SettingsViewModel {
     }
 
     var isAccountSecurelyLinked: Bool {
-        authService.isAnonymousAccountLinked()
+        authStateQuery.isAnonymousAccountLinked()
     }
 
     var shouldDisplaySignOutButton: Bool {
@@ -69,19 +72,19 @@ public final class SettingsViewModel {
     }
 
     var deleteAccountButtonTitle: String {
-        authService.isAnonymousAccountLinked()
+        authStateQuery.isAnonymousAccountLinked()
             ? FeatureUserProfileStrings.DeleteAccount.buttonTitle
             : FeatureUserProfileStrings.DeleteAccount.buttonAnonymousTitle
     }
 
     var deleteAccountConfirmationTitle: String {
-        authService.isAnonymousAccountLinked()
+        authStateQuery.isAnonymousAccountLinked()
             ? FeatureUserProfileStrings.DeleteAccount.confirmationTitle
             : FeatureUserProfileStrings.DeleteAccount.confirmationAnonymousTitle
     }
 
     var deleteAccountConfirmationSubtitle: String {
-        authService.isAnonymousAccountLinked()
+        authStateQuery.isAnonymousAccountLinked()
             ? FeatureUserProfileStrings.DeleteAccount.confirmationSubtitle
             : FeatureUserProfileStrings.DeleteAccount.confirmationAnonymousSubtitle
     }
@@ -124,7 +127,7 @@ public final class SettingsViewModel {
         dismissConfirmationSheet()
 
         do {
-            try await authService.signOut()
+            try await authSessionManagement.signOut()
 
             appleSignInNonceStorage.clearSessionData()
 
@@ -153,7 +156,7 @@ public final class SettingsViewModel {
         dismissConfirmationSheet()
 
         do {
-            try await authService.deleteCurrentUser()
+            try await authSessionManagement.deleteCurrentUser()
             try await persistence.deleteAllUserData()
 
             appleSignInNonceStorage.clearSessionData()

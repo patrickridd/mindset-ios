@@ -14,7 +14,7 @@ import Observation
 public final class UserProfileViewModel {
     public let isDebugToolsAvailable: Bool
 
-    private let authService: AuthService
+    private let authStateQuery: AuthStateQuery
     private let userRepository: UserRepository
     private var onNavigateToSecurity: () -> Void
     private var onNavigateToDebugTools: () -> Void
@@ -23,13 +23,13 @@ public final class UserProfileViewModel {
     public var displayName: String?
 
     public init(
-        authService: AuthService,
+        authStateQuery: AuthStateQuery,
         userRepository: UserRepository,
         isDebugToolsAvailable: Bool = false,
         onNavigateToSecurity: @escaping () -> Void,
         onNavigateToDebugTools: @escaping () -> Void = {}
     ) {
-        self.authService = authService
+        self.authStateQuery = authStateQuery
         self.userRepository = userRepository
         self.isDebugToolsAvailable = isDebugToolsAvailable
         self.onNavigateToSecurity = onNavigateToSecurity
@@ -41,7 +41,7 @@ public final class UserProfileViewModel {
 
     private func loadUserInfo() async {
         // Get current user ID
-        userID = await authService.getCurrentUserID()
+        userID = await authStateQuery.getCurrentUserID()
 
         // Get user profile from repository
         if let profile = try? await userRepository.fetchUserProfile() {

@@ -13,7 +13,8 @@ import Observation
 @MainActor
 public final class OnboardingViewModel {
     private let userRepository: UserRepository
-    private let authService: AuthService
+    private let signInService: SignInService
+    private let authStateQuery: AuthStateQuery
     private let analyzingViewModel: AnalyzingViewModel
     public var onboardingFinished: (() -> Void)?
 
@@ -35,12 +36,14 @@ public final class OnboardingViewModel {
 
     public init(
         userRepository: UserRepository,
-        authService: AuthService,
+        signInService: SignInService,
+        authStateQuery: AuthStateQuery,
         analyzingViewModel: AnalyzingViewModel,
         onboardingFinished: (() -> Void)?
     ) {
         self.userRepository = userRepository
-        self.authService = authService
+        self.signInService = signInService
+        self.authStateQuery = authStateQuery
         self.analyzingViewModel = analyzingViewModel
         self.onboardingFinished = onboardingFinished
     }
@@ -113,7 +116,7 @@ public final class OnboardingViewModel {
 
         Task {
             try? Task.checkCancellation()
-            let wasAuthenticated = await authService.isAuthenticated()
+            let wasAuthenticated = await authStateQuery.isAuthenticated()
 
             // Start progressive auth as soon as the analyzing step begins.
             startAnalyzingIfNeeded()
@@ -126,7 +129,7 @@ public final class OnboardingViewModel {
             await analyzingViewModel.waitForSignInIfStarted()
             try? Task.checkCancellation()
 
-            let isAuthenticatedNow = await authService.isAuthenticated()
+            let isAuthenticatedNow = await authStateQuery.isAuthenticated()
             profile.isAccountSecured = !wasAuthenticated && isAuthenticatedNow
 
             try? await userRepository.saveUserProfile(profile)
@@ -189,8 +192,8 @@ public final class OnboardingViewModel {
             // Create anonymous credential
             let credential = AuthCredential.anonymous
 
-            // Sign in via AuthService protocol
-            _ = try await authService.signIn(with: credential)
+            // Sign in via SignInService protocol
+            _ = try await signInService.signIn(with: credential)
         }
     }
 }

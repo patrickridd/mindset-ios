@@ -65,7 +65,7 @@ struct AppViewFactory: MainViewFactory {
 
     func makeSignInView() -> AnyView {
         let viewModel = SignInViewModel(
-            authService: authService,
+            signInService: authService,
             appleSignInCredentialBuilder: appleSignInCredentialBuilder,
             logger: logger,
             onSignInSuccess: { _ in
@@ -82,10 +82,11 @@ struct AppViewFactory: MainViewFactory {
     }
 
     func makeOnboardingView() -> AnyView {
-        let analyzingViewModel = AnalyzingViewModel(authService: authService, logger: logger)
+        let analyzingViewModel = AnalyzingViewModel(signInService: authService, logger: logger)
         let viewModel = OnboardingViewModel(
             userRepository: userRepository,
-            authService: authService,
+            signInService: authService,
+            authStateQuery: authService,
             analyzingViewModel: analyzingViewModel,
             onboardingFinished: {
                 coordinator.onboardingFinished()
@@ -146,7 +147,7 @@ struct AppViewFactory: MainViewFactory {
         let privacyPolicyURL = URL(string: "https://mindset.app/privacy")!
 
         let profileViewModel = UserProfileViewModel(
-            authService: authService,
+            authStateQuery: authService,
             userRepository: userRepository,
             isDebugToolsAvailable: isDebugToolsAvailable,
             onNavigateToSecurity: {
@@ -178,7 +179,7 @@ struct AppViewFactory: MainViewFactory {
                             PrivacyPolicyView(url: privacyPolicyURL)
                         case .signInView:
                             let signInViewModel = SignInViewModel(
-                                authService: authService,
+                                signInService: authService,
                                 appleSignInCredentialBuilder: appleSignInCredentialBuilder,
                                 logger: logger,
                                 embedInNavigationStack: false,
@@ -204,7 +205,8 @@ struct AppViewFactory: MainViewFactory {
         return AnyView(
             SettingsView(
                 viewModel: SettingsViewModel(
-                    authService: authService,
+                    authSessionManagement: authService,
+                    authStateQuery: authService,
                     persistence: persistence,
                     appleSignInNonceStorage: appleSignInNonceStorage,
                     onSignOut: {

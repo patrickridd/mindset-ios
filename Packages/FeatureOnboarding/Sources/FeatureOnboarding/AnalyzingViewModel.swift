@@ -5,24 +5,24 @@ import Observation
 @Observable
 @MainActor
 public final class AnalyzingViewModel {
-    private let authService: AuthService
+    private let signInService: SignInService
     private let logger: AppLogger
 
     private var signInTask: Task<Void, Never>?
 
-    public init(authService: AuthService, logger: AppLogger) {
-        self.authService = authService
+    public init(signInService: SignInService, logger: AppLogger) {
+        self.signInService = signInService
         self.logger = logger
     }
 
     public func startIfNeeded() {
         guard signInTask == nil else { return }
 
-        signInTask = Task { [authService, logger] in
+        signInTask = Task { [signInService, logger] in
             logger.log("🧪 Onboarding analyzing started: attempting anonymous sign-in")
             guard !Task.isCancelled else { return }
             do {
-                try await authService.signInAnonymously()
+                try await signInService.signInAnonymously()
             } catch {
                 // Silent failure: coordinator will fall back to Auth after onboarding if needed.
                 logger.log("⚠️ Onboarding anonymous sign-in failed: \(error.localizedDescription)")

@@ -269,11 +269,12 @@ private struct CalculatingView: View {
 
 #Preview {
     let logger: AppLogger = DebugLogger.shared
-    let authService = MockAuthService()
-    let analyzingViewModel = AnalyzingViewModel(authService: authService, logger: logger)
+    let mockAuth = MockAuthService()
+    let analyzingViewModel = AnalyzingViewModel(signInService: mockAuth, logger: logger)
     let viewModel = OnboardingViewModel(
         userRepository: MockUserRepository(),
-        authService: authService,
+        signInService: mockAuth,
+        authStateQuery: mockAuth,
         analyzingViewModel: analyzingViewModel,
         onboardingFinished: nil
     )

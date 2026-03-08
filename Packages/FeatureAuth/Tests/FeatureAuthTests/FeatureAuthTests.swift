@@ -6,6 +6,7 @@
 //
 
 import Domain
+import SharedUtils
 import Testing
 
 @testable import FeatureAuth
@@ -15,15 +16,20 @@ struct FeatureAuthTests {
         func log(_ message: String) {}
     }
 
+    private static func makeCredentialBuilder() -> AppleSignInCredentialBuilderProtocol {
+        AppleSignInCredentialBuilder(nonceStorage: AppleSignInNonceStorage())
+    }
+
     @Test func signInViewModelInitializesWithAuthService() async throws {
         let mockAuthService = MockAuthService()
         let viewModel = SignInViewModel(
-            authService: mockAuthService,
+            signInService: mockAuthService,
+            appleSignInCredentialBuilder: Self.makeCredentialBuilder(),
             logger: TestLogger(),
             onSignInSuccess: { _ in },
             onSkip: {}
         )
-        #expect(viewModel.isSigningIn == false)
+        #expect(viewModel.isLoading == false)
         #expect(viewModel.errorMessage == nil)
     }
 
@@ -32,7 +38,8 @@ struct FeatureAuthTests {
         var receivedUserID: String?
 
         let viewModel = SignInViewModel(
-            authService: mockAuthService,
+            signInService: mockAuthService,
+            appleSignInCredentialBuilder: Self.makeCredentialBuilder(),
             logger: TestLogger(),
             onSignInSuccess: { userID in
                 receivedUserID = userID
@@ -40,7 +47,7 @@ struct FeatureAuthTests {
             onSkip: {}
         )
 
-        await viewModel.continueWithoutAccount()
+        await viewModel.signInAnonymously()
 
         #expect(mockAuthService.signInCalled == true)
         if case .anonymous = mockAuthService.lastCredential {
@@ -56,7 +63,8 @@ struct FeatureAuthTests {
         var receivedUserID: String?
 
         let viewModel = SignInViewModel(
-            authService: mockAuthService,
+            signInService: mockAuthService,
+            appleSignInCredentialBuilder: Self.makeCredentialBuilder(),
             logger: TestLogger(),
             onSignInSuccess: { userID in
                 receivedUserID = userID

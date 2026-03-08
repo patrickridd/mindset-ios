@@ -17,7 +17,7 @@ public final class SignInViewModel {
     public var errorMessage: String?
     var loadingMessage: String = "Setting up..."
 
-    private let authService: AuthService
+    private let signInService: SignInService
     private let appleSignInCredentialBuilder: AppleSignInCredentialBuilderProtocol
     private let logger: AppLogger
     private let onSignInSuccess: (String) -> Void  // User ID
@@ -25,14 +25,14 @@ public final class SignInViewModel {
     let embedInNavigationStack: Bool
 
     public init(
-        authService: AuthService,
+        signInService: SignInService,
         appleSignInCredentialBuilder: AppleSignInCredentialBuilderProtocol,
         logger: AppLogger,
         embedInNavigationStack: Bool = true,
         onSignInSuccess: @escaping (String) -> Void,
         onSkip: @escaping () -> Void
     ) {
-        self.authService = authService
+        self.signInService = signInService
         self.appleSignInCredentialBuilder = appleSignInCredentialBuilder
         self.logger = logger
         self.embedInNavigationStack = embedInNavigationStack
@@ -77,7 +77,7 @@ public final class SignInViewModel {
         isLoading = true
 
         do {
-            let userID = try await authService.signIn(with: credential)
+            let userID = try await signInService.signIn(with: credential)
             isLoading = false
             onSignInSuccess(userID)
 
@@ -92,7 +92,9 @@ public final class SignInViewModel {
     // MARK: - Anonymous sign in
 
     public func signInAnonymously() async {
-        let anonymousId = try? await authService.signIn(with: .anonymous)
+        isLoading = true
+        let anonymousId = try? await signInService.signIn(with: .anonymous)
+        isLoading = false
         onSignInSuccess(anonymousId ?? "Anonymous")
     }
 
@@ -109,7 +111,7 @@ public final class SignInViewModel {
                 fullName: nil
             )
 
-            let userID = try await authService.signIn(with: credential)
+            let userID = try await signInService.signIn(with: credential)
             isLoading = false
             onSignInSuccess(userID)
 
