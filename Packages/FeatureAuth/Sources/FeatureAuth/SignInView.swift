@@ -47,9 +47,6 @@ public struct SignInView: View {
 
             ScrollView {
                 VStack(spacing: MindsetLayout.spacing12) {
-                    // Top spacing
-                    Color.clear.frame(height: MindsetLayout.spacing8)
-
                     // Hero Icon
                     ZStack {
                         Circle()
@@ -64,7 +61,6 @@ public struct SignInView: View {
                             .font(.system(size: 80))
                             .foregroundStyle(MindsetColors.accentOrange)
                     }
-                    .padding(.bottom, MindsetLayout.spacing20)
 
                     // Title
                     Text("Your Mindset Profile is Ready")
@@ -146,6 +142,7 @@ public struct SignInView: View {
                     // Bottom spacing
                     Color.clear.frame(height: MindsetLayout.spacing30)
                 }
+                Spacer()
             }
             .scrollIndicators(.hidden)
 
