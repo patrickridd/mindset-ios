@@ -207,6 +207,7 @@ extension SettingsView {
         viewModel: SettingsViewModel(
             authService: MockAuthService(isAnonymousAccountLinked: true),
             persistence: PreviewPersistenceService(),
+            appleSignInNonceStorage: AppleSignInNonceStorage(),
             onSignOut: {},
             onDeleteAccount: {},
             onNavigateToPrivacyPolicy: {}
@@ -219,6 +220,7 @@ extension SettingsView {
         viewModel: SettingsViewModel(
             authService: MockAuthService(isAnonymousAccountLinked: false),
             persistence: PreviewPersistenceService(),
+            appleSignInNonceStorage: AppleSignInNonceStorage(),
             onSignOut: {},
             onDeleteAccount: {},
             onNavigateToPrivacyPolicy: {}

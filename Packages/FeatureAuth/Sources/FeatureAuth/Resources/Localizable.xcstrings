@@ -84,6 +84,78 @@
           }
         }
       }
+    },
+    "auth.error.invalidAppleCredential" : {
+      "comment" : "Invalid Apple ID credential",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invalid Apple ID credential"
+          }
+        }
+      }
+    },
+    "auth.error.missingNonce" : {
+      "comment" : "Missing nonce error",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Missing nonce"
+          }
+        }
+      }
+    },
+    "auth.error.unableToSerializeToken" : {
+      "comment" : "Unable to serialize token error",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to serialize token"
+          }
+        }
+      }
+    },
+    "auth.error.signInFailedWithError" : {
+      "comment" : "Sign in failed with error message",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in failed: %@"
+          }
+        }
+      }
+    },
+    "auth.error.anonymousSignInFailed" : {
+      "comment" : "Anonymous sign in failed",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anonymous sign in failed: %@"
+          }
+        }
+      }
+    },
+    "auth.error.googleSignInFailed" : {
+      "comment" : "Google sign in failed",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google sign in failed: %@"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

@@ -94,10 +94,10 @@ public final class MainCoordinator {
             return
         }
 
-        // 2. Check if user is authenticated
+        // 2. Check if user's anonymous account has been linked
         let isAuthenticated = await authService.isAuthenticated()
-
-        if !isAuthenticated {
+        let isAnonymousAccountLinked = await authService.isAnonymousAccountLinked()
+        if !isAnonymousAccountLinked {
             // Onboarding complete but not signed in yet → show auth
             set(rootState: .auth)
             return

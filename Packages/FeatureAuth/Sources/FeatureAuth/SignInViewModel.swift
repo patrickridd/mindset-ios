@@ -6,7 +6,6 @@
 //
 
 import AuthenticationServices
-import CryptoKit
 import Domain
 import Foundation
 import Observation
@@ -17,8 +16,9 @@ public final class SignInViewModel {
     public var isLoading = false
     public var errorMessage: String?
     var loadingMessage: String = "Setting up..."
-    
+
     private let authService: AuthService
+    private let appleSignInCredentialBuilder: AppleSignInCredentialBuilderProtocol
     private let logger: AppLogger
     private let onSignInSuccess: (String) -> Void  // User ID
     private let onSkip: () -> Void
@@ -26,12 +26,14 @@ public final class SignInViewModel {
 
     public init(
         authService: AuthService,
+        appleSignInCredentialBuilder: AppleSignInCredentialBuilderProtocol,
         logger: AppLogger,
         embedInNavigationStack: Bool = true,
         onSignInSuccess: @escaping (String) -> Void,
         onSkip: @escaping () -> Void
     ) {
         self.authService = authService
+        self.appleSignInCredentialBuilder = appleSignInCredentialBuilder
         self.logger = logger
         self.embedInNavigationStack = embedInNavigationStack
         self.onSignInSuccess = onSignInSuccess
@@ -46,78 +48,35 @@ public final class SignInViewModel {
     // MARK: - Sign in with Apple
 
     public func handleSignInRequest(_ request: ASAuthorizationAppleIDRequest) {
-        request.requestedScopes = [.fullName, .email]
-        // Generate nonce for security (Firebase requires this)
-        let nonce = randomNonceString()
-        request.nonce = sha256(nonce)
-        // Store nonce for verification in completion
-        UserDefaults.standard.set(nonce, forKey: "currentNonce")
+        appleSignInCredentialBuilder.prepareRequest(request)
     }
 
     public func handleSignInCompletion(_ result: Result<ASAuthorization, Error>) {
         switch result {
         case .success(let authorization):
-            guard
-                let appleIDCredential = authorization.credential
-                    as? ASAuthorizationAppleIDCredential
-            else {
-                errorMessage = "Invalid Apple ID credential"
+            guard let credential = appleSignInCredentialBuilder.credentialFrom(authorization) else {
+                errorMessage = FeatureAuthStrings.Error.invalidAppleCredential
                 return
             }
 
+            // Bridges sync callback to async; inherits MainActor from caller.
             Task {
-                await signInWithFirebase(credential: appleIDCredential)
+                await signInWithAuthCredential(credential)
             }
 
         case .failure(let error):
             let asError = error as? ASAuthorizationError
-            if asError?.code != .canceled {  // Don't show error if user canceled
-                errorMessage = "Sign in failed. Please try again."
+            if asError?.code != .canceled {
+                errorMessage = FeatureAuthStrings.Error.signInFailed
             }
         }
     }
 
-    private func signInWithFirebase(credential: ASAuthorizationAppleIDCredential) async {
+    private func signInWithAuthCredential(_ credential: AuthCredential) async {
         isLoading = true
 
         do {
-            guard let nonce = UserDefaults.standard.string(forKey: "currentNonce") else {
-                throw NSError(
-                    domain: "SignInError", code: -1,
-                    userInfo: [NSLocalizedDescriptionKey: "Missing nonce"])
-            }
-
-            guard let appleIDToken = credential.identityToken,
-                let idTokenString = String(data: appleIDToken, encoding: .utf8)
-            else {
-                throw NSError(
-                    domain: "SignInError", code: -1,
-                    userInfo: [NSLocalizedDescriptionKey: "Unable to serialize token"])
-            }
-
-            // Extract full name if available (first sign-in only)
-            var fullName: String?
-            if let name = credential.fullName {
-                let displayName = [name.givenName, name.familyName]
-                    .compactMap { $0 }
-                    .joined(separator: " ")
-
-                if !displayName.isEmpty {
-                    fullName = displayName
-                    UserDefaults.standard.set(displayName, forKey: "userName")
-                }
-            }
-
-            // Create generic OAuth credential (no mention of Apple in Domain!)
-            let authCredential = AuthCredential.oauth(
-                identityToken: idTokenString,
-                nonce: nonce,
-                accessToken: nil,
-                fullName: fullName
-            )
-
-            // Sign in via AuthService protocol
-            let userID = try await authService.signIn(with: authCredential)
+            let userID = try await authService.signIn(with: credential)
 
             logger.log("✅ Apple sign-in successful: \(userID)")
             isLoading = false
@@ -126,7 +85,8 @@ public final class SignInViewModel {
         } catch {
             logger.log("❌ Apple sign-in failed: \(error.localizedDescription)")
             isLoading = false
-            errorMessage = "Sign in failed: \(error.localizedDescription)"
+            errorMessage = FeatureAuthStrings.Error.signInFailedWithError(
+                error.localizedDescription)
         }
     }
 
@@ -135,7 +95,6 @@ public final class SignInViewModel {
     public func signInAnonymously() async {
         isLoading = true
         do {
-            // Sign in via AuthService protocol
             let userID = try await authService.signIn(with: .anonymous)
 
             logger.log("✅ Anonymous sign-in successful: \(userID)")
@@ -144,7 +103,8 @@ public final class SignInViewModel {
         } catch {
             logger.log("❌ Anonymous sign-in failed: \(error.localizedDescription)")
             isLoading = false
-            errorMessage = "Anonymous sign in failed: \(error.localizedDescription)"
+            errorMessage = FeatureAuthStrings.Error.anonymousSignInFailed(
+                error.localizedDescription)
         }
     }
 
@@ -154,18 +114,15 @@ public final class SignInViewModel {
         isLoading = true
 
         do {
-            // Create generic OAuth credential (Firebase will handle the web flow)
-            // Empty tokens trigger Firebase's built-in web OAuth
             let credential = AuthCredential.oauth(
-                identityToken: "",  // Not needed for Firebase web flow
-                nonce: nil,  // Apple only
-                accessToken: nil,  // Not needed for Firebase web flow
+                identityToken: "",
+                nonce: nil,
+                accessToken: nil,
                 fullName: nil
             )
 
-            // Sign in via AuthService protocol
             let userID = try await authService.signIn(with: credential)
-            
+
             logger.log("✅ Google sign-in successful: \(userID)")
             isLoading = false
             onSignInSuccess(userID)
@@ -173,7 +130,7 @@ public final class SignInViewModel {
         } catch {
             logger.log("❌ Google sign-in failed: \(error.localizedDescription)")
             isLoading = false
-            errorMessage = "Google sign in failed: \(error.localizedDescription)"
+            errorMessage = FeatureAuthStrings.Error.googleSignInFailed(error.localizedDescription)
         }
     }
 
@@ -181,47 +138,5 @@ public final class SignInViewModel {
 
     public func dismissError() {
         errorMessage = nil
-    }
-
-    // MARK: - Security helpers (nonce generation for Apple Sign In)
-
-    private func randomNonceString(length: Int = 32) -> String {
-        precondition(length > 0)
-        let charset: [Character] = Array(
-            "0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
-        var result = ""
-        var remainingLength = length
-
-        while remainingLength > 0 {
-            let randoms: [UInt8] = (0..<16).map { _ in
-                var random: UInt8 = 0
-                let errorCode = SecRandomCopyBytes(kSecRandomDefault, 1, &random)
-                if errorCode != errSecSuccess {
-                    fatalError(
-                        "Unable to generate nonce. SecRandomCopyBytes failed with OSStatus \(errorCode)"
-                    )
-                }
-                return random
-            }
-
-            randoms.forEach { random in
-                if remainingLength == 0 { return }
-                if random < charset.count {
-                    result.append(charset[Int(random)])
-                    remainingLength -= 1
-                }
-            }
-        }
-
-        return result
-    }
-
-    private func sha256(_ input: String) -> String {
-        let inputData = Data(input.utf8)
-        let hashedData = SHA256.hash(data: inputData)
-        let hashString = hashedData.compactMap {
-            String(format: "%02x", $0)
-        }.joined()
-        return hashString
     }
 }

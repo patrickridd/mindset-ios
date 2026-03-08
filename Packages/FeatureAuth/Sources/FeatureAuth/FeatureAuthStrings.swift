@@ -31,5 +31,38 @@ public enum FeatureAuthStrings {
         public static let cancelled = String(
             localized: "auth.error.cancelled", bundle: .module, comment: "Sign in cancelled message"
         )
+        public static let invalidAppleCredential = String(
+            localized: "auth.error.invalidAppleCredential", bundle: .module,
+            comment: "Invalid Apple ID credential")
+        public static let missingNonce = String(
+            localized: "auth.error.missingNonce", bundle: .module,
+            comment: "Missing nonce error")
+        public static let unableToSerializeToken = String(
+            localized: "auth.error.unableToSerializeToken", bundle: .module,
+            comment: "Unable to serialize token error")
+        public static func signInFailedWithError(_ error: String) -> String {
+            let format = String(
+                localized: "auth.error.signInFailedWithError",
+                bundle: .module,
+                comment: "Sign in failed with error message"
+            )
+            return String(format: format, error)
+        }
+        public static func anonymousSignInFailed(_ error: String) -> String {
+            let format = String(
+                localized: "auth.error.anonymousSignInFailed",
+                bundle: .module,
+                comment: "Anonymous sign in failed"
+            )
+            return String(format: format, error)
+        }
+        public static func googleSignInFailed(_ error: String) -> String {
+            let format = String(
+                localized: "auth.error.googleSignInFailed",
+                bundle: .module,
+                comment: "Google sign in failed"
+            )
+            return String(format: format, error)
+        }
     }
 }

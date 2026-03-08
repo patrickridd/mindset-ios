@@ -66,6 +66,8 @@ final class AppDependencyContainer {
             userRepository: userRepository
         )
 
+        let appleSignInNonceStorage = AppleSignInNonceStorage()
+
         self.viewFactory = AppViewFactory(
             coordinator: coordinator,
             authService: authService,
@@ -77,7 +79,8 @@ final class AppDependencyContainer {
             subscriptionService: subService,
             serviceFactory: serviceFactory,
             persistence: persistence,
-            logger: logger
+            logger: logger,
+            appleSignInNonceStorage: appleSignInNonceStorage
         )
     }
 }

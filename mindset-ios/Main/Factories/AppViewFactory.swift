@@ -49,6 +49,11 @@ struct AppViewFactory: MainViewFactory {
     let serviceFactory: ServiceFactory
     let persistence: PersistenceService
     let logger: AppLogger
+    let appleSignInNonceStorage: AppleSignInNonceStorageProtocol
+
+    private var appleSignInCredentialBuilder: AppleSignInCredentialBuilderProtocol {
+        AppleSignInCredentialBuilder(nonceStorage: appleSignInNonceStorage)
+    }
 
     func decoratePresentedView(_ view: AnyView) -> AnyView {
         #if DEBUG
@@ -61,6 +66,7 @@ struct AppViewFactory: MainViewFactory {
     func makeSignInView() -> AnyView {
         let viewModel = SignInViewModel(
             authService: authService,
+            appleSignInCredentialBuilder: appleSignInCredentialBuilder,
             logger: logger,
             onSignInSuccess: { _ in
                 coordinator.signInCompleted()
@@ -173,6 +179,7 @@ struct AppViewFactory: MainViewFactory {
                         case .signInView:
                             let signInViewModel = SignInViewModel(
                                 authService: authService,
+                                appleSignInCredentialBuilder: appleSignInCredentialBuilder,
                                 logger: logger,
                                 embedInNavigationStack: false,
                                 onSignInSuccess: { _ in
@@ -199,6 +206,7 @@ struct AppViewFactory: MainViewFactory {
                 viewModel: SettingsViewModel(
                     authService: authService,
                     persistence: persistence,
+                    appleSignInNonceStorage: appleSignInNonceStorage,
                     onSignOut: {
                         coordinator.signOutCompleted()
                     },

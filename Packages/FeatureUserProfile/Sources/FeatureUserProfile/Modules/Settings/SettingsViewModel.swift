@@ -8,6 +8,7 @@
 import Domain
 import Foundation
 import Observation
+import SharedUtils
 
 @Observable
 @MainActor
@@ -21,6 +22,7 @@ public final class SettingsViewModel {
 
     private let authService: AuthService
     private let persistence: PersistenceService
+    private let appleSignInNonceStorage: AppleSignInNonceStorageProtocol
     private let onSignOut: () -> Void
     private let onDeleteAccount: () -> Void
     private let onNavigateToPrivacyPolicy: () -> Void
@@ -29,6 +31,7 @@ public final class SettingsViewModel {
     public init(
         authService: AuthService,
         persistence: PersistenceService,
+        appleSignInNonceStorage: AppleSignInNonceStorageProtocol,
         onSignOut: @escaping () -> Void,
         onDeleteAccount: @escaping () -> Void,
         onNavigateToPrivacyPolicy: @escaping () -> Void,
@@ -36,6 +39,7 @@ public final class SettingsViewModel {
     ) {
         self.authService = authService
         self.persistence = persistence
+        self.appleSignInNonceStorage = appleSignInNonceStorage
         self.onSignOut = onSignOut
         self.onDeleteAccount = onDeleteAccount
         self.onNavigateToPrivacyPolicy = onNavigateToPrivacyPolicy
@@ -46,7 +50,7 @@ public final class SettingsViewModel {
         authService.isAnonymousAccountLinked()
     }
 
-    var shouldDisplaySignOutButton: Bool  {
+    var shouldDisplaySignOutButton: Bool {
         isAccountSecurelyLinked
     }
 
@@ -55,7 +59,7 @@ public final class SettingsViewModel {
     }
 
     // MARK: Localized Strings
-    
+
     var busyOverlayText: String {
         if isDeletingAccount {
             FeatureUserProfileStrings.DeleteAccount.deleting
@@ -63,39 +67,43 @@ public final class SettingsViewModel {
             FeatureUserProfileStrings.SignOut.signingOut
         }
     }
-    
+
     var deleteAccountButtonTitle: String {
-        authService.isAnonymousAccountLinked() ?
-        FeatureUserProfileStrings.DeleteAccount.buttonTitle :
-        FeatureUserProfileStrings.DeleteAccount.buttonAnonymousTitle
+        authService.isAnonymousAccountLinked()
+            ? FeatureUserProfileStrings.DeleteAccount.buttonTitle
+            : FeatureUserProfileStrings.DeleteAccount.buttonAnonymousTitle
     }
 
     var deleteAccountConfirmationTitle: String {
-        authService.isAnonymousAccountLinked() ?
-        FeatureUserProfileStrings.DeleteAccount.confirmationTitle :
-        FeatureUserProfileStrings.DeleteAccount.confirmationAnonymousTitle
+        authService.isAnonymousAccountLinked()
+            ? FeatureUserProfileStrings.DeleteAccount.confirmationTitle
+            : FeatureUserProfileStrings.DeleteAccount.confirmationAnonymousTitle
     }
 
     var deleteAccountConfirmationSubtitle: String {
-        authService.isAnonymousAccountLinked() ?
-        FeatureUserProfileStrings.DeleteAccount.confirmationSubtitle :
-        FeatureUserProfileStrings.DeleteAccount.confirmationAnonymousSubtitle
+        authService.isAnonymousAccountLinked()
+            ? FeatureUserProfileStrings.DeleteAccount.confirmationSubtitle
+            : FeatureUserProfileStrings.DeleteAccount.confirmationAnonymousSubtitle
     }
-    
+
     var linkAccountRow: (icon: String, title: String, subtTitle: String) {
-        if isAccountSecurelyLinked  {
-            (icon: "checkmark.shield.fill",
-             title: FeatureUserProfileStrings.Account.accountSecuredRowTitle,
-             subtTitle: FeatureUserProfileStrings.Account.accountSecuredRowSubtitle)
-        }  else {
-            (icon: "shield.slash",
-             title: FeatureUserProfileStrings.Account.accountNOTSecuredRowTitle,
-             subtTitle: FeatureUserProfileStrings.Account.accountNOTSecuredRowSubtitle)
+        if isAccountSecurelyLinked {
+            (
+                icon: "checkmark.shield.fill",
+                title: FeatureUserProfileStrings.Account.accountSecuredRowTitle,
+                subtTitle: FeatureUserProfileStrings.Account.accountSecuredRowSubtitle
+            )
+        } else {
+            (
+                icon: "shield.slash",
+                title: FeatureUserProfileStrings.Account.accountNOTSecuredRowTitle,
+                subtTitle: FeatureUserProfileStrings.Account.accountNOTSecuredRowSubtitle
+            )
         }
     }
 
     // MARK: - Actions
-    
+
     public func presentConfirmSignOut() {
         guard !isBusy else { return }
         activeSheet = .signOut
@@ -118,8 +126,7 @@ public final class SettingsViewModel {
         do {
             try await authService.signOut()
 
-            UserDefaults.standard.removeObject(forKey: "userName")
-            UserDefaults.standard.removeObject(forKey: "currentNonce")
+            appleSignInNonceStorage.clearSessionData()
 
             isSigningOut = false
             onSignOut()
@@ -149,8 +156,7 @@ public final class SettingsViewModel {
             try await authService.deleteCurrentUser()
             try await persistence.deleteAllUserData()
 
-            UserDefaults.standard.removeObject(forKey: "userName")
-            UserDefaults.standard.removeObject(forKey: "currentNonce")
+            appleSignInNonceStorage.clearSessionData()
 
             isDeletingAccount = false
             onDeleteAccount()
