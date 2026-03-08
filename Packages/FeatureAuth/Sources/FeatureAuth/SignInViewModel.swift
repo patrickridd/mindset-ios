@@ -39,10 +39,11 @@ public final class SignInViewModel {
         self.onSignInSuccess = onSignInSuccess
         self.onSkip = onSkip
     }
+    
+    // MARK: - Button actions
 
     public func dismissButtonTapped() async {
-        let anonymousId = try? await authService.signIn(with: .anonymous)
-        onSignInSuccess(anonymousId ?? "Anonymous")
+       await signInAnonymously()
     }
 
     // MARK: - Sign in with Apple
@@ -77,8 +78,6 @@ public final class SignInViewModel {
 
         do {
             let userID = try await authService.signIn(with: credential)
-
-            logger.log("✅ Apple sign-in successful: \(userID)")
             isLoading = false
             onSignInSuccess(userID)
 
@@ -90,22 +89,11 @@ public final class SignInViewModel {
         }
     }
 
-    // MARK: - Continue with Anonymous account
+    // MARK: - Anonymous sign in
 
     public func signInAnonymously() async {
-        isLoading = true
-        do {
-            let userID = try await authService.signIn(with: .anonymous)
-
-            logger.log("✅ Anonymous sign-in successful: \(userID)")
-            isLoading = false
-            onSignInSuccess(userID)
-        } catch {
-            logger.log("❌ Anonymous sign-in failed: \(error.localizedDescription)")
-            isLoading = false
-            errorMessage = FeatureAuthStrings.Error.anonymousSignInFailed(
-                error.localizedDescription)
-        }
+        let anonymousId = try? await authService.signIn(with: .anonymous)
+        onSignInSuccess(anonymousId ?? "Anonymous")
     }
 
     // MARK: - Sign in with Google
@@ -122,15 +110,16 @@ public final class SignInViewModel {
             )
 
             let userID = try await authService.signIn(with: credential)
-
-            logger.log("✅ Google sign-in successful: \(userID)")
             isLoading = false
             onSignInSuccess(userID)
 
         } catch {
-            logger.log("❌ Google sign-in failed: \(error.localizedDescription)")
             isLoading = false
-            errorMessage = FeatureAuthStrings.Error.googleSignInFailed(error.localizedDescription)
+            // Don't display user cancelled error
+            guard let error = error as? NSError, error.code == 17058 else {
+                errorMessage = FeatureAuthStrings.Error.googleSignInFailed(error.localizedDescription)
+                return
+            }
         }
     }
 

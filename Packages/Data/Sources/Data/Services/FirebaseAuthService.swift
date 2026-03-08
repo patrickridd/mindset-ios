@@ -204,16 +204,20 @@ public final class FirebaseAuthService: AuthService, Sendable {
                 idToken: identityToken,
                 rawNonce: nonce
             )
-            let result = try await Auth.auth().signIn(with: firebaseCredential)
-            let uid = result.user.uid
+            do {
+                let result = try await Auth.auth().signIn(with: firebaseCredential)
+                let uid = result.user.uid
 
-            // Store full name if provided (first sign-in only)
-            if let fullName = fullName, !fullName.isEmpty {
-                try await updateUserProfile(displayName: fullName)
+                // Store full name if provided (first sign-in only)
+                if let fullName = fullName, !fullName.isEmpty {
+                    try await updateUserProfile(displayName: fullName)
+                }
+                logger.log("🍎 Apple sign-in successful ✅ uid=\(uid)")
+                return uid
+            } catch {
+                logger.log("📵 Apple sign-in Error \(error.localizedDescription)")
+                throw error
             }
-            logger.log("🍎 Apple sign-in successful ✅ uid=\(uid)")
-
-            return uid
         } else {
             // Google Sign In - Use Firebase's built-in OAuth web flow
             // This opens Safari/ASWebAuthenticationSession for Google login
@@ -250,6 +254,7 @@ public final class FirebaseAuthService: AuthService, Sendable {
         return try await withCheckedThrowingContinuation { continuation in
             Auth.auth().signIn(with: provider, uiDelegate: nil) { [weak self] authResult, error in
                 if let error = error {
+                    self?.logger.log("📵 Gmail sign-in Error \(error.localizedDescription)")
                     continuation.resume(throwing: error)
                 } else if let uid = authResult?.user.uid {
                     self?.logger.log("🤖 Gmail sign-in successful ✅ uid=\(uid)")
