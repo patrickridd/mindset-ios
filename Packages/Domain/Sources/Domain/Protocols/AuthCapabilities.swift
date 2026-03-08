@@ -10,7 +10,7 @@ import Foundation
 /// Capability: Sign-in flows (credential-based and anonymous).
 public protocol SignInService: Sendable {
     /// Sign in with the provided credential
-    /// - Parameter credential: Authentication credential (OAuth, email, or anonymous)
+    /// - Parameter credential: Authentication credential (OAuth, phone, or anonymous)
     /// - Returns: Authenticated user ID
     func signIn(with credential: AuthCredential) async throws -> String
 
@@ -29,7 +29,7 @@ public protocol AuthStateQuery: Sendable {
     /// Check if user is currently authenticated
     func isAuthenticated() -> Bool
 
-    /// Check if current user's anonymous account has been linked with provider (gmail, apple, email/password, etc...)
+    /// Check if current user's anonymous account has been linked with provider (gmail, apple, phone, etc...)
     func isAnonymousAccountLinked() -> Bool
 }
 

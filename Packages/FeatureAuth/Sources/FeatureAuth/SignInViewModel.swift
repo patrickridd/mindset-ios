@@ -15,11 +15,13 @@ import Observation
 public final class SignInViewModel {
     public var isLoading = false
     public var errorMessage: String?
+    public var showPhoneSignIn = false
     var loadingMessage: String = "Setting up..."
 
     private let signInOrLinkUseCase: SignInOrLinkUseCase
     private let appleSignInCredentialBuilder: AppleSignInCredentialBuilderProtocol
     private let googleSignInCredentialProvider: GoogleSignInCredentialProvider
+    private let phoneVerificationProvider: PhoneVerificationProvider
     private let logger: AppLogger
     private let onSignInSuccess: (String) -> Void  // User ID
     private let onSkip: () -> Void
@@ -29,6 +31,7 @@ public final class SignInViewModel {
         signInOrLinkUseCase: SignInOrLinkUseCase,
         appleSignInCredentialBuilder: AppleSignInCredentialBuilderProtocol,
         googleSignInCredentialProvider: GoogleSignInCredentialProvider,
+        phoneVerificationProvider: PhoneVerificationProvider,
         logger: AppLogger,
         embedInNavigationStack: Bool = true,
         onSignInSuccess: @escaping (String) -> Void,
@@ -37,6 +40,7 @@ public final class SignInViewModel {
         self.signInOrLinkUseCase = signInOrLinkUseCase
         self.appleSignInCredentialBuilder = appleSignInCredentialBuilder
         self.googleSignInCredentialProvider = googleSignInCredentialProvider
+        self.phoneVerificationProvider = phoneVerificationProvider
         self.logger = logger
         self.embedInNavigationStack = embedInNavigationStack
         self.onSignInSuccess = onSignInSuccess
@@ -119,6 +123,46 @@ public final class SignInViewModel {
                 return
             }
             errorMessage = FeatureAuthStrings.Error.googleSignInFailed(error.localizedDescription)
+        }
+    }
+
+    // MARK: - Sign in with Phone
+
+    /// Requests SMS verification code. Returns verificationID on success, nil on error.
+    public func requestPhoneVerificationCode(phoneNumber: String) async -> String? {
+        errorMessage = nil
+        do {
+            return try await phoneVerificationProvider.requestVerificationCode(
+                phoneNumber: phoneNumber
+            )
+        } catch {
+            logger.log("❌ Phone verification failed: \(error.localizedDescription)")
+            errorMessage = FeatureAuthStrings.Error.phoneSignInFailed(error.localizedDescription)
+            return nil
+        }
+    }
+
+    /// Signs in or links with phone credential. Call after user receives SMS and enters code.
+    public func signInWithPhone(
+        verificationID: String,
+        verificationCode: String
+    ) async {
+        isLoading = true
+
+        do {
+            let credential = AuthCredential.phone(
+                verificationID: verificationID,
+                verificationCode: verificationCode
+            )
+            let userID = try await signInOrLinkUseCase.execute(with: credential)
+            isLoading = false
+            showPhoneSignIn = false
+            onSignInSuccess(userID)
+
+        } catch {
+            logger.log("❌ Phone sign-in failed: \(error.localizedDescription)")
+            isLoading = false
+            errorMessage = FeatureAuthStrings.Error.phoneSignInFailed(error.localizedDescription)
         }
     }
 

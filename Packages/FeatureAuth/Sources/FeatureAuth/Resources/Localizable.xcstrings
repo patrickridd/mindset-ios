@@ -156,6 +156,90 @@
           }
         }
       }
+    },
+    "auth.error.phoneSignInFailed" : {
+      "comment" : "Phone sign in failed",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phone sign in failed: %@"
+          }
+        }
+      }
+    },
+    "auth.signInWithPhone" : {
+      "comment" : "Sign in with Phone button",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue with Phone"
+          }
+        }
+      }
+    },
+    "auth.phonePlaceholder" : {
+      "comment" : "Phone number input placeholder",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+1 234 567 8900"
+          }
+        }
+      }
+    },
+    "auth.sendCode" : {
+      "comment" : "Send verification code button",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send Code"
+          }
+        }
+      }
+    },
+    "auth.codePlaceholder" : {
+      "comment" : "Verification code input placeholder",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter 6-digit code"
+          }
+        }
+      }
+    },
+    "auth.verify" : {
+      "comment" : "Verify code button",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verify"
+          }
+        }
+      }
+    },
+    "auth.phoneSignInTitle" : {
+      "comment" : "Phone sign in sheet title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in with Phone"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

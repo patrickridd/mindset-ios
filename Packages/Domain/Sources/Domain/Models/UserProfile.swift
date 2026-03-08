@@ -14,7 +14,7 @@ public struct UserProfile: Sendable {
     public var primaryGoal: String
     public let createdAt: Date
     public private(set) var isOnboardingComplete: Bool
-    /// True when the user has linked their anonymous account to a provider (Gmail, Apple, email/password).
+    /// True when the user has linked their anonymous account to a provider (Gmail, Apple, phone).
     public var isAccountSecured: Bool
     
     /// Legacy field; prefer `headspace` when available. Kept for migration.

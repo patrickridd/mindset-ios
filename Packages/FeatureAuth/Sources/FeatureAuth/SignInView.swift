@@ -116,23 +116,33 @@ public struct SignInView: View {
                     }
                     .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
                     .disabled(viewModel.isLoading)
-
-                    // OR divider
-                    HStack(spacing: MindsetLayout.spacing8) {
-                        Rectangle()
-                            .fill(MindsetColors.borderSubtle)
-                            .frame(height: 1)
-
-                        Text("OR")
-                            .font(MindsetFonts.caption)
-                            .foregroundStyle(MindsetColors.textMuted)
-
-                        Rectangle()
-                            .fill(MindsetColors.borderSubtle)
-                            .frame(height: 1)
+                    
+                    // Phone Sign In Button
+                    Button {
+                        HapticManager.selection()
+                        viewModel.showPhoneSignIn = true
+                    } label: {
+                        HStack(spacing: MindsetLayout.spacing12) {
+                            Image(systemName: "phone.circle.fill")
+                                .font(.system(size: 20))
+                            Text(FeatureAuthStrings.signInWithPhone)
+                                .font(MindsetFonts.button)
+                        }
+                        .foregroundStyle(colorScheme == .dark ? MindsetColors.textPrimary : Color.white)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: MindsetLayout.buttonHeight)
+                        .background(
+                            RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
+                                .fill(colorScheme == .dark ? Color.white.opacity(0.15) : Color.black)
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
+                                .stroke(MindsetColors.borderSubtle, lineWidth: MindsetLayout.borderWidth)
+                        )
                     }
                     .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
-                    
+                    .disabled(viewModel.isLoading)
+
                     // Bottom spacing
                     Color.clear.frame(height: MindsetLayout.spacing30)
                 }
@@ -148,6 +158,12 @@ public struct SignInView: View {
             if let errorMessage = viewModel.errorMessage {
                 errorAlert(message: errorMessage)
             }
+        }
+        .sheet(isPresented: Binding(
+            get: { viewModel.showPhoneSignIn },
+            set: { viewModel.showPhoneSignIn = $0 }
+        )) {
+            PhoneSignInView(viewModel: viewModel)
         }
         .toolbar {
             if viewModel.embedInNavigationStack {
@@ -165,6 +181,23 @@ public struct SignInView: View {
         }
     }
 
+    private var orDivider: some View {
+        HStack(spacing: MindsetLayout.spacing8) {
+            Rectangle()
+                .fill(MindsetColors.borderSubtle)
+                .frame(height: 1)
+
+            Text("OR")
+                .font(MindsetFonts.caption)
+                .foregroundStyle(MindsetColors.textMuted)
+
+            Rectangle()
+                .fill(MindsetColors.borderSubtle)
+                .frame(height: 1)
+        }
+        .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
+    }
+    
     private func benefitRow(icon: String, text: String) -> some View {
         HStack(alignment: .top, spacing: MindsetLayout.spacing12) {
             Image(systemName: icon)
@@ -255,6 +288,7 @@ public struct SignInView: View {
         signInOrLinkUseCase: SignInOrLinkUseCase(authService: mockAuth),
         appleSignInCredentialBuilder: AppleSignInCredentialBuilder(nonceStorage: AppleSignInNonceStorage()),
         googleSignInCredentialProvider: MockGoogleSignInCredentialProvider(),
+        phoneVerificationProvider: MockPhoneVerificationProvider(),
         logger: DebugLogger.shared,
         onSignInSuccess: { _ in },
         onSkip: {}

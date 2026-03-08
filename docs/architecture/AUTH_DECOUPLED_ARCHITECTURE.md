@@ -25,7 +25,7 @@ protocol AuthService {
 // ✅ Domain defines generic credential types
 public enum AuthCredential {
     case oauth(identityToken: String, nonce: String?, accessToken: String?, fullName: String?)
-    case email(email: String, password: String)
+    case phone(verificationID: String, verificationCode: String)
     case anonymous
 }
 
@@ -58,8 +58,8 @@ public enum AuthCredential: Sendable {
         fullName: String? = nil
     )
     
-    /// Email/password credential
-    case email(email: String, password: String)
+    /// Phone credential (SMS verification)
+    case phone(verificationID: String, verificationCode: String)
     
     /// Anonymous credential for trials
     case anonymous
@@ -96,8 +96,9 @@ public func signIn(with credential: AuthCredential) async throws -> String {
             return try await Auth.auth().signIn(with: cred).user.uid
         }
         
-    case .email(let email, let password):
-        return try await Auth.auth().signIn(withEmail: email, password: password).user.uid
+    case .phone(let verificationID, let verificationCode):
+        let cred = PhoneAuthProvider.credential(withVerificationID: verificationID, verificationCode: verificationCode)
+        return try await Auth.auth().signIn(with: cred).user.uid
         
     case .anonymous:
         return try await Auth.auth().signInAnonymously().user.uid
@@ -173,24 +174,23 @@ case .oauth(let idToken, let nonce, let accessToken, _):
 
 ### Example: Phone Auth
 
-If you need phone auth in the future, just extend the enum:
+Phone auth uses the `phone` credential:
 
 ```swift
 public enum AuthCredential: Sendable {
     case oauth(...)
-    case email(...)
+    case phone(verificationID: String, verificationCode: String)
     case anonymous
-    case phone(phoneNumber: String, verificationCode: String)  // New!
 }
 ```
 
-Then handle it in `FirebaseAuthService`:
+Handled in `FirebaseAuthService`:
 
 ```swift
-case .phone(let number, let code):
-    let credential = PhoneAuthProvider.provider().credential(
-        withVerificationID: number,
-        verificationCode: code
+case .phone(let verificationID, let verificationCode):
+    let credential = PhoneAuthProvider.credential(
+        withVerificationID: verificationID,
+        verificationCode: verificationCode
     )
     return try await Auth.auth().signIn(with: credential).user.uid
 ```
@@ -221,7 +221,7 @@ Domain Layer (generic credentials):
 ┌─────────────────────────────────────────┐
 │ enum AuthCredential { ✅                │
 │   case oauth(...)                       │
-│   case email(...)                       │
+│   case phone(...)                       │
 │   case anonymous                        │
 │ }                                       │
 │                                         │
@@ -266,8 +266,8 @@ public final class SupabaseAuthService: AuthService {
             )
             return session.user.id
             
-        case .email(let email, let password):
-            let session = try await client.auth.signIn(email: email, password: password)
+        case .phone(let verificationID, let verificationCode):
+            let session = try await client.auth.signIn(phone: verificationID, code: verificationCode)
             return session.user.id
             
         case .anonymous:

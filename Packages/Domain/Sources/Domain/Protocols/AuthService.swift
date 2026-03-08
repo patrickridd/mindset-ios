@@ -22,8 +22,10 @@ public enum AuthCredential: Sendable {
         fullName: String? = nil
     )
 
-    /// Email and password credential
-    case email(email: String, password: String)
+    /// Phone number credential (Firebase SMS verification)
+    /// - verificationID: From PhoneVerificationProvider.requestVerificationCode
+    /// - verificationCode: SMS code entered by user
+    case phone(verificationID: String, verificationCode: String)
 
     /// Anonymous credential for trial/testing without account
     case anonymous

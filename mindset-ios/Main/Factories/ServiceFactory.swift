@@ -59,6 +59,14 @@ struct ServiceFactory {
         }
     }
 
+    func makePhoneVerificationProvider(logger: AppLogger) -> PhoneVerificationProvider {
+        if config.useRealServices {
+            return PhoneVerificationProviderImpl(logger: logger)
+        } else {
+            return MockPhoneVerificationProvider()
+        }
+    }
+
     func makeSubscriptionService() -> any SubscriptionService {
         let base: any SubscriptionService
         if config.useRealServices {

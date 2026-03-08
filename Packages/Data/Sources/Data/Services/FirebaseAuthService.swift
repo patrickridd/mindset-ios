@@ -56,8 +56,11 @@ extension FirebaseAuthService: SignInService {
                     fullName: fullName
                 )
 
-            case .email(let email, let password):
-                return try await signInWithEmail(email: email, password: password)
+            case .phone(let verificationID, let verificationCode):
+                return try await signInWithPhone(
+                    verificationID: verificationID,
+                    verificationCode: verificationCode
+                )
 
             case .anonymous:
                 return try await signInAnonymously()
@@ -180,9 +183,16 @@ extension FirebaseAuthService: SignInService {
         }
     #endif
 
-    private func signInWithEmail(email: String, password: String) async throws -> String {
-        let result = try await Auth.auth().signIn(withEmail: email, password: password)
-        logger.log("📧 Email Sign-In successful ✅ uid=\(result.user.uid)")
+    private func signInWithPhone(
+        verificationID: String,
+        verificationCode: String
+    ) async throws -> String {
+        let credential = PhoneAuthProvider.provider().credential(
+            withVerificationID: verificationID,
+            verificationCode: verificationCode
+        )
+        let result = try await Auth.auth().signIn(with: credential)
+        logger.log("📱 Phone Sign-In successful ✅ uid=\(result.user.uid)")
         return result.user.uid
     }
 
@@ -235,8 +245,8 @@ extension FirebaseAuthService: AuthSessionManagement {
                 switch credential {
                 case .anonymous:
                     return "anonymous"
-                case .email:
-                    return "email"
+                case .phone:
+                    return "phone"
                 case .oauth(_, let nonce, let accessToken, _):
                     if nonce != nil { return "apple" }
                     if accessToken != nil { return "google" }
@@ -320,8 +330,11 @@ extension FirebaseAuthService: AuthSessionManagement {
         case .anonymous:
             throw Domain.AuthLinkError.invalidProviderCredential
 
-        case .email(let email, let password):
-            return EmailAuthProvider.credential(withEmail: email, password: password)
+        case .phone(let verificationID, let verificationCode):
+            return PhoneAuthProvider.provider().credential(
+                withVerificationID: verificationID,
+                verificationCode: verificationCode
+            )
 
         case .oauth(let identityToken, let nonce, let accessToken, _):
             if let nonce {

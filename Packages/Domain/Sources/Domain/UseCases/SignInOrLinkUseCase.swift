@@ -10,7 +10,7 @@ import Foundation
 /// Use case: Authenticate with credential, linking to anonymous account when appropriate.
 ///
 /// Application rule: When the user is anonymously signed in and provides a permanent credential
-/// (Apple, Google with tokens, or email), link the credential to the existing account instead of
+/// (Apple, Google with tokens, or phone), link the credential to the existing account instead of
 /// creating a new one. Preserves onboarding data, ritual history, and subscription state.
 public struct SignInOrLinkUseCase: Sendable {
     private let signInService: SignInService
@@ -35,7 +35,7 @@ public struct SignInOrLinkUseCase: Sendable {
     }
 
     /// Authenticate with the credential. Links to anonymous account when applicable.
-    /// - Parameter credential: Authentication credential (OAuth, email, or anonymous)
+    /// - Parameter credential: Authentication credential (OAuth, phone, or anonymous)
     /// - Returns: Authenticated user ID
     public func execute(with credential: AuthCredential) async throws -> String {
         let isAnonymous = authStateQuery.isAuthenticated() && !authStateQuery.isAnonymousAccountLinked()
@@ -51,9 +51,9 @@ public struct SignInOrLinkUseCase: Sendable {
 
     private func isLinkableCredential(_ credential: AuthCredential) -> Bool {
         switch credential {
-        case .oauth(let identityToken, let nonce, let accessToken, _):
-            return identityToken != nil && nonce != nil && accessToken != nil
-        case .email:
+        case .oauth:
+            return true
+        case .phone:
             return true
         case .anonymous:
             return false

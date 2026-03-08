@@ -52,8 +52,8 @@ public final class MockAuthService: @preconcurrency AuthService {
                 return "anonymous-\(mockUserID)"
             case .oauth:
                 return "oauth-\(mockUserID)"
-            case .email:
-                return "email-\(mockUserID)"
+            case .phone:
+                return "phone-\(mockUserID)"
             }
         } else {
             throw NSError(

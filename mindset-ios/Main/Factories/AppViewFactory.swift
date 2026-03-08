@@ -69,6 +69,7 @@ struct AppViewFactory: MainViewFactory {
             signInOrLinkUseCase: signInOrLinkUseCase,
             appleSignInCredentialBuilder: appleSignInCredentialBuilder,
             googleSignInCredentialProvider: serviceFactory.makeGoogleSignInCredentialProvider(logger: logger),
+            phoneVerificationProvider: serviceFactory.makePhoneVerificationProvider(logger: logger),
             logger: logger,
             onSignInSuccess: { _ in
                 coordinator.signInCompleted()
@@ -184,6 +185,7 @@ struct AppViewFactory: MainViewFactory {
                                 signInOrLinkUseCase: signInOrLinkUseCase,
                                 appleSignInCredentialBuilder: appleSignInCredentialBuilder,
                                 googleSignInCredentialProvider: serviceFactory.makeGoogleSignInCredentialProvider(logger: logger),
+                                phoneVerificationProvider: serviceFactory.makePhoneVerificationProvider(logger: logger),
                                 logger: logger,
                                 embedInNavigationStack: false,
                                 onSignInSuccess: { _ in

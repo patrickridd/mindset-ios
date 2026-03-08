@@ -26,6 +26,7 @@ struct FeatureAuthTests {
             signInOrLinkUseCase: SignInOrLinkUseCase(authService: mockAuthService),
             appleSignInCredentialBuilder: Self.makeCredentialBuilder(),
             googleSignInCredentialProvider: MockGoogleSignInCredentialProvider(),
+            phoneVerificationProvider: MockPhoneVerificationProvider(),
             logger: TestLogger(),
             onSignInSuccess: { _ in },
             onSkip: {}
@@ -35,13 +36,14 @@ struct FeatureAuthTests {
     }
 
     @Test func signInAnonymouslyCallsAuthService() async throws {
-        let mockAuthService = MockAuthService(signInDelay: .milliseconds(10))
+        let mockAuthService = MockAuthService(signInDelay: .milliseconds(0))
         var receivedUserID: String?
 
         let viewModel = SignInViewModel(
             signInOrLinkUseCase: SignInOrLinkUseCase(authService: mockAuthService),
             appleSignInCredentialBuilder: Self.makeCredentialBuilder(),
             googleSignInCredentialProvider: MockGoogleSignInCredentialProvider(),
+            phoneVerificationProvider: MockPhoneVerificationProvider(),
             logger: TestLogger(),
             onSignInSuccess: { userID in
                 receivedUserID = userID
@@ -61,7 +63,7 @@ struct FeatureAuthTests {
     }
 
     @Test func signInWithGoogleCallsAuthService() async throws {
-        let mockAuthService = MockAuthService(signInDelay: .milliseconds(10))
+        let mockAuthService = MockAuthService(signInDelay: .milliseconds(0))
         let mockGoogleProvider = MockGoogleSignInCredentialProvider()
         var receivedUserID: String?
 
@@ -69,6 +71,7 @@ struct FeatureAuthTests {
             signInOrLinkUseCase: SignInOrLinkUseCase(authService: mockAuthService),
             appleSignInCredentialBuilder: Self.makeCredentialBuilder(),
             googleSignInCredentialProvider: mockGoogleProvider,
+            phoneVerificationProvider: MockPhoneVerificationProvider(),
             logger: TestLogger(),
             onSignInSuccess: { userID in
                 receivedUserID = userID

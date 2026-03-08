@@ -20,6 +20,8 @@ public enum FeatureAuthStrings {
         localized: "auth.signInWithApple", bundle: .module, comment: "Sign in with Apple button")
     public static let signInWithGoogle = String(
         localized: "auth.signInWithGoogle", bundle: .module, comment: "Sign in with Google button")
+    public static let signInWithPhone = String(
+        localized: "auth.signInWithPhone", bundle: .module, comment: "Sign in with Phone button")
     public static let continueAsGuest = String(
         localized: "auth.continueAsGuest", bundle: .module, comment: "Continue as guest option")
 
@@ -64,5 +66,31 @@ public enum FeatureAuthStrings {
             )
             return String(format: format, error)
         }
+        public static func phoneSignInFailed(_ error: String) -> String {
+            let format = String(
+                localized: "auth.error.phoneSignInFailed",
+                bundle: .module,
+                comment: "Phone sign in failed"
+            )
+            return String(format: format, error)
+        }
     }
+
+    // MARK: - Phone Sign In
+
+    public static let phonePlaceholder = String(
+        localized: "auth.phonePlaceholder", bundle: .module,
+        comment: "Phone number input placeholder")
+    public static let sendCode = String(
+        localized: "auth.sendCode", bundle: .module,
+        comment: "Send verification code button")
+    public static let codePlaceholder = String(
+        localized: "auth.codePlaceholder", bundle: .module,
+        comment: "Verification code input placeholder")
+    public static let verify = String(
+        localized: "auth.verify", bundle: .module,
+        comment: "Verify code button")
+    public static let phoneSignInTitle = String(
+        localized: "auth.phoneSignInTitle", bundle: .module,
+        comment: "Phone sign in sheet title")
 }
