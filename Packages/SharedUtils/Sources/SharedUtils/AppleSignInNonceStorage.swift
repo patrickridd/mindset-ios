@@ -33,34 +33,43 @@ public protocol AppleSignInNonceStorageProtocol: Sendable {
 }
 
 /// UserDefaults-backed storage for Apple Sign In nonce and session data.
+/// Uses OptionalUserDefaultWrapper for type-safe, key-consistent storage.
 ///
 /// **@unchecked Sendable safety invariant:** UserDefaults individual set/get/remove
 /// operations are thread-safe. No shared mutable state; each call is independent.
 public final class AppleSignInNonceStorage: AppleSignInNonceStorageProtocol, @unchecked Sendable {
-    private let userDefaults: UserDefaults
+    private var currentNonceStorage: OptionalUserDefaultWrapper<String>
+    private var userNameStorage: OptionalUserDefaultWrapper<String>
 
-    public init(userDefaults: UserDefaults = .standard) {
-        self.userDefaults = userDefaults
+    public init(container: UserDefaults = .standard) {
+        currentNonceStorage = OptionalUserDefaultWrapper(
+            key: AppleSignInStorageKey.currentNonce,
+            container: container
+        )
+        userNameStorage = OptionalUserDefaultWrapper(
+            key: AppleSignInStorageKey.userName,
+            container: container
+        )
     }
 
     public func store(_ nonce: String) {
-        userDefaults.set(nonce, forKey: AppleSignInStorageKey.currentNonce)
+        currentNonceStorage.wrappedValue = nonce
     }
 
     public func retrieve() -> String? {
-        userDefaults.string(forKey: AppleSignInStorageKey.currentNonce)
+        currentNonceStorage.wrappedValue
     }
 
     public func clear() {
-        userDefaults.removeObject(forKey: AppleSignInStorageKey.currentNonce)
+        currentNonceStorage.wrappedValue = nil
     }
 
     public func storeUserName(_ name: String) {
-        userDefaults.set(name, forKey: AppleSignInStorageKey.userName)
+        userNameStorage.wrappedValue = name
     }
 
     public func clearSessionData() {
-        userDefaults.removeObject(forKey: AppleSignInStorageKey.currentNonce)
-        userDefaults.removeObject(forKey: AppleSignInStorageKey.userName)
+        currentNonceStorage.wrappedValue = nil
+        userNameStorage.wrappedValue = nil
     }
 }

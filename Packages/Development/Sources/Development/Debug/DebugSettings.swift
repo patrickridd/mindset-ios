@@ -5,8 +5,8 @@
 //  Created by patrick ridd on 3/1/26.
 //
 
-import Data
 import Foundation
+import SharedUtils
 
 @MainActor
 public final class DebugSettings {
