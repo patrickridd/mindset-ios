@@ -68,6 +68,7 @@ struct AppViewFactory: MainViewFactory {
         let viewModel = SignInViewModel(
             signInOrLinkUseCase: signInOrLinkUseCase,
             appleSignInCredentialBuilder: appleSignInCredentialBuilder,
+            googleSignInCredentialProvider: serviceFactory.makeGoogleSignInCredentialProvider(logger: logger),
             logger: logger,
             onSignInSuccess: { _ in
                 coordinator.signInCompleted()
@@ -182,6 +183,7 @@ struct AppViewFactory: MainViewFactory {
                             let signInViewModel = SignInViewModel(
                                 signInOrLinkUseCase: signInOrLinkUseCase,
                                 appleSignInCredentialBuilder: appleSignInCredentialBuilder,
+                                googleSignInCredentialProvider: serviceFactory.makeGoogleSignInCredentialProvider(logger: logger),
                                 logger: logger,
                                 embedInNavigationStack: false,
                                 onSignInSuccess: { _ in

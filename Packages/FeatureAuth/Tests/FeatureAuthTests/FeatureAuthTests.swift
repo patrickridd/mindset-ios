@@ -25,6 +25,7 @@ struct FeatureAuthTests {
         let viewModel = SignInViewModel(
             signInOrLinkUseCase: SignInOrLinkUseCase(authService: mockAuthService),
             appleSignInCredentialBuilder: Self.makeCredentialBuilder(),
+            googleSignInCredentialProvider: MockGoogleSignInCredentialProvider(),
             logger: TestLogger(),
             onSignInSuccess: { _ in },
             onSkip: {}
@@ -40,6 +41,7 @@ struct FeatureAuthTests {
         let viewModel = SignInViewModel(
             signInOrLinkUseCase: SignInOrLinkUseCase(authService: mockAuthService),
             appleSignInCredentialBuilder: Self.makeCredentialBuilder(),
+            googleSignInCredentialProvider: MockGoogleSignInCredentialProvider(),
             logger: TestLogger(),
             onSignInSuccess: { userID in
                 receivedUserID = userID
@@ -60,11 +62,13 @@ struct FeatureAuthTests {
 
     @Test func signInWithGoogleCallsAuthService() async throws {
         let mockAuthService = MockAuthService(signInDelay: .milliseconds(10))
+        let mockGoogleProvider = MockGoogleSignInCredentialProvider()
         var receivedUserID: String?
 
         let viewModel = SignInViewModel(
             signInOrLinkUseCase: SignInOrLinkUseCase(authService: mockAuthService),
             appleSignInCredentialBuilder: Self.makeCredentialBuilder(),
+            googleSignInCredentialProvider: mockGoogleProvider,
             logger: TestLogger(),
             onSignInSuccess: { userID in
                 receivedUserID = userID
@@ -72,13 +76,13 @@ struct FeatureAuthTests {
             onSkip: {}
         )
 
-        await viewModel.signInWithGoogle(idToken: "mock-token", accessToken: "mock-access")
+        await viewModel.signInWithGoogle()
 
         #expect(mockAuthService.signInCalled == true)
         if case .oauth(let idToken, let nonce, let accessToken, _) = mockAuthService.lastCredential
         {
-            #expect(idToken == "mock-token")
-            #expect(accessToken == "mock-access")
+            #expect(idToken == "mock-id-token")
+            #expect(accessToken == "mock-access-token")
             #expect(nonce == nil)  // Google doesn't use nonce
         } else {
             Issue.record("Expected OAuth credential")

@@ -51,7 +51,9 @@ public struct SignInOrLinkUseCase: Sendable {
 
     private func isLinkableCredential(_ credential: AuthCredential) -> Bool {
         switch credential {
-        case .oauth, .email:
+        case .oauth(let identityToken, let nonce, let accessToken, _):
+            return identityToken != nil && nonce != nil && accessToken != nil
+        case .email:
             return true
         case .anonymous:
             return false

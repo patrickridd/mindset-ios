@@ -21,6 +21,7 @@ let package = Package(
         .package(path: "../SharedUtils"),
         .package(url: "https://github.com/google/generative-ai-swift", from: "0.5.0"),
         .package(url: "https://github.com/firebase/firebase-ios-sdk", from: "12.0.0"),
+        .package(url: "https://github.com/google/GoogleSignIn-iOS", from: "9.0.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -33,6 +34,7 @@ let package = Package(
                 .product(name: "GoogleGenerativeAI", package: "generative-ai-swift"),
                 .product(name: "FirebaseAuth", package: "firebase-ios-sdk"),
                 .product(name: "FirebaseFirestore", package: "firebase-ios-sdk"),
+                .product(name: "GoogleSignIn", package: "GoogleSignIn-iOS"),
             ]
         ),
         .testTarget(

@@ -8,6 +8,7 @@
 import Domain
 import FirebaseAuth
 import Foundation
+import GoogleSignIn
 
 // Disambiguate: Domain.AuthCredential vs FirebaseAuth.AuthCredential
 public typealias DomainAuthCredential = Domain.AuthCredential
@@ -114,10 +115,61 @@ extension FirebaseAuthService: SignInService {
                 throw error
             }
         } else {
-            // Google Sign In - Use Firebase's built-in OAuth web flow
+            // Google Sign In - Use credential when tokens provided (SDK flow), else web flow
+            if let accessToken = accessToken, !identityToken.isEmpty, !accessToken.isEmpty {
+                let credential = GoogleAuthProvider.credential(
+                    withIDToken: identityToken,
+                    accessToken: accessToken
+                )
+                let result = try await Auth.auth().signIn(with: credential)
+                logger.log("🤖 Gmail sign-in successful ✅ uid=\(result.user.uid)")
+                return result.user.uid
+            }
             #if canImport(UIKit)
-            return try await signInWithGoogleViaFirebase()
+                return try await signInWithGoogleViaFirebase()
             #else
+                throw NSError(
+                    domain: "FirebaseAuthService",
+                    code: -1,
+                    userInfo: [
+                        NSLocalizedDescriptionKey:
+                            "Google web OAuth is not supported on this platform"
+                    ]
+                )
+            #endif
+        }
+    }
+
+    #if canImport(UIKit)
+        private func signInWithGoogleViaFirebase() async throws -> String {
+            let provider = OAuthProvider(providerID: "google.com")
+            provider.scopes = ["email", "profile"]
+            provider.customParameters = ["prompt": "select_account"]
+
+            return try await withCheckedThrowingContinuation { continuation in
+                Auth.auth().signIn(with: provider, uiDelegate: nil) {
+                    [weak self] authResult, error in
+                    if let error = error {
+                        self?.logger.log("📵 Gmail sign-in Error \(error.localizedDescription)")
+                        continuation.resume(throwing: error)
+                    } else if let uid = authResult?.user.uid {
+                        self?.logger.log("🤖 Gmail sign-in successful ✅ uid=\(uid)")
+                        continuation.resume(returning: uid)
+                    } else {
+                        continuation.resume(
+                            throwing: NSError(
+                                domain: "FirebaseAuthService",
+                                code: -1,
+                                userInfo: [
+                                    NSLocalizedDescriptionKey: "Unknown error during Google sign in"
+                                ]
+                            ))
+                    }
+                }
+            }
+        }
+    #else
+        private func signInWithGoogleViaFirebase() async throws -> String {
             throw NSError(
                 domain: "FirebaseAuthService",
                 code: -1,
@@ -125,47 +177,7 @@ extension FirebaseAuthService: SignInService {
                     NSLocalizedDescriptionKey: "Google web OAuth is not supported on this platform"
                 ]
             )
-            #endif
         }
-    }
-
-    #if canImport(UIKit)
-    private func signInWithGoogleViaFirebase() async throws -> String {
-        let provider = OAuthProvider(providerID: "google.com")
-        provider.scopes = ["email", "profile"]
-        provider.customParameters = ["prompt": "select_account"]
-
-        return try await withCheckedThrowingContinuation { continuation in
-            Auth.auth().signIn(with: provider, uiDelegate: nil) { [weak self] authResult, error in
-                if let error = error {
-                    self?.logger.log("📵 Gmail sign-in Error \(error.localizedDescription)")
-                    continuation.resume(throwing: error)
-                } else if let uid = authResult?.user.uid {
-                    self?.logger.log("🤖 Gmail sign-in successful ✅ uid=\(uid)")
-                    continuation.resume(returning: uid)
-                } else {
-                    continuation.resume(
-                        throwing: NSError(
-                            domain: "FirebaseAuthService",
-                            code: -1,
-                            userInfo: [
-                                NSLocalizedDescriptionKey: "Unknown error during Google sign in"
-                            ]
-                        ))
-                }
-            }
-        }
-    }
-    #else
-    private func signInWithGoogleViaFirebase() async throws -> String {
-        throw NSError(
-            domain: "FirebaseAuthService",
-            code: -1,
-            userInfo: [
-                NSLocalizedDescriptionKey: "Google web OAuth is not supported on this platform"
-            ]
-        )
-    }
     #endif
 
     private func signInWithEmail(email: String, password: String) async throws -> String {
@@ -247,7 +259,8 @@ extension FirebaseAuthService: AuthSessionManagement {
         }
 
         do {
-            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            try await withCheckedThrowingContinuation {
+                (continuation: CheckedContinuation<Void, Error>) in
                 currentUser.link(with: credential) { _, error in
                     if let error {
                         continuation.resume(throwing: error)
@@ -257,7 +270,9 @@ extension FirebaseAuthService: AuthSessionManagement {
                 }
             }
 
-            logger.log("✅ Link account successful (provider: \(providerDescription)) uid=\(currentUser.uid)")
+            logger.log(
+                "✅ Link account successful (provider: \(providerDescription)) uid=\(currentUser.uid)"
+            )
         } catch {
             if let nsError = error as NSError?,
                 AuthErrorCode(_bridgedNSError: nsError) == .credentialAlreadyInUse
@@ -284,7 +299,8 @@ extension FirebaseAuthService: AuthSessionManagement {
             )
         }
 
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+        try await withCheckedThrowingContinuation {
+            (continuation: CheckedContinuation<Void, Error>) in
             user.delete { error in
                 if let error {
                     continuation.resume(throwing: error)
@@ -327,7 +343,8 @@ extension FirebaseAuthService: AuthSessionManagement {
                 throw Domain.AuthLinkError.invalidProviderCredential
             }
 
-            return GoogleAuthProvider.credential(withIDToken: identityToken, accessToken: accessToken)
+            return GoogleAuthProvider.credential(
+                withIDToken: identityToken, accessToken: accessToken)
         }
     }
 }
@@ -338,10 +355,14 @@ extension FirebaseAuthService: OAuthCallbackHandler {
 
     public func handleAuthCallback(url: URL) -> Bool {
         #if canImport(UIKit)
-        return Auth.auth().canHandle(url)
+            // Google Sign-In SDK handles its own OAuth redirect URLs
+            if GIDSignIn.sharedInstance.handle(url) {
+                return true
+            }
+            return Auth.auth().canHandle(url)
         #else
-        logger.log("⚠️ OAuth callback handling is not supported on this platform")
-        return false
+            logger.log("⚠️ OAuth callback handling is not supported on this platform")
+            return false
         #endif
     }
 }

@@ -51,6 +51,14 @@ struct ServiceFactory {
         }
     }
 
+    func makeGoogleSignInCredentialProvider(logger: AppLogger) -> GoogleSignInCredentialProvider {
+        if config.useRealServices {
+            return GoogleSignInCredentialProviderImpl(logger: logger)
+        } else {
+            return MockGoogleSignInCredentialProvider()
+        }
+    }
+
     func makeSubscriptionService() -> any SubscriptionService {
         let base: any SubscriptionService
         if config.useRealServices {

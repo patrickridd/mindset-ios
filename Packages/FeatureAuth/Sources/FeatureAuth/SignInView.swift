@@ -111,13 +111,8 @@ public struct SignInView: View {
                     .disabled(viewModel.isLoading)
 
                     // Google Sign In Button
-                    GoogleSignInButton { idToken, accessToken in
-                        Task {
-                            await viewModel.signInWithGoogle(
-                                idToken: idToken,
-                                accessToken: accessToken
-                            )
-                        }
+                    GoogleSignInButton {
+                        await viewModel.signInWithGoogle()
                     }
                     .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
                     .disabled(viewModel.isLoading)
@@ -259,6 +254,7 @@ public struct SignInView: View {
     let viewModel = SignInViewModel(
         signInOrLinkUseCase: SignInOrLinkUseCase(authService: mockAuth),
         appleSignInCredentialBuilder: AppleSignInCredentialBuilder(nonceStorage: AppleSignInNonceStorage()),
+        googleSignInCredentialProvider: MockGoogleSignInCredentialProvider(),
         logger: DebugLogger.shared,
         onSignInSuccess: { _ in },
         onSkip: {}

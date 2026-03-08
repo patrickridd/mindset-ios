@@ -5,13 +5,12 @@
 //  Created by Mindset Team on 2/1/26.
 //
 
-import AuthenticationServices
 import SharedUI
 import SharedUtils
 import SwiftUI
 
 struct GoogleSignInButton: View {
-    let action: (String, String) -> Void  // idToken, accessToken
+    let action: () async -> Void
     @Environment(\.colorScheme) private var colorScheme
     @State private var isSigningIn = false
 
@@ -52,17 +51,6 @@ struct GoogleSignInButton: View {
     private func handleGoogleSignIn() async {
         isSigningIn = true
         defer { isSigningIn = false }
-
-        // Get Google OAuth client ID from Firebase config
-        // This should come from your Firebase GoogleService-Info.plist
-        // For now, we'll pass the tokens via the action callback
-        // The actual OAuth flow will be handled by FirebaseAuthService
-
-        // Note: Firebase will handle the web OAuth flow automatically
-        // when you call OAuthProvider.credential with Google provider
-        // We just need to trigger it through the action callback
-
-        // Placeholder tokens - Firebase will handle the actual OAuth
-        action("", "")  // Empty tokens will trigger Firebase's web flow
+        await action()
     }
 }

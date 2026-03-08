@@ -19,6 +19,7 @@ public final class SignInViewModel {
 
     private let signInOrLinkUseCase: SignInOrLinkUseCase
     private let appleSignInCredentialBuilder: AppleSignInCredentialBuilderProtocol
+    private let googleSignInCredentialProvider: GoogleSignInCredentialProvider
     private let logger: AppLogger
     private let onSignInSuccess: (String) -> Void  // User ID
     private let onSkip: () -> Void
@@ -27,6 +28,7 @@ public final class SignInViewModel {
     public init(
         signInOrLinkUseCase: SignInOrLinkUseCase,
         appleSignInCredentialBuilder: AppleSignInCredentialBuilderProtocol,
+        googleSignInCredentialProvider: GoogleSignInCredentialProvider,
         logger: AppLogger,
         embedInNavigationStack: Bool = true,
         onSignInSuccess: @escaping (String) -> Void,
@@ -34,6 +36,7 @@ public final class SignInViewModel {
     ) {
         self.signInOrLinkUseCase = signInOrLinkUseCase
         self.appleSignInCredentialBuilder = appleSignInCredentialBuilder
+        self.googleSignInCredentialProvider = googleSignInCredentialProvider
         self.logger = logger
         self.embedInNavigationStack = embedInNavigationStack
         self.onSignInSuccess = onSignInSuccess
@@ -100,17 +103,11 @@ public final class SignInViewModel {
 
     // MARK: - Sign in with Google
 
-    public func signInWithGoogle(idToken: String, accessToken: String) async {
+    public func signInWithGoogle() async {
         isLoading = true
 
         do {
-            let credential = AuthCredential.oauth(
-                identityToken: "",
-                nonce: nil,
-                accessToken: nil,
-                fullName: nil
-            )
-
+            let credential = try await googleSignInCredentialProvider.fetchCredential()
             let userID = try await signInOrLinkUseCase.execute(with: credential)
             isLoading = false
             onSignInSuccess(userID)
@@ -118,10 +115,10 @@ public final class SignInViewModel {
         } catch {
             isLoading = false
             // Don't display user cancelled error
-            guard let error = error as? NSError, error.code == 17058 else {
-                errorMessage = FeatureAuthStrings.Error.googleSignInFailed(error.localizedDescription)
+            if let googleError = error as? GoogleSignInError, googleError == .userCancelled {
                 return
             }
+            errorMessage = FeatureAuthStrings.Error.googleSignInFailed(error.localizedDescription)
         }
     }
 
