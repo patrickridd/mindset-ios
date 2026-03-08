@@ -16,6 +16,7 @@ import SwiftUI
 
 @main
 struct MindsetApp: App {
+    @UIApplicationDelegateAdaptor(FirebasePhoneAuthAppDelegate.self) private var appDelegate
     @State private var appRootID = UUID()
     @State private var dependencyContainer = AppDependencyContainer()
 

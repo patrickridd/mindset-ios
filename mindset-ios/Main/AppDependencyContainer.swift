@@ -35,11 +35,6 @@ final class AppDependencyContainer {
 
         // --- 2. Config & Firebase ---
         self.serviceFactory = ServiceFactory(config: .default, logger: logger)
-        if serviceFactory.config.useRealServices {
-            // FirebaseApp.configure() handles multiple calls gracefully in 2026,
-            // but you can wrap it in a 'if FirebaseApp.app() == nil' if needed.
-            if FirebaseApp.app() == nil { FirebaseApp.configure() }
-        }
 
         // --- 3. Persistence ---
         self.container = try! ModelContainer(for: SDUserProfile.self, SDMindsetEntry.self)
