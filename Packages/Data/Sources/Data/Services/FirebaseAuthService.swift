@@ -19,7 +19,7 @@ typealias FirebaseAuthCredential = FirebaseAuth.AuthCredential
 /// **Sendable safety invariant:** All methods are async and stateless; `logger` is only called
 /// from within those methods. No shared mutable state. Safe to use from any isolation domain.
 public final class FirebaseAuthService: AuthService, Sendable {
-
+   
     private let logger: AppLogger
 
     public init(logger: AppLogger) {
@@ -37,19 +37,14 @@ public final class FirebaseAuthService: AuthService, Sendable {
     }
     
     // MARK: - AuthService Protocol
-
+    // TODO: - Public api to signIn users - still need to link anonymous accounts
     public func signIn(with credential: DomainAuthCredential) async throws -> String {
-        logger.log("🔐 Auth sign-in started")
-        if isAuthenticated(), let userId = await getCurrentUserID() {
-            logger.log("ℹ️ User is already signed in - uid=\(userId)")
-            return userId
-        }
-        
+        logger.log("🔐 Auth sign-in started for credential: \(credential)")
+
         do {
-            let uid: String
             switch credential {
             case .oauth(let identityToken, let nonce, let accessToken, let fullName):
-                uid = try await signInWithOAuth(
+                return try await signInWithOAuth(
                     identityToken: identityToken,
                     nonce: nonce,
                     accessToken: accessToken,
@@ -57,14 +52,11 @@ public final class FirebaseAuthService: AuthService, Sendable {
                 )
 
             case .email(let email, let password):
-                uid = try await signInWithEmail(email: email, password: password)
+                return try await signInWithEmail(email: email, password: password)
 
             case .anonymous:
-                uid = try await performAnonymousSignIn()
+                return try await signInAnonymously()
             }
-
-            logger.log("✅ Auth sign-in successful uid=\(uid)")
-            return uid
         } catch {
             logger.log("❌ Auth sign-in failed: \(error.localizedDescription)")
             throw error
@@ -81,16 +73,17 @@ public final class FirebaseAuthService: AuthService, Sendable {
         logger.log("✅ Auth sign-out completed")
     }
 
-    public func signInAnonymously() async throws {
-        if currentUser != nil {
-            logger.log("🕶️ Anonymous sign-in skipped (already authenticated)")
-            return
+    public func signInAnonymously() async throws -> String {
+        if let uid = await getCurrentUserID(), isAnonymouslySignedIn {
+            logger.log("🤫 Anonymous sign-in skipped ⏭️ (already authenticated)")
+            return uid
         }
 
-        logger.log("🕶️ Anonymous sign-in started")
+        logger.log("🤫 Signing in anonymously...")
         do {
-            _ = try await performAnonymousSignIn()
-            logger.log("✅ Anonymous sign-in successful")
+            let result = try await Auth.auth().signInAnonymously()
+            return result.user.uid
+            logger.log("🤫 Anonymous sign-in successful ✅")
         } catch {
             logger.log("❌ Anonymous sign-in failed: \(error.localizedDescription)")
             throw error
@@ -212,14 +205,15 @@ public final class FirebaseAuthService: AuthService, Sendable {
                 rawNonce: nonce
             )
             let result = try await Auth.auth().signIn(with: firebaseCredential)
-            let userID = result.user.uid
+            let uid = result.user.uid
 
             // Store full name if provided (first sign-in only)
             if let fullName = fullName, !fullName.isEmpty {
                 try await updateUserProfile(displayName: fullName)
             }
+            logger.log("🍎 Apple sign-in successful ✅ uid=\(uid)")
 
-            return userID
+            return uid
         } else {
             // Google Sign In - Use Firebase's built-in OAuth web flow
             // This opens Safari/ASWebAuthenticationSession for Google login
@@ -254,10 +248,11 @@ public final class FirebaseAuthService: AuthService, Sendable {
         // Firebase handles the entire OAuth flow via Safari
         // Use callback-based API and convert to async
         return try await withCheckedThrowingContinuation { continuation in
-            Auth.auth().signIn(with: provider, uiDelegate: nil) { authResult, error in
+            Auth.auth().signIn(with: provider, uiDelegate: nil) { [weak self] authResult, error in
                 if let error = error {
                     continuation.resume(throwing: error)
                 } else if let uid = authResult?.user.uid {
+                    self?.logger.log("🤖 Gmail sign-in successful ✅ uid=\(uid)")
                     continuation.resume(returning: uid)
                 } else {
                     continuation.resume(
@@ -286,11 +281,7 @@ public final class FirebaseAuthService: AuthService, Sendable {
 
     private func signInWithEmail(email: String, password: String) async throws -> String {
         let result = try await Auth.auth().signIn(withEmail: email, password: password)
-        return result.user.uid
-    }
-
-    private func performAnonymousSignIn() async throws -> String {
-        let result = try await Auth.auth().signInAnonymously()
+        logger.log("📧 Email Sign-In successful ✅ uid=\(result.user.uid)")
         return result.user.uid
     }
 

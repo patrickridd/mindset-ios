@@ -54,7 +54,7 @@ public protocol AuthService: Sendable {
     /// Sign in anonymously (used for progressive authentication during onboarding).
     ///
     /// Implementations should be idempotent (no-op if already authenticated).
-    func signInAnonymously() async throws
+    func signInAnonymously() async throws -> String
 
     /// Link a permanent account to the currently authenticated user (typically anonymous).
     ///

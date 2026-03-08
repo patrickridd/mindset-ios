@@ -81,9 +81,9 @@ public final class MockAuthService: @preconcurrency AuthService {
         }
     }
 
-    public func signInAnonymously() async throws {
+    public func signInAnonymously() async throws -> String {
         signInAnonymouslyCalled = true
-        _ = try await signIn(with: .anonymous)
+        return try await signIn(with: .anonymous)
     }
 
     public func linkAccount(with provider: AuthProvider) async throws {

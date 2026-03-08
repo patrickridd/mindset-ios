@@ -39,14 +39,8 @@ public final class SignInViewModel {
     }
 
     public func dismissButtonTapped() async {
-        // User already signed in
-        if let userID = await authService.getCurrentUserID() {
-            logger.log("Already Signed In ✅ - skipping sign in/up.")
-            onSignInSuccess(userID)
-        } else {
-            logger.log("Signing in anonymously 🤫...")
-            await signInAnonymously()
-        }
+        let anonymousId = try? await authService.signIn(with: .anonymous)
+        onSignInSuccess(anonymousId ?? "Anonymous")
     }
 
     // MARK: - Sign in with Apple
@@ -141,16 +135,12 @@ public final class SignInViewModel {
     public func signInAnonymously() async {
         isLoading = true
         do {
-            // Create anonymous credential
-            let credential = AuthCredential.anonymous
-
             // Sign in via AuthService protocol
-            let userID = try await authService.signIn(with: credential)
+            let userID = try await authService.signIn(with: .anonymous)
 
             logger.log("✅ Anonymous sign-in successful: \(userID)")
             isLoading = false
             onSignInSuccess(userID)
-
         } catch {
             logger.log("❌ Anonymous sign-in failed: \(error.localizedDescription)")
             isLoading = false
@@ -175,7 +165,7 @@ public final class SignInViewModel {
 
             // Sign in via AuthService protocol
             let userID = try await authService.signIn(with: credential)
-
+            
             logger.log("✅ Google sign-in successful: \(userID)")
             isLoading = false
             onSignInSuccess(userID)
