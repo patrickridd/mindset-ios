@@ -19,7 +19,7 @@ typealias FirebaseAuthCredential = FirebaseAuth.AuthCredential
 /// **Sendable safety invariant:** All methods are async and stateless; `logger` is only called
 /// from within those methods. No shared mutable state. Safe to use from any isolation domain.
 public final class FirebaseAuthService: AuthService, Sendable {
-   
+
     private let logger: AppLogger
 
     public init(logger: AppLogger) {
@@ -27,17 +27,21 @@ public final class FirebaseAuthService: AuthService, Sendable {
         // Firebase should be configured in app initialization (MindsetApp.swift)
     }
 
-    // MARK: - Helper properties
-    private var currentUser: User? {
+    // MARK: - Shared Helper Properties
+
+    fileprivate var currentUser: User? {
         Auth.auth().currentUser
     }
 
-    private var isAnonymouslySignedIn: Bool {
+    fileprivate var isAnonymouslySignedIn: Bool {
         currentUser?.isAnonymous ?? false
     }
-    
-    // MARK: - AuthService Protocol
-    // TODO: - Public api to signIn users - still need to link anonymous accounts
+}
+
+// MARK: - SignInService
+
+extension FirebaseAuthService: SignInService {
+
     public func signIn(with credential: DomainAuthCredential) async throws -> String {
         logger.log("🔐 Auth sign-in started for credential: \(credential)")
 
@@ -63,16 +67,6 @@ public final class FirebaseAuthService: AuthService, Sendable {
         }
     }
 
-    public func getCurrentUserID() async -> String? {
-        currentUser?.uid
-    }
-
-    public func signOut() async throws {
-        logger.log("🚪 Auth sign-out requested")
-        try Auth.auth().signOut()
-        logger.log("✅ Auth sign-out completed")
-    }
-
     public func signInAnonymously() async throws -> String {
         if let uid = await getCurrentUserID(), isAnonymouslySignedIn {
             logger.log("🤫 Anonymous sign-in skipped ⏭️ (already authenticated)")
@@ -83,11 +77,143 @@ public final class FirebaseAuthService: AuthService, Sendable {
         do {
             let result = try await Auth.auth().signInAnonymously()
             return result.user.uid
-            logger.log("🤫 Anonymous sign-in successful ✅")
         } catch {
             logger.log("❌ Anonymous sign-in failed: \(error.localizedDescription)")
             throw error
         }
+    }
+
+    // MARK: - SignInService Private Helpers
+
+    private func signInWithOAuth(
+        identityToken: String,
+        nonce: String?,
+        accessToken: String?,
+        fullName: String?
+    ) async throws -> String {
+        // Determine provider based on presence of nonce (Apple) or accessToken (Google)
+        if let nonce = nonce {
+            // Apple Sign In uses nonce
+            let firebaseCredential = OAuthProvider.credential(
+                providerID: .apple,
+                idToken: identityToken,
+                rawNonce: nonce
+            )
+            do {
+                let result = try await Auth.auth().signIn(with: firebaseCredential)
+                let uid = result.user.uid
+
+                // Store full name if provided (first sign-in only)
+                if let fullName = fullName, !fullName.isEmpty {
+                    try await updateUserProfile(displayName: fullName)
+                }
+                logger.log("🍎 Apple sign-in successful ✅ uid=\(uid)")
+                return uid
+            } catch {
+                logger.log("📵 Apple sign-in Error \(error.localizedDescription)")
+                throw error
+            }
+        } else {
+            // Google Sign In - Use Firebase's built-in OAuth web flow
+            #if canImport(UIKit)
+            return try await signInWithGoogleViaFirebase()
+            #else
+            throw NSError(
+                domain: "FirebaseAuthService",
+                code: -1,
+                userInfo: [
+                    NSLocalizedDescriptionKey: "Google web OAuth is not supported on this platform"
+                ]
+            )
+            #endif
+        }
+    }
+
+    #if canImport(UIKit)
+    private func signInWithGoogleViaFirebase() async throws -> String {
+        let provider = OAuthProvider(providerID: "google.com")
+        provider.scopes = ["email", "profile"]
+        provider.customParameters = ["prompt": "select_account"]
+
+        return try await withCheckedThrowingContinuation { continuation in
+            Auth.auth().signIn(with: provider, uiDelegate: nil) { [weak self] authResult, error in
+                if let error = error {
+                    self?.logger.log("📵 Gmail sign-in Error \(error.localizedDescription)")
+                    continuation.resume(throwing: error)
+                } else if let uid = authResult?.user.uid {
+                    self?.logger.log("🤖 Gmail sign-in successful ✅ uid=\(uid)")
+                    continuation.resume(returning: uid)
+                } else {
+                    continuation.resume(
+                        throwing: NSError(
+                            domain: "FirebaseAuthService",
+                            code: -1,
+                            userInfo: [
+                                NSLocalizedDescriptionKey: "Unknown error during Google sign in"
+                            ]
+                        ))
+                }
+            }
+        }
+    }
+    #else
+    private func signInWithGoogleViaFirebase() async throws -> String {
+        throw NSError(
+            domain: "FirebaseAuthService",
+            code: -1,
+            userInfo: [
+                NSLocalizedDescriptionKey: "Google web OAuth is not supported on this platform"
+            ]
+        )
+    }
+    #endif
+
+    private func signInWithEmail(email: String, password: String) async throws -> String {
+        let result = try await Auth.auth().signIn(withEmail: email, password: password)
+        logger.log("📧 Email Sign-In successful ✅ uid=\(result.user.uid)")
+        return result.user.uid
+    }
+
+    private func updateUserProfile(displayName: String) async throws {
+        guard let user = currentUser else {
+            throw NSError(
+                domain: "FirebaseAuthService",
+                code: -1,
+                userInfo: [NSLocalizedDescriptionKey: "No authenticated user"]
+            )
+        }
+
+        let changeRequest = user.createProfileChangeRequest()
+        changeRequest.displayName = displayName
+        try await changeRequest.commitChanges()
+    }
+}
+
+// MARK: - AuthStateQuery
+
+extension FirebaseAuthService: AuthStateQuery {
+
+    public func getCurrentUserID() async -> String? {
+        currentUser?.uid
+    }
+
+    public func isAuthenticated() -> Bool {
+        currentUser != nil
+    }
+
+    public func isAnonymousAccountLinked() -> Bool {
+        isAuthenticated() && !isAnonymouslySignedIn
+    }
+}
+
+// MARK: - AuthSessionManagement
+
+extension FirebaseAuthService: AuthSessionManagement {
+
+    public func signOut() async throws {
+        logger.log("🚪 Auth sign-out requested")
+        try Auth.auth().signOut()
+        logger.log("✅ Auth sign-out completed")
     }
 
     public func linkAccount(with provider: DomainAuthProvider) async throws {
@@ -157,7 +283,7 @@ public final class FirebaseAuthService: AuthService, Sendable {
                 userInfo: [NSLocalizedDescriptionKey: "No authenticated user"]
             )
         }
-        
+
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             user.delete { error in
                 if let error {
@@ -169,140 +295,7 @@ public final class FirebaseAuthService: AuthService, Sendable {
         }
     }
 
-    public func isAuthenticated() -> Bool {
-        currentUser != nil
-    }
-
-    public func isAnonymousAccountLinked() -> Bool {
-        isAuthenticated() && !isAnonymouslySignedIn
-    }
-
-    public func handleAuthCallback(url: URL) -> Bool {
-        // Delegate OAuth callback handling to Firebase (iOS).
-        // On other platforms, this is a no-op.
-        #if canImport(UIKit)
-        return Auth.auth().canHandle(url)
-        #else
-        logger.log("⚠️ OAuth callback handling is not supported on this platform")
-        return false
-        #endif
-    }
-
-    // MARK: - Private Implementation Details
-
-    private func signInWithOAuth(
-        identityToken: String,
-        nonce: String?,
-        accessToken: String?,
-        fullName: String?
-    ) async throws -> String {
-        // Determine provider based on presence of nonce (Apple) or accessToken (Google)
-        if let nonce = nonce {
-            // Apple Sign In uses nonce
-            let firebaseCredential = OAuthProvider.credential(
-                providerID: .apple,
-                idToken: identityToken,
-                rawNonce: nonce
-            )
-            do {
-                let result = try await Auth.auth().signIn(with: firebaseCredential)
-                let uid = result.user.uid
-
-                // Store full name if provided (first sign-in only)
-                if let fullName = fullName, !fullName.isEmpty {
-                    try await updateUserProfile(displayName: fullName)
-                }
-                logger.log("🍎 Apple sign-in successful ✅ uid=\(uid)")
-                return uid
-            } catch {
-                logger.log("📵 Apple sign-in Error \(error.localizedDescription)")
-                throw error
-            }
-        } else {
-            // Google Sign In - Use Firebase's built-in OAuth web flow
-            // This opens Safari/ASWebAuthenticationSession for Google login
-            #if canImport(UIKit)
-            return try await signInWithGoogleViaFirebase()
-            #else
-            throw NSError(
-                domain: "FirebaseAuthService",
-                code: -1,
-                userInfo: [
-                    NSLocalizedDescriptionKey: "Google web OAuth is not supported on this platform"
-                ]
-            )
-            #endif
-        }
-    }
-
-    /// Sign in with Google using Firebase's built-in web OAuth flow
-    /// No GoogleSignIn SDK needed! Firebase handles everything.
-    #if canImport(UIKit)
-    private func signInWithGoogleViaFirebase() async throws -> String {
-        let provider = OAuthProvider(providerID: "google.com")
-
-        // Optional: Request specific scopes
-        provider.scopes = ["email", "profile"]
-
-        // Optional: Custom parameters
-        provider.customParameters = [
-            "prompt": "select_account"  // Forces account picker
-        ]
-
-        // Firebase handles the entire OAuth flow via Safari
-        // Use callback-based API and convert to async
-        return try await withCheckedThrowingContinuation { continuation in
-            Auth.auth().signIn(with: provider, uiDelegate: nil) { [weak self] authResult, error in
-                if let error = error {
-                    self?.logger.log("📵 Gmail sign-in Error \(error.localizedDescription)")
-                    continuation.resume(throwing: error)
-                } else if let uid = authResult?.user.uid {
-                    self?.logger.log("🤖 Gmail sign-in successful ✅ uid=\(uid)")
-                    continuation.resume(returning: uid)
-                } else {
-                    continuation.resume(
-                        throwing: NSError(
-                            domain: "FirebaseAuthService",
-                            code: -1,
-                            userInfo: [
-                                NSLocalizedDescriptionKey: "Unknown error during Google sign in"
-                            ]
-                        ))
-                }
-            }
-        }
-    }
-    #else
-    private func signInWithGoogleViaFirebase() async throws -> String {
-        throw NSError(
-            domain: "FirebaseAuthService",
-            code: -1,
-            userInfo: [
-                NSLocalizedDescriptionKey: "Google web OAuth is not supported on this platform"
-            ]
-        )
-    }
-    #endif
-
-    private func signInWithEmail(email: String, password: String) async throws -> String {
-        let result = try await Auth.auth().signIn(withEmail: email, password: password)
-        logger.log("📧 Email Sign-In successful ✅ uid=\(result.user.uid)")
-        return result.user.uid
-    }
-
-    private func updateUserProfile(displayName: String) async throws {
-        guard let user = currentUser else {
-            throw NSError(
-                domain: "FirebaseAuthService",
-                code: -1,
-                userInfo: [NSLocalizedDescriptionKey: "No authenticated user"]
-            )
-        }
-
-        let changeRequest = user.createProfileChangeRequest()
-        changeRequest.displayName = displayName
-        try await changeRequest.commitChanges()
-    }
+    // MARK: - AuthSessionManagement Private Helpers
 
     private func makeFirebaseCredentialForLinking(from credential: DomainAuthCredential) throws
         -> FirebaseAuthCredential
@@ -336,5 +329,19 @@ public final class FirebaseAuthService: AuthService, Sendable {
 
             return GoogleAuthProvider.credential(withIDToken: identityToken, accessToken: accessToken)
         }
+    }
+}
+
+// MARK: - OAuthCallbackHandler
+
+extension FirebaseAuthService: OAuthCallbackHandler {
+
+    public func handleAuthCallback(url: URL) -> Bool {
+        #if canImport(UIKit)
+        return Auth.auth().canHandle(url)
+        #else
+        logger.log("⚠️ OAuth callback handling is not supported on this platform")
+        return false
+        #endif
     }
 }
