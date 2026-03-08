@@ -17,7 +17,7 @@ public final class SignInViewModel {
     public var errorMessage: String?
     var loadingMessage: String = "Setting up..."
 
-    private let signInService: SignInService
+    private let signInOrLinkUseCase: SignInOrLinkUseCase
     private let appleSignInCredentialBuilder: AppleSignInCredentialBuilderProtocol
     private let logger: AppLogger
     private let onSignInSuccess: (String) -> Void  // User ID
@@ -25,14 +25,14 @@ public final class SignInViewModel {
     let embedInNavigationStack: Bool
 
     public init(
-        signInService: SignInService,
+        signInOrLinkUseCase: SignInOrLinkUseCase,
         appleSignInCredentialBuilder: AppleSignInCredentialBuilderProtocol,
         logger: AppLogger,
         embedInNavigationStack: Bool = true,
         onSignInSuccess: @escaping (String) -> Void,
         onSkip: @escaping () -> Void
     ) {
-        self.signInService = signInService
+        self.signInOrLinkUseCase = signInOrLinkUseCase
         self.appleSignInCredentialBuilder = appleSignInCredentialBuilder
         self.logger = logger
         self.embedInNavigationStack = embedInNavigationStack
@@ -77,7 +77,7 @@ public final class SignInViewModel {
         isLoading = true
 
         do {
-            let userID = try await signInService.signIn(with: credential)
+            let userID = try await signInOrLinkUseCase.execute(with: credential)
             isLoading = false
             onSignInSuccess(userID)
 
@@ -93,7 +93,7 @@ public final class SignInViewModel {
 
     public func signInAnonymously() async {
         isLoading = true
-        let anonymousId = try? await signInService.signIn(with: .anonymous)
+        let anonymousId = try? await signInOrLinkUseCase.execute(with: .anonymous)
         isLoading = false
         onSignInSuccess(anonymousId ?? "Anonymous")
     }
@@ -111,7 +111,7 @@ public final class SignInViewModel {
                 fullName: nil
             )
 
-            let userID = try await signInService.signIn(with: credential)
+            let userID = try await signInOrLinkUseCase.execute(with: credential)
             isLoading = false
             onSignInSuccess(userID)
 

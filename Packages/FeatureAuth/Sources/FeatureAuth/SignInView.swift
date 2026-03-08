@@ -255,9 +255,9 @@ public struct SignInView: View {
 }
 
 #Preview {
-    let mockAuthService = MockAuthService()
+    let mockAuth = MockAuthService()
     let viewModel = SignInViewModel(
-        signInService: mockAuthService,
+        signInOrLinkUseCase: SignInOrLinkUseCase(authService: mockAuth),
         appleSignInCredentialBuilder: AppleSignInCredentialBuilder(nonceStorage: AppleSignInNonceStorage()),
         logger: DebugLogger.shared,
         onSignInSuccess: { _ in },

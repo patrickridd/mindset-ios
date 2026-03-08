@@ -270,10 +270,11 @@ private struct CalculatingView: View {
 #Preview {
     let logger: AppLogger = DebugLogger.shared
     let mockAuth = MockAuthService()
-    let analyzingViewModel = AnalyzingViewModel(signInService: mockAuth, logger: logger)
+    let signInOrLinkUseCase = SignInOrLinkUseCase(authService: mockAuth)
+    let analyzingViewModel = AnalyzingViewModel(signInOrLinkUseCase: signInOrLinkUseCase, logger: logger)
     let viewModel = OnboardingViewModel(
         userRepository: MockUserRepository(),
-        signInService: mockAuth,
+        signInOrLinkUseCase: signInOrLinkUseCase,
         authStateQuery: mockAuth,
         analyzingViewModel: analyzingViewModel,
         onboardingFinished: nil

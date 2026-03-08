@@ -40,6 +40,7 @@ import SwiftUI
 struct AppViewFactory: MainViewFactory {
     let coordinator: MainCoordinator
     let authService: AuthService
+    let signInOrLinkUseCase: SignInOrLinkUseCase
     let userRepository: UserRepository
     let mindsetRepository: MindsetRepository
     let getStreakUseCase: GetStreakUseCase
@@ -65,7 +66,7 @@ struct AppViewFactory: MainViewFactory {
 
     func makeSignInView() -> AnyView {
         let viewModel = SignInViewModel(
-            signInService: authService,
+            signInOrLinkUseCase: signInOrLinkUseCase,
             appleSignInCredentialBuilder: appleSignInCredentialBuilder,
             logger: logger,
             onSignInSuccess: { _ in
@@ -82,10 +83,10 @@ struct AppViewFactory: MainViewFactory {
     }
 
     func makeOnboardingView() -> AnyView {
-        let analyzingViewModel = AnalyzingViewModel(signInService: authService, logger: logger)
+        let analyzingViewModel = AnalyzingViewModel(signInOrLinkUseCase: signInOrLinkUseCase, logger: logger)
         let viewModel = OnboardingViewModel(
             userRepository: userRepository,
-            signInService: authService,
+            signInOrLinkUseCase: signInOrLinkUseCase,
             authStateQuery: authService,
             analyzingViewModel: analyzingViewModel,
             onboardingFinished: {
@@ -179,7 +180,7 @@ struct AppViewFactory: MainViewFactory {
                             PrivacyPolicyView(url: privacyPolicyURL)
                         case .signInView:
                             let signInViewModel = SignInViewModel(
-                                signInService: authService,
+                                signInOrLinkUseCase: signInOrLinkUseCase,
                                 appleSignInCredentialBuilder: appleSignInCredentialBuilder,
                                 logger: logger,
                                 embedInNavigationStack: false,

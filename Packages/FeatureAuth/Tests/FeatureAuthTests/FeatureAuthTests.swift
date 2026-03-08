@@ -23,7 +23,7 @@ struct FeatureAuthTests {
     @Test func signInViewModelInitializesWithAuthService() async throws {
         let mockAuthService = MockAuthService()
         let viewModel = SignInViewModel(
-            signInService: mockAuthService,
+            signInOrLinkUseCase: SignInOrLinkUseCase(authService: mockAuthService),
             appleSignInCredentialBuilder: Self.makeCredentialBuilder(),
             logger: TestLogger(),
             onSignInSuccess: { _ in },
@@ -38,7 +38,7 @@ struct FeatureAuthTests {
         var receivedUserID: String?
 
         let viewModel = SignInViewModel(
-            signInService: mockAuthService,
+            signInOrLinkUseCase: SignInOrLinkUseCase(authService: mockAuthService),
             appleSignInCredentialBuilder: Self.makeCredentialBuilder(),
             logger: TestLogger(),
             onSignInSuccess: { userID in
@@ -63,7 +63,7 @@ struct FeatureAuthTests {
         var receivedUserID: String?
 
         let viewModel = SignInViewModel(
-            signInService: mockAuthService,
+            signInOrLinkUseCase: SignInOrLinkUseCase(authService: mockAuthService),
             appleSignInCredentialBuilder: Self.makeCredentialBuilder(),
             logger: TestLogger(),
             onSignInSuccess: { userID in

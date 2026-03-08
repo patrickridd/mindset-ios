@@ -13,7 +13,7 @@ import Observation
 @MainActor
 public final class OnboardingViewModel {
     private let userRepository: UserRepository
-    private let signInService: SignInService
+    private let signInOrLinkUseCase: SignInOrLinkUseCase
     private let authStateQuery: AuthStateQuery
     private let analyzingViewModel: AnalyzingViewModel
     public var onboardingFinished: (() -> Void)?
@@ -36,13 +36,13 @@ public final class OnboardingViewModel {
 
     public init(
         userRepository: UserRepository,
-        signInService: SignInService,
+        signInOrLinkUseCase: SignInOrLinkUseCase,
         authStateQuery: AuthStateQuery,
         analyzingViewModel: AnalyzingViewModel,
         onboardingFinished: (() -> Void)?
     ) {
         self.userRepository = userRepository
-        self.signInService = signInService
+        self.signInOrLinkUseCase = signInOrLinkUseCase
         self.authStateQuery = authStateQuery
         self.analyzingViewModel = analyzingViewModel
         self.onboardingFinished = onboardingFinished
@@ -192,8 +192,8 @@ public final class OnboardingViewModel {
             // Create anonymous credential
             let credential = AuthCredential.anonymous
 
-            // Sign in via SignInService protocol
-            _ = try await signInService.signIn(with: credential)
+            // Sign in via SignInOrLinkUseCase
+            _ = try await signInOrLinkUseCase.execute(with: credential)
         }
     }
 }
