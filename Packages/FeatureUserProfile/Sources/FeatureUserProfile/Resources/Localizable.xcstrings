@@ -8,7 +8,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Secure your data and account across devices"
+            "value" : "Sign-In to secure your data and sync account across devices"
           }
         }
       }
@@ -20,7 +20,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Secure your Account"
+            "value" : "Sign In"
           }
         }
       }
