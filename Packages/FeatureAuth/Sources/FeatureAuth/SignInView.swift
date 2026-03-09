@@ -7,6 +7,7 @@
 
 import AuthenticationServices
 import Domain
+import SharedLocalization
 import SharedUI
 import SharedUtils
 import SwiftUI
@@ -19,6 +20,8 @@ public struct SignInView: View {
         self._viewModel = State(initialValue: viewModel)
     }
 
+    // MARK: - Body Composition
+
     public var body: some View {
         Group {
             if viewModel.embedInNavigationStack {
@@ -30,136 +33,41 @@ public struct SignInView: View {
             }
         }
     }
+}
 
-    private var signInContent: some View {
+// MARK: - Subviews
+
+private extension SignInView {
+    var signInContent: some View {
         ZStack {
-            // Premium gradient background
-            LinearGradient(
-                colors: [
-                    MindsetColors.backgroundDark,
-                    MindsetColors.backgroundDarkSoft,
-                    MindsetColors.backgroundWarmAccent.opacity(0.5),
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
+            backgroundView
 
             ScrollView {
                 VStack(spacing: MindsetLayout.spacing12) {
-                    // Hero Icon
-                    ZStack {
-                        Circle()
-                            .fill(MindsetColors.accentOrange.opacity(0.15))
-                            .frame(
-                                width: MindsetLayout.heroCircleSize,
-                                height: MindsetLayout.heroCircleSize
-                            )
-                            .blur(radius: MindsetLayout.glowBlurRadius)
-
-                        Image(systemName: "person.crop.circle.fill")
-                            .font(.system(size: 80))
-                            .foregroundStyle(MindsetColors.accentOrange)
-                    }
-
-                    // Title
-                    Text("Your Mindset Profile is Ready")
-                        .font(MindsetFonts.displayHeadline)
-                        .foregroundStyle(MindsetColors.textPrimary)
-                        .multilineTextAlignment(.center)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
-
-                    // Subtitle
-                    Text("Sign in to save your progress and sync across devices")
-                        .font(MindsetFonts.body)
-                        .foregroundStyle(MindsetColors.textSecondary)
-                        .multilineTextAlignment(.center)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
-
-                    // Benefits List
-                    VStack(alignment: .leading, spacing: MindsetLayout.spacing16) {
-                        benefitRow(
-                            icon: "checkmark.shield.fill", text: "Secure & private authentication")
-                        benefitRow(icon: "icloud.fill", text: "Sync across all your devices")
-                        benefitRow(
-                            icon: "chart.line.uptrend.xyaxis",
-                            text: "Never lose your streak or progress")
-                    }
-                    .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
-                    .padding(.vertical, MindsetLayout.spacing30)
-
-                    // Sign in with Apple Button
-                    SignInWithAppleButton(
-                        onRequest: { request in
-                            viewModel.handleSignInRequest(request)
-                        },
-                        onCompletion: { result in
-                            Task {
-                                await viewModel.handleSignInCompletion(result)
-                            }
-                        }
-                    )
-                    .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
-                    .frame(height: MindsetLayout.buttonHeight)
-                    .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
-                    .disabled(viewModel.isLoading)
-
-                    // Google Sign In Button
-                    GoogleSignInButton {
-                        await viewModel.signInWithGoogle()
-                    }
-                    .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
-                    .disabled(viewModel.isLoading)
-                    
-                    // Phone Sign In Button
-                    Button {
-                        HapticManager.selection()
-                        viewModel.showPhoneSignIn = true
-                    } label: {
-                        HStack(spacing: MindsetLayout.spacing12) {
-                            Image(systemName: "phone.circle.fill")
-                                .font(.system(size: 20))
-                            Text(FeatureAuthStrings.signInWithPhone)
-                                .font(MindsetFonts.button)
-                        }
-                        .foregroundStyle(colorScheme == .dark ? MindsetColors.textPrimary : Color.white)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: MindsetLayout.buttonHeight)
-                        .background(
-                            RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
-                                .fill(colorScheme == .dark ? Color.white.opacity(0.15) : Color.black)
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
-                                .stroke(MindsetColors.borderSubtle, lineWidth: MindsetLayout.borderWidth)
-                        )
-                    }
-                    .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
-                    .disabled(viewModel.isLoading)
-
-                    // Bottom spacing
+                    heroSection
+                    titleSection
+                    benefitsSection
+                    buttonsSection
                     Color.clear.frame(height: MindsetLayout.spacing30)
                 }
                 Spacer()
             }
             .scrollIndicators(.hidden)
 
-            // Loading overlay
             if viewModel.isLoading {
                 loadingOverlay
             }
 
-            // Error alert
             if let errorMessage = viewModel.errorMessage {
                 errorAlert(message: errorMessage)
             }
         }
-        .sheet(isPresented: Binding(
-            get: { viewModel.showPhoneSignIn },
-            set: { viewModel.showPhoneSignIn = $0 }
-        )) {
+        .sheet(
+            isPresented: Binding(
+                get: { viewModel.showPhoneSignIn },
+                set: { viewModel.showPhoneSignIn = $0 }
+            )
+        ) {
             PhoneSignInView(viewModel: viewModel)
         }
         .toolbar {
@@ -178,24 +86,115 @@ public struct SignInView: View {
         }
     }
 
-    private var orDivider: some View {
-        HStack(spacing: MindsetLayout.spacing8) {
-            Rectangle()
-                .fill(MindsetColors.borderSubtle)
-                .frame(height: 1)
+    var backgroundView: some View {
+        LinearGradient(
+            colors: [
+                MindsetColors.backgroundDark,
+                MindsetColors.backgroundDarkSoft,
+                MindsetColors.backgroundWarmAccent.opacity(0.5),
+            ],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+        .ignoresSafeArea()
+    }
 
-            Text("OR")
-                .font(MindsetFonts.caption)
-                .foregroundStyle(MindsetColors.textMuted)
+    var heroSection: some View {
+        ZStack {
+            Circle()
+                .fill(MindsetColors.accentOrange.opacity(0.15))
+                .frame(
+                    width: MindsetLayout.heroCircleSize,
+                    height: MindsetLayout.heroCircleSize
+                )
+                .blur(radius: MindsetLayout.glowBlurRadius)
 
-            Rectangle()
-                .fill(MindsetColors.borderSubtle)
-                .frame(height: 1)
+            Image(systemName: "person.crop.circle.fill")
+                .font(.system(size: 80))
+                .foregroundStyle(MindsetColors.accentOrange)
+        }
+    }
+
+    var titleSection: some View {
+        VStack(spacing: MindsetLayout.spacing12) {
+            Text(FeatureAuthStrings.profileReadyTitle)
+                .font(MindsetFonts.displayHeadline)
+                .foregroundStyle(MindsetColors.textPrimary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
+
+            Text(FeatureAuthStrings.signInSubtitle)
+                .font(MindsetFonts.body)
+                .foregroundStyle(MindsetColors.textSecondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
+        }
+    }
+
+    var benefitsSection: some View {
+        VStack(alignment: .leading, spacing: MindsetLayout.spacing16) {
+            benefitRow(icon: "checkmark.shield.fill", text: FeatureAuthStrings.Benefits.secureAuth)
+            benefitRow(icon: "icloud.fill", text: FeatureAuthStrings.Benefits.syncDevices)
+            benefitRow(
+                icon: "chart.line.uptrend.xyaxis",
+                text: FeatureAuthStrings.Benefits.keepStreak
+            )
+        }
+        .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
+        .padding(.vertical, MindsetLayout.spacing30)
+    }
+
+    var buttonsSection: some View {
+        VStack(spacing: MindsetLayout.spacing12) {
+            SignInWithAppleButton(
+                onRequest: { request in
+                    viewModel.handleSignInRequest(request)
+                },
+                onCompletion: { result in
+                    Task {
+                        await viewModel.handleSignInCompletion(result)
+                    }
+                }
+            )
+            .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
+            .frame(height: MindsetLayout.buttonHeight)
+            .disabled(viewModel.isLoading)
+
+            GoogleSignInButton {
+                await viewModel.signInWithGoogle()
+            }
+            .disabled(viewModel.isLoading)
+
+            Button {
+                HapticManager.selection()
+                viewModel.showPhoneSignIn = true
+            } label: {
+                HStack(spacing: MindsetLayout.spacing12) {
+                    Image(systemName: "phone.circle.fill")
+                        .font(.system(size: 20))
+                    Text(FeatureAuthStrings.signInWithPhone)
+                        .font(MindsetFonts.button)
+                }
+                .foregroundStyle(colorScheme == .dark ? MindsetColors.textPrimary : Color.white)
+                .frame(maxWidth: .infinity)
+                .frame(height: MindsetLayout.buttonHeight)
+                .background(
+                    RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
+                        .fill(colorScheme == .dark ? Color.white.opacity(0.15) : Color.black)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
+                        .stroke(MindsetColors.borderSubtle, lineWidth: MindsetLayout.borderWidth)
+                )
+            }
+            .disabled(viewModel.isLoading)
         }
         .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
     }
-    
-    private func benefitRow(icon: String, text: String) -> some View {
+
+    func benefitRow(icon: String, text: String) -> some View {
         HStack(alignment: .top, spacing: MindsetLayout.spacing12) {
             Image(systemName: icon)
                 .font(MindsetFonts.callout)
@@ -210,7 +209,7 @@ public struct SignInView: View {
         }
     }
 
-    private var loadingOverlay: some View {
+    var loadingOverlay: some View {
         ZStack {
             Color.black.opacity(0.6)
                 .ignoresSafeArea()
@@ -232,7 +231,7 @@ public struct SignInView: View {
         }
     }
 
-    private func errorAlert(message: String) -> some View {
+    func errorAlert(message: String) -> some View {
         VStack {
             Spacer()
 
@@ -241,7 +240,7 @@ public struct SignInView: View {
                     .font(.system(size: 40))
                     .foregroundStyle(MindsetColors.accentCoral)
 
-                Text("Sign In Error")
+                Text(FeatureAuthStrings.Error.signInErrorTitle)
                     .font(MindsetFonts.featureTitle)
                     .foregroundStyle(MindsetColors.textPrimary)
 
@@ -255,7 +254,7 @@ public struct SignInView: View {
                     HapticManager.action()
                     viewModel.dismissError()
                 } label: {
-                    Text("Try Again")
+                    Text(SharedLocalizedString.Error.tryAgain)
                         .font(MindsetFonts.button)
                         .foregroundStyle(MindsetColors.textOnAccent(for: colorScheme))
                         .frame(maxWidth: .infinity)
@@ -283,12 +282,13 @@ public struct SignInView: View {
     let mockAuth = MockAuthService()
     let viewModel = SignInViewModel(
         signInOrLinkUseCase: SignInOrLinkUseCase(authService: mockAuth),
-        appleSignInCredentialBuilder: AppleSignInCredentialBuilder(nonceStorage: AppleSignInNonceStorage()),
+        appleSignInCredentialBuilder: AppleSignInCredentialBuilder(
+            nonceStorage: AppleSignInNonceStorage()),
         googleSignInCredentialProvider: MockGoogleSignInCredentialProvider(),
         phoneVerificationProvider: MockPhoneVerificationProvider(),
         logger: DebugLogger.shared,
         onSignInSuccess: { _ in },
         onSkip: {}
     )
-    return SignInView(viewModel: viewModel)
+    SignInView(viewModel: viewModel)
 }

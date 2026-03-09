@@ -30,8 +30,10 @@ struct GoogleSignInButton: View {
                         .font(.system(size: 20))
                 }
 
-                Text(isSigningIn ? "Signing in..." : "Continue with Google")
-                    .font(MindsetFonts.button)
+                Text(
+                    isSigningIn ? FeatureAuthStrings.signingIn : FeatureAuthStrings.signInWithGoogle
+                )
+                .font(MindsetFonts.button)
             }
             .foregroundStyle(colorScheme == .dark ? MindsetColors.textPrimary : Color.white)
             .frame(maxWidth: .infinity)
@@ -53,4 +55,8 @@ struct GoogleSignInButton: View {
         defer { isSigningIn = false }
         await action()
     }
+}
+
+#Preview {
+    GoogleSignInButton(action: {})
 }

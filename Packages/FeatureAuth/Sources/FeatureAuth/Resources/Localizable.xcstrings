@@ -49,6 +49,18 @@
         }
       }
     },
+    "auth.profileReadyTitle" : {
+      "comment" : "Sign in screen title when profile is ready after onboarding",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your Mindset Profile is Ready"
+          }
+        }
+      }
+    },
     "auth.signInSubtitle" : {
       "comment" : "Sign in screen subtitle",
       "extractionState" : "manual",
@@ -61,6 +73,54 @@
         }
       }
     },
+    "auth.signingIn" : {
+      "comment" : "Signing in progress message",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signing in..."
+          }
+        }
+      }
+    },
+    "auth.benefits.secureAuth" : {
+      "comment" : "Secure and private authentication benefit",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secure & private authentication"
+          }
+        }
+      }
+    },
+    "auth.benefits.syncDevices" : {
+      "comment" : "Sync across devices benefit",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sync across all your devices"
+          }
+        }
+      }
+    },
+    "auth.benefits.keepStreak" : {
+      "comment" : "Never lose streak or progress benefit",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Never lose your streak or progress"
+          }
+        }
+      }
+    },
     "auth.error.signInFailed" : {
       "comment" : "Sign in failed error",
       "extractionState" : "manual",
@@ -69,6 +129,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sign in failed. Please try again."
+          }
+        }
+      }
+    },
+    "auth.error.signInErrorTitle" : {
+      "comment" : "Sign in error alert title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign In Error"
           }
         }
       }

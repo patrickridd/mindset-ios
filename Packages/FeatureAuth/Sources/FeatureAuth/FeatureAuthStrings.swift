@@ -14,8 +14,14 @@ public enum FeatureAuthStrings {
 
     public static let signInTitle = String(
         localized: "auth.signInTitle", bundle: .module, comment: "Sign in screen title")
+    public static let profileReadyTitle = String(
+        localized: "auth.profileReadyTitle", bundle: .module,
+        comment: "Sign in screen title when profile is ready after onboarding")
     public static let signInSubtitle = String(
         localized: "auth.signInSubtitle", bundle: .module, comment: "Sign in screen subtitle")
+    public static let signingIn = String(
+        localized: "auth.signingIn", bundle: .module,
+        comment: "Signing in progress message")
     public static let signInWithApple = String(
         localized: "auth.signInWithApple", bundle: .module, comment: "Sign in with Apple button")
     public static let signInWithGoogle = String(
@@ -25,6 +31,20 @@ public enum FeatureAuthStrings {
     public static let continueAsGuest = String(
         localized: "auth.continueAsGuest", bundle: .module, comment: "Continue as guest option")
 
+    // MARK: - Benefits
+
+    public enum Benefits {
+        public static let secureAuth = String(
+            localized: "auth.benefits.secureAuth", bundle: .module,
+            comment: "Secure and private authentication benefit")
+        public static let syncDevices = String(
+            localized: "auth.benefits.syncDevices", bundle: .module,
+            comment: "Sync across devices benefit")
+        public static let keepStreak = String(
+            localized: "auth.benefits.keepStreak", bundle: .module,
+            comment: "Never lose streak or progress benefit")
+    }
+
     // MARK: - Errors
 
     public enum Error {
@@ -33,6 +53,9 @@ public enum FeatureAuthStrings {
         public static let cancelled = String(
             localized: "auth.error.cancelled", bundle: .module, comment: "Sign in cancelled message"
         )
+        public static let signInErrorTitle = String(
+            localized: "auth.error.signInErrorTitle", bundle: .module,
+            comment: "Sign in error alert title")
         public static let invalidAppleCredential = String(
             localized: "auth.error.invalidAppleCredential", bundle: .module,
             comment: "Invalid Apple ID credential")
