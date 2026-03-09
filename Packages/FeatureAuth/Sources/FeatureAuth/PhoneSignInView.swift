@@ -25,6 +25,7 @@ public struct PhoneSignInView: View {
     @State private var isSendingCode = false
     @State private var showCountryPicker = false
     @State private var validationError: String?
+    @FocusState private var isTextFieldFocused
 
     @State private var selectedRegionCode: String = {
         Locale.current.region?.identifier ?? "US"
@@ -59,7 +60,10 @@ public struct PhoneSignInView: View {
             }
             .padding(MindsetLayout.paddingScreenHorizontal)
             .navigationTitle(FeatureAuthStrings.phoneSignInTitle)
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.large)
+            .onAppear {
+                isTextFieldFocused = true
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(role: .cancel) {
@@ -137,10 +141,10 @@ private extension PhoneSignInView {
                     .font(.system(size: MindsetLayout.iconLarge))
                 Text("+\(selectedCountry.dialCode)")
                     .font(MindsetFonts.body)
-                    .foregroundStyle(MindsetColors.textPrimary)
+                    .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
                 Image(systemName: "chevron.down")
                     .font(.system(size: MindsetLayout.iconSmall, weight: .medium))
-                    .foregroundStyle(MindsetColors.textSecondary)
+                    .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
             }
             .padding(.horizontal, MindsetLayout.paddingMedium)
             .padding(.vertical, MindsetLayout.paddingSmall)
@@ -156,8 +160,9 @@ private extension PhoneSignInView {
         PhoneNumberTextField(
             nationalNumber: $nationalNumber,
             regionCode: selectedRegionCode,
-            placeholder: FeatureAuthStrings.phonePlaceholder
+            placeholder: ""
         )
+        .focused($isTextFieldFocused)
     }
 
     var verificationCodeStep: some View {
@@ -338,6 +343,7 @@ private struct CountryCodePickerSheet: View {
     @Binding var selectedRegionCode: String
     let onSelect: () -> Void
 
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
 
     private var sortedCountries: [CountryInfo] {
@@ -358,15 +364,15 @@ private struct CountryCodePickerSheet: View {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(country.name)
                                 .font(MindsetFonts.body)
-                                .foregroundStyle(MindsetColors.textPrimary)
+                                .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
                             Text("+\(country.dialCode)")
                                 .font(MindsetFonts.caption)
-                                .foregroundStyle(MindsetColors.textSecondary)
+                                .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
                         }
                         Spacer()
                         if country.regionCode == selectedRegionCode {
                             Image(systemName: "checkmark.circle.fill")
-                                .foregroundStyle(MindsetColors.accentOrange)
+                                .foregroundStyle(MindsetColors.labelAccent(for: colorScheme))
                         }
                     }
                     .padding(.vertical, MindsetLayout.spacing4)
