@@ -7,6 +7,7 @@
 
 import Domain
 import PhoneNumberKit
+import SharedLocalization
 import SharedUI
 import SharedUtils
 import SwiftUI
@@ -44,6 +45,8 @@ public struct PhoneSignInView: View {
         self.viewModel = viewModel
     }
 
+    // MARK: - Body Composition
+
     public var body: some View {
         NavigationStack {
             VStack(spacing: MindsetLayout.spacing20) {
@@ -52,28 +55,18 @@ public struct PhoneSignInView: View {
                 } else {
                     verificationCodeStep
                 }
-
-                if let error = viewModel.errorMessage {
-                    Text(error)
-                        .font(MindsetFonts.caption)
-                        .foregroundStyle(MindsetColors.accentCoral)
-                        .multilineTextAlignment(.center)
-                }
-                if let validationError {
-                    Text(validationError)
-                        .font(MindsetFonts.caption)
-                        .foregroundStyle(MindsetColors.accentCoral)
-                        .multilineTextAlignment(.center)
-                }
+                errorSection
             }
             .padding(MindsetLayout.paddingScreenHorizontal)
             .navigationTitle(FeatureAuthStrings.phoneSignInTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button(role: .cancel) {
                         HapticManager.selection()
                         dismiss()
+                    } label: {
+                        Text(SharedLocalizedString.cancel)
                     }
                 }
             }
@@ -88,18 +81,36 @@ public struct PhoneSignInView: View {
             }
         }
     }
+}
 
-    private var phoneNumberStep: some View {
+// MARK: - Subviews
+
+private extension PhoneSignInView {
+    var errorSection: some View {
+        Group {
+            if let error = viewModel.errorMessage {
+                Text(error)
+                    .font(MindsetFonts.caption)
+                    .foregroundStyle(MindsetColors.accentCoral)
+                    .multilineTextAlignment(.center)
+            }
+            if let validationError {
+                Text(validationError)
+                    .font(MindsetFonts.caption)
+                    .foregroundStyle(MindsetColors.accentCoral)
+                    .multilineTextAlignment(.center)
+            }
+        }
+    }
+
+    var phoneNumberStep: some View {
         VStack(spacing: MindsetLayout.spacing16) {
             HStack(spacing: MindsetLayout.spacing8) {
                 countryPickerButton
                 phoneNumberField
             }
             .padding(MindsetLayout.paddingStandard)
-            .background(
-                RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
-                    .fill(MindsetColors.backgroundSecondary(for: colorScheme))
-            )
+            .mindsetCard()
 
             Button {
                 HapticManager.action()
@@ -110,28 +121,25 @@ public struct PhoneSignInView: View {
                     .foregroundStyle(MindsetColors.textOnAccent(for: colorScheme))
                     .frame(maxWidth: .infinity)
                     .frame(height: MindsetLayout.buttonHeight)
-                    .background(
-                        RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
-                            .fill(MindsetColors.accentOrange)
-                    )
             }
             .disabled(nationalNumber.isEmpty || isSendingCode)
+            .mindsetButton()
         }
     }
 
-    private var countryPickerButton: some View {
+    var countryPickerButton: some View {
         Button {
             HapticManager.selection()
             showCountryPicker = true
         } label: {
             HStack(spacing: MindsetLayout.spacing6) {
                 Text(flagEmoji(for: selectedRegionCode))
-                    .font(.system(size: 24))
+                    .font(.system(size: MindsetLayout.iconLarge))
                 Text("+\(selectedCountry.dialCode)")
                     .font(MindsetFonts.body)
                     .foregroundStyle(MindsetColors.textPrimary)
                 Image(systemName: "chevron.down")
-                    .font(.system(size: 12, weight: .medium))
+                    .font(.system(size: MindsetLayout.iconSmall, weight: .medium))
                     .foregroundStyle(MindsetColors.textSecondary)
             }
             .padding(.horizontal, MindsetLayout.paddingMedium)
@@ -144,7 +152,7 @@ public struct PhoneSignInView: View {
         .buttonStyle(.plain)
     }
 
-    private var phoneNumberField: some View {
+    var phoneNumberField: some View {
         PhoneNumberTextField(
             nationalNumber: $nationalNumber,
             regionCode: selectedRegionCode,
@@ -152,7 +160,7 @@ public struct PhoneSignInView: View {
         )
     }
 
-    private var verificationCodeStep: some View {
+    var verificationCodeStep: some View {
         VStack(spacing: MindsetLayout.spacing16) {
             TextField(FeatureAuthStrings.codePlaceholder, text: $verificationCode)
                 .textFieldStyle(.roundedBorder)
@@ -168,16 +176,13 @@ public struct PhoneSignInView: View {
                     .foregroundStyle(MindsetColors.textOnAccent(for: colorScheme))
                     .frame(maxWidth: .infinity)
                     .frame(height: MindsetLayout.buttonHeight)
-                    .background(
-                        RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
-                            .fill(MindsetColors.accentOrange)
-                    )
             }
             .disabled(verificationCode.isEmpty || viewModel.isLoading)
+            .mindsetButton()
         }
     }
 
-    private func sendCode() async {
+    func sendCode() async {
         validationError = nil
         viewModel.dismissError()
 
@@ -196,7 +201,7 @@ public struct PhoneSignInView: View {
         }
     }
 
-    private func verifyCode() async {
+    func verifyCode() async {
         guard let id = verificationID else { return }
 
         await viewModel.signInWithPhone(
@@ -205,7 +210,7 @@ public struct PhoneSignInView: View {
         )
     }
 
-    private func toE164(regionCode: String, nationalNumber: String) -> String? {
+    func toE164(regionCode: String, nationalNumber: String) -> String? {
         let digits = nationalNumber.filter { $0.isNumber }
         guard !digits.isEmpty else { return nil }
         guard let number = try? phoneNumberKit.parse(digits, withRegion: regionCode) else {
@@ -214,7 +219,7 @@ public struct PhoneSignInView: View {
         return phoneNumberKit.format(number, toType: .e164)
     }
 
-    private func flagEmoji(for regionCode: String) -> String {
+    func flagEmoji(for regionCode: String) -> String {
         let base: UInt32 = 127397
         return regionCode.uppercased().unicodeScalars
             .compactMap { UnicodeScalar(base + $0.value) }
@@ -349,7 +354,7 @@ private struct CountryCodePickerSheet: View {
                 } label: {
                     HStack(spacing: MindsetLayout.spacing12) {
                         Text(flagEmoji(for: country.regionCode))
-                            .font(.system(size: 28))
+                            .font(.system(size: MindsetLayout.iconExtraLarge))
                         VStack(alignment: .leading, spacing: 2) {
                             Text(country.name)
                                 .font(MindsetFonts.body)
@@ -371,9 +376,11 @@ private struct CountryCodePickerSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") {
+                    Button {
                         HapticManager.selection()
                         dismiss()
+                    } label: {
+                        Text(SharedLocalizedString.done)
                     }
                 }
             }
