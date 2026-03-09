@@ -71,30 +71,33 @@ struct SignInButton: View {
                 await performAction()
             }
         } label: {
-            HStack(alignment: .center, spacing: MindsetLayout.spacing12) {
+            HStack(alignment: .center, spacing: MindsetLayout.spacing6) {
                 if isLoading {
                     ProgressView()
-                        .tint(colorScheme == .dark ? MindsetColors.textPrimary : Color.white)
+                        .tint(colorScheme == .dark ? Color.black : Color.white)
                 } else if let imageName {
                     Image(imageName, bundle: .module)
                         .resizable()
                         .scaledToFit()
-                        .frame(width: MindsetLayout.signInIconButton, height: MindsetLayout.signInIconButton)
+                        .frame(
+                            width: MindsetLayout.signInIconButton,
+                            height: MindsetLayout.signInIconButton
+                        )
                 } else {
                     Image(systemName: icon)
-                        .font(.system(size: MindsetLayout.signInIconButton))
+                        .font(.system(size: MindsetLayout.signInIconButton, weight: .heavy))
                         .foregroundStyle(iconColor)
                 }
 
                 Text(isLoading ? FeatureAuthStrings.signingIn : title)
-                    .font(MindsetFonts.button)
+                    .font(MindsetFonts.buttonSignIn)
             }
-            .foregroundStyle(colorScheme == .dark ? MindsetColors.textPrimary : Color.white)
+            .foregroundStyle(colorScheme == .dark ? Color.black : Color.white)
             .frame(maxWidth: .infinity)
             .frame(height: MindsetLayout.buttonHeight)
             .background(
                 RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
-                    .fill(colorScheme == .dark ? Color.white.opacity(0.15) : Color.black)
+                    .fill(colorScheme == .dark ? Color.white : Color.black)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)

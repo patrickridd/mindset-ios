@@ -70,6 +70,9 @@ public enum MindsetFonts {
     /// Primary button text
     public static let button = Font.headline
 
+    /// Sign In Button default Font
+    public static let buttonSignIn = Font.title2.weight(.medium)
+
     /// Feature row titles
     public static let featureTitle = Font.title3
 

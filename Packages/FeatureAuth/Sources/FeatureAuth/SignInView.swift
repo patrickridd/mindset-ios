@@ -160,6 +160,7 @@ private extension SignInView {
             )
             .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
             .frame(height: MindsetLayout.buttonHeight)
+            .clipShape(RoundedRectangle(cornerRadius: MindsetLayout.radiusButton))
             .disabled(viewModel.isLoading)
 
             SignInButton(
@@ -172,7 +173,7 @@ private extension SignInView {
 
             SignInButton(
                 icon: "phone.circle.fill",
-                iconColor: MindsetColors.successGreen,
+                iconColor: .green,
                 title: FeatureAuthStrings.signInWithPhone,
                 isLoading: Binding(
                     get: { viewModel.isLoading },
