@@ -97,6 +97,10 @@ public enum FeatureAuthStrings {
             )
             return String(format: format, error)
         }
+        public static let invalidPhoneNumber = String(
+            localized: "auth.error.invalidPhoneNumber", bundle: .module,
+            comment: "Invalid phone number for verification"
+        )
     }
 
     // MARK: - Phone Sign In
@@ -116,4 +120,7 @@ public enum FeatureAuthStrings {
     public static let phoneSignInTitle = String(
         localized: "auth.phoneSignInTitle", bundle: .module,
         comment: "Phone sign in sheet title")
+    public static let selectCountry = String(
+        localized: "auth.selectCountry", bundle: .module,
+        comment: "Country picker sheet title")
 }

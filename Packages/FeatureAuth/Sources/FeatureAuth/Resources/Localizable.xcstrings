@@ -241,6 +241,18 @@
         }
       }
     },
+    "auth.error.invalidPhoneNumber" : {
+      "comment" : "Invalid phone number for verification",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please enter a valid phone number"
+          }
+        }
+      }
+    },
     "auth.signInWithPhone" : {
       "comment" : "Sign in with Phone button",
       "extractionState" : "manual",
@@ -309,6 +321,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sign in with Phone"
+          }
+        }
+      }
+    },
+    "auth.selectCountry" : {
+      "comment" : "Country picker sheet title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select Country"
           }
         }
       }

@@ -6,6 +6,7 @@
 //
 
 import Domain
+import PhoneNumberKit
 import SharedUI
 import SharedUtils
 import SwiftUI
@@ -17,10 +18,22 @@ public struct PhoneSignInView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var step: Step = .phoneNumber
-    @State private var phoneNumber = ""
+    @State private var nationalNumber = ""
     @State private var verificationCode = ""
     @State private var verificationID: String?
     @State private var isSendingCode = false
+    @State private var showCountryPicker = false
+    @State private var validationError: String?
+
+    @State private var selectedRegionCode: String = {
+        Locale.current.region?.identifier ?? "US"
+    }()
+
+    private let phoneNumberKit = PhoneNumberKit()
+
+    private var selectedCountry: CountryInfo {
+        CountryInfo.byRegionCode[selectedRegionCode] ?? CountryInfo.byRegionCode["US"]!
+    }
 
     private enum Step {
         case phoneNumber
@@ -46,6 +59,12 @@ public struct PhoneSignInView: View {
                         .foregroundStyle(MindsetColors.accentCoral)
                         .multilineTextAlignment(.center)
                 }
+                if let validationError {
+                    Text(validationError)
+                        .font(MindsetFonts.caption)
+                        .foregroundStyle(MindsetColors.accentCoral)
+                        .multilineTextAlignment(.center)
+                }
             }
             .padding(MindsetLayout.paddingScreenHorizontal)
             .navigationTitle(FeatureAuthStrings.phoneSignInTitle)
@@ -58,16 +77,29 @@ public struct PhoneSignInView: View {
                     }
                 }
             }
+            .sheet(isPresented: $showCountryPicker) {
+                CountryCodePickerSheet(
+                    selectedRegionCode: $selectedRegionCode,
+                    onSelect: {
+                        HapticManager.selection()
+                        showCountryPicker = false
+                    }
+                )
+            }
         }
     }
 
     private var phoneNumberStep: some View {
         VStack(spacing: MindsetLayout.spacing16) {
-            TextField(FeatureAuthStrings.phonePlaceholder, text: $phoneNumber)
-                .textFieldStyle(.roundedBorder)
-                .keyboardType(.phonePad)
-                .textContentType(.telephoneNumber)
-                .autocorrectionDisabled()
+            HStack(spacing: MindsetLayout.spacing8) {
+                countryPickerButton
+                phoneNumberField
+            }
+            .padding(MindsetLayout.paddingStandard)
+            .background(
+                RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
+                    .fill(MindsetColors.backgroundSecondary(for: colorScheme))
+            )
 
             Button {
                 HapticManager.action()
@@ -83,8 +115,41 @@ public struct PhoneSignInView: View {
                             .fill(MindsetColors.accentOrange)
                     )
             }
-            .disabled(phoneNumber.isEmpty || isSendingCode)
+            .disabled(nationalNumber.isEmpty || isSendingCode)
         }
+    }
+
+    private var countryPickerButton: some View {
+        Button {
+            HapticManager.selection()
+            showCountryPicker = true
+        } label: {
+            HStack(spacing: MindsetLayout.spacing6) {
+                Text(flagEmoji(for: selectedRegionCode))
+                    .font(.system(size: 24))
+                Text("+\(selectedCountry.dialCode)")
+                    .font(MindsetFonts.body)
+                    .foregroundStyle(MindsetColors.textPrimary)
+                Image(systemName: "chevron.down")
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(MindsetColors.textSecondary)
+            }
+            .padding(.horizontal, MindsetLayout.paddingMedium)
+            .padding(.vertical, MindsetLayout.paddingSmall)
+            .background(
+                RoundedRectangle(cornerRadius: MindsetLayout.radiusMedium)
+                    .fill(MindsetColors.backgroundCard(for: colorScheme))
+            )
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var phoneNumberField: some View {
+        PhoneNumberTextField(
+            nationalNumber: $nationalNumber,
+            regionCode: selectedRegionCode,
+            placeholder: FeatureAuthStrings.phonePlaceholder
+        )
     }
 
     private var verificationCodeStep: some View {
@@ -113,13 +178,19 @@ public struct PhoneSignInView: View {
     }
 
     private func sendCode() async {
-        let normalized = normalizePhoneNumber(phoneNumber)
-        guard !normalized.isEmpty else { return }
+        validationError = nil
+        viewModel.dismissError()
+
+        guard let e164 = toE164(regionCode: selectedRegionCode, nationalNumber: nationalNumber)
+        else {
+            validationError = FeatureAuthStrings.Error.invalidPhoneNumber
+            return
+        }
 
         isSendingCode = true
         defer { isSendingCode = false }
 
-        if let id = await viewModel.requestPhoneVerificationCode(phoneNumber: normalized) {
+        if let id = await viewModel.requestPhoneVerificationCode(phoneNumber: e164) {
             verificationID = id
             step = .verificationCode
         }
@@ -134,15 +205,186 @@ public struct PhoneSignInView: View {
         )
     }
 
-    private func normalizePhoneNumber(_ input: String) -> String {
-        let digits = input.filter { $0.isNumber }
-        guard !digits.isEmpty else { return "" }
-        if digits.hasPrefix("1") && digits.count == 11 {
-            return "+" + digits
+    private func toE164(regionCode: String, nationalNumber: String) -> String? {
+        let digits = nationalNumber.filter { $0.isNumber }
+        guard !digits.isEmpty else { return nil }
+        guard let number = try? phoneNumberKit.parse(digits, withRegion: regionCode) else {
+            return nil
         }
-        if digits.count == 10 {
-            return "+1" + digits
+        return phoneNumberKit.format(number, toType: .e164)
+    }
+
+    private func flagEmoji(for regionCode: String) -> String {
+        let base: UInt32 = 127397
+        return regionCode.uppercased().unicodeScalars
+            .compactMap { UnicodeScalar(base + $0.value) }
+            .map { String($0) }
+            .joined()
+    }
+}
+
+// MARK: - PhoneNumberTextField
+
+private struct PhoneNumberTextField: View {
+    @Binding var nationalNumber: String
+    let regionCode: String
+    let placeholder: String
+
+    private var formattedBinding: Binding<String> {
+        let country = CountryInfo.byRegionCode[regionCode] ?? CountryInfo.byRegionCode["US"]!
+        return Binding(
+            get: {
+                let digits = nationalNumber.filter { $0.isNumber }
+                guard !digits.isEmpty else { return "" }
+                let formatter = PartialFormatter(defaultRegion: regionCode)
+                let full = "+\(country.dialCode)\(digits)"
+                return formatter.formatPartial(full)
+            },
+            set: { newValue in
+                let digits = newValue.filter { $0.isNumber }
+                nationalNumber = digits
+            }
+        )
+    }
+
+    var body: some View {
+        TextField(placeholder, text: formattedBinding)
+            .textFieldStyle(.plain)
+            .keyboardType(.phonePad)
+            .textContentType(.telephoneNumber)
+            .autocorrectionDisabled()
+    }
+}
+
+// MARK: - CountryInfo
+
+private struct CountryInfo: Identifiable {
+    let id: String
+    let regionCode: String
+    let dialCode: String
+    let name: String
+
+    static let byRegionCode: [String: CountryInfo] = {
+        let pairs: [(String, String, String)] = [
+            ("US", "1", "United States"),
+            ("GB", "44", "United Kingdom"),
+            ("CA", "1", "Canada"),
+            ("AU", "61", "Australia"),
+            ("DE", "49", "Germany"),
+            ("FR", "33", "France"),
+            ("ES", "34", "Spain"),
+            ("IT", "39", "Italy"),
+            ("NL", "31", "Netherlands"),
+            ("BE", "32", "Belgium"),
+            ("CH", "41", "Switzerland"),
+            ("AT", "43", "Austria"),
+            ("IE", "353", "Ireland"),
+            ("NZ", "64", "New Zealand"),
+            ("JP", "81", "Japan"),
+            ("KR", "82", "South Korea"),
+            ("CN", "86", "China"),
+            ("IN", "91", "India"),
+            ("BR", "55", "Brazil"),
+            ("MX", "52", "Mexico"),
+            ("AR", "54", "Argentina"),
+            ("CO", "57", "Colombia"),
+            ("CL", "56", "Chile"),
+            ("PE", "51", "Peru"),
+            ("ZA", "27", "South Africa"),
+            ("NG", "234", "Nigeria"),
+            ("KE", "254", "Kenya"),
+            ("EG", "20", "Egypt"),
+            ("PL", "48", "Poland"),
+            ("SE", "46", "Sweden"),
+            ("NO", "47", "Norway"),
+            ("DK", "45", "Denmark"),
+            ("FI", "358", "Finland"),
+            ("PT", "351", "Portugal"),
+            ("GR", "30", "Greece"),
+            ("RU", "7", "Russia"),
+            ("UA", "380", "Ukraine"),
+            ("TR", "90", "Turkey"),
+            ("IL", "972", "Israel"),
+            ("SA", "966", "Saudi Arabia"),
+            ("AE", "971", "United Arab Emirates"),
+            ("SG", "65", "Singapore"),
+            ("MY", "60", "Malaysia"),
+            ("TH", "66", "Thailand"),
+            ("PH", "63", "Philippines"),
+            ("ID", "62", "Indonesia"),
+            ("VN", "84", "Vietnam"),
+            ("HK", "852", "Hong Kong"),
+            ("TW", "886", "Taiwan"),
+        ]
+        return Dictionary(
+            uniqueKeysWithValues: pairs.map { regionCode, dialCode, name in
+                (
+                    regionCode,
+                    CountryInfo(
+                        id: regionCode, regionCode: regionCode, dialCode: dialCode, name: name)
+                )
+            })
+    }()
+}
+
+// MARK: - CountryCodePickerSheet
+
+private struct CountryCodePickerSheet: View {
+    @Binding var selectedRegionCode: String
+    let onSelect: () -> Void
+
+    @Environment(\.dismiss) private var dismiss
+
+    private var sortedCountries: [CountryInfo] {
+        CountryInfo.byRegionCode.values.sorted { $0.name < $1.name }
+    }
+
+    var body: some View {
+        NavigationStack {
+            List(sortedCountries) { country in
+                Button {
+                    selectedRegionCode = country.regionCode
+                    onSelect()
+                    dismiss()
+                } label: {
+                    HStack(spacing: MindsetLayout.spacing12) {
+                        Text(flagEmoji(for: country.regionCode))
+                            .font(.system(size: 28))
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(country.name)
+                                .font(MindsetFonts.body)
+                                .foregroundStyle(MindsetColors.textPrimary)
+                            Text("+\(country.dialCode)")
+                                .font(MindsetFonts.caption)
+                                .foregroundStyle(MindsetColors.textSecondary)
+                        }
+                        Spacer()
+                        if country.regionCode == selectedRegionCode {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundStyle(MindsetColors.accentOrange)
+                        }
+                    }
+                    .padding(.vertical, MindsetLayout.spacing4)
+                }
+            }
+            .navigationTitle(FeatureAuthStrings.selectCountry)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") {
+                        HapticManager.selection()
+                        dismiss()
+                    }
+                }
+            }
         }
-        return "+" + digits
+    }
+
+    private func flagEmoji(for regionCode: String) -> String {
+        let base: UInt32 = 127397
+        return regionCode.uppercased().unicodeScalars
+            .compactMap { UnicodeScalar(base + $0.value) }
+            .map { String($0) }
+            .joined()
     }
 }

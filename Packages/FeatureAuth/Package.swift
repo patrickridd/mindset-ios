@@ -15,6 +15,7 @@ let package = Package(
         .package(name: "SharedUI", path: "../SharedUI"),
         .package(name: "SharedUtils", path: "../SharedUtils"),
         .package(name: "SharedLocalization", path: "../SharedLocalization"),
+        .package(url: "https://github.com/marmelroy/PhoneNumberKit", from: "3.7.0"),
         // TODO: Uncomment when adding GoogleSignIn to main app target
         // .package(url: "https://github.com/google/GoogleSignIn-iOS", from: "7.0.0"),
     ],
@@ -26,6 +27,7 @@ let package = Package(
                 "SharedUI",
                 "SharedUtils",
                 "SharedLocalization",
+                .product(name: "PhoneNumberKit", package: "PhoneNumberKit"),
                 // TODO: Uncomment when adding GoogleSignIn to main app target
                 // .product(name: "GoogleSignIn", package: "GoogleSignIn-iOS"),
             ],
