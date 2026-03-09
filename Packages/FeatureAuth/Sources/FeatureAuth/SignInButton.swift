@@ -12,11 +12,15 @@ import SwiftUI
 /// Reusable sign-in button with injectable icon, title, and action.
 /// Use for Google, Phone, or other OAuth-style sign-in methods.
 ///
+/// - `icon`: SF Symbol name (e.g. "phone.circle.fill"). Ignored when `imageName` is provided.
+/// - `imageName`: Optional asset name for custom logo (e.g. "GoogleLogo" for official Google brand).
 /// - `isLoading`: When `nil`, the button manages loading internally (e.g. Google).
 ///   When provided, uses the external binding (e.g. Phone, which shares viewModel.isLoading).
 struct SignInButton: View {
     let icon: String
+    let imageName: String?
     let title: String
+    let iconColor: Color
     let action: () async -> Void
     @Binding private var externalLoading: Bool?
     @Environment(\.colorScheme) private var colorScheme
@@ -28,10 +32,14 @@ struct SignInButton: View {
 
     init(
         icon: String,
+        iconColor: Color = .clear,
+        imageName: String? = nil,
         title: String,
         action: @escaping () async -> Void
     ) {
         self.icon = icon
+        self.iconColor = iconColor
+        self.imageName = imageName
         self.title = title
         self.action = action
         self._externalLoading = .constant(nil)
@@ -39,11 +47,15 @@ struct SignInButton: View {
 
     init(
         icon: String,
+        iconColor: Color = .clear,
+        imageName: String? = nil,
         title: String,
         isLoading: Binding<Bool>,
         action: @escaping () async -> Void
     ) {
         self.icon = icon
+        self.iconColor = iconColor
+        self.imageName = imageName
         self.title = title
         self.action = action
         self._externalLoading = Binding<Bool?>(
@@ -63,9 +75,15 @@ struct SignInButton: View {
                 if isLoading {
                     ProgressView()
                         .tint(colorScheme == .dark ? MindsetColors.textPrimary : Color.white)
+                } else if let imageName {
+                    Image(imageName, bundle: .module)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: MindsetLayout.signInIconButton, height: MindsetLayout.signInIconButton)
                 } else {
                     Image(systemName: icon)
-                        .font(.system(size: 20))
+                        .font(.system(size: MindsetLayout.signInIconButton))
+                        .foregroundStyle(iconColor)
                 }
 
                 Text(isLoading ? FeatureAuthStrings.signingIn : title)
@@ -98,6 +116,7 @@ struct SignInButton: View {
 #Preview("Google") {
     SignInButton(
         icon: "g.circle.fill",
+        imageName: "GoogleLogo",
         title: FeatureAuthStrings.signInWithGoogle,
         action: {}
     )

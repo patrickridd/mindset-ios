@@ -164,6 +164,7 @@ private extension SignInView {
 
             SignInButton(
                 icon: "g.circle.fill",
+                imageName: "GoogleLogo",
                 title: FeatureAuthStrings.signInWithGoogle,
                 action: { await viewModel.signInWithGoogle() }
             )
@@ -171,6 +172,7 @@ private extension SignInView {
 
             SignInButton(
                 icon: "phone.circle.fill",
+                iconColor: MindsetColors.successGreen,
                 title: FeatureAuthStrings.signInWithPhone,
                 isLoading: Binding(
                     get: { viewModel.isLoading },

@@ -55,6 +55,7 @@ public enum MindsetLayout {
     public static let iconLarge: CGFloat = 24
     public static let iconExtraLarge: CGFloat = 32
     public static let iconButtonLarge: CGFloat = 44
+    public static let signInIconButton: CGFloat = 20
 
     /// Circular dismiss button (Reminders-style) — circle and icon size.
     public static let dismissButtonCircle: CGFloat = 30
