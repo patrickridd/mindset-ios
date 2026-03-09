@@ -6,7 +6,7 @@ globs: "**/*View.swift", "**/SharedUI/**", "**/Components/**", "**/Styles/**"
 # SwiftUI
 - **Standards** */mindset-ios/.agents/skills/swiftui-expert-skill 
 # Design System & UI
-- **Tokens:** ALWAYS use `MindsetColors`, `MindsetFonts`, and `MindsetLayout`. No magic numbers or hardcoded hex.
+- **Tokens:** ALWAYS use `MindsetColors`, `MindsetFonts`, and `MindsetLayout`. No magic numbers or hardcoded hex. Default to colorScheme tokens when applicable (text, background, etc...). 
 - **Structure:** Keep `body` minimal. Use private extensions for `// MARK: - Subviews` and `// MARK: - Body Composition`.
 - **Haptics:** `HapticManager` only in Views (onAppear or button actions), never in ViewModels or Use Cases.
 - **Liquid Glass:** Use the `.mindsetCard()` and `.mindsetButton()` semantic modifiers from `SharedUI`. 
