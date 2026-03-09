@@ -53,6 +53,7 @@ private extension SignInView {
                 Spacer()
             }
             .scrollIndicators(.hidden)
+            .toolbar(.hidden, for: .tabBar)
 
             if viewModel.isLoading {
                 loadingOverlay
