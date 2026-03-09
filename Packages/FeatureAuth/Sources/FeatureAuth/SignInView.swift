@@ -162,33 +162,22 @@ private extension SignInView {
             .frame(height: MindsetLayout.buttonHeight)
             .disabled(viewModel.isLoading)
 
-            GoogleSignInButton {
-                await viewModel.signInWithGoogle()
-            }
+            SignInButton(
+                icon: "g.circle.fill",
+                title: FeatureAuthStrings.signInWithGoogle,
+                action: { await viewModel.signInWithGoogle() }
+            )
             .disabled(viewModel.isLoading)
 
-            Button {
-                HapticManager.selection()
-                viewModel.showPhoneSignIn = true
-            } label: {
-                HStack(spacing: MindsetLayout.spacing12) {
-                    Image(systemName: "phone.circle.fill")
-                        .font(.system(size: 20))
-                    Text(FeatureAuthStrings.signInWithPhone)
-                        .font(MindsetFonts.button)
-                }
-                .foregroundStyle(colorScheme == .dark ? MindsetColors.textPrimary : Color.white)
-                .frame(maxWidth: .infinity)
-                .frame(height: MindsetLayout.buttonHeight)
-                .background(
-                    RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
-                        .fill(colorScheme == .dark ? Color.white.opacity(0.15) : Color.black)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
-                        .stroke(MindsetColors.borderSubtle, lineWidth: MindsetLayout.borderWidth)
-                )
-            }
+            SignInButton(
+                icon: "phone.circle.fill",
+                title: FeatureAuthStrings.signInWithPhone,
+                isLoading: Binding(
+                    get: { viewModel.isLoading },
+                    set: { viewModel.isLoading = $0 }
+                ),
+                action: { viewModel.showPhoneSignIn = true }
+            )
             .disabled(viewModel.isLoading)
         }
         .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
