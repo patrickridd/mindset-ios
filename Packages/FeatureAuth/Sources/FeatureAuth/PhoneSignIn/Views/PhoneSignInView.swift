@@ -6,7 +6,6 @@
 //
 
 import Domain
-import PhoneNumberKit
 import SharedLocalization
 import SharedUI
 import SharedUtils
@@ -14,37 +13,14 @@ import SwiftUI
 
 /// Two-step phone sign-in flow: (1) enter phone, send code, (2) enter code, verify.
 public struct PhoneSignInView: View {
-    @Bindable var viewModel: SignInViewModel
+    @Bindable var phoneViewModel: PhoneSignInViewModel
     @Environment(\.colorScheme) private var colorScheme
-    @Environment(\.dismiss) private var dismiss
 
-    @State private var step: Step = .phoneNumber
-    @State private var nationalNumber = ""
-    @State private var verificationCode = ""
-    @State private var verificationID: String?
-    @State private var isSendingCode = false
-    @State private var showCountryPicker = false
-    @State private var validationError: String?
     @FocusState private var isPhoneFieldFocused
     @FocusState private var isCodeFieldFocused
 
-    @State private var selectedRegionCode: String = {
-        Locale.current.region?.identifier ?? "US"
-    }()
-
-    private let phoneNumberKit = PhoneNumberKit()
-
-    private var selectedCountry: CountryInfo {
-        CountryInfo.byRegionCode[selectedRegionCode] ?? CountryInfo.byRegionCode["US"]!
-    }
-
-    private enum Step {
-        case phoneNumber
-        case verificationCode
-    }
-
-    public init(viewModel: SignInViewModel) {
-        self.viewModel = viewModel
+    public init(phoneViewModel: PhoneSignInViewModel) {
+        self.phoneViewModel = phoneViewModel
     }
 
     // MARK: - Body Composition
@@ -54,13 +30,14 @@ public struct PhoneSignInView: View {
             backgroundView
 
             VStack(spacing: MindsetLayout.spacing20) {
-                if step == .phoneNumber {
+                if phoneViewModel.step == .phoneNumber {
                     phoneNumberStep
                 } else {
                     verificationCodeStep
                 }
                 errorSection
             }
+            .animation(.default, value: phoneViewModel.step)
             .padding(MindsetLayout.paddingScreenHorizontal)
         }
         .navigationTitle(FeatureAuthStrings.phoneSignInTitle)
@@ -72,31 +49,22 @@ public struct PhoneSignInView: View {
         .onAppear {
             isCodeFieldFocused = true
         }
-        .sheet(isPresented: $showCountryPicker) {
+        .sheet(isPresented: $phoneViewModel.showCountryPicker) {
             CountryCodePickerSheet(
-                selectedRegionCode: $selectedRegionCode,
+                selectedRegionCode: $phoneViewModel.selectedRegionCode,
                 onSelect: {
                     HapticManager.selection()
-                    showCountryPicker = false
+                    phoneViewModel.showCountryPicker = false
                 }
             )
         }
-        .onChange(of: selectedRegionCode) { _, _ in
-            let maxDigits = PhoneNumberValidation.maxNationalDigits(
-                phoneNumberKit: phoneNumberKit,
-                regionCode: selectedRegionCode
-            )
-            let digits = nationalNumber.filter { $0.isNumber }
-            nationalNumber = String(digits.prefix(maxDigits))
+        .onChange(of: phoneViewModel.selectedRegionCode) { _, _ in
+            phoneViewModel.truncateNationalNumberToCurrentRegion()
         }
-        .onChange(of: nationalNumber) { _, newValue in
-            let maxDigits = PhoneNumberValidation.maxNationalDigits(
-                phoneNumberKit: phoneNumberKit,
-                regionCode: selectedRegionCode
-            )
-            let digits = newValue.filter { $0.isNumber }
-            if digits.count > maxDigits {
-                nationalNumber = String(digits.prefix(maxDigits))
+        .onChange(of: phoneViewModel.nationalNumber) { _, newValue in
+            let validated = phoneViewModel.validatedNationalNumber(newValue)
+            if validated != newValue {
+                phoneViewModel.nationalNumber = validated
             }
         }
     }
@@ -120,13 +88,13 @@ private extension PhoneSignInView {
 
     var errorSection: some View {
         Group {
-            if let error = viewModel.errorMessage {
+            if let error = phoneViewModel.signInViewModel.errorMessage {
                 Text(error)
                     .font(MindsetFonts.body)
                     .foregroundStyle(MindsetColors.accentCoral)
                     .multilineTextAlignment(.center)
             }
-            if let validationError {
+            if let validationError = phoneViewModel.validationError {
                 Text(validationError)
                     .font(MindsetFonts.body)
                     .foregroundStyle(MindsetColors.accentCoral)
@@ -146,7 +114,7 @@ private extension PhoneSignInView {
 
             Button {
                 HapticManager.action()
-                Task { await sendNumber() }
+                Task { await phoneViewModel.sendNumber() }
             } label: {
                 Text(FeatureAuthStrings.sendNumber)
                     .font(MindsetFonts.button)
@@ -154,7 +122,7 @@ private extension PhoneSignInView {
                     .frame(maxWidth: .infinity)
                     .frame(height: MindsetLayout.buttonHeight)
             }
-            .disabled(nationalNumber.isEmpty || isSendingCode)
+            .disabled(phoneViewModel.nationalNumber.isEmpty || phoneViewModel.isSendingCode)
             .mindsetButton()
         }
     }
@@ -162,12 +130,12 @@ private extension PhoneSignInView {
     var countryPickerButton: some View {
         Button {
             HapticManager.selection()
-            showCountryPicker = true
+            phoneViewModel.showCountryPicker = true
         } label: {
             HStack(spacing: MindsetLayout.spacing6) {
-                Text(flagEmoji(for: selectedRegionCode))
+                Text(flagEmoji(for: phoneViewModel.selectedRegionCode))
                     .font(.system(size: MindsetLayout.iconLarge))
-                Text("+\(selectedCountry.dialCode)")
+                Text("+\(phoneViewModel.selectedCountry.dialCode)")
                     .font(MindsetFonts.body)
                     .foregroundStyle(MindsetColors.textPrimary)
                 Image(systemName: "chevron.down")
@@ -186,17 +154,17 @@ private extension PhoneSignInView {
 
     var phoneNumberField: some View {
         PhoneNumberTextField(
-            nationalNumber: $nationalNumber,
-            regionCode: selectedRegionCode,
+            nationalNumber: $phoneViewModel.nationalNumber,
+            regionCode: phoneViewModel.selectedRegionCode,
             placeholder: "",
-            phoneNumberKit: phoneNumberKit
+            phoneNumberKit: phoneViewModel.phoneNumberKit
         )
         .focused($isPhoneFieldFocused)
     }
 
     var verificationCodeStep: some View {
         VStack(spacing: MindsetLayout.spacing16) {
-            TextField(FeatureAuthStrings.codePlaceholder, text: $verificationCode)
+            TextField(FeatureAuthStrings.codePlaceholder, text: $phoneViewModel.verificationCode)
                 .textFieldStyle(.plain)
                 .font(MindsetFonts.body)
                 .foregroundStyle(MindsetColors.textPrimary)
@@ -218,7 +186,7 @@ private extension PhoneSignInView {
             Button {
                 HapticManager.action()
                 isCodeFieldFocused = false
-                Task { await verifyCode() }
+                Task { await phoneViewModel.verifyCode() }
             } label: {
                 Text(FeatureAuthStrings.verify)
                     .font(MindsetFonts.button)
@@ -226,48 +194,11 @@ private extension PhoneSignInView {
                     .frame(maxWidth: .infinity)
                     .frame(height: MindsetLayout.buttonHeight)
             }
-            .disabled(verificationCode.isEmpty || viewModel.isLoading)
+            .disabled(
+                phoneViewModel.verificationCode.isEmpty || phoneViewModel.signInViewModel.isLoading
+            )
             .mindsetButton()
         }
-    }
-
-    func sendNumber() async {
-        validationError = nil
-        viewModel.dismissError()
-
-        guard let e164 = toE164(regionCode: selectedRegionCode, nationalNumber: nationalNumber)
-        else {
-            validationError = FeatureAuthStrings.Error.invalidPhoneNumber
-            return
-        }
-
-        isSendingCode = true
-        defer { isSendingCode = false }
-
-        if let id = await viewModel.requestPhoneVerificationCode(phoneNumber: e164) {
-            verificationID = id
-            withAnimation {
-                step = .verificationCode
-            }
-        }
-    }
-
-    func verifyCode() async {
-        guard let id = verificationID else { return }
-
-        await viewModel.signInWithPhone(
-            verificationID: id,
-            verificationCode: verificationCode.trimmingCharacters(in: .whitespaces)
-        )
-    }
-
-    func toE164(regionCode: String, nationalNumber: String) -> String? {
-        let digits = nationalNumber.filter { $0.isNumber }
-        guard !digits.isEmpty else { return nil }
-        guard let number = try? phoneNumberKit.parse(digits, withRegion: regionCode) else {
-            return nil
-        }
-        return phoneNumberKit.format(number, toType: .e164)
     }
 
     func flagEmoji(for regionCode: String) -> String {

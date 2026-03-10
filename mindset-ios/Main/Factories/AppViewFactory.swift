@@ -68,7 +68,8 @@ struct AppViewFactory: MainViewFactory {
         let viewModel = SignInViewModel(
             signInOrLinkUseCase: signInOrLinkUseCase,
             appleSignInCredentialBuilder: appleSignInCredentialBuilder,
-            googleSignInCredentialProvider: serviceFactory.makeGoogleSignInCredentialProvider(logger: logger),
+            googleSignInCredentialProvider: serviceFactory.makeGoogleSignInCredentialProvider(
+                logger: logger),
             phoneVerificationProvider: serviceFactory.makePhoneVerificationProvider(logger: logger),
             logger: logger,
             onPhoneSignInButtonTapped: {
@@ -78,9 +79,11 @@ struct AppViewFactory: MainViewFactory {
                 coordinator.signInCompleted()
 
                 let pathCount = coordinator.signInPath.count
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
-                    coordinator.signInPath.removeLast(pathCount)
-                })
+                DispatchQueue.main.asyncAfter(
+                    deadline: .now() + 1.0,
+                    execute: {
+                        coordinator.signInPath.removeLast(pathCount)
+                    })
             },
             onSkip: {
                 coordinator.signInCompleted()
@@ -93,7 +96,8 @@ struct AppViewFactory: MainViewFactory {
                     .navigationDestination(for: SignInDestination.self) { destination in
                         switch destination {
                         case .phoneSignIn:
-                            PhoneSignInView(viewModel: viewModel)
+                            PhoneSignInView(
+                                phoneViewModel: PhoneSignInViewModel(signInViewModel: viewModel))
                         }
                     }
             }
@@ -101,7 +105,8 @@ struct AppViewFactory: MainViewFactory {
     }
 
     func makeOnboardingView() -> AnyView {
-        let analyzingViewModel = AnalyzingViewModel(signInOrLinkUseCase: signInOrLinkUseCase, logger: logger)
+        let analyzingViewModel = AnalyzingViewModel(
+            signInOrLinkUseCase: signInOrLinkUseCase, logger: logger)
         let viewModel = OnboardingViewModel(
             userRepository: userRepository,
             signInOrLinkUseCase: signInOrLinkUseCase,
@@ -179,7 +184,8 @@ struct AppViewFactory: MainViewFactory {
         let signInViewModel = SignInViewModel(
             signInOrLinkUseCase: signInOrLinkUseCase,
             appleSignInCredentialBuilder: appleSignInCredentialBuilder,
-            googleSignInCredentialProvider: serviceFactory.makeGoogleSignInCredentialProvider(logger: logger),
+            googleSignInCredentialProvider: serviceFactory.makeGoogleSignInCredentialProvider(
+                logger: logger),
             phoneVerificationProvider: serviceFactory.makePhoneVerificationProvider(logger: logger),
             logger: logger,
             embedInNavigationStack: false,
@@ -218,7 +224,9 @@ struct AppViewFactory: MainViewFactory {
                         case .signInView:
                             SignInView(viewModel: signInViewModel)
                         case .phoneSignIn:
-                            PhoneSignInView(viewModel: signInViewModel)
+                            PhoneSignInView(
+                                phoneViewModel: PhoneSignInViewModel(
+                                    signInViewModel: signInViewModel))
                         }
                     }
             }
