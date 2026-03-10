@@ -53,8 +53,8 @@ extension UserProfileView {
             MindsetIconButton(
                 icon: "person.crop.circle.fill",
                 color: MindsetColors.accentOrange,
-                circleWidthHeight: MindsetLayout.avatarSize,
-                iconFont: MindsetFonts.mindsetAvatarIconButtonFont
+                circleSize: MindsetLayout.avatarSize,
+                iconSize: MindsetLayout.avatarIconSize
             )
             Text(viewModel.displayName ?? FeatureUserProfileStrings.defaultUserName)
                 .font(MindsetFonts.featureTitle)

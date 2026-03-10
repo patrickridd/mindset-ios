@@ -11,10 +11,11 @@ public struct MindsetIconButton: View {
 
     let icon: String
     let color: Color
-    let circleWidthHeight: CGFloat
-    let iconFont: Font
+    let circleSize: CGFloat
+    let iconSize: CGFloat
     let leadingPadding: CGFloat
-    
+    let sizeRatio: CGFloat
+
     @Environment(\.colorScheme) private var colorScheme
 
     private var iconBackgroundOpacity: Double {
@@ -24,14 +25,16 @@ public struct MindsetIconButton: View {
     public init(
         icon: String,
         color: Color,
-        circleWidthHeight: CGFloat = MindsetLayout.iconButtonLarge,
-        iconFont: Font = MindsetFonts.mindsetIconButtonFont,
+        circleSize: CGFloat = MindsetLayout.iconButtonLarge,
+        iconSize: CGFloat = MindsetLayout.iconLarge,
+        sizeRatio: CGFloat = 1.0,
         leadingPadding: CGFloat = 0
     ) {
         self.icon = icon
         self.color = color
-        self.circleWidthHeight = circleWidthHeight
-        self.iconFont = iconFont
+        self.circleSize = circleSize
+        self.iconSize = iconSize
+        self.sizeRatio = sizeRatio
         self.leadingPadding = leadingPadding
     }
     
@@ -40,12 +43,12 @@ public struct MindsetIconButton: View {
             Circle()
                 .fill(color.opacity(iconBackgroundOpacity))
                 .frame(
-                    width: circleWidthHeight,
-                    height: circleWidthHeight
+                    width: circleSize * sizeRatio,
+                    height: circleSize * sizeRatio
                 )
 
             Image(systemName: icon)
-                .font(iconFont)
+                .font(.system(size: iconSize * sizeRatio))
                 .foregroundStyle(color)
                 .padding(.leading, leadingPadding)
         }
@@ -57,7 +60,7 @@ public struct MindsetIconButton: View {
     MindsetIconButton(
         icon: "trash",
         color: MindsetColors.accentDestructiveRed,
-        iconFont: .system(size: 20)
+        iconSize: 20
     )
 }
 
@@ -65,7 +68,7 @@ public struct MindsetIconButton: View {
     MindsetIconButton(
         icon: "rectangle.portrait.and.arrow.forward",
         color: MindsetColors.accentOrange,
-        iconFont: .system(size: 20),
+        iconSize: 20,
         leadingPadding: 5
     )
 }

@@ -134,7 +134,7 @@ extension SettingsView {
                 MindsetIconButton(
                     icon: "rectangle.portrait.and.arrow.right",
                     color: MindsetColors.accentCoral,
-                    iconFont: .system(size: 20),
+                    iconSize: 20,
                     leadingPadding: MindsetLayout.spacing5
                 )
                 Text(SharedLocalizedString.Auth.signOut)
@@ -158,7 +158,7 @@ extension SettingsView {
                 MindsetIconButton(
                     icon: "trash",
                     color: MindsetColors.accentDestructiveRed,
-                    iconFont: .system(size: 20)
+                    iconSize: 20
                 )
 
                 Text(viewModel.deleteAccountButtonTitle)
