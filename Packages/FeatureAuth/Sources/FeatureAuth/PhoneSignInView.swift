@@ -50,17 +50,22 @@ public struct PhoneSignInView: View {
     // MARK: - Body Composition
 
     public var body: some View {
-        VStack(spacing: MindsetLayout.spacing20) {
-            if step == .phoneNumber {
-                phoneNumberStep
-            } else {
-                verificationCodeStep
+        ZStack {
+            backgroundView
+
+            VStack(spacing: MindsetLayout.spacing20) {
+                if step == .phoneNumber {
+                    phoneNumberStep
+                } else {
+                    verificationCodeStep
+                }
+                errorSection
             }
-            errorSection
+            .padding(MindsetLayout.paddingScreenHorizontal)
         }
-        .padding(MindsetLayout.paddingScreenHorizontal)
         .navigationTitle(FeatureAuthStrings.phoneSignInTitle)
         .navigationBarTitleDisplayMode(.large)
+        .toolbarBackground(MindsetColors.backgroundDark.opacity(0.95), for: .navigationBar)
         .onAppear {
             isPhoneFieldFocused = true
         }
@@ -82,17 +87,30 @@ public struct PhoneSignInView: View {
 // MARK: - Subviews
 
 private extension PhoneSignInView {
+    var backgroundView: some View {
+        LinearGradient(
+            colors: [
+                MindsetColors.backgroundDark,
+                MindsetColors.backgroundDarkSoft,
+                MindsetColors.backgroundWarmAccent.opacity(0.5),
+            ],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+        .ignoresSafeArea()
+    }
+
     var errorSection: some View {
         Group {
             if let error = viewModel.errorMessage {
                 Text(error)
-                    .font(MindsetFonts.caption)
+                    .font(MindsetFonts.body)
                     .foregroundStyle(MindsetColors.accentCoral)
                     .multilineTextAlignment(.center)
             }
             if let validationError {
                 Text(validationError)
-                    .font(MindsetFonts.caption)
+                    .font(MindsetFonts.body)
                     .foregroundStyle(MindsetColors.accentCoral)
                     .multilineTextAlignment(.center)
             }
@@ -133,16 +151,16 @@ private extension PhoneSignInView {
                     .font(.system(size: MindsetLayout.iconLarge))
                 Text("+\(selectedCountry.dialCode)")
                     .font(MindsetFonts.body)
-                    .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
+                    .foregroundStyle(MindsetColors.textPrimary)
                 Image(systemName: "chevron.down")
                     .font(.system(size: MindsetLayout.iconSmall, weight: .medium))
-                    .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
+                    .foregroundStyle(MindsetColors.textSecondary)
             }
             .padding(.horizontal, MindsetLayout.paddingMedium)
             .padding(.vertical, MindsetLayout.paddingSmall)
             .background(
                 RoundedRectangle(cornerRadius: MindsetLayout.radiusMedium)
-                    .fill(MindsetColors.backgroundCard(for: colorScheme))
+                    .fill(MindsetColors.fillSubtle)
             )
         }
         .buttonStyle(.plain)
@@ -160,10 +178,21 @@ private extension PhoneSignInView {
     var verificationCodeStep: some View {
         VStack(spacing: MindsetLayout.spacing16) {
             TextField(FeatureAuthStrings.codePlaceholder, text: $verificationCode)
-                .textFieldStyle(.roundedBorder)
+                .textFieldStyle(.plain)
+                .font(MindsetFonts.body)
+                .foregroundStyle(MindsetColors.textPrimary)
                 .keyboardType(.numberPad)
                 .textContentType(.oneTimeCode)
                 .focused($isCodeFieldFocused)
+                .padding(MindsetLayout.paddingStandard)
+                .background(
+                    RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
+                        .fill(MindsetColors.fillSubtle)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
+                                .stroke(MindsetColors.borderSubtle, lineWidth: MindsetLayout.borderWidth)
+                        )
+                )
 
             Button {
                 HapticManager.action()
@@ -256,6 +285,8 @@ private struct PhoneNumberTextField: View {
     var body: some View {
         TextField(placeholder, text: formattedBinding)
             .textFieldStyle(.plain)
+            .font(MindsetFonts.body)
+            .foregroundStyle(MindsetColors.textPrimary)
             .keyboardType(.phonePad)
             .textContentType(.telephoneNumber)
             .autocorrectionDisabled()
@@ -339,52 +370,70 @@ private struct CountryCodePickerSheet: View {
     @Binding var selectedRegionCode: String
     let onSelect: () -> Void
 
-    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
 
     private var sortedCountries: [CountryInfo] {
         CountryInfo.byRegionCode.values.sorted { $0.name < $1.name }
     }
 
+    private var backgroundView: some View {
+        LinearGradient(
+            colors: [
+                MindsetColors.backgroundDark,
+                MindsetColors.backgroundDarkSoft,
+                MindsetColors.backgroundWarmAccent.opacity(0.5),
+            ],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+        .ignoresSafeArea()
+    }
+
     var body: some View {
-        NavigationStack {
-            List(sortedCountries) { country in
-                Button {
-                    selectedRegionCode = country.regionCode
-                    onSelect()
-                    dismiss()
-                } label: {
-                    HStack(spacing: MindsetLayout.spacing12) {
-                        Text(flagEmoji(for: country.regionCode))
-                            .font(.system(size: MindsetLayout.iconExtraLarge))
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(country.name)
-                                .font(MindsetFonts.body)
-                                .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
-                            Text("+\(country.dialCode)")
-                                .font(MindsetFonts.caption)
-                                .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
+        ZStack {
+            backgroundView
+
+            NavigationStack {
+                List(sortedCountries) { country in
+                    Button {
+                        selectedRegionCode = country.regionCode
+                        onSelect()
+                        dismiss()
+                    } label: {
+                        HStack(spacing: MindsetLayout.spacing12) {
+                            Text(flagEmoji(for: country.regionCode))
+                                .font(.system(size: MindsetLayout.iconExtraLarge))
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(country.name)
+                                    .font(MindsetFonts.body)
+                                    .foregroundStyle(MindsetColors.textPrimary)
+                                Text("+\(country.dialCode)")
+                                    .font(MindsetFonts.caption)
+                                    .foregroundStyle(MindsetColors.textSecondary)
+                            }
+                            Spacer()
+                            if country.regionCode == selectedRegionCode {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundStyle(MindsetColors.accentOrange)
+                            }
                         }
-                        Spacer()
-                        if country.regionCode == selectedRegionCode {
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundStyle(MindsetColors.labelAccent(for: colorScheme))
-                        }
+                        .padding(.vertical, MindsetLayout.spacing4)
                     }
-                    .padding(.vertical, MindsetLayout.spacing4)
                 }
-            }
-            .navigationTitle(FeatureAuthStrings.selectCountry)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
+                .scrollContentBackground(.hidden)
+                .navigationTitle(FeatureAuthStrings.selectCountry)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         HapticManager.selection()
                         dismiss()
                     } label: {
                         Text(SharedLocalizedString.done)
+                            .foregroundStyle(MindsetColors.textPrimary)
                     }
                 }
+            }
             }
         }
     }
