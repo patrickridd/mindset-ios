@@ -1,0 +1,32 @@
+---
+description: Enforces self-documenting code and DocC API documentation standards for Swift.
+globs: "**/*.swift"
+---
+
+# Swift Documentation & Commenting Standards
+
+## 1. Prioritize Self-Documenting Code
+- **Descriptive Naming**: Use highly descriptive variable, constant, and function names that explain their purpose without needing a comment.
+- **Refactor over Commenting**: If logic is complex enough to require an explanation, prioritize refactoring it into smaller, well-named functions rather than adding inline comments.
+- **Avoid Redundancy**: Do not add comments that merely repeat the code (e.g., `// increment index`).
+
+## 2. DocC for APIs
+- **Public & Internal APIs**: Use triple-slash `///` (DocC) comments for all public and internal functions, properties, and types.
+- **Structure**:
+    - Start with a single-sentence **summary** (fragment preferred) ending in a period.
+    - Use a blank line before adding a **discussion** paragraph if further detail is needed.
+    - Use standard callouts like `- Parameter:`, `- Returns:`, and `- Throws:` where applicable.
+
+## 3. Usage of Inline Comments
+- **Limit Inline Comments**: Only use double-slash `//` comments to explain a non-obvious "Why" (intent/business logic) rather than the "What" (implementation).
+- **No Git History in Comments**: Never include author names, dates, or change logs in comments; rely on Git history instead.
+
+## Examples
+
+### ❌ Bad (Redundant & Undocumented API)
+```swift
+// This function adds two numbers
+func add(a: Int, b: Int) -> Int {
+    let result = a + b // add a and b
+    return result
+}

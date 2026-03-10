@@ -89,6 +89,7 @@
 - **Subscriptions:** RevenueCat (already integrated).
 - **Architecture:** Modular (Domain, Data, Feature modules). Use ".cursor/rules/architecture-di.mdc" as guide
 - **Navigation:** Coordinator Pattern.
+- **Comments and Documentation:**  Use ".cursor/rules/swift-documentation.mdc" as guide
 
 ## 6. Critical Build Configurations
 - **Hot Reload:** InjectionIII is configured (must use GitHub version, NOT App Store version).
