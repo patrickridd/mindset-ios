@@ -11,5 +11,6 @@ public enum ProfileDestination: Hashable {
     case security
     case privacyPolicy
     case signInView
+    case phoneSignIn
     case debugTools
 }

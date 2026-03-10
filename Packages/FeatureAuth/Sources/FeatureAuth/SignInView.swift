@@ -63,14 +63,6 @@ private extension SignInView {
                 errorAlert(message: errorMessage)
             }
         }
-        .sheet(
-            isPresented: Binding(
-                get: { viewModel.showPhoneSignIn },
-                set: { viewModel.showPhoneSignIn = $0 }
-            )
-        ) {
-            PhoneSignInView(viewModel: viewModel)
-        }
         .toolbar {
             if viewModel.embedInNavigationStack {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -180,7 +172,9 @@ private extension SignInView {
                     get: { viewModel.isLoading },
                     set: { viewModel.isLoading = $0 }
                 ),
-                action: { viewModel.showPhoneSignIn = true }
+                action: {
+                    viewModel.onPhoneSignInButtonTapped()
+                }
             )
             .disabled(viewModel.isLoading)
         }
@@ -280,6 +274,7 @@ private extension SignInView {
         googleSignInCredentialProvider: MockGoogleSignInCredentialProvider(),
         phoneVerificationProvider: MockPhoneVerificationProvider(),
         logger: DebugLogger.shared,
+        onPhoneSignInButtonTapped: {},
         onSignInSuccess: { _ in },
         onSkip: {}
     )

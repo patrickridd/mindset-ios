@@ -71,6 +71,9 @@ struct AppViewFactory: MainViewFactory {
             googleSignInCredentialProvider: serviceFactory.makeGoogleSignInCredentialProvider(logger: logger),
             phoneVerificationProvider: serviceFactory.makePhoneVerificationProvider(logger: logger),
             logger: logger,
+            onPhoneSignInButtonTapped: {
+                coordinator.signInPath.append(SignInDestination.phoneSignIn)
+            },
             onSignInSuccess: { _ in
                 coordinator.signInCompleted()
             },
@@ -80,7 +83,15 @@ struct AppViewFactory: MainViewFactory {
         )
 
         return AnyView(
-            SignInView(viewModel: viewModel)
+            NavigationStack(path: Bindable(coordinator).signInPath) {
+                SignInView(viewModel: viewModel)
+                    .navigationDestination(for: SignInDestination.self) { destination in
+                        switch destination {
+                        case .phoneSignIn:
+                            PhoneSignInView(viewModel: viewModel)
+                        }
+                    }
+            }
         )
     }
 
@@ -160,6 +171,27 @@ struct AppViewFactory: MainViewFactory {
                 coordinator.profilePath.append(ProfileDestination.debugTools)
             }
         )
+        let signInViewModel = SignInViewModel(
+            signInOrLinkUseCase: signInOrLinkUseCase,
+            appleSignInCredentialBuilder: appleSignInCredentialBuilder,
+            googleSignInCredentialProvider: serviceFactory.makeGoogleSignInCredentialProvider(logger: logger),
+            phoneVerificationProvider: serviceFactory.makePhoneVerificationProvider(logger: logger),
+            logger: logger,
+            embedInNavigationStack: false,
+            onPhoneSignInButtonTapped: {
+                coordinator.profilePath.append(ProfileDestination.phoneSignIn)
+            },
+            onSignInSuccess: { _ in
+                if coordinator.profilePath.count > 0 {
+                    coordinator.profilePath.removeLast()
+                }
+            },
+            onSkip: {
+                if coordinator.profilePath.count > 0 {
+                    coordinator.profilePath.removeLast()
+                }
+            }
+        )
         #if DEBUG
             let debugViewModel = DebugToolsViewModel()
         #endif
@@ -181,25 +213,9 @@ struct AppViewFactory: MainViewFactory {
                         case .privacyPolicy:
                             PrivacyPolicyView(url: privacyPolicyURL)
                         case .signInView:
-                            let signInViewModel = SignInViewModel(
-                                signInOrLinkUseCase: signInOrLinkUseCase,
-                                appleSignInCredentialBuilder: appleSignInCredentialBuilder,
-                                googleSignInCredentialProvider: serviceFactory.makeGoogleSignInCredentialProvider(logger: logger),
-                                phoneVerificationProvider: serviceFactory.makePhoneVerificationProvider(logger: logger),
-                                logger: logger,
-                                embedInNavigationStack: false,
-                                onSignInSuccess: { _ in
-                                    if coordinator.profilePath.count > 0 {
-                                        coordinator.profilePath.removeLast()
-                                    }
-                                },
-                                onSkip: {
-                                    if coordinator.profilePath.count > 0 {
-                                        coordinator.profilePath.removeLast()
-                                    }
-                                }
-                            )
                             SignInView(viewModel: signInViewModel)
+                        case .phoneSignIn:
+                            PhoneSignInView(viewModel: signInViewModel)
                         }
                     }
             }
@@ -207,28 +223,25 @@ struct AppViewFactory: MainViewFactory {
     }
 
     func makeSettingsView() -> AnyView {
-        return AnyView(
-            SettingsView(
-                viewModel: SettingsViewModel(
-                    authSessionManagement: authService,
-                    authStateQuery: authService,
-                    persistence: persistence,
-                    appleSignInNonceStorage: appleSignInNonceStorage,
-                    onSignOut: {
-                        coordinator.signOutCompleted()
-                    },
-                    onDeleteAccount: {
-                        coordinator.accountDeleted()
-                    },
-                    onNavigateToPrivacyPolicy: {
-                        coordinator.profilePath.append(ProfileDestination.privacyPolicy)
-                    },
-                    onNavigateToSecureAccount: {
-                        coordinator.profilePath.append(ProfileDestination.signInView)
-                    }
-                )
-            )
+        let viewModel = SettingsViewModel(
+            authSessionManagement: authService,
+            authStateQuery: authService,
+            persistence: persistence,
+            appleSignInNonceStorage: appleSignInNonceStorage,
+            onSignOut: {
+                coordinator.signOutCompleted()
+            },
+            onDeleteAccount: {
+                coordinator.accountDeleted()
+            },
+            onNavigateToPrivacyPolicy: {
+                coordinator.profilePath.append(ProfileDestination.privacyPolicy)
+            },
+            onNavigateToSecureAccount: {
+                coordinator.profilePath.append(ProfileDestination.signInView)
+            }
         )
+        return AnyView(SettingsView(viewModel: viewModel))
     }
 
     func makeMindsetHistoryView() -> AnyView {

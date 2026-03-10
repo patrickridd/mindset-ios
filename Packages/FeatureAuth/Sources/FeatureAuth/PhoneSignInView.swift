@@ -49,40 +49,28 @@ public struct PhoneSignInView: View {
     // MARK: - Body Composition
 
     public var body: some View {
-        NavigationStack {
-            VStack(spacing: MindsetLayout.spacing20) {
-                if step == .phoneNumber {
-                    phoneNumberStep
-                } else {
-                    verificationCodeStep
+        VStack(spacing: MindsetLayout.spacing20) {
+            if step == .phoneNumber {
+                phoneNumberStep
+            } else {
+                verificationCodeStep
+            }
+            errorSection
+        }
+        .padding(MindsetLayout.paddingScreenHorizontal)
+        .navigationTitle(FeatureAuthStrings.phoneSignInTitle)
+        .navigationBarTitleDisplayMode(.large)
+        .onAppear {
+            isTextFieldFocused = true
+        }
+        .sheet(isPresented: $showCountryPicker) {
+            CountryCodePickerSheet(
+                selectedRegionCode: $selectedRegionCode,
+                onSelect: {
+                    HapticManager.selection()
+                    showCountryPicker = false
                 }
-                errorSection
-            }
-            .padding(MindsetLayout.paddingScreenHorizontal)
-            .navigationTitle(FeatureAuthStrings.phoneSignInTitle)
-            .navigationBarTitleDisplayMode(.large)
-            .onAppear {
-                isTextFieldFocused = true
-            }
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(role: .cancel) {
-                        HapticManager.selection()
-                        dismiss()
-                    } label: {
-                        Text(SharedLocalizedString.cancel)
-                    }
-                }
-            }
-            .sheet(isPresented: $showCountryPicker) {
-                CountryCodePickerSheet(
-                    selectedRegionCode: $selectedRegionCode,
-                    onSelect: {
-                        HapticManager.selection()
-                        showCountryPicker = false
-                    }
-                )
-            }
+            )
         }
     }
 }

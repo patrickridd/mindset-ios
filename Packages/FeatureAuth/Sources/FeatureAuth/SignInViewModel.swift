@@ -15,7 +15,6 @@ import Observation
 public final class SignInViewModel {
     public var isLoading = false
     public var errorMessage: String?
-    public var showPhoneSignIn = false
     var loadingMessage: String = "Setting up..."
 
     private let signInOrLinkUseCase: SignInOrLinkUseCase
@@ -25,6 +24,8 @@ public final class SignInViewModel {
     private let logger: AppLogger
     private let onSignInSuccess: (String) -> Void  // User ID
     private let onSkip: () -> Void
+    let onPhoneSignInButtonTapped: () -> Void
+    
     let embedInNavigationStack: Bool
 
     public init(
@@ -34,6 +35,7 @@ public final class SignInViewModel {
         phoneVerificationProvider: PhoneVerificationProvider,
         logger: AppLogger,
         embedInNavigationStack: Bool = true,
+        onPhoneSignInButtonTapped: @escaping () -> Void,
         onSignInSuccess: @escaping (String) -> Void,
         onSkip: @escaping () -> Void
     ) {
@@ -43,6 +45,7 @@ public final class SignInViewModel {
         self.phoneVerificationProvider = phoneVerificationProvider
         self.logger = logger
         self.embedInNavigationStack = embedInNavigationStack
+        self.onPhoneSignInButtonTapped = onPhoneSignInButtonTapped
         self.onSignInSuccess = onSignInSuccess
         self.onSkip = onSkip
     }
@@ -156,7 +159,6 @@ public final class SignInViewModel {
             )
             let userID = try await signInOrLinkUseCase.execute(with: credential)
             isLoading = false
-            showPhoneSignIn = false
             onSignInSuccess(userID)
 
         } catch {
