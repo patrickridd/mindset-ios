@@ -209,3 +209,19 @@ private extension PhoneSignInView {
             .joined()
     }
 }
+
+#Preview {
+    let signInViewModel = SignInViewModel(
+        signInOrLinkUseCase: SignInOrLinkUseCase(authService: MockAuthService()),
+        appleSignInCredentialBuilder: AppleSignInCredentialBuilder(nonceStorage: AppleSignInNonceStorage()),
+        googleSignInCredentialProvider: MockGoogleSignInCredentialProvider(),
+        phoneVerificationProvider: MockPhoneVerificationProvider(),
+        logger: DebugLogger.shared,
+        onPhoneSignInButtonTapped: {},
+        onSignInSuccess: { _ in },
+        onSkip: {}
+    )
+    let viewModel = PhoneSignInViewModel(signInViewModel: signInViewModel)
+    
+    PhoneSignInView(phoneViewModel: viewModel)
+}
