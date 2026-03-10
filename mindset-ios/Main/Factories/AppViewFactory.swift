@@ -182,14 +182,12 @@ struct AppViewFactory: MainViewFactory {
                 coordinator.profilePath.append(ProfileDestination.phoneSignIn)
             },
             onSignInSuccess: { _ in
-                if coordinator.profilePath.count > 0 {
-                    coordinator.profilePath.removeLast()
-                }
+                // Pop back to "Security and Settings"
+                let profilePathCount = coordinator.profilePath.count - 1
+                coordinator.profilePath.removeLast(profilePathCount)
             },
             onSkip: {
-                if coordinator.profilePath.count > 0 {
-                    coordinator.profilePath.removeLast()
-                }
+                // No skipping option in UserProfile
             }
         )
         #if DEBUG
