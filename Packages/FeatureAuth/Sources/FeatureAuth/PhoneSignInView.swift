@@ -167,6 +167,7 @@ private extension PhoneSignInView {
 
             Button {
                 HapticManager.action()
+                isCodeFieldFocused = false
                 Task { await verifyCode() }
             } label: {
                 Text(FeatureAuthStrings.verify)

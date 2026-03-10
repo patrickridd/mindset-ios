@@ -76,6 +76,11 @@ struct AppViewFactory: MainViewFactory {
             },
             onSignInSuccess: { _ in
                 coordinator.signInCompleted()
+
+                let pathCount = coordinator.signInPath.count
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+                    coordinator.signInPath.removeLast(pathCount)
+                })
             },
             onSkip: {
                 coordinator.signInCompleted()
