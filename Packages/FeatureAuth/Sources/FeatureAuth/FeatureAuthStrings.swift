@@ -108,9 +108,9 @@ public enum FeatureAuthStrings {
     public static let phonePlaceholder = String(
         localized: "auth.phonePlaceholder", bundle: .module,
         comment: "Phone number input placeholder")
-    public static let sendCode = String(
-        localized: "auth.sendCode", bundle: .module,
-        comment: "Send verification code button")
+    public static let sendNumber = String(
+        localized: "auth.sendNumber", bundle: .module,
+        comment: "Send Phone number button")
     public static let codePlaceholder = String(
         localized: "auth.codePlaceholder", bundle: .module,
         comment: "Verification code input placeholder")

@@ -25,7 +25,8 @@ public struct PhoneSignInView: View {
     @State private var isSendingCode = false
     @State private var showCountryPicker = false
     @State private var validationError: String?
-    @FocusState private var isTextFieldFocused
+    @FocusState private var isPhoneFieldFocused
+    @FocusState private var isCodeFieldFocused
 
     @State private var selectedRegionCode: String = {
         Locale.current.region?.identifier ?? "US"
@@ -61,7 +62,10 @@ public struct PhoneSignInView: View {
         .navigationTitle(FeatureAuthStrings.phoneSignInTitle)
         .navigationBarTitleDisplayMode(.large)
         .onAppear {
-            isTextFieldFocused = true
+            isPhoneFieldFocused = true
+        }
+        .onAppear {
+            isCodeFieldFocused = true
         }
         .sheet(isPresented: $showCountryPicker) {
             CountryCodePickerSheet(
@@ -106,9 +110,9 @@ private extension PhoneSignInView {
 
             Button {
                 HapticManager.action()
-                Task { await sendCode() }
+                Task { await sendNumber() }
             } label: {
-                Text(FeatureAuthStrings.sendCode)
+                Text(FeatureAuthStrings.sendNumber)
                     .font(MindsetFonts.button)
                     .foregroundStyle(MindsetColors.textOnAccent(for: colorScheme))
                     .frame(maxWidth: .infinity)
@@ -150,7 +154,7 @@ private extension PhoneSignInView {
             regionCode: selectedRegionCode,
             placeholder: ""
         )
-        .focused($isTextFieldFocused)
+        .focused($isPhoneFieldFocused)
     }
 
     var verificationCodeStep: some View {
@@ -159,6 +163,7 @@ private extension PhoneSignInView {
                 .textFieldStyle(.roundedBorder)
                 .keyboardType(.numberPad)
                 .textContentType(.oneTimeCode)
+                .focused($isCodeFieldFocused)
 
             Button {
                 HapticManager.action()
@@ -175,7 +180,7 @@ private extension PhoneSignInView {
         }
     }
 
-    func sendCode() async {
+    func sendNumber() async {
         validationError = nil
         viewModel.dismissError()
 
@@ -190,7 +195,9 @@ private extension PhoneSignInView {
 
         if let id = await viewModel.requestPhoneVerificationCode(phoneNumber: e164) {
             verificationID = id
-            step = .verificationCode
+            withAnimation {
+                step = .verificationCode
+            }
         }
     }
 

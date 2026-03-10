@@ -1,86 +1,14 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "auth.signInWithApple" : {
-      "comment" : "Sign in with Apple button",
+    "auth.benefits.keepStreak" : {
+      "comment" : "Never lose streak or progress benefit",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sign in with Apple"
-          }
-        }
-      }
-    },
-    "auth.signInWithGoogle" : {
-      "comment" : "Sign in with Google button",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sign in with Google"
-          }
-        }
-      }
-    },
-    "auth.continueAsGuest" : {
-      "comment" : "Continue as guest option",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continue as Guest"
-          }
-        }
-      }
-    },
-    "auth.signInTitle" : {
-      "comment" : "Sign in screen title",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Welcome Back"
-          }
-        }
-      }
-    },
-    "auth.profileReadyTitle" : {
-      "comment" : "Sign in screen title when profile is ready after onboarding",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your Mindset Profile is Ready"
-          }
-        }
-      }
-    },
-    "auth.signInSubtitle" : {
-      "comment" : "Sign in screen subtitle",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sign in to save your progress and sync across devices"
-          }
-        }
-      }
-    },
-    "auth.signingIn" : {
-      "comment" : "Signing in progress message",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Signing in..."
+            "value" : "Never lose your streak or progress"
           }
         }
       }
@@ -109,98 +37,26 @@
         }
       }
     },
-    "auth.benefits.keepStreak" : {
-      "comment" : "Never lose streak or progress benefit",
+    "auth.codePlaceholder" : {
+      "comment" : "Verification code input placeholder",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Never lose your streak or progress"
+            "value" : "Enter 6-digit code"
           }
         }
       }
     },
-    "auth.error.signInFailed" : {
-      "comment" : "Sign in failed error",
+    "auth.continueAsGuest" : {
+      "comment" : "Continue as guest option",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sign in failed. Please try again."
-          }
-        }
-      }
-    },
-    "auth.error.signInErrorTitle" : {
-      "comment" : "Sign in error alert title",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sign In Error"
-          }
-        }
-      }
-    },
-    "auth.error.cancelled" : {
-      "comment" : "Sign in cancelled message",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sign in was cancelled"
-          }
-        }
-      }
-    },
-    "auth.error.invalidAppleCredential" : {
-      "comment" : "Invalid Apple ID credential",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Invalid Apple ID credential"
-          }
-        }
-      }
-    },
-    "auth.error.missingNonce" : {
-      "comment" : "Missing nonce error",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Missing nonce"
-          }
-        }
-      }
-    },
-    "auth.error.unableToSerializeToken" : {
-      "comment" : "Unable to serialize token error",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unable to serialize token"
-          }
-        }
-      }
-    },
-    "auth.error.signInFailedWithError" : {
-      "comment" : "Sign in failed with error message",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sign in failed: %@"
+            "value" : "Continue as Guest"
           }
         }
       }
@@ -217,6 +73,18 @@
         }
       }
     },
+    "auth.error.cancelled" : {
+      "comment" : "Sign in cancelled message",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in was cancelled"
+          }
+        }
+      }
+    },
     "auth.error.googleSignInFailed" : {
       "comment" : "Google sign in failed",
       "extractionState" : "manual",
@@ -229,14 +97,14 @@
         }
       }
     },
-    "auth.error.phoneSignInFailed" : {
-      "comment" : "Phone sign in failed",
+    "auth.error.invalidAppleCredential" : {
+      "comment" : "Invalid Apple ID credential",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Phone sign in failed: %@"
+            "value" : "Invalid Apple ID credential"
           }
         }
       }
@@ -253,14 +121,74 @@
         }
       }
     },
-    "auth.signInWithPhone" : {
-      "comment" : "Sign in with Phone button",
+    "auth.error.missingNonce" : {
+      "comment" : "Missing nonce error",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Continue with Phone"
+            "value" : "Missing nonce"
+          }
+        }
+      }
+    },
+    "auth.error.phoneSignInFailed" : {
+      "comment" : "Phone sign in failed",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phone sign in failed: %@"
+          }
+        }
+      }
+    },
+    "auth.error.signInErrorTitle" : {
+      "comment" : "Sign in error alert title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign In Error"
+          }
+        }
+      }
+    },
+    "auth.error.signInFailed" : {
+      "comment" : "Sign in failed error",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in failed. Please try again."
+          }
+        }
+      }
+    },
+    "auth.error.signInFailedWithError" : {
+      "comment" : "Sign in failed with error message",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in failed: %@"
+          }
+        }
+      }
+    },
+    "auth.error.unableToSerializeToken" : {
+      "comment" : "Unable to serialize token error",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to serialize token"
           }
         }
       }
@@ -277,42 +205,6 @@
         }
       }
     },
-    "auth.sendCode" : {
-      "comment" : "Send verification code button",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Send Code"
-          }
-        }
-      }
-    },
-    "auth.codePlaceholder" : {
-      "comment" : "Verification code input placeholder",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enter 6-digit code"
-          }
-        }
-      }
-    },
-    "auth.verify" : {
-      "comment" : "Verify code button",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verify"
-          }
-        }
-      }
-    },
     "auth.phoneSignInTitle" : {
       "comment" : "Phone sign in sheet title",
       "extractionState" : "manual",
@@ -325,6 +217,18 @@
         }
       }
     },
+    "auth.profileReadyTitle" : {
+      "comment" : "Sign in screen title when profile is ready after onboarding",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your Mindset Profile is Ready"
+          }
+        }
+      }
+    },
     "auth.selectCountry" : {
       "comment" : "Country picker sheet title",
       "extractionState" : "manual",
@@ -333,6 +237,102 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Select Country"
+          }
+        }
+      }
+    },
+    "auth.sendNumber" : {
+      "comment" : "Send Phone number button",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send Number"
+          }
+        }
+      }
+    },
+    "auth.signingIn" : {
+      "comment" : "Signing in progress message",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signing in..."
+          }
+        }
+      }
+    },
+    "auth.signInSubtitle" : {
+      "comment" : "Sign in screen subtitle",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in to save your progress and sync across devices"
+          }
+        }
+      }
+    },
+    "auth.signInTitle" : {
+      "comment" : "Sign in screen title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welcome Back"
+          }
+        }
+      }
+    },
+    "auth.signInWithApple" : {
+      "comment" : "Sign in with Apple button",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in with Apple"
+          }
+        }
+      }
+    },
+    "auth.signInWithGoogle" : {
+      "comment" : "Sign in with Google button",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in with Google"
+          }
+        }
+      }
+    },
+    "auth.signInWithPhone" : {
+      "comment" : "Sign in with Phone button",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue with Phone"
+          }
+        }
+      }
+    },
+    "auth.verify" : {
+      "comment" : "Verify code button",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verify"
           }
         }
       }
