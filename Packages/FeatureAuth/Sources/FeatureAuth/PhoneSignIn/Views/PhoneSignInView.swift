@@ -209,7 +209,9 @@ private extension PhoneSignInView {
                         .fill(MindsetColors.fillSubtle)
                         .overlay(
                             RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
-                                .stroke(MindsetColors.borderSubtle, lineWidth: MindsetLayout.borderWidth)
+                                .stroke(
+                                    MindsetColors.borderSubtle, lineWidth: MindsetLayout.borderWidth
+                                )
                         )
                 )
 

@@ -2,12 +2,16 @@
 //  PhoneNumberValidation.swift
 //  FeatureAuth
 //
-//  Created by patrick ridd on 3/9/26.
-//
 
 import PhoneNumberKit
 
+/// Validation utilities for phone number input.
 enum PhoneNumberValidation {
+    /// Returns the maximum number of national digits for a given region.
+    /// - Parameters:
+    ///   - phoneNumberKit: PhoneNumberKit instance for region metadata.
+    ///   - regionCode: ISO region code (e.g. "US").
+    /// - Returns: Max national digits, or fallback when region is unknown.
     static func maxNationalDigits(phoneNumberKit: PhoneNumberKit, regionCode: String) -> Int {
         let mobileLengths = phoneNumberKit.possiblePhoneNumberLengths(
             forCountry: regionCode,
@@ -22,7 +26,11 @@ enum PhoneNumberValidation {
         if let max = (mobileLengths + fixedLengths).max() {
             return max
         }
-        let dialCode = (CountryInfo.byRegionCode[regionCode] ?? CountryInfo.byRegionCode["US"]!).dialCode
-        return 15 - dialCode.count
+        guard
+            let country = CountryInfo.byRegionCode[regionCode] ?? CountryInfo.byRegionCode["US"]
+        else {
+            return 10
+        }
+        return 15 - country.dialCode.count
     }
 }

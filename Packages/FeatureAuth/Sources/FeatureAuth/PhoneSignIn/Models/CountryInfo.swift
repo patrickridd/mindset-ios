@@ -2,16 +2,15 @@
 //  CountryInfo.swift
 //  FeatureAuth
 //
-//  Created by patrick ridd on 3/9/26.
-//
 
-
+/// Country metadata for phone number input (region code, dial code, display name).
 struct CountryInfo: Identifiable {
     let id: String
     let regionCode: String
     let dialCode: String
     let name: String
-    
+
+    /// Lookup by ISO region code (e.g. "US", "GB").
     static let byRegionCode: [String: CountryInfo] = {
         let pairs: [(String, String, String)] = [
             ("US", "1", "United States"),
