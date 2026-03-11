@@ -33,6 +33,33 @@ public final class PhoneSignInViewModel {
     public enum Step {
         case phoneNumber
         case verificationCode
+        
+        var icon: String {
+            switch self {
+            case .phoneNumber:
+                return "phone"
+            case .verificationCode:
+                return "shield"
+            }
+        }
+
+        var title: String {
+            switch self {
+            case .phoneNumber:
+                return FeatureAuthStrings.phoneSignInTitle
+            case .verificationCode:
+                return FeatureAuthStrings.phoneVerifyTitle
+            }
+        }
+
+        var subtitle: String {
+            switch self {
+            case .phoneNumber:
+                return FeatureAuthStrings.phoneSignInSubtitle
+            case .verificationCode:
+                return FeatureAuthStrings.phoneVerifySubtitle
+            }
+        }
     }
 
     public init(signInViewModel: SignInViewModel) {

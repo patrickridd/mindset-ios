@@ -28,19 +28,21 @@ public struct PhoneSignInView: View {
     public var body: some View {
         ZStack {
             backgroundView
-
-            VStack(spacing: MindsetLayout.spacing20) {
+            VStack(alignment: .leading, spacing: MindsetLayout.spacing20) {
+                titleSection
                 if phoneViewModel.step == .phoneNumber {
                     phoneNumberStep
                 } else {
                     verificationCodeStep
                 }
+                subtitleSection
+                Spacer()
                 errorSection
             }
             .animation(.default, value: phoneViewModel.step)
             .padding(MindsetLayout.paddingScreenHorizontal)
+            .padding(.top, 40)
         }
-        .navigationTitle(FeatureAuthStrings.phoneSignInTitle)
         .navigationBarTitleDisplayMode(.large)
         .toolbarBackground(MindsetColors.backgroundDark.opacity(0.95), for: .navigationBar)
         .onAppear {
@@ -101,6 +103,24 @@ private extension PhoneSignInView {
                     .multilineTextAlignment(.center)
             }
         }
+    }
+
+    @ViewBuilder
+    var titleSection: some View {
+        HStack(spacing: MindsetLayout.spacing8) {
+            MindsetIconButton(icon: phoneViewModel.step.icon, color: .green, sizeRatio: 0.5)
+            Text(phoneViewModel.step.title)
+                .font(MindsetFonts.buttonSignIn)
+                .foregroundStyle(MindsetColors.textPrimary)
+        }
+    }
+
+    @ViewBuilder
+    var subtitleSection: some View {
+        Text(phoneViewModel.step.subtitle)
+            .font(MindsetFonts.body)
+            .multilineTextAlignment(.leading)
+            .foregroundStyle(MindsetColors.textSecondary)
     }
 
     var phoneNumberStep: some View {

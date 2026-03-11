@@ -119,7 +119,16 @@ public enum FeatureAuthStrings {
         comment: "Verify code button")
     public static let phoneSignInTitle = String(
         localized: "auth.phoneSignInTitle", bundle: .module,
-        comment: "Phone sign in sheet title")
+        comment: "Phone sign in step title")
+    public static let phoneSignInSubtitle = String(
+        localized: "auth.phoneSignInSubtitle", bundle: .module,
+        comment: "Phone sign in step subtitle")
+    public static let phoneVerifyTitle = String(
+        localized: "auth.phoneVerifyTitle", bundle: .module,
+        comment: "Verify phone sign in step title")
+    public static let phoneVerifySubtitle = String(
+        localized: "auth.phoneVerifySubtitle", bundle: .module,
+        comment: "Verify phone sign in step subtitle")
     public static let selectCountry = String(
         localized: "auth.selectCountry", bundle: .module,
         comment: "Country picker sheet title")

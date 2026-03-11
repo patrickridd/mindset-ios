@@ -205,14 +205,50 @@
         }
       }
     },
-    "auth.phoneSignInTitle" : {
-      "comment" : "Phone sign in sheet title",
+    "auth.phoneSignInSubtitle" : {
+      "comment" : "Phone sign in step subtitle",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sign in with Phone"
+            "value" : "We’ll send you a text with a verification code. Message and data rates may apply."
+          }
+        }
+      }
+    },
+    "auth.phoneSignInTitle" : {
+      "comment" : "Phone sign in step title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter Phone"
+          }
+        }
+      }
+    },
+    "auth.phoneVerifySubtitle" : {
+      "comment" : "Verify phone sign in step subtitle",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter code we texted you to verify phone number. "
+          }
+        }
+      }
+    },
+    "auth.phoneVerifyTitle" : {
+      "comment" : "Verify phone sign in step title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verify Phone Number"
           }
         }
       }
