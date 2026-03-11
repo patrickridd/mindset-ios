@@ -33,7 +33,7 @@ public final class PhoneSignInViewModel {
     public enum Step {
         case phoneNumber
         case verificationCode
-        
+
         var icon: String {
             switch self {
             case .phoneNumber:
@@ -94,6 +94,38 @@ public final class PhoneSignInViewModel {
             verificationID: id,
             verificationCode: verificationCode.trimmingCharacters(in: .whitespaces)
         )
+    }
+
+    /// Single entry point for keyboard toolbar submit. Dispatches to sendNumber or verifyCode based on step.
+    public func submit() async {
+        switch step {
+        case .phoneNumber:
+            await sendNumber()
+        case .verificationCode:
+            await verifyCode()
+        }
+    }
+
+    // MARK: - Submit
+
+    /// Whether the keyboard toolbar submit button should be enabled.
+    public var canSubmit: Bool {
+        switch step {
+        case .phoneNumber:
+            return !nationalNumber.isEmpty && !isSendingCode
+        case .verificationCode:
+            return !verificationCode.isEmpty && !signInViewModel.isLoading
+        }
+    }
+
+    /// Localized accessibility label for the submit button (no UI types in ViewModel).
+    public var submitButtonAccessibilityLabel: String {
+        switch step {
+        case .phoneNumber:
+            return FeatureAuthStrings.sendNumber
+        case .verificationCode:
+            return FeatureAuthStrings.verify
+        }
     }
 
     // MARK: - Validation

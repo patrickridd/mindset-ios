@@ -45,6 +45,12 @@ public struct PhoneSignInView: View {
         }
         .navigationBarTitleDisplayMode(.large)
         .toolbarBackground(MindsetColors.backgroundDark.opacity(0.95), for: .navigationBar)
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                keyboardSubmitButton
+            }
+        }
         .onAppear {
             isPhoneFieldFocused = true
         }
@@ -123,28 +129,29 @@ private extension PhoneSignInView {
             .foregroundStyle(MindsetColors.textSecondary)
     }
 
-    var phoneNumberStep: some View {
-        VStack(spacing: MindsetLayout.spacing16) {
-            HStack(spacing: MindsetLayout.spacing8) {
-                countryPickerButton
-                phoneNumberField
+    var keyboardSubmitButton: some View {
+        Button {
+            HapticManager.action()
+            if phoneViewModel.step == .verificationCode {
+                isCodeFieldFocused = false
             }
-            .padding(MindsetLayout.paddingStandard)
-            .mindsetCard()
-
-            Button {
-                HapticManager.action()
-                Task { await phoneViewModel.sendNumber() }
-            } label: {
-                Text(FeatureAuthStrings.sendNumber)
-                    .font(MindsetFonts.button)
-                    .foregroundStyle(MindsetColors.textOnAccent(for: colorScheme))
-                    .frame(maxWidth: .infinity)
-                    .frame(height: MindsetLayout.buttonHeight)
-            }
-            .disabled(phoneViewModel.nationalNumber.isEmpty || phoneViewModel.isSendingCode)
-            .mindsetButton()
+            Task { await phoneViewModel.submit() }
+        } label: {
+            Image(systemName: "chevron.right")
         }
+        .font(MindsetFonts.button)
+        .foregroundStyle(phoneViewModel.canSubmit ? MindsetColors.accentOrange : MindsetColors.textDisabled(for: colorScheme))
+        .disabled(!phoneViewModel.canSubmit)
+        .accessibilityLabel(phoneViewModel.submitButtonAccessibilityLabel)
+    }
+
+    var phoneNumberStep: some View {
+        HStack(spacing: MindsetLayout.spacing8) {
+            countryPickerButton
+            phoneNumberField
+        }
+        .padding(MindsetLayout.paddingStandard)
+        .mindsetCard()
     }
 
     var countryPickerButton: some View {
@@ -183,42 +190,24 @@ private extension PhoneSignInView {
     }
 
     var verificationCodeStep: some View {
-        VStack(spacing: MindsetLayout.spacing16) {
-            TextField(FeatureAuthStrings.codePlaceholder, text: $phoneViewModel.verificationCode)
-                .textFieldStyle(.plain)
-                .font(MindsetFonts.body)
-                .foregroundStyle(MindsetColors.textPrimary)
-                .keyboardType(.numberPad)
-                .textContentType(.oneTimeCode)
-                .focused($isCodeFieldFocused)
-                .padding(MindsetLayout.paddingStandard)
-                .background(
-                    RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
-                        .fill(MindsetColors.fillSubtle)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
-                                .stroke(
-                                    MindsetColors.borderSubtle, lineWidth: MindsetLayout.borderWidth
-                                )
-                        )
-                )
-
-            Button {
-                HapticManager.action()
-                isCodeFieldFocused = false
-                Task { await phoneViewModel.verifyCode() }
-            } label: {
-                Text(FeatureAuthStrings.verify)
-                    .font(MindsetFonts.button)
-                    .foregroundStyle(MindsetColors.textOnAccent(for: colorScheme))
-                    .frame(maxWidth: .infinity)
-                    .frame(height: MindsetLayout.buttonHeight)
-            }
-            .disabled(
-                phoneViewModel.verificationCode.isEmpty || phoneViewModel.signInViewModel.isLoading
+        TextField(FeatureAuthStrings.codePlaceholder, text: $phoneViewModel.verificationCode)
+            .textFieldStyle(.plain)
+            .font(MindsetFonts.body)
+            .foregroundStyle(MindsetColors.textPrimary)
+            .keyboardType(.numberPad)
+            .textContentType(.oneTimeCode)
+            .focused($isCodeFieldFocused)
+            .padding(MindsetLayout.paddingStandard)
+            .background(
+                RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
+                    .fill(MindsetColors.fillSubtle)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
+                            .stroke(
+                                MindsetColors.borderSubtle, lineWidth: MindsetLayout.borderWidth
+                            )
+                    )
             )
-            .mindsetButton()
-        }
     }
 
     func flagEmoji(for regionCode: String) -> String {
@@ -233,7 +222,8 @@ private extension PhoneSignInView {
 #Preview {
     let signInViewModel = SignInViewModel(
         signInOrLinkUseCase: SignInOrLinkUseCase(authService: MockAuthService()),
-        appleSignInCredentialBuilder: AppleSignInCredentialBuilder(nonceStorage: AppleSignInNonceStorage()),
+        appleSignInCredentialBuilder: AppleSignInCredentialBuilder(
+            nonceStorage: AppleSignInNonceStorage()),
         googleSignInCredentialProvider: MockGoogleSignInCredentialProvider(),
         phoneVerificationProvider: MockPhoneVerificationProvider(),
         logger: DebugLogger.shared,
@@ -242,6 +232,6 @@ private extension PhoneSignInView {
         onSkip: {}
     )
     let viewModel = PhoneSignInViewModel(signInViewModel: signInViewModel)
-    
+
     PhoneSignInView(phoneViewModel: viewModel)
 }
