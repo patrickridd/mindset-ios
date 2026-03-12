@@ -29,6 +29,11 @@ public final class PhoneSignInViewModel {
     var selectedCountry: CountryInfo {
         CountryInfo.byRegionCode[selectedRegionCode] ?? CountryInfo.byRegionCode["US"]!
     }
+    
+    private var maxDigits: Int {
+        PhoneNumberValidation.maxNationalDigits(
+            phoneNumberKit: phoneNumberKit, regionCode: selectedRegionCode)
+    }
 
     public enum Step {
         case phoneNumber
@@ -113,7 +118,7 @@ public final class PhoneSignInViewModel {
     public var canSubmit: Bool {
         switch step {
         case .phoneNumber:
-            return !nationalNumber.isEmpty && !isSendingCode
+            return nationalNumber.count >= maxDigits && !isSendingCode
         case .verificationCode:
             return !verificationCode.isEmpty && !signInViewModel.isLoading
         }
