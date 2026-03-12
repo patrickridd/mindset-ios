@@ -108,7 +108,7 @@ private extension OnboardingView {
                 TypewriterText(
                     text: question.questionText,
                     font: MindsetFonts.promptHeadline,
-                    color: MindsetColors.textPrimary,
+                    color: MindsetColors.textPrimaryDark,
                     isHapticEnabled: true,
                     onComplete: {
                         viewModel.markCurrentQuestionAnimated()
@@ -119,7 +119,7 @@ private extension OnboardingView {
             } else {
                 Text(question.questionText)
                     .font(MindsetFonts.promptHeadline)
-                    .foregroundStyle(MindsetColors.textPrimary)
+                    .foregroundStyle(MindsetColors.textPrimaryDark)
                     .multilineTextAlignment(.center)
                     .padding()
             }
@@ -157,7 +157,7 @@ private extension OnboardingView {
                                             : MindsetColors.borderSubtle,
                                         lineWidth: MindsetLayout.borderWidth)
                             )
-                            .foregroundStyle(MindsetColors.textPrimary)
+                            .foregroundStyle(MindsetColors.textPrimaryDark)
                     }
                     .buttonStyle(OptionButtonStyle())
                     .animation(.easeInOut(duration: 0.2), value: viewModel.selectedOption)
@@ -230,7 +230,7 @@ private struct CalculatingView: View {
 
             Text(FeatureOnboardingStrings.Analyzing.buildingProfile)
                 .font(MindsetFonts.button)
-                .foregroundStyle(MindsetColors.textSecondary)
+                .foregroundStyle(MindsetColors.textSecondaryDark)
 
             VStack(alignment: .leading, spacing: MindsetLayout.spacing10) {
                 checklistRow(FeatureOnboardingStrings.Analyzing.checklistGoals, isComplete: true)
@@ -254,7 +254,7 @@ private struct CalculatingView: View {
                     isComplete ? MindsetColors.successEmerald : MindsetColors.textMuted)
 
             Text(text)
-                .foregroundStyle(isComplete ? MindsetColors.textSecondary : MindsetColors.textMuted)
+                .foregroundStyle(isComplete ? MindsetColors.textSecondaryDark : MindsetColors.textMuted)
                 .opacity(isComplete ? 1 : (isPulsing ? 0.6 : 1.0))
         }
         .onAppear {

@@ -185,7 +185,7 @@ extension SettingsView {
 
                 Text(viewModel.busyOverlayText)
                     .font(MindsetFonts.button)
-                    .foregroundStyle(MindsetColors.textPrimary)
+                    .foregroundStyle(MindsetColors.textPrimaryDark)
             }
             .padding(MindsetLayout.paddingCard)
             .background(

@@ -51,11 +51,17 @@ public enum MindsetColors {
     // MARK: - Text
 
     /// Primary text — off-white, warmer than pure white (for dark backgrounds)
-    public static let textPrimary = Color(white: 0.96)
+    public static let textPrimaryDark = Color(white: 0.96)
 
+    /// Primary text — for when in Light Mode
+    public static let textPrimaryLight = Color(red: 0.06, green: 0.06, blue: 0.08)
+    
     /// Secondary text (for dark backgrounds)
-    public static let textSecondary = Color.white.opacity(0.7)
+    public static let textSecondaryDark = Color.white.opacity(0.7)
 
+    /// Secondary text (for light backgrounds)
+    public static let textSecondaryLight = Color(red: 0.22, green: 0.22, blue: 0.26)
+    
     /// Tertiary / muted text (for dark backgrounds)
     public static let textMuted = Color.white.opacity(0.4)
 
@@ -63,9 +69,11 @@ public enum MindsetColors {
     public static func textPrimaryAdaptive(for colorScheme: ColorScheme) -> Color {
         switch colorScheme {
         case .dark:
-            return Color(white: 0.96)
-        default:
-            return Color(red: 0.06, green: 0.06, blue: 0.08)
+            return textPrimaryDark
+        case .light:
+            return textPrimaryLight
+        @unknown default:
+            return textPrimaryLight
         }
     }
 
@@ -73,9 +81,11 @@ public enum MindsetColors {
     public static func textSecondaryAdaptive(for colorScheme: ColorScheme) -> Color {
         switch colorScheme {
         case .dark:
-            return Color(white: 0.65)
-        default:
-            return Color(red: 0.22, green: 0.22, blue: 0.26)
+            return textSecondaryDark
+        case .light:
+            return textSecondaryLight
+        @unknown default:
+            return textSecondaryLight
         }
     }
 

@@ -28,7 +28,7 @@ public struct ImmediateFocusTextFieldRepresentable: UIViewRepresentable {
         textField.keyboardType = keyboardType
         textField.textContentType = textContentType
         textField.font = UIFont.preferredFont(forTextStyle: .body)
-        textField.textColor = UIColor(MindsetColors.textPrimary)
+        textField.textColor = UIColor(MindsetColors.textPrimaryDark)
         textField.backgroundColor = .clear
         textField.delegate = context.coordinator
         textField.addTarget(

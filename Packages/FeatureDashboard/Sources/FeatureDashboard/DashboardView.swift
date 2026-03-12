@@ -84,14 +84,14 @@ private extension DashboardView {
             Text(FeatureDashboardStrings.Goal.currentLabel)
                 .font(MindsetFonts.labelUppercase)
                 .tracking(1)
-                .foregroundStyle(MindsetColors.textSecondary)
+                .foregroundStyle(MindsetColors.textSecondaryDark)
 
             Text(
                 viewModel.userProfile?.primaryGoal
                     ?? FeatureDashboardStrings.Goal.defaultPlaceholder
             )
             .font(MindsetFonts.promptHeadline)
-            .foregroundStyle(MindsetColors.textPrimary)
+            .foregroundStyle(MindsetColors.textPrimaryDark)
         }
         .padding(MindsetLayout.paddingCard)
         .frame(maxWidth: .infinity, alignment: .leading)

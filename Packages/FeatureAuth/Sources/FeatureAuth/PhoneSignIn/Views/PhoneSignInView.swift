@@ -134,7 +134,7 @@ private extension PhoneSignInView {
             MindsetIconButton(icon: phoneViewModel.step.icon, color: .green, sizeRatio: 0.75)
             Text(phoneViewModel.step.title)
                 .font(MindsetFonts.displayHeadline)
-                .foregroundStyle(MindsetColors.textPrimary)
+                .foregroundStyle(MindsetColors.textPrimaryDark)
         }
     }
 
@@ -143,7 +143,7 @@ private extension PhoneSignInView {
         Text(phoneViewModel.step.subtitle)
             .font(MindsetFonts.caption)
             .multilineTextAlignment(.leading)
-            .foregroundStyle(MindsetColors.textSecondary)
+            .foregroundStyle(MindsetColors.textSecondaryDark)
     }
 
     var keyboardBarOverlay: some View {
@@ -216,10 +216,10 @@ private extension PhoneSignInView {
                     .font(.system(size: MindsetLayout.iconLarge))
                 Text("+\(phoneViewModel.selectedCountry.dialCode)")
                     .font(MindsetFonts.body)
-                    .foregroundStyle(MindsetColors.textPrimary)
+                    .foregroundStyle(MindsetColors.textPrimaryDark)
                 Image(systemName: "chevron.down")
                     .font(.system(size: MindsetLayout.iconSmall, weight: .medium))
-                    .foregroundStyle(MindsetColors.textSecondary)
+                    .foregroundStyle(MindsetColors.textSecondaryDark)
             }
             .padding(.horizontal, MindsetLayout.paddingMedium)
             .padding(.vertical, MindsetLayout.paddingSmall)

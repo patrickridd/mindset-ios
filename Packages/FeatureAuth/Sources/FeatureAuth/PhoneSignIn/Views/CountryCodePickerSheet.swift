@@ -77,10 +77,10 @@ private extension CountryCodePickerSheet {
                 VStack(alignment: .leading, spacing: MindsetLayout.spacing4) {
                     Text(country.name)
                         .font(MindsetFonts.body)
-                        .foregroundStyle(MindsetColors.textPrimary)
+                        .foregroundStyle(MindsetColors.textPrimaryDark)
                     Text("+\(country.dialCode)")
                         .font(MindsetFonts.caption)
-                        .foregroundStyle(MindsetColors.textSecondary)
+                        .foregroundStyle(MindsetColors.textSecondaryDark)
                 }
                 Spacer()
                 if country.regionCode == selectedRegionCode {

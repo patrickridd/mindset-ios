@@ -24,6 +24,7 @@ import UIKit
 ///     without keyboard animation. When false, uses SwiftUI TextField with onAppear focus.
 struct PhoneNumberTextField: View {
     @Binding var nationalNumber: String
+    @Environment(\.colorScheme) private var colorScheme
 
     let regionCode: String
     let placeholder: String
@@ -63,7 +64,7 @@ struct PhoneNumberTextField: View {
         TextField(placeholder, text: $editingText)
             .textFieldStyle(.plain)
             .font(MindsetFonts.body)
-            .foregroundStyle(MindsetColors.textPrimary)
+            .foregroundStyle(.clear)
             .keyboardType(.phonePad)
             .textContentType(.telephoneNumber)
             .autocorrectionDisabled()
@@ -111,7 +112,7 @@ private struct PhoneNumberTextFieldRepresentable: UIViewRepresentable {
         textField.textContentType = .telephoneNumber
         textField.autocorrectionType = .no
         textField.font = UIFont.preferredFont(forTextStyle: .body)
-        textField.textColor = UIColor(MindsetColors.textPrimary)
+        textField.textColor = UIColor(MindsetColors.textPrimaryDark)
         textField.backgroundColor = .clear
 
         let formatted = PhoneNumberValidation.formatForDisplay(

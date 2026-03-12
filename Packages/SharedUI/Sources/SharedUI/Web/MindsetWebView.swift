@@ -43,7 +43,7 @@ public struct MindsetWebView: View {
         VStack(spacing: MindsetLayout.spacing12) {
             Text(message)
                 .font(MindsetFonts.caption)
-                .foregroundStyle(MindsetColors.textSecondary)
+                .foregroundStyle(MindsetColors.textSecondaryDark)
                 .multilineTextAlignment(.center)
 
             Button("Retry") {

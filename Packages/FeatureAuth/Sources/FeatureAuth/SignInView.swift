@@ -112,14 +112,14 @@ private extension SignInView {
         VStack(spacing: MindsetLayout.spacing12) {
             Text(FeatureAuthStrings.profileReadyTitle)
                 .font(MindsetFonts.displayHeadline)
-                .foregroundStyle(MindsetColors.textPrimary)
+                .foregroundStyle(MindsetColors.textPrimaryDark)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
 
             Text(FeatureAuthStrings.signInSubtitle)
                 .font(MindsetFonts.body)
-                .foregroundStyle(MindsetColors.textSecondary)
+                .foregroundStyle(MindsetColors.textSecondaryDark)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
@@ -190,7 +190,7 @@ private extension SignInView {
 
             Text(text)
                 .font(MindsetFonts.bodyMedium)
-                .foregroundStyle(MindsetColors.textPrimary)
+                .foregroundStyle(MindsetColors.textPrimaryDark)
                 .lineLimit(nil)
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -208,7 +208,7 @@ private extension SignInView {
 
                 Text(viewModel.loadingMessage)
                     .font(MindsetFonts.button)
-                    .foregroundStyle(MindsetColors.textPrimary)
+                    .foregroundStyle(MindsetColors.textPrimaryDark)
             }
             .padding(MindsetLayout.paddingCard)
             .background(
@@ -229,11 +229,11 @@ private extension SignInView {
 
                 Text(FeatureAuthStrings.Error.signInErrorTitle)
                     .font(MindsetFonts.featureTitle)
-                    .foregroundStyle(MindsetColors.textPrimary)
+                    .foregroundStyle(MindsetColors.textPrimaryDark)
 
                 Text(message)
                     .font(MindsetFonts.body)
-                    .foregroundStyle(MindsetColors.textSecondary)
+                    .foregroundStyle(MindsetColors.textSecondaryDark)
                     .multilineTextAlignment(.center)
                     .lineLimit(nil)
 

@@ -59,7 +59,7 @@ public struct PaywallView: View {
 
                 Text("Unlock Your Full Potential")
                     .font(MindsetFonts.displayLarge)
-                    .foregroundStyle(MindsetColors.textPrimary)
+                    .foregroundStyle(MindsetColors.textPrimaryDark)
                     .multilineTextAlignment(.center)
             }
 
@@ -97,7 +97,7 @@ public struct PaywallView: View {
 
                 Text("Then $9.99/month. Cancel anytime.")
                     .font(MindsetFonts.caption)
-                    .foregroundStyle(MindsetColors.textSecondary)
+                    .foregroundStyle(MindsetColors.textSecondaryDark)
             }
             .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
             .padding(.bottom, MindsetLayout.paddingLarge)
@@ -111,8 +111,8 @@ public struct PaywallView: View {
                 .font(MindsetFonts.featureTitle)
             VStack(alignment: .leading, spacing: MindsetLayout.spacing4) {
                 Text(title).font(MindsetFonts.featureTitle).fontWeight(.bold).foregroundStyle(
-                    MindsetColors.textPrimary)
-                Text(sub).font(MindsetFonts.footnote).foregroundStyle(MindsetColors.textSecondary)
+                    MindsetColors.textPrimaryDark)
+                Text(sub).font(MindsetFonts.footnote).foregroundStyle(MindsetColors.textSecondaryDark)
             }
         }
     }
