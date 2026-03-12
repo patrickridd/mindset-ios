@@ -10,8 +10,6 @@ import SharedUI
 import SwiftUI
 import UIKit
 
-private let authTextFieldHeight: CGFloat = 44
-
 /// A text field for entering a national phone number with region-specific formatting.
 ///
 /// Formats digits as-you-type using `PhoneNumberKit`'s `PartialFormatter` and keeps the bound
@@ -30,6 +28,7 @@ struct PhoneNumberTextField: View {
     let regionCode: String
     let placeholder: String
     let phoneNumberKit: PhoneNumberKit
+    let height: CGFloat
     var immediateFocus: Bool = true
 
     private var maxDigits: Int {
@@ -51,8 +50,8 @@ struct PhoneNumberTextField: View {
                 maxDigits: maxDigits
             )
             .frame(
-                minHeight: authTextFieldHeight,
-                maxHeight: authTextFieldHeight,
+                minHeight: height,
+                maxHeight: height,
                 alignment: .center
             )
         } else {
@@ -78,8 +77,8 @@ struct PhoneNumberTextField: View {
                 syncFromNationalNumber()
             }
             .frame(
-                minHeight: authTextFieldHeight,
-                maxHeight: authTextFieldHeight,
+                minHeight: height,
+                maxHeight: height,
                 alignment: .center
             )
     }

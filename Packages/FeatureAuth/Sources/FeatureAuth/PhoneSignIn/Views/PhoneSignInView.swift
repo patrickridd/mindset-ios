@@ -12,12 +12,11 @@ import SharedUtils
 import SwiftUI
 import UIKit
 
-private let authTextFieldHeight: CGFloat = 44
-
 /// Two-step phone sign-in flow: (1) enter phone, send code, (2) enter code, verify.
 public struct PhoneSignInView: View {
     @Bindable var phoneViewModel: PhoneSignInViewModel
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.sizeCategory) private var sizeCategory
 
     public init(phoneViewModel: PhoneSignInViewModel) {
         self.phoneViewModel = phoneViewModel
@@ -73,9 +72,14 @@ public struct PhoneSignInView: View {
 // MARK: - Subviews
 
 private extension PhoneSignInView {
+
     var isKeyboardBarVisible: Bool {
         // Both steps use immediate-focus representables (keyboard visible when step is shown)
         true
+    }
+
+    var textFieldHeight: CGFloat {
+        ImmediateFocusTextFieldRepresentable.textFieldHeight(for: sizeCategory)
     }
 
     var backgroundView: some View {
@@ -233,6 +237,7 @@ private extension PhoneSignInView {
             regionCode: phoneViewModel.selectedRegionCode,
             placeholder: "",
             phoneNumberKit: phoneViewModel.phoneNumberKit,
+            height: textFieldHeight,
             immediateFocus: true
         )
     }
@@ -245,8 +250,8 @@ private extension PhoneSignInView {
             textContentType: .oneTimeCode
         )
         .frame(
-            minHeight: authTextFieldHeight,
-            maxHeight: authTextFieldHeight,
+            minHeight: textFieldHeight,
+            maxHeight: textFieldHeight,
             alignment: .center
         )
         .padding(MindsetLayout.paddingStandard)
@@ -268,61 +273,6 @@ private extension PhoneSignInView {
             .compactMap { UnicodeScalar(base + $0.value) }
             .map { String($0) }
             .joined()
-    }
-}
-
-// MARK: - ImmediateFocusTextFieldRepresentable
-
-private struct ImmediateFocusTextFieldRepresentable: UIViewRepresentable {
-    @Binding var text: String
-
-    let placeholder: String
-    let keyboardType: UIKeyboardType
-    var textContentType: UITextContentType?
-
-    func makeUIView(context: Context) -> UITextField {
-        let textField = UITextField()
-        textField.placeholder = placeholder
-        textField.text = text
-        textField.keyboardType = keyboardType
-        textField.textContentType = textContentType
-        textField.font = UIFont.preferredFont(forTextStyle: .body)
-        textField.textColor = UIColor(MindsetColors.textPrimary)
-        textField.backgroundColor = .clear
-        textField.delegate = context.coordinator
-        textField.addTarget(
-            context.coordinator,
-            action: #selector(Coordinator.textDidChange),
-            for: .editingChanged
-        )
-
-        UIView.performWithoutAnimation {
-            textField.becomeFirstResponder()
-        }
-
-        return textField
-    }
-
-    func updateUIView(_ uiView: UITextField, context: Context) {
-        if uiView.text != text {
-            uiView.text = text
-        }
-    }
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(text: $text)
-    }
-
-    final class Coordinator: NSObject, UITextFieldDelegate {
-        @Binding var text: String
-
-        init(text: Binding<String>) {
-            _text = text
-        }
-
-        @objc func textDidChange(_ textField: UITextField) {
-            text = textField.text ?? ""
-        }
     }
 }
 
