@@ -10,14 +10,14 @@ import SharedLocalization
 import SharedUI
 import SharedUtils
 import SwiftUI
+import UIKit
+
+private let authTextFieldHeight: CGFloat = 44
 
 /// Two-step phone sign-in flow: (1) enter phone, send code, (2) enter code, verify.
 public struct PhoneSignInView: View {
     @Bindable var phoneViewModel: PhoneSignInViewModel
     @Environment(\.colorScheme) private var colorScheme
-
-    @FocusState private var isPhoneFieldFocused
-    @FocusState private var isCodeFieldFocused
 
     public init(phoneViewModel: PhoneSignInViewModel) {
         self.phoneViewModel = phoneViewModel
@@ -49,14 +49,6 @@ public struct PhoneSignInView: View {
         }
         .navigationBarTitleDisplayMode(.large)
         .toolbarBackground(MindsetColors.backgroundDark.opacity(0.95), for: .navigationBar)
-        .onAppear {
-            isPhoneFieldFocused = true
-        }
-        .onChange(of: phoneViewModel.step) { _, newValue in
-            if newValue == .verificationCode {
-                isCodeFieldFocused = true
-            }
-        }
         .sheet(isPresented: $phoneViewModel.showCountryPicker) {
             CountryCodePickerSheet(
                 selectedRegionCode: $phoneViewModel.selectedRegionCode,
@@ -82,7 +74,8 @@ public struct PhoneSignInView: View {
 
 private extension PhoneSignInView {
     var isKeyboardBarVisible: Bool {
-        isPhoneFieldFocused || isCodeFieldFocused
+        // Both steps use immediate-focus representables (keyboard visible when step is shown)
+        true
     }
 
     var backgroundView: some View {
@@ -114,7 +107,7 @@ private extension PhoneSignInView {
             }
         }
     }
-    
+
     var heroSection: some View {
         ZStack {
             Circle()
@@ -239,30 +232,34 @@ private extension PhoneSignInView {
             nationalNumber: $phoneViewModel.nationalNumber,
             regionCode: phoneViewModel.selectedRegionCode,
             placeholder: "",
-            phoneNumberKit: phoneViewModel.phoneNumberKit
+            phoneNumberKit: phoneViewModel.phoneNumberKit,
+            immediateFocus: true
         )
-        .focused($isPhoneFieldFocused)
     }
 
     var verificationCodeStep: some View {
-        TextField(FeatureAuthStrings.codePlaceholder, text: $phoneViewModel.verificationCode)
-            .textFieldStyle(.plain)
-            .font(MindsetFonts.body)
-            .foregroundStyle(MindsetColors.textPrimary)
-            .keyboardType(.numberPad)
-            .textContentType(.oneTimeCode)
-            .focused($isCodeFieldFocused)
-            .padding(MindsetLayout.paddingStandard)
-            .background(
-                RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
-                    .fill(MindsetColors.fillSubtle)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
-                            .stroke(
-                                MindsetColors.borderSubtle, lineWidth: MindsetLayout.borderWidth
-                            )
-                    )
-            )
+        ImmediateFocusTextFieldRepresentable(
+            text: $phoneViewModel.verificationCode,
+            placeholder: FeatureAuthStrings.codePlaceholder,
+            keyboardType: .numberPad,
+            textContentType: .oneTimeCode
+        )
+        .frame(
+            minHeight: authTextFieldHeight,
+            maxHeight: authTextFieldHeight,
+            alignment: .center
+        )
+        .padding(MindsetLayout.paddingStandard)
+        .background(
+            RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
+                .fill(MindsetColors.fillSubtle)
+                .overlay(
+                    RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
+                        .stroke(
+                            MindsetColors.borderSubtle, lineWidth: MindsetLayout.borderWidth
+                        )
+                )
+        )
     }
 
     func flagEmoji(for regionCode: String) -> String {
@@ -271,6 +268,61 @@ private extension PhoneSignInView {
             .compactMap { UnicodeScalar(base + $0.value) }
             .map { String($0) }
             .joined()
+    }
+}
+
+// MARK: - ImmediateFocusTextFieldRepresentable
+
+private struct ImmediateFocusTextFieldRepresentable: UIViewRepresentable {
+    @Binding var text: String
+
+    let placeholder: String
+    let keyboardType: UIKeyboardType
+    var textContentType: UITextContentType?
+
+    func makeUIView(context: Context) -> UITextField {
+        let textField = UITextField()
+        textField.placeholder = placeholder
+        textField.text = text
+        textField.keyboardType = keyboardType
+        textField.textContentType = textContentType
+        textField.font = UIFont.preferredFont(forTextStyle: .body)
+        textField.textColor = UIColor(MindsetColors.textPrimary)
+        textField.backgroundColor = .clear
+        textField.delegate = context.coordinator
+        textField.addTarget(
+            context.coordinator,
+            action: #selector(Coordinator.textDidChange),
+            for: .editingChanged
+        )
+
+        UIView.performWithoutAnimation {
+            textField.becomeFirstResponder()
+        }
+
+        return textField
+    }
+
+    func updateUIView(_ uiView: UITextField, context: Context) {
+        if uiView.text != text {
+            uiView.text = text
+        }
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(text: $text)
+    }
+
+    final class Coordinator: NSObject, UITextFieldDelegate {
+        @Binding var text: String
+
+        init(text: Binding<String>) {
+            _text = text
+        }
+
+        @objc func textDidChange(_ textField: UITextField) {
+            text = textField.text ?? ""
+        }
     }
 }
 
