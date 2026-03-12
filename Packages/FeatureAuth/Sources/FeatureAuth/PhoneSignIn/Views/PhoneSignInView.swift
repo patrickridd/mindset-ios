@@ -28,6 +28,7 @@ public struct PhoneSignInView: View {
     public var body: some View {
         ZStack {
             backgroundView
+
             VStack(alignment: .leading, spacing: MindsetLayout.spacing20) {
                 titleSection
                 if phoneViewModel.step == .phoneNumber {
@@ -35,27 +36,26 @@ public struct PhoneSignInView: View {
                 } else {
                     verificationCodeStep
                 }
-                subtitleSection
-                Spacer()
                 errorSection
+                subtitleSection
+                    .padding(.horizontal, MindsetLayout.paddingMedium)
+
+                Spacer()
             }
             .animation(.default, value: phoneViewModel.step)
             .padding(MindsetLayout.paddingScreenHorizontal)
-            .padding(.top, 40)
+
+            keyboardBarOverlay
         }
         .navigationBarTitleDisplayMode(.large)
         .toolbarBackground(MindsetColors.backgroundDark.opacity(0.95), for: .navigationBar)
-        .toolbar {
-            ToolbarItemGroup(placement: .keyboard) {
-                Spacer()
-                keyboardSubmitButton
-            }
-        }
         .onAppear {
             isPhoneFieldFocused = true
         }
-        .onAppear {
-            isCodeFieldFocused = true
+        .onChange(of: phoneViewModel.step) { _, newValue in
+            if newValue == .verificationCode {
+                isCodeFieldFocused = true
+            }
         }
         .sheet(isPresented: $phoneViewModel.showCountryPicker) {
             CountryCodePickerSheet(
@@ -81,6 +81,10 @@ public struct PhoneSignInView: View {
 // MARK: - Subviews
 
 private extension PhoneSignInView {
+    var isKeyboardBarVisible: Bool {
+        isPhoneFieldFocused || isCodeFieldFocused
+    }
+
     var backgroundView: some View {
         LinearGradient(
             colors: [
@@ -99,24 +103,40 @@ private extension PhoneSignInView {
             if let error = phoneViewModel.signInViewModel.errorMessage {
                 Text(error)
                     .font(MindsetFonts.body)
-                    .foregroundStyle(MindsetColors.accentCoral)
+                    .foregroundStyle(MindsetColors.accentDestructiveRed)
                     .multilineTextAlignment(.center)
             }
             if let validationError = phoneViewModel.validationError {
                 Text(validationError)
                     .font(MindsetFonts.body)
-                    .foregroundStyle(MindsetColors.accentCoral)
+                    .foregroundStyle(MindsetColors.accentDestructiveRed)
                     .multilineTextAlignment(.center)
             }
+        }
+    }
+    
+    var heroSection: some View {
+        ZStack {
+            Circle()
+                .fill(MindsetColors.accentOrange.opacity(0.15))
+                .frame(
+                    width: MindsetLayout.heroCircleSize,
+                    height: MindsetLayout.heroCircleSize
+                )
+                .blur(radius: MindsetLayout.glowBlurRadius)
+
+            Image(systemName: "person.crop.circle.fill")
+                .font(.system(size: 80))
+                .foregroundStyle(MindsetColors.accentOrange)
         }
     }
 
     @ViewBuilder
     var titleSection: some View {
-        HStack(spacing: MindsetLayout.spacing8) {
-            MindsetIconButton(icon: phoneViewModel.step.icon, color: .green, sizeRatio: 0.5)
+        HStack(alignment: .top, spacing: MindsetLayout.spacing8) {
+            MindsetIconButton(icon: phoneViewModel.step.icon, color: .green, sizeRatio: 0.75)
             Text(phoneViewModel.step.title)
-                .font(MindsetFonts.buttonSignIn)
+                .font(MindsetFonts.displayHeadline)
                 .foregroundStyle(MindsetColors.textPrimary)
         }
     }
@@ -124,23 +144,58 @@ private extension PhoneSignInView {
     @ViewBuilder
     var subtitleSection: some View {
         Text(phoneViewModel.step.subtitle)
-            .font(MindsetFonts.body)
+            .font(MindsetFonts.caption)
             .multilineTextAlignment(.leading)
             .foregroundStyle(MindsetColors.textSecondary)
+    }
+
+    var keyboardBarOverlay: some View {
+        VStack {
+            Spacer()
+            if isKeyboardBarVisible {
+                customKeyboardBar
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
+    }
+
+    var customKeyboardBar: some View {
+        HStack(alignment: .center) {
+            Spacer()
+            if #available(iOS 26.0, *) {
+                keyboardSubmitButton
+                    .glassEffect(
+                        .regular.interactive(),
+                        in: .circle
+                    )
+            } else {
+                // Fallback on earlier versions
+                keyboardSubmitButton
+                    .buttonStyle(.automatic)
+            }
+        }
+        .padding(.horizontal, MindsetLayout.paddingLarge)
+        .padding(.bottom, MindsetLayout.spacing8)
+        .background(.clear)
     }
 
     var keyboardSubmitButton: some View {
         Button {
             HapticManager.action()
-            if phoneViewModel.step == .verificationCode {
-                isCodeFieldFocused = false
-            }
             Task { await phoneViewModel.submit() }
         } label: {
             Image(systemName: "chevron.right")
+                .font(MindsetFonts.body)
+                .frame(
+                    width: MindsetLayout.iconButtonLarge + 2,
+                    height: MindsetLayout.iconButtonLarge + 2
+                )
         }
-        .font(MindsetFonts.button)
-        .foregroundStyle(phoneViewModel.canSubmit ? MindsetColors.accentOrange : MindsetColors.textDisabled(for: colorScheme))
+        .foregroundStyle(
+            phoneViewModel.canSubmit
+                ? MindsetColors.accentOrange
+                : MindsetColors.textDisabled(for: colorScheme)
+        )
         .disabled(!phoneViewModel.canSubmit)
         .accessibilityLabel(phoneViewModel.submitButtonAccessibilityLabel)
     }
@@ -219,7 +274,7 @@ private extension PhoneSignInView {
     }
 }
 
-#Preview {
+#Preview("Phone Step") {
     let signInViewModel = SignInViewModel(
         signInOrLinkUseCase: SignInOrLinkUseCase(authService: MockAuthService()),
         appleSignInCredentialBuilder: AppleSignInCredentialBuilder(
@@ -233,5 +288,21 @@ private extension PhoneSignInView {
     )
     let viewModel = PhoneSignInViewModel(signInViewModel: signInViewModel)
 
+    PhoneSignInView(phoneViewModel: viewModel)
+}
+
+#Preview("Verify Step") {
+    let signInViewModel = SignInViewModel(
+        signInOrLinkUseCase: SignInOrLinkUseCase(authService: MockAuthService()),
+        appleSignInCredentialBuilder: AppleSignInCredentialBuilder(
+            nonceStorage: AppleSignInNonceStorage()),
+        googleSignInCredentialProvider: MockGoogleSignInCredentialProvider(),
+        phoneVerificationProvider: MockPhoneVerificationProvider(),
+        logger: DebugLogger.shared,
+        onPhoneSignInButtonTapped: {},
+        onSignInSuccess: { _ in },
+        onSkip: {}
+    )
+    let viewModel = PhoneSignInViewModel(signInViewModel: signInViewModel, step: .verificationCode)
     PhoneSignInView(phoneViewModel: viewModel)
 }

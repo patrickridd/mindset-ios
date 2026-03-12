@@ -15,7 +15,7 @@ import PhoneNumberKit
 public final class PhoneSignInViewModel {
     public let signInViewModel: SignInViewModel
 
-    public var step: Step = .phoneNumber
+    public private(set) var step: Step
     public var nationalNumber = ""
     public var verificationCode = ""
     public var verificationID: String?
@@ -62,8 +62,9 @@ public final class PhoneSignInViewModel {
         }
     }
 
-    public init(signInViewModel: SignInViewModel) {
+    public init(signInViewModel: SignInViewModel, step: Step = .phoneNumber) {
         self.signInViewModel = signInViewModel
+        self.step = step
     }
 
     // MARK: - Actions

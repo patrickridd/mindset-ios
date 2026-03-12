@@ -224,7 +224,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enter Phone"
+            "value" : "Can we have your number?"
           }
         }
       }
@@ -236,7 +236,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enter code we texted you to verify phone number. "
+            "value" : "Please enter the code we texted you to verify phone your number. "
           }
         }
       }
@@ -248,7 +248,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verify Phone Number"
+            "value" : "Verify Phone"
           }
         }
       }
