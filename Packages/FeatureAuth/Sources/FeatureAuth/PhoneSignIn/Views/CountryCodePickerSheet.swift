@@ -44,14 +44,7 @@ private extension CountryCodePickerSheet {
                 .navigationTitle(FeatureAuthStrings.selectCountry)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button(role: .cancel) {
-                            HapticManager.selection()
-                            dismiss()
-                        } label: {
-                            Image(systemName: "xmark")
-                        }
-                    }
+                    SystemDismissButton()
                 }
 
             }
