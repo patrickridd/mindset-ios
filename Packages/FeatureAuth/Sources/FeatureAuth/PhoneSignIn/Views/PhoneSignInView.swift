@@ -202,8 +202,22 @@ private extension PhoneSignInView {
             countryPickerButton
             phoneNumberField
         }
+        .frame(
+            minHeight: textFieldHeight,
+            maxHeight: textFieldHeight,
+            alignment: .center
+        )
         .padding(MindsetLayout.paddingStandard)
-        .mindsetCard()
+        .background(
+            RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
+                .fill(MindsetColors.fillSubtle)
+                .overlay(
+                    RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
+                        .stroke(
+                            MindsetColors.borderSubtle, lineWidth: MindsetLayout.borderWidth
+                        )
+                )
+        )
     }
 
     var countryPickerButton: some View {
@@ -223,10 +237,6 @@ private extension PhoneSignInView {
             }
             .padding(.horizontal, MindsetLayout.paddingMedium)
             .padding(.vertical, MindsetLayout.paddingSmall)
-            .background(
-                RoundedRectangle(cornerRadius: MindsetLayout.radiusMedium)
-                    .fill(MindsetColors.fillSubtle)
-            )
         }
         .buttonStyle(.plain)
     }
