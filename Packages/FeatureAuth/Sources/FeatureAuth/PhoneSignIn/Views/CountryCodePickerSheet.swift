@@ -28,29 +28,36 @@ struct CountryCodePickerSheet: View {
 // MARK: - Subviews
 
 private extension CountryCodePickerSheet {
-    var backgroundView: some View {
-        LinearGradient(
-            colors: [
-                MindsetColors.backgroundDarkSoft
-            ],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-        .ignoresSafeArea()
-    }
 
     var countryListView: some View {
         NavigationStack {
-            List(sortedCountries) { country in
-                countryRow(for: country)
-                    .listRowBackground(Color.clear)
+            ZStack {
+                MindsetColors.backgroundDarkSoft
+                    .ignoresSafeArea()
+                
+                List(sortedCountries) { country in
+                    countryRow(for: country)
+                        .listRowBackground(Color.clear)
+                }
+                // 2. Hide the default list background
+                .scrollContentBackground(.hidden)
+                .navigationTitle(FeatureAuthStrings.selectCountry)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(role: .cancel) {
+                            HapticManager.selection()
+                            dismiss()
+                        } label: {
+                            Image(systemName: "xmark")
+                        }
+                    }
+                }
+
             }
-            .scrollContentBackground(.hidden)
-            .background(backgroundView)
-            .navigationTitle(FeatureAuthStrings.selectCountry)
-            .navigationBarTitleDisplayMode(.inline)
         }
     }
+
 
     func countryRow(for country: CountryInfo) -> some View {
         Button {

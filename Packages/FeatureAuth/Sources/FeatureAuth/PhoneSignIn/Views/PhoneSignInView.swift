@@ -48,7 +48,7 @@ public struct PhoneSignInView: View {
         }
         .navigationBarTitleDisplayMode(.large)
         .toolbarBackground(MindsetColors.backgroundDark.opacity(0.95), for: .navigationBar)
-        .sheet(isPresented: $phoneViewModel.showCountryPicker) {
+        .fullScreenCover(isPresented: $phoneViewModel.showCountryPicker) {
             CountryCodePickerSheet(
                 selectedRegionCode: $phoneViewModel.selectedRegionCode,
                 onSelect: {
