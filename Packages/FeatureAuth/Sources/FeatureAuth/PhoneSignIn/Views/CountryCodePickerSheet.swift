@@ -21,10 +21,7 @@ struct CountryCodePickerSheet: View {
     // MARK: - Body Composition
 
     var body: some View {
-        ZStack {
-            backgroundView
-            countryListView
-        }
+        countryListView
     }
 }
 
@@ -34,9 +31,7 @@ private extension CountryCodePickerSheet {
     var backgroundView: some View {
         LinearGradient(
             colors: [
-                MindsetColors.backgroundDark,
-                MindsetColors.backgroundDarkSoft,
-                MindsetColors.backgroundWarmAccent.opacity(0.5),
+                MindsetColors.backgroundDarkSoft
             ],
             startPoint: .top,
             endPoint: .bottom
@@ -48,20 +43,12 @@ private extension CountryCodePickerSheet {
         NavigationStack {
             List(sortedCountries) { country in
                 countryRow(for: country)
+                    .listRowBackground(Color.clear)
             }
             .scrollContentBackground(.hidden)
+            .background(backgroundView)
             .navigationTitle(FeatureAuthStrings.selectCountry)
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(role: .cancel) {
-                        HapticManager.selection()
-                        dismiss()
-                    } label: {
-                        Image(systemName: "xmark")
-                    }
-                }
-            }
         }
     }
 
@@ -98,5 +85,10 @@ private extension CountryCodePickerSheet {
             .compactMap { UnicodeScalar(base + $0.value) }
             .map { String($0) }
             .joined()
+    }
+}
+
+#Preview {
+    CountryCodePickerSheet(selectedRegionCode: .constant("US")) {
     }
 }
