@@ -132,4 +132,16 @@ public enum FeatureAuthStrings {
     public static let selectCountry = String(
         localized: "auth.selectCountry", bundle: .module,
         comment: "Country picker sheet title")
+    public static let weNeverShareYourNumber = String(
+        localized: "auth.weNeverShareYourNumber", bundle: .module,
+        comment: "Privacy reassurance button on phone number step")
+    public static let didntReceiveCode = String(
+        localized: "auth.didntReceiveCode", bundle: .module,
+        comment: "Button to open resend/edit options on verification step")
+    public static let resendCode = String(
+        localized: "auth.resendCode", bundle: .module,
+        comment: "Resend verification code sheet button")
+    public static let editNumber = String(
+        localized: "auth.editNumber", bundle: .module,
+        comment: "Edit phone number sheet button")
 }

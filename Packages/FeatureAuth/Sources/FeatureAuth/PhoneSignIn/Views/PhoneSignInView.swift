@@ -41,7 +41,7 @@ public struct PhoneSignInView: View {
 
                 Spacer()
             }
-            .animation(.default, value: phoneViewModel.step)
+            .animation(.easeInOut, value: phoneViewModel.step)
             .padding(MindsetLayout.paddingScreenHorizontal)
 
             keyboardBarOverlay
@@ -56,6 +56,9 @@ public struct PhoneSignInView: View {
                     phoneViewModel.showCountryPicker = false
                 }
             )
+        }
+        .sheet(isPresented: $phoneViewModel.showResendOptionsSheet) {
+            resendOptionsSheet
         }
         .onChange(of: phoneViewModel.selectedRegionCode) { _, _ in
             phoneViewModel.truncateNationalNumberToCurrentRegion()
@@ -141,9 +144,59 @@ private extension PhoneSignInView {
     @ViewBuilder
     var subtitleSection: some View {
         Text(phoneViewModel.step.subtitle)
-            .font(MindsetFonts.caption)
+            .font(MindsetFonts.body)
             .multilineTextAlignment(.leading)
             .foregroundStyle(MindsetColors.textSecondaryDark)
+    }
+
+    var secondaryButton: some View {
+        Button {
+            HapticManager.selection()
+            switch phoneViewModel.step {
+            case .phoneNumber:
+                phoneViewModel.onShowPrivacyPolicy?()
+            case .verificationCode:
+                phoneViewModel.showResendOptionsSheet = true
+            }
+        } label: {
+            Text(phoneViewModel.step.secondaryButtonTitle)
+                .font(MindsetFonts.body.weight(.medium))
+                .foregroundStyle(.link)
+        }
+        .buttonStyle(.plain)
+    }
+
+    var resendOptionsSheet: some View {
+        VStack(spacing: MindsetLayout.spacing16) {
+            Button {
+                HapticManager.action()
+                phoneViewModel.showResendOptionsSheet = false
+                Task { await phoneViewModel.resendCode() }
+            } label: {
+                Text(FeatureAuthStrings.resendCode)
+                    .font(MindsetFonts.body)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, MindsetLayout.paddingStandard)
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(MindsetColors.accentOrange)
+
+            Button {
+                HapticManager.action()
+                phoneViewModel.showResendOptionsSheet = false
+                phoneViewModel.goBackToPhoneNumber()
+            } label: {
+                Text(FeatureAuthStrings.editNumber)
+                    .font(MindsetFonts.body)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, MindsetLayout.paddingStandard)
+            }
+            .buttonStyle(.bordered)
+        }
+        .padding(MindsetLayout.paddingScreenHorizontal)
+        .presentationDetents(
+            [.height(MindsetLayout.detentSmall)]
+        )
     }
 
     var keyboardBarOverlay: some View {
@@ -158,6 +211,8 @@ private extension PhoneSignInView {
 
     var customKeyboardBar: some View {
         HStack(alignment: .center) {
+            secondaryButton
+                .padding([.horizontal, .bottom], MindsetLayout.paddingMedium)
             Spacer()
             if #available(iOS 26.0, *) {
                 keyboardSubmitButton
@@ -168,12 +223,13 @@ private extension PhoneSignInView {
             } else {
                 // Fallback on earlier versions
                 keyboardSubmitButton
-                    .buttonStyle(.automatic)
+                    .buttonStyle(.plain)
             }
         }
         .padding(.horizontal, MindsetLayout.paddingLarge)
         .padding(.bottom, MindsetLayout.spacing8)
         .background(.clear)
+        .animation(.easeInOut, value: phoneViewModel.step)
     }
 
     var keyboardSubmitButton: some View {

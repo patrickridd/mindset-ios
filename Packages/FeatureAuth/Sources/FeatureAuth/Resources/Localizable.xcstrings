@@ -61,6 +61,30 @@
         }
       }
     },
+    "auth.didntReceiveCode" : {
+      "comment" : "Button to open resend/edit options on verification step",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Didn't receive code?"
+          }
+        }
+      }
+    },
+    "auth.editNumber" : {
+      "comment" : "Edit phone number sheet button",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Number"
+          }
+        }
+      }
+    },
     "auth.error.anonymousSignInFailed" : {
       "comment" : "Anonymous sign in failed",
       "extractionState" : "manual",
@@ -265,6 +289,18 @@
         }
       }
     },
+    "auth.resendCode" : {
+      "comment" : "Resend verification code sheet button",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resend Code"
+          }
+        }
+      }
+    },
     "auth.selectCountry" : {
       "comment" : "Country picker sheet title",
       "extractionState" : "manual",
@@ -369,6 +405,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Verify"
+          }
+        }
+      }
+    },
+    "auth.weNeverShareYourNumber" : {
+      "comment" : "Privacy reassurance button on phone number step",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We'll never share your number."
           }
         }
       }

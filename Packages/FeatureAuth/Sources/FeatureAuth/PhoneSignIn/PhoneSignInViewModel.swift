@@ -23,7 +23,8 @@ public final class PhoneSignInViewModel {
     public var showCountryPicker = false
     public var validationError: String?
     public var selectedRegionCode: String = Locale.current.region?.identifier ?? "US"
-
+    public var showResendOptionsSheet = false
+    
     let phoneNumberKit = PhoneNumberKit()
 
     var selectedCountry: CountryInfo {
@@ -65,11 +66,27 @@ public final class PhoneSignInViewModel {
                 return FeatureAuthStrings.phoneVerifySubtitle
             }
         }
+
+        var secondaryButtonTitle: String {
+            switch self {
+            case .phoneNumber:
+                return FeatureAuthStrings.weNeverShareYourNumber
+            case .verificationCode:
+                return FeatureAuthStrings.didntReceiveCode
+            }
+        }
     }
 
-    public init(signInViewModel: SignInViewModel, step: Step = .phoneNumber) {
+    public var onShowPrivacyPolicy: (() -> Void)?
+
+    public init(
+        signInViewModel: SignInViewModel,
+        step: Step = .phoneNumber,
+        onShowPrivacyPolicy: (() -> Void)? = nil
+    ) {
         self.signInViewModel = signInViewModel
         self.step = step
+        self.onShowPrivacyPolicy = onShowPrivacyPolicy
     }
 
     // MARK: - Actions
@@ -100,6 +117,32 @@ public final class PhoneSignInViewModel {
             verificationID: id,
             verificationCode: verificationCode.trimmingCharacters(in: .whitespaces)
         )
+    }
+
+    /// Resends the verification code to the current phone number. Updates verificationID if a new one is returned.
+    public func resendCode() async {
+        validationError = nil
+        signInViewModel.dismissError()
+
+        guard let e164 = toE164(regionCode: selectedRegionCode, nationalNumber: nationalNumber)
+        else {
+            validationError = FeatureAuthStrings.Error.invalidPhoneNumber
+            return
+        }
+
+        isSendingCode = true
+        defer { isSendingCode = false }
+
+        if let id = await signInViewModel.requestPhoneVerificationCode(phoneNumber: e164) {
+            verificationID = id
+        }
+    }
+
+    /// Returns to the phone number step so the user can edit their number.
+    public func goBackToPhoneNumber() {
+        step = .phoneNumber
+        validationError = nil
+        verificationCode = ""
     }
 
     /// Single entry point for keyboard toolbar submit. Dispatches to sendNumber or verifyCode based on step.

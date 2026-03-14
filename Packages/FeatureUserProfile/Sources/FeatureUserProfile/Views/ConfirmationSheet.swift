@@ -27,9 +27,9 @@ struct ConfirmationSheet: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    @State private var measuredContentHeight: CGFloat = MindsetLayout.detentSmall
+    @State private var measuredContentHeight: CGFloat = MindsetLayout.detentMedium
     @State private var availableHeight: CGFloat = 0
-    @State private var detentSelection: PresentationDetent = .height(MindsetLayout.detentSmall)
+    @State private var detentSelection: PresentationDetent = .height(MindsetLayout.detentMedium)
 
     var body: some View {
         ZStack {
@@ -81,8 +81,8 @@ struct ConfirmationSheet: View {
     private var detentMaxHeight: CGFloat {
         let maxCandidate = availableHeight > 0
             ? (availableHeight - MindsetLayout.spacing40)
-            : (MindsetLayout.detentSmall + MindsetLayout.spacing40)
-        return max(MindsetLayout.detentSmall, maxCandidate)
+            : (MindsetLayout.detentMedium + MindsetLayout.spacing40)
+        return max(MindsetLayout.detentMedium, maxCandidate)
     }
 
     private func clampDetentHeight(_ height: CGFloat) -> CGFloat {
