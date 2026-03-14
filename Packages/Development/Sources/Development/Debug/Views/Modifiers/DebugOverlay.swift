@@ -18,18 +18,18 @@ public struct DebugOverlay: ViewModifier {
     public func body(content: Content) -> some View {
         #if DEBUG
             content
-                .overlay(alignment: .topLeading) {
-                    VStack(alignment: .leading, spacing: 0) {
-                        toggleButton
-                        if isExpanded {
-                            logPanel
-                                .padding(.top, MindsetLayout.spacing4)
-                                .transition(.opacity.combined(with: .move(edge: .top)))
-                        }
+            .overlay(alignment: .bottomLeading) {
+                VStack(alignment: .leading, spacing: 0) {
+                    toggleButton
+                    if isExpanded {
+                        logPanel
+                            .padding(.top, MindsetLayout.spacing4)
+                            .transition(.opacity.combined(with: .move(edge: .top)))
                     }
-                    .padding(.leading, MindsetLayout.paddingLarge)
-                    .allowsHitTesting(true)
                 }
+                .padding(.leading, MindsetLayout.paddingLarge)
+                .allowsHitTesting(true)
+            }
         #else
             content
         #endif
@@ -43,18 +43,19 @@ private extension DebugOverlay {
         Button {
             withAnimation(.spring(response: 0.35)) { isExpanded.toggle() }
         } label: {
-            Image(systemName: isExpanded ? "xmark.circle.fill" : "terminal.fill")
+            Image(systemName: isExpanded ? "xmark.app" : "terminal.fill")
+                .resizable()
                 .font(MindsetFonts.debugFont.weight(.medium))
                 .symbolRenderingMode(.hierarchical)
-                .foregroundStyle(.secondary)
-                .frame(
-                    width: MindsetLayout.iconExtraLarge,
-                    height: MindsetLayout.iconExtraLarge
-                )
+                .foregroundStyle(.blue)
                 .background(Circle().fill(.ultraThinMaterial))
+                .frame(
+                    width: MindsetLayout.iconLarge,
+                    height: MindsetLayout.iconLarge
+                )
         }
         .buttonStyle(.plain)
-        .frame(minWidth: MindsetLayout.iconMedium, minHeight: MindsetLayout.iconMedium)
+        .frame(minWidth: MindsetLayout.iconLarge, minHeight: MindsetLayout.iconLarge)
     }
 
     var logPanel: some View {
@@ -101,4 +102,12 @@ public extension View {
     func withDebugOverlay() -> some View {
         self.modifier(DebugOverlay())
     }
+}
+
+#Preview("") {
+    ZStack {
+        Color.black
+            .ignoresSafeArea()
+    }
+    .withDebugOverlay()
 }
