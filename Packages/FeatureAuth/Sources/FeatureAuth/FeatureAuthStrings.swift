@@ -30,41 +30,63 @@ public enum FeatureAuthStrings {
         localized: "auth.signInWithPhone", bundle: .module, comment: "Sign in with Phone button")
     public static let continueAsGuest = String(
         localized: "auth.continueAsGuest", bundle: .module, comment: "Continue as guest option")
+    public static let termsOfServiceMessage = String(
+        localized: "auth.termsOfServiceMessage", bundle: .module,
+        comment: "Terms of Service agreement message upon sign in/up"
+    )
+    public static let termsOfService = String(
+        localized: "auth.termsOfService", bundle: .module,
+        comment: "Terms of Service"
+    )
+    public static let privacyPolicy = String(
+        localized: "auth.privacyPolicy", bundle: .module,
+        comment: "Privacy Policy"
+    )
+    
 
     // MARK: - Benefits
 
     public enum Benefits {
         public static let secureAuth = String(
             localized: "auth.benefits.secureAuth", bundle: .module,
-            comment: "Secure and private authentication benefit")
+            comment: "Secure and private authentication benefit"
+        )
         public static let syncDevices = String(
             localized: "auth.benefits.syncDevices", bundle: .module,
-            comment: "Sync across devices benefit")
+            comment: "Sync across devices benefit"
+        )
         public static let keepStreak = String(
             localized: "auth.benefits.keepStreak", bundle: .module,
-            comment: "Never lose streak or progress benefit")
+            comment: "Never lose streak or progress benefit"
+        )
     }
 
     // MARK: - Errors
 
     public enum Error {
         public static let signInFailed = String(
-            localized: "auth.error.signInFailed", bundle: .module, comment: "Sign in failed error")
+            localized: "auth.error.signInFailed", bundle: .module, 
+            comment: "Sign in failed error"
+        )
         public static let cancelled = String(
             localized: "auth.error.cancelled", bundle: .module, comment: "Sign in cancelled message"
         )
         public static let signInErrorTitle = String(
             localized: "auth.error.signInErrorTitle", bundle: .module,
-            comment: "Sign in error alert title")
+            comment: "Sign in error alert title"
+        )
         public static let invalidAppleCredential = String(
             localized: "auth.error.invalidAppleCredential", bundle: .module,
-            comment: "Invalid Apple ID credential")
+            comment: "Invalid Apple ID credential"
+        )
         public static let missingNonce = String(
             localized: "auth.error.missingNonce", bundle: .module,
-            comment: "Missing nonce error")
+            comment: "Missing nonce error"
+        )
         public static let unableToSerializeToken = String(
             localized: "auth.error.unableToSerializeToken", bundle: .module,
-            comment: "Unable to serialize token error")
+            comment: "Unable to serialize token error"
+        )
         public static func signInFailedWithError(_ error: String) -> String {
             let format = String(
                 localized: "auth.error.signInFailedWithError",
@@ -107,41 +129,54 @@ public enum FeatureAuthStrings {
 
     public static let phonePlaceholder = String(
         localized: "auth.phonePlaceholder", bundle: .module,
-        comment: "Phone number input placeholder")
+        comment: "Phone number input placeholder"
+    )
     public static let sendNumber = String(
         localized: "auth.sendNumber", bundle: .module,
-        comment: "Send Phone number button")
+        comment: "Send Phone number button"
+    )
     public static let codePlaceholder = String(
         localized: "auth.codePlaceholder", bundle: .module,
-        comment: "Verification code input placeholder")
+        comment: "Verification code input placeholder"
+    )
     public static let verify = String(
         localized: "auth.verify", bundle: .module,
-        comment: "Verify code button")
+        comment: "Verify code button"
+    )
     public static let phoneSignInTitle = String(
         localized: "auth.phoneSignInTitle", bundle: .module,
-        comment: "Phone sign in step title")
+        comment: "Phone sign in step title"
+    )
     public static let phoneSignInSubtitle = String(
         localized: "auth.phoneSignInSubtitle", bundle: .module,
-        comment: "Phone sign in step subtitle")
+        comment: "Phone sign in step subtitle"
+    )
     public static let phoneVerifyTitle = String(
         localized: "auth.phoneVerifyTitle", bundle: .module,
-        comment: "Verify phone sign in step title")
+        comment: "Verify phone sign in step title"
+    )
     public static let phoneVerifySubtitle = String(
         localized: "auth.phoneVerifySubtitle", bundle: .module,
-        comment: "Verify phone sign in step subtitle")
+        comment: "Verify phone sign in step subtitle"
+    )
     public static let selectCountry = String(
         localized: "auth.selectCountry", bundle: .module,
-        comment: "Country picker sheet title")
+        comment: "Country picker sheet title"
+    )
     public static let weNeverShareYourNumber = String(
         localized: "auth.weNeverShareYourNumber", bundle: .module,
-        comment: "Privacy reassurance button on phone number step")
+        comment: "Privacy reassurance button on phone number step"
+    )
     public static let didntReceiveCode = String(
         localized: "auth.didntReceiveCode", bundle: .module,
-        comment: "Button to open resend/edit options on verification step")
+        comment: "Button to open resend/edit options on verification step"
+    )
     public static let resendCode = String(
         localized: "auth.resendCode", bundle: .module,
-        comment: "Resend verification code sheet button")
+        comment: "Resend verification code sheet button"
+    )
     public static let editNumber = String(
         localized: "auth.editNumber", bundle: .module,
-        comment: "Edit phone number sheet button")
+        comment: "Edit phone number sheet button"
+    )
 }

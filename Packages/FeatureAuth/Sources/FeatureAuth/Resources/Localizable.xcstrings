@@ -277,6 +277,18 @@
         }
       }
     },
+    "auth.privacyPolicy" : {
+      "comment" : "\"Privacy Policy\"",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy Policy"
+          }
+        }
+      }
+    },
     "auth.profileReadyTitle" : {
       "comment" : "Sign in screen title when profile is ready after onboarding",
       "extractionState" : "manual",
@@ -393,6 +405,30 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Continue with Phone"
+          }
+        }
+      }
+    },
+    "auth.termsOfService" : {
+      "comment" : "\"Terms of Service”",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terms of Service"
+          }
+        }
+      }
+    },
+    "auth.termsOfServiceMessage" : {
+      "comment" : "Terms of Service and Privacy Policy agreement message upon sign in/up",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "By signing up, you are agreeing to our\nTerms of Service and Privacy Policy"
           }
         }
       }
