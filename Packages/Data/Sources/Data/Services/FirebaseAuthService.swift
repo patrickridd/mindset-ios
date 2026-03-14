@@ -80,6 +80,7 @@ extension FirebaseAuthService: SignInService {
         logger.log("🤫 Signing in anonymously...")
         do {
             let result = try await Auth.auth().signInAnonymously()
+            logger.log("🥸 Signed in anonymously...")
             return result.user.uid
         } catch {
             logger.log("❌ Anonymous sign-in failed: \(error.localizedDescription)")

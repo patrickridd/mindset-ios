@@ -65,7 +65,6 @@ public final class SignInViewModel {
             text[range].link = URL(string: "https://yourdomain.com")
             text[range].underlineStyle = .single // Adds the underline
             text[range].foregroundColor = .white
-
         }
         return text
     }
