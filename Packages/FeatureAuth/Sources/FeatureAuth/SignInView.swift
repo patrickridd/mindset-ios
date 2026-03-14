@@ -48,9 +48,7 @@ private extension SignInView {
                     titleSection
                     benefitsSection
                     buttonsSection
-                    Color.clear.frame(height: MindsetLayout.spacing30)
                 }
-                Spacer()
             }
             .scrollIndicators(.hidden)
             .toolbar(.hidden, for: .tabBar)
