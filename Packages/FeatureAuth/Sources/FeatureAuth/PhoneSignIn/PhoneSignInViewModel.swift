@@ -24,6 +24,8 @@ public final class PhoneSignInViewModel {
     public var validationError: String?
     public var selectedRegionCode: String = Locale.current.region?.identifier ?? "US"
     public var showResendOptionsSheet = false
+    /// When true, we call goBackToPhoneNumber() in the sheet's onDismiss so the phone field appears and gets focus after the sheet is gone.
+    public var shouldGoBackToPhoneNumberOnSheetDismiss = false
     
     let phoneNumberKit = PhoneNumberKit()
 

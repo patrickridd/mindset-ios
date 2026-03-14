@@ -57,7 +57,12 @@ public struct PhoneSignInView: View {
                 }
             )
         }
-        .sheet(isPresented: $phoneViewModel.showResendOptionsSheet) {
+        .sheet(isPresented: $phoneViewModel.showResendOptionsSheet, onDismiss: {
+            if phoneViewModel.shouldGoBackToPhoneNumberOnSheetDismiss {
+                phoneViewModel.goBackToPhoneNumber()
+                phoneViewModel.shouldGoBackToPhoneNumberOnSheetDismiss = false
+            }
+        }) {
             resendOptionsSheet
         }
         .onChange(of: phoneViewModel.selectedRegionCode) { _, _ in
@@ -183,8 +188,8 @@ private extension PhoneSignInView {
 
             Button {
                 HapticManager.action()
+                phoneViewModel.shouldGoBackToPhoneNumberOnSheetDismiss = true
                 phoneViewModel.showResendOptionsSheet = false
-                phoneViewModel.goBackToPhoneNumber()
             } label: {
                 Text(FeatureAuthStrings.editNumber)
                     .font(MindsetFonts.body)
