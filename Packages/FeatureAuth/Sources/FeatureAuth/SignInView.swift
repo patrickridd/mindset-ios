@@ -48,6 +48,7 @@ private extension SignInView {
                     titleSection
                     benefitsSection
                     buttonsSection
+                    termsOfServiceSection
                 }
             }
             .scrollIndicators(.hidden)
@@ -135,6 +136,15 @@ private extension SignInView {
         }
         .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
         .padding(.vertical, MindsetLayout.spacing30)
+    }
+
+    var termsOfServiceSection: some View {
+        Text(viewModel.termsOfService)
+            .lineSpacing(MindsetLayout.spacing4) // Adds space between lines
+            .multilineTextAlignment(.center)
+            .font(MindsetFonts.caption)
+            .foregroundStyle(MindsetColors.textPrimaryDark)
+            .padding(.vertical, MindsetLayout.spacing30)
     }
 
     var buttonsSection: some View {

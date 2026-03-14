@@ -50,6 +50,26 @@ public final class SignInViewModel {
         self.onSkip = onSkip
     }
     
+    var termsOfService: AttributedString {
+        var text = AttributedString(FeatureAuthStrings.termsOfServiceMessage)
+
+        // Style Terms of Service
+        if let range = text.range(of: FeatureAuthStrings.termsOfService) {
+            text[range].link = URL(string: "https://yourdomain.com")
+            text[range].underlineStyle = .single // Adds the underline
+            text[range].foregroundColor = .white
+        }
+
+        // Style Privacy Policy
+        if let range = text.range(of: FeatureAuthStrings.privacyPolicy) {
+            text[range].link = URL(string: "https://yourdomain.com")
+            text[range].underlineStyle = .single // Adds the underline
+            text[range].foregroundColor = .white
+
+        }
+        return text
+    }
+
     // MARK: - Button actions
 
     public func dismissButtonTapped() async {
