@@ -236,6 +236,7 @@ struct AppViewFactory: MainViewFactory {
             },
             onSignInSuccess: { _ in
                 // Pop back to "Security and Settings"
+                coordinator.refreshProfileTabTitle()
                 let profilePathCount = coordinator.profilePath.count - 1
                 coordinator.profilePath.removeLast(profilePathCount)
             },

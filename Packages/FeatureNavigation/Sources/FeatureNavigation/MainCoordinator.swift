@@ -225,7 +225,7 @@ public final class MainCoordinator {
         withAnimation { self.sheetState = sheetState }
     }
 
-    private func refreshProfileTabTitle() {
+    public func refreshProfileTabTitle() {
         Task { @MainActor [userProfileRepository] in
             let userName = (try? await userProfileRepository.fetchUserProfile()?.userName) ?? ""
             let trimmed = userName.trimmingCharacters(in: .whitespacesAndNewlines)
