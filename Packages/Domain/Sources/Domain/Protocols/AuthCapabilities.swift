@@ -31,6 +31,9 @@ public protocol AuthStateQuery: Sendable {
 
     /// Check if current user's anonymous account has been linked with provider (gmail, apple, phone, etc...)
     func isAnonymousAccountLinked() -> Bool
+    
+    /// To find out which providers are linked to a user, use the providerData property of the User
+    var authCredentialIdentifier: String? { get }
 }
 
 /// Capability: Session lifecycle and account linking.

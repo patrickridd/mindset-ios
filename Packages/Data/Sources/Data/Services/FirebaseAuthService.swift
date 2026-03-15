@@ -44,8 +44,15 @@ public final class FirebaseAuthService: AuthService, Sendable {
 extension FirebaseAuthService: SignInService {
 
     public func signIn(with credential: DomainAuthCredential) async throws -> String {
+        
         logger.log("🔐 Auth sign-in started for credential: \(credential)")
 
+        // Check if already logged in
+        if isAuthenticated(), let userId = await getCurrentUserID() {
+            logger.log("User already signed in with '\(authCredentialIdentifier?.uppercased() ?? "unknown".uppercased())' provider and has id: \(userId)")
+            return userId
+        }
+        
         do {
             switch credential {
             case .oauth(let identityToken, let nonce, let accessToken, let fullName):
@@ -226,6 +233,14 @@ extension FirebaseAuthService: AuthStateQuery {
 
     public func isAnonymousAccountLinked() -> Bool {
         isAuthenticated() && !isAnonymouslySignedIn
+    }
+
+    public var authCredentialIdentifier: String? {
+        guard let providerData = Auth.auth().currentUser?.providerData else {
+            return nil
+        }
+        let authCredentialIdentifier = providerData.map { $0.providerID }.first
+        return authCredentialIdentifier
     }
 }
 

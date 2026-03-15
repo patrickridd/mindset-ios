@@ -125,4 +125,8 @@ public final class MockAuthService: @preconcurrency AuthService {
         // Mock implementation - always return true for testing
         return true
     }
+
+    public var authCredentialIdentifier: String? {
+        nil
+    }
 }
