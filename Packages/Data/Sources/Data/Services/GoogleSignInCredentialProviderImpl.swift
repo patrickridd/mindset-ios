@@ -16,6 +16,7 @@ import SharedUtils
 #endif
 
 /// Firebase implementation of GoogleSignInCredentialProvider using the Google Sign-In SDK.
+@MainActor
 public final class GoogleSignInCredentialProviderImpl: GoogleSignInCredentialProvider, Sendable {
 
     private let logger: AppLogger
