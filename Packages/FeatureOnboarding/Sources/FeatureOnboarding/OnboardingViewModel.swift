@@ -12,9 +12,8 @@ import Observation
 @Observable
 public final class OnboardingViewModel {
     private let userRepository: UserRepository
-    private let signInOrLinkUseCase: SignInOrLinkUseCase
+    private let signInService: SignInService
     private let authStateQuery: AuthStateQuery
-    private let analyzingViewModel: AnalyzingViewModel
     public var onboardingFinished: (() -> Void)?
 
     public var currentStep = 0
@@ -35,15 +34,13 @@ public final class OnboardingViewModel {
 
     public init(
         userRepository: UserRepository,
-        signInOrLinkUseCase: SignInOrLinkUseCase,
+        signInService: SignInService,
         authStateQuery: AuthStateQuery,
-        analyzingViewModel: AnalyzingViewModel,
         onboardingFinished: (() -> Void)?
     ) {
         self.userRepository = userRepository
-        self.signInOrLinkUseCase = signInOrLinkUseCase
+        self.signInService = signInService
         self.authStateQuery = authStateQuery
-        self.analyzingViewModel = analyzingViewModel
         self.onboardingFinished = onboardingFinished
     }
 
@@ -68,7 +65,7 @@ public final class OnboardingViewModel {
         if currentStep < questions.count - 1 {
             currentStep += 1
         } else {
-            startCalculation()
+            finishOnboarding()
         }
     }
 
@@ -110,48 +107,37 @@ public final class OnboardingViewModel {
         currentStep -= 1
     }
 
-    private func startCalculation() {
+    private func finishOnboarding() {
         isCalculating = true
 
         Task {
-            try? Task.checkCancellation()
-            let wasAuthenticated = isAuthenticated()
-
-            // Start progressive auth as soon as the analyzing step begins.
-            startAnalyzingIfNeeded()
-
             async let delay: Void = delayForAnalyzing()
 
-            // Ensure the user has a Firebase uid and local profile before onboarding completes.
-            await analyzingViewModel.waitForSignInIfStarted()
-            try? Task.checkCancellation()
-
-            let existingProfile = try? await userRepository.fetchUserProfile()
-            let authUid = await authStateQuery.getCurrentUserID() ?? ""
-            let profileId = existingProfile?.id ?? authUid
-            var profile = buildUserProfile(profileId: profileId)
-            let isAuthenticatedNow = isAuthenticated()
-            profile.isAccountSecured = !wasAuthenticated && isAuthenticatedNow
-
-            try? await userRepository.saveUserProfile(profile)
-            try? Task.checkCancellation()
+            let userId: String
+            // Check if id exists and use that one if it does exists
+            if let existingId = try? await authStateQuery.getCurrentUserID() {
+                userId = existingId
+            } else {
+                // Else sign-in user anonymously and use that new id
+                userId = try await signInService.signIn(with: .anonymous)
+            }
+            
+            let updatedUserProfile = updateUserProfile(profileId: userId)
+            try? await userRepository.saveUserProfile(updatedUserProfile)
 
             _ = await delay
 
             isCalculating = false
+
             onboardingFinished?()
         }
-    }
-
-    public func startAnalyzingIfNeeded() {
-        analyzingViewModel.startIfNeeded()
     }
 
     private func delayForAnalyzing() async {
         try? await Task.sleep(for: .seconds(2.5))
     }
 
-    private func buildUserProfile(profileId: String) -> UserProfile {
+    private func updateUserProfile(profileId: String) -> UserProfile {
         let headspace = answers[.headspace].flatMap { UserProfile.Headspace(rawValue: $0) }
         let mentalMuscle = answers[.mentalMuscle].flatMap { UserProfile.MentalMuscle(rawValue: $0) }
         let responseToSetback = answers[.responseToSetback].flatMap {
@@ -167,6 +153,7 @@ public final class OnboardingViewModel {
             id: profileId,
             userName: "",
             primaryGoal: primaryGoal,
+            isOnboardingComplete: true,
             overwhelmedFrequency: overwhelmedFrequency,
             headspace: headspace,
             mentalMuscle: mentalMuscle,
@@ -191,11 +178,8 @@ public final class OnboardingViewModel {
     public func skipOnboarding() {
         onboardingFinished?()
         Task {
-            guard isAuthenticated() == false else {
-                return
-            }
             // Sign in Anonymously
-            _ = try await signInOrLinkUseCase.execute(with: .anonymous)
+            _ = try await signInService.signIn(with: .anonymous)
         }
     }
     

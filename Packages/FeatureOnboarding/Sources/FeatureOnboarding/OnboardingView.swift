@@ -75,7 +75,6 @@ private extension OnboardingView {
             if viewModel.isCalculating {
                 Spacer()
                 CalculatingView(onAppear: {
-                    viewModel.startAnalyzingIfNeeded()
                 })
                     .padding(.bottom, MindsetLayout.paddingXLarge)
                 Spacer()
@@ -270,16 +269,10 @@ private struct CalculatingView: View {
 #Preview {
     let logger: AppLogger = DebugLogger.shared
     let mockAuth = MockAuthService()
-    let signInOrLinkUseCase = SignInOrLinkUseCase(
-        authService: mockAuth,
-        userRepository: MockUserRepository()
-    )
-    let analyzingViewModel = AnalyzingViewModel(signInOrLinkUseCase: signInOrLinkUseCase, logger: logger)
     let viewModel = OnboardingViewModel(
         userRepository: MockUserRepository(),
-        signInOrLinkUseCase: signInOrLinkUseCase,
+        signInService: mockAuth,
         authStateQuery: mockAuth,
-        analyzingViewModel: analyzingViewModel,
         onboardingFinished: nil
     )
     return OnboardingView(viewModel: viewModel)

@@ -104,13 +104,10 @@ struct AppViewFactory: MainViewFactory {
     }
 
     func makeOnboardingView() -> AnyView {
-        let analyzingViewModel = AnalyzingViewModel(
-            signInOrLinkUseCase: signInOrLinkUseCase, logger: logger)
         let viewModel = OnboardingViewModel(
             userRepository: userRepository,
-            signInOrLinkUseCase: signInOrLinkUseCase,
+            signInService: authService,
             authStateQuery: authService,
-            analyzingViewModel: analyzingViewModel,
             onboardingFinished: {
                 coordinator.onboardingFinished()
             })
