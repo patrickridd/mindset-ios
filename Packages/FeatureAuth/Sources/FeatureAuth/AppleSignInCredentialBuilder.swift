@@ -50,24 +50,33 @@ public final class AppleSignInCredentialBuilder: AppleSignInCredentialBuilderPro
         else {
             return nil
         }
-
-        var fullName: String?
-        if let name = credential.fullName {
-            let displayName = [name.givenName, name.familyName]
-                .compactMap { $0 }
-                .joined(separator: " ")
-
-            if !displayName.isEmpty {
-                fullName = displayName
-                nonceStorage.storeUserName(displayName)
-            }
-        }
+        
+        nonceStorage.storeUserName(displayName(with: credential))
 
         return AuthCredential.oauth(
             identityToken: idTokenString,
             nonce: nonce,
             accessToken: nil,
-            fullName: fullName
+            fullName: fullName(with: credential)
         )
+    }
+
+    private func displayName(with credential: ASAuthorizationAppleIDCredential) -> String {
+        givenName(with: credential) ?? familyName(with: credential) ?? "Profile"
+    }
+
+    private func givenName(with credential: ASAuthorizationAppleIDCredential) -> String? {
+        credential.fullName?.givenName?.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+    
+    private func familyName(with credential: ASAuthorizationAppleIDCredential) -> String? {
+        credential.fullName?.familyName?.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private func fullName(with credential: ASAuthorizationAppleIDCredential) -> String? {
+        let fullName = [givenName(with: credential), familyName(with: credential)]
+            .compactMap { $0 }
+            .joined(separator: " ")
+        return fullName
     }
 }

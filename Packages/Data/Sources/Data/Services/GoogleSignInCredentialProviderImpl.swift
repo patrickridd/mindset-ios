@@ -80,29 +80,28 @@ public final class GoogleSignInCredentialProviderImpl: GoogleSignInCredentialPro
     }
 
     #if canImport(UIKit)
-        /// Prefer full `name`; fall back to given + family (Google may omit one).
-        private static func displayName(from profile: GIDProfileData?) -> String? {
-            guard let profile else { return nil }
-            let fromFull = profile.name.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-            if !fromFull.isEmpty { return fromFull }
-            let parts = [profile.givenName, profile.familyName].compactMap { $0 }
-            let joined = parts.joined(separator: " ")
-                .trimmingCharacters(in: .whitespacesAndNewlines)
-            return joined.isEmpty ? nil : joined
+    /// Prefer first (givenName) `name`; fall back to family (Google may omit one).
+    private static func displayName(from profile: GIDProfileData?) -> String? {
+        guard let profile else { return nil }
+        if let firstName = profile.givenName?.trimmingCharacters(in: .whitespacesAndNewlines) {
+            return firstName
+        } else {
+            return profile.familyName?.trimmingCharacters(in: .whitespacesAndNewlines)
         }
-
-        private func ensureGIDSignInConfigured() {
-            guard GIDSignIn.sharedInstance.configuration == nil,
-                let clientID = FirebaseApp.app()?.options.clientID
-            else { return }
-            GIDSignIn.sharedInstance.configuration = GIDConfiguration(clientID: clientID)
-        }
-
-        private func resolveRootViewController() -> UIViewController? {
-            let scenes = UIApplication.shared.connectedScenes
-            let windowScene = scenes.compactMap { $0 as? UIWindowScene }.first
-            let window = windowScene?.windows.first { $0.isKeyWindow }
-            return window?.rootViewController
-        }
+    }
+    
+    private func ensureGIDSignInConfigured() {
+        guard GIDSignIn.sharedInstance.configuration == nil,
+              let clientID = FirebaseApp.app()?.options.clientID
+        else { return }
+        GIDSignIn.sharedInstance.configuration = GIDConfiguration(clientID: clientID)
+    }
+    
+    private func resolveRootViewController() -> UIViewController? {
+        let scenes = UIApplication.shared.connectedScenes
+        let windowScene = scenes.compactMap { $0 as? UIWindowScene }.first
+        let window = windowScene?.windows.first { $0.isKeyWindow }
+        return window?.rootViewController
+    }
     #endif
 }
