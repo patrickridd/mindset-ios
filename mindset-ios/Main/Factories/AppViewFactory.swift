@@ -37,42 +37,6 @@ import SwiftUI
     }
 #endif
 
-private struct PhoneSignInWithPrivacyWrapper: View {
-    let signInViewModel: SignInViewModel
-    let privacyPolicyURL: URL
-    @State private var showPrivacyPolicy = false
-    @State private var phoneViewModel: PhoneSignInViewModel?
-
-    var body: some View {
-        Group {
-            if let phoneViewModel {
-                PhoneSignInView(phoneViewModel: phoneViewModel)
-            }
-        }
-        .onAppear {
-            if phoneViewModel == nil {
-                let vm = PhoneSignInViewModel(
-                    signInViewModel: signInViewModel,
-                    onShowPrivacyPolicy: { showPrivacyPolicy = true }
-                )
-                self.phoneViewModel = vm
-            }
-        }
-        .fullScreenCover(isPresented: $showPrivacyPolicy) {
-            NavigationStack {
-                PrivacyPolicyView(url: privacyPolicyURL)
-                    .toolbar {
-                        ToolbarItem(placement: .cancellationAction) {
-                            Button("Done") {
-                                showPrivacyPolicy = false
-                            }
-                        }
-                    }
-            }
-        }
-    }
-}
-
 struct AppViewFactory: MainViewFactory {
     let coordinator: MainCoordinator
     let authService: AuthService
@@ -101,7 +65,7 @@ struct AppViewFactory: MainViewFactory {
     }
 
     func makeSignInView() -> AnyView {
-        let viewModel = SignInViewModel(
+        let signInViewModel = SignInViewModel(
             signInOrLinkUseCase: signInOrLinkUseCase,
             appleSignInCredentialBuilder: appleSignInCredentialBuilder,
             googleSignInCredentialProvider: serviceFactory.makeGoogleSignInCredentialProvider(
@@ -125,18 +89,14 @@ struct AppViewFactory: MainViewFactory {
                 coordinator.signInCompleted()
             }
         )
-
-        let privacyPolicyURL = URL(string: "https://mindset.app/privacy")!
         return AnyView(
             NavigationStack(path: Bindable(coordinator).signInPath) {
-                SignInView(viewModel: viewModel)
+                SignInView(viewModel: signInViewModel)
                     .navigationDestination(for: SignInDestination.self) { destination in
                         switch destination {
                         case .phoneSignIn:
-                            PhoneSignInWithPrivacyWrapper(
-                                signInViewModel: viewModel,
-                                privacyPolicyURL: privacyPolicyURL
-                            )
+                            let phoneSignInViewModel = PhoneSignInViewModel(signInViewModel: signInViewModel)
+                            PhoneSignInView(phoneViewModel: phoneSignInViewModel)
                         }
                     }
             }
@@ -267,10 +227,8 @@ struct AppViewFactory: MainViewFactory {
                         case .signInView:
                             SignInView(viewModel: signInViewModel)
                         case .phoneSignIn:
-                            PhoneSignInWithPrivacyWrapper(
-                                signInViewModel: signInViewModel,
-                                privacyPolicyURL: privacyPolicyURL
-                            )
+                            let phoneSignInViewModel = PhoneSignInViewModel(signInViewModel: signInViewModel)
+                            PhoneSignInView(phoneViewModel: phoneSignInViewModel)
                         }
                     }
             }
