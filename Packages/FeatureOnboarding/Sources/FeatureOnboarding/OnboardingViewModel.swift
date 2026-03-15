@@ -112,18 +112,8 @@ public final class OnboardingViewModel {
 
         Task {
             async let delay: Void = delayForAnalyzing()
-
-            let userId: String
-            // Check if id exists and use that one if it does exists
-            if let existingId = try? await authStateQuery.getCurrentUserID() {
-                userId = existingId
-            } else {
-                // Else sign-in user anonymously and use that new id
-                userId = try await signInService.signIn(with: .anonymous)
-            }
             
-            let updatedUserProfile = updateUserProfile(profileId: userId)
-            try? await userRepository.saveUserProfile(updatedUserProfile)
+            try? await updateOrCreateNewAnonymousUser()
 
             _ = await delay
 
@@ -133,8 +123,22 @@ public final class OnboardingViewModel {
         }
     }
 
+    private func updateOrCreateNewAnonymousUser() async throws {
+        let userId: String
+        // Check if id exists and use that one if it does exists
+        if let existingId = try? await authStateQuery.getCurrentUserID() {
+            userId = existingId
+        } else {
+            // Else sign-in user anonymously and use that new id
+            userId = try await signInService.signIn(with: .anonymous)
+        }
+        
+        let updatedUserProfile = updateUserProfile(profileId: userId)
+        try? await userRepository.saveUserProfile(updatedUserProfile)
+    }
+
     private func delayForAnalyzing() async {
-        try? await Task.sleep(for: .seconds(2.5))
+        try? await Task.sleep(for: .seconds(2))
     }
 
     private func updateUserProfile(profileId: String) -> UserProfile {
