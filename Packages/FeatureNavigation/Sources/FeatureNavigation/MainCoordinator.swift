@@ -9,7 +9,6 @@ import Domain
 import SwiftUI
 
 @Observable
-@MainActor
 public final class MainCoordinator {
 
     // Exclusive primary screens

@@ -10,7 +10,6 @@ import Foundation
 import Observation
 
 @Observable
-@MainActor
 public final class OnboardingViewModel {
     private let userRepository: UserRepository
     private let signInOrLinkUseCase: SignInOrLinkUseCase

@@ -10,7 +10,6 @@ import Foundation
 import Observation
 
 @Observable
-@MainActor
 public final class PaywallViewModel {
     private let subscriptionService: SubscriptionService
     public var isLoading = false

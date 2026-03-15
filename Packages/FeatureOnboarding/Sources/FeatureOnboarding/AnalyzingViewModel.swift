@@ -3,7 +3,6 @@ import Foundation
 import Observation
 
 @Observable
-@MainActor
 public final class AnalyzingViewModel {
     private let signInOrLinkUseCase: SignInOrLinkUseCase
     private let logger: AppLogger

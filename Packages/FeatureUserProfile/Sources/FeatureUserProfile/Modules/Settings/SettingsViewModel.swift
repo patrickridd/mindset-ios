@@ -11,7 +11,6 @@ import Observation
 import SharedUtils
 
 @Observable
-@MainActor
 public final class SettingsViewModel {
     public var isSigningOut = false
     public var isDeletingAccount = false

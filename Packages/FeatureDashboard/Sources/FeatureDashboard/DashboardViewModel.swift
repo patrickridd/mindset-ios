@@ -10,7 +10,6 @@ import Foundation
 import Observation
 
 @Observable
-@MainActor
 public final class DashboardViewModel {
     // Dependencies
     private let userRepository: UserRepository

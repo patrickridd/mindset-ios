@@ -10,7 +10,6 @@ import Foundation
 import Observation
 
 @Observable
-@MainActor
 public final class MindsetHistoryViewModel {
     private let repository: MindsetRepository
     private let logger: AppLogger
