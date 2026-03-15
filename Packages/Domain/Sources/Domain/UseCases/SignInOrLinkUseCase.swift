@@ -58,21 +58,39 @@ public struct SignInOrLinkUseCase: Sendable {
             uid = try await signInService.signIn(with: credential)
         }
 
+        await ensureProfileExists(uid: uid, credential: credential)
         await persistOAuthDisplayNameIfNeeded(from: credential)
         return uid
     }
 
+    private func ensureProfileExists(uid: String, credential: AuthCredential) async {
+        guard (try? await userRepository.fetchUserProfile()) == nil else { return }
+        let isAccountSecured: Bool
+        if case .anonymous = credential {
+            isAccountSecured = false
+        } else {
+            isAccountSecured = true
+        }
+        let minimal = UserProfile(
+            id: uid,
+            userName: "",
+            primaryGoal: "Build a healthier mindset",
+            isOnboardingComplete: false,
+            isAccountSecured: isAccountSecured,
+            overwhelmedFrequency: .sometimes
+        )
+        try? await userRepository.saveUserProfile(minimal)
+    }
+
     private func persistOAuthDisplayNameIfNeeded(from credential: AuthCredential) async {
-        guard
-            case .oauth(_, _, _, let fullName) = credential, // Get fullName
-            let fullName = fullName?.trimmingCharacters(in: .whitespacesAndNewlines), // trim
-            var profile = try? await userRepository.fetchUserProfile(), // fetch existing user profile
-            profile.userName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty // existing profile userName isEmpty
+        guard case .oauth(_, _, _, let fullName) = credential,
+              let trimmed = fullName?.trimmingCharacters(in: .whitespacesAndNewlines), !trimmed.isEmpty,
+              var profile = try? await userRepository.fetchUserProfile(),
+              profile.userName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         else {
             return
         }
-
-        profile.userName = fullName
+        profile.userName = trimmed
         try? await userRepository.saveUserProfile(profile)
     }
 

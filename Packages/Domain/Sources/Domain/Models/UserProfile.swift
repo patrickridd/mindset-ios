@@ -9,7 +9,8 @@ import Foundation
 
 public struct UserProfile: Sendable {
 
-    public let id: UUID
+    /// Auth user identifier (e.g. from first sign-in). Required; no default.
+    public let id: String
     public var userName: String
     public var primaryGoal: String
     public let createdAt: Date
@@ -34,7 +35,7 @@ public struct UserProfile: Sendable {
     public var aiCoachTone: AICoachTone?
 
     public init(
-        id: UUID = UUID(),
+        id: String,
         userName: String,
         primaryGoal: String,
         isOnboardingComplete: Bool = false,

@@ -115,20 +115,22 @@ public final class OnboardingViewModel {
 
         Task {
             try? Task.checkCancellation()
-            let wasAuthenticated = await authStateQuery.isAuthenticated()
+            let wasAuthenticated = isAuthenticated()
 
             // Start progressive auth as soon as the analyzing step begins.
             startAnalyzingIfNeeded()
 
             async let delay: Void = delayForAnalyzing()
 
-            var profile = buildUserProfile()
-
-            // Ensure the user has a Firebase uid before onboarding completes.
+            // Ensure the user has a Firebase uid and local profile before onboarding completes.
             await analyzingViewModel.waitForSignInIfStarted()
             try? Task.checkCancellation()
 
-            let isAuthenticatedNow = await authStateQuery.isAuthenticated()
+            let existingProfile = try? await userRepository.fetchUserProfile()
+            let authUid = await authStateQuery.getCurrentUserID() ?? ""
+            let profileId = existingProfile?.id ?? authUid
+            var profile = buildUserProfile(profileId: profileId)
+            let isAuthenticatedNow = isAuthenticated()
             profile.isAccountSecured = !wasAuthenticated && isAuthenticatedNow
 
             try? await userRepository.saveUserProfile(profile)
@@ -149,7 +151,7 @@ public final class OnboardingViewModel {
         try? await Task.sleep(for: .seconds(2.5))
     }
 
-    private func buildUserProfile() -> UserProfile {
+    private func buildUserProfile(profileId: String) -> UserProfile {
         let headspace = answers[.headspace].flatMap { UserProfile.Headspace(rawValue: $0) }
         let mentalMuscle = answers[.mentalMuscle].flatMap { UserProfile.MentalMuscle(rawValue: $0) }
         let responseToSetback = answers[.responseToSetback].flatMap {
@@ -162,6 +164,7 @@ public final class OnboardingViewModel {
         let primaryGoal = mentalMuscle?.rawValue ?? "Build a healthier mindset"
 
         return UserProfile(
+            id: profileId,
             userName: "",
             primaryGoal: primaryGoal,
             overwhelmedFrequency: overwhelmedFrequency,
@@ -188,11 +191,17 @@ public final class OnboardingViewModel {
     public func skipOnboarding() {
         onboardingFinished?()
         Task {
-            // Create anonymous credential
-            let credential = AuthCredential.anonymous
-
-            // Sign in via SignInOrLinkUseCase
-            _ = try await signInOrLinkUseCase.execute(with: credential)
+            guard isAuthenticated() == false else {
+                return
+            }
+            // Sign in Anonymously
+            _ = try await signInOrLinkUseCase.execute(with: .anonymous)
         }
+    }
+    
+    // MARK: - Auth Helpers
+    
+    private func isAuthenticated() -> Bool {
+        authStateQuery.isAuthenticated()
     }
 }

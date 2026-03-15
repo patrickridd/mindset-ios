@@ -11,7 +11,7 @@ import SwiftData
 
 @Model
 public final class SDUserProfile {
-    @Attribute(.unique) public var id: UUID
+    @Attribute(.unique) public var id: String
     public var bestSelfName: String
     public var primaryGoal: String
     public var createdAt: Date
@@ -27,7 +27,7 @@ public final class SDUserProfile {
     public var aiCoachToneRaw: String?
 
     public init(
-        id: UUID = UUID(),
+        id: String,
         bestSelfName: String,
         primaryGoal: String,
         isOnboardingComplete: Bool,

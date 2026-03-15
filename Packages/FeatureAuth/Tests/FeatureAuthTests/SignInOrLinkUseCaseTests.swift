@@ -10,8 +10,9 @@ import Testing
 @MainActor
 struct SignInOrLinkUseCaseTests {
 
-    private static func emptyNamedProfile(userName: String = "") -> UserProfile {
+    private static func emptyNamedProfile(id: String = "test-profile-id", userName: String = "") -> UserProfile {
         UserProfile(
+            id: id,
             userName: userName,
             primaryGoal: "Build a healthier mindset",
             isOnboardingComplete: true,
@@ -101,5 +102,30 @@ struct SignInOrLinkUseCaseTests {
         )
 
         #expect(repo.profile?.userName == "")
+    }
+
+    @Test
+    func execute_createsProfileWithIdEqualToUidWhenNoProfileExists() async throws {
+        let repo = MutableMockUserRepository(profile: nil)
+        let auth = MockAuthService(
+            shouldSucceed: true,
+            isAnonymousAccountLinked: true,
+            mockUserID: "firebase-uid-123",
+            signInDelay: .milliseconds(0)
+        )
+        let useCase = SignInOrLinkUseCase(authService: auth, userRepository: repo)
+
+        let uid = try await useCase.execute(
+            with: AuthCredential.oauth(
+                identityToken: "id",
+                nonce: nil,
+                accessToken: "acc",
+                fullName: nil
+            )
+        )
+
+        #expect(repo.profile != nil)
+        #expect(repo.profile?.id == uid)
+        #expect(repo.profile?.id == "oauth-firebase-uid-123")
     }
 }
