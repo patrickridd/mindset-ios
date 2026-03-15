@@ -28,6 +28,10 @@ let package = Package(
             dependencies: [
                 .product(name: "Domain", package: "Domain"),
                 .product(name: "Inject", package: "Inject")
+            ],
+            swiftSettings: [
+                // This makes the entire target @MainActor by default
+                .defaultIsolation(MainActor.self)
             ]
         ),
         .testTarget(

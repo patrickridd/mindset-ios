@@ -30,6 +30,10 @@ let package = Package(
             ],
             resources: [
                 .process("Resources")
+            ],
+            swiftSettings: [
+                // This makes the entire target @MainActor by default
+                .defaultIsolation(MainActor.self)
             ]
         ),
         .testTarget(
