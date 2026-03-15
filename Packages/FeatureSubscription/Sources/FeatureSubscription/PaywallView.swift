@@ -19,15 +19,7 @@ public struct PaywallView: View {
     public var body: some View {
         NavigationStack {
             ZStack {
-                LinearGradient(
-                    colors: [
-                        MindsetColors.backgroundDark,
-                        MindsetColors.backgroundDarkSoft,
-                    ],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .ignoresSafeArea()
+                BackgroundLinearGradientView()
 
                 if viewModel.isLoading {
                     ProgressView().tint(MindsetColors.accentOrange)

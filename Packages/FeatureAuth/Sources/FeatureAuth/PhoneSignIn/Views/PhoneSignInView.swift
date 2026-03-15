@@ -26,7 +26,7 @@ public struct PhoneSignInView: View {
 
     public var body: some View {
         ZStack {
-            backgroundView
+            BackgroundLinearGradientView()
 
             VStack(alignment: .leading, spacing: MindsetLayout.spacing20) {
                 titleSection
@@ -88,19 +88,6 @@ private extension PhoneSignInView {
 
     var textFieldHeight: CGFloat {
         ImmediateFocusTextFieldRepresentable.textFieldHeight(for: sizeCategory)
-    }
-
-    var backgroundView: some View {
-        LinearGradient(
-            colors: [
-                MindsetColors.backgroundDark,
-                MindsetColors.backgroundDarkSoft,
-                MindsetColors.backgroundWarmAccent.opacity(0.5),
-            ],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-        .ignoresSafeArea()
     }
 
     var errorSection: some View {

@@ -40,7 +40,7 @@ public struct SignInView: View {
 private extension SignInView {
     var signInContent: some View {
         ZStack {
-            backgroundView
+            BackgroundLinearGradientView()
 
             ScrollView {
                 VStack(spacing: MindsetLayout.spacing12) {
@@ -76,19 +76,6 @@ private extension SignInView {
                 }
             }
         }
-    }
-
-    var backgroundView: some View {
-        LinearGradient(
-            colors: [
-                MindsetColors.backgroundDark,
-                MindsetColors.backgroundDarkSoft,
-                MindsetColors.backgroundWarmAccent.opacity(0.5),
-            ],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-        .ignoresSafeArea()
     }
 
     var heroSection: some View {

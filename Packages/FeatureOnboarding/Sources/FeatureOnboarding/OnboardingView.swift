@@ -22,7 +22,7 @@ public struct OnboardingView: View {
     public var body: some View {
         NavigationStack {
             ZStack {
-                backgroundView
+                BackgroundLinearGradientView()
                 mainContentStack
             }
             .toolbar {
@@ -56,18 +56,6 @@ public struct OnboardingView: View {
 // MARK: - Subviews
 
 private extension OnboardingView {
-    var backgroundView: some View {
-        LinearGradient(
-            colors: [
-                MindsetColors.backgroundDark,
-                MindsetColors.backgroundDarkSoft,
-                MindsetColors.backgroundWarmAccent.opacity(0.5),
-            ],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-        .ignoresSafeArea()
-    }
 
     var mainContentStack: some View {
         VStack(alignment: .center, spacing: MindsetLayout.spacing24) {
