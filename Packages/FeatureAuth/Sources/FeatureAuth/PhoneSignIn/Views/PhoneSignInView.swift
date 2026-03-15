@@ -349,7 +349,10 @@ private extension PhoneSignInView {
 
 #Preview("Phone Step") {
     let signInViewModel = SignInViewModel(
-        signInOrLinkUseCase: SignInOrLinkUseCase(authService: MockAuthService()),
+        signInOrLinkUseCase: SignInOrLinkUseCase(
+            authService: MockAuthService(),
+            userRepository: MockUserRepository()
+        ),
         appleSignInCredentialBuilder: AppleSignInCredentialBuilder(
             nonceStorage: AppleSignInNonceStorage()),
         googleSignInCredentialProvider: MockGoogleSignInCredentialProvider(),
@@ -366,7 +369,10 @@ private extension PhoneSignInView {
 
 #Preview("Verify Step") {
     let signInViewModel = SignInViewModel(
-        signInOrLinkUseCase: SignInOrLinkUseCase(authService: MockAuthService()),
+        signInOrLinkUseCase: SignInOrLinkUseCase(
+            authService: MockAuthService(),
+            userRepository: MockUserRepository()
+        ),
         appleSignInCredentialBuilder: AppleSignInCredentialBuilder(
             nonceStorage: AppleSignInNonceStorage()),
         googleSignInCredentialProvider: MockGoogleSignInCredentialProvider(),

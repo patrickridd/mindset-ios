@@ -276,7 +276,10 @@ private extension SignInView {
 #Preview {
     let mockAuth = MockAuthService()
     let viewModel = SignInViewModel(
-        signInOrLinkUseCase: SignInOrLinkUseCase(authService: mockAuth),
+        signInOrLinkUseCase: SignInOrLinkUseCase(
+            authService: mockAuth,
+            userRepository: MockUserRepository()
+        ),
         appleSignInCredentialBuilder: AppleSignInCredentialBuilder(
             nonceStorage: AppleSignInNonceStorage()),
         googleSignInCredentialProvider: MockGoogleSignInCredentialProvider(),

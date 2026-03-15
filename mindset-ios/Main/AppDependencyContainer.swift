@@ -53,7 +53,10 @@ final class AppDependencyContainer {
         let subService = serviceFactory.makeSubscriptionService()
         self.authService = serviceFactory.makeAuthService()
 
-        let signInOrLinkUseCase = SignInOrLinkUseCase(authService: authService)
+        let signInOrLinkUseCase = SignInOrLinkUseCase(
+            authService: authService,
+            userRepository: userRepository
+        )
 
         // --- 7. Coordinator & View Factory ---
         self.coordinator = MainCoordinator(

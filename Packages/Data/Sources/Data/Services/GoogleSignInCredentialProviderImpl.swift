@@ -55,12 +55,13 @@ public final class GoogleSignInCredentialProviderImpl: GoogleSignInCredentialPro
                     throw GoogleSignInError.missingAccessToken
                 }
 
+                let displayName = Self.displayName(from: user.profile)
                 logger.log("🤖 Google Sign-In SDK successful ✅")
                 return AuthCredential.oauth(
                     identityToken: idToken,
                     nonce: nil,
                     accessToken: accessToken,
-                    fullName: nil
+                    fullName: displayName
                 )
             } catch {
                 let nsError = error as NSError
@@ -78,6 +79,17 @@ public final class GoogleSignInCredentialProviderImpl: GoogleSignInCredentialPro
     }
 
     #if canImport(UIKit)
+        /// Prefer full `name`; fall back to given + family (Google may omit one).
+        private static func displayName(from profile: GIDProfileData?) -> String? {
+            guard let profile else { return nil }
+            let fromFull = profile.name.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            if !fromFull.isEmpty { return fromFull }
+            let parts = [profile.givenName, profile.familyName].compactMap { $0 }
+            let joined = parts.joined(separator: " ")
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            return joined.isEmpty ? nil : joined
+        }
+
         private func ensureGIDSignInConfigured() {
             guard GIDSignIn.sharedInstance.configuration == nil,
                 let clientID = FirebaseApp.app()?.options.clientID

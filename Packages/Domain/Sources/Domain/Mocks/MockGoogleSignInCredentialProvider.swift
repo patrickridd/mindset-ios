@@ -11,9 +11,11 @@ import Foundation
 public final class MockGoogleSignInCredentialProvider: GoogleSignInCredentialProvider, Sendable {
 
     private let shouldSucceed: Bool
+    private let fullName: String?
 
-    public init(shouldSucceed: Bool = true) {
+    public init(shouldSucceed: Bool = true, fullName: String? = nil) {
         self.shouldSucceed = shouldSucceed
+        self.fullName = fullName
     }
 
     public func fetchCredential() async throws -> AuthCredential {
@@ -28,7 +30,7 @@ public final class MockGoogleSignInCredentialProvider: GoogleSignInCredentialPro
             identityToken: "mock-id-token",
             nonce: nil,
             accessToken: "mock-access-token",
-            fullName: nil
+            fullName: fullName
         )
     }
 }

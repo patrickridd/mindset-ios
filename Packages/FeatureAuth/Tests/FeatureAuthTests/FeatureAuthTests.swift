@@ -23,7 +23,10 @@ struct FeatureAuthTests {
     @Test func signInViewModelInitializesWithAuthService() async throws {
         let mockAuthService = MockAuthService()
         let viewModel = SignInViewModel(
-            signInOrLinkUseCase: SignInOrLinkUseCase(authService: mockAuthService),
+            signInOrLinkUseCase: SignInOrLinkUseCase(
+                authService: mockAuthService,
+                userRepository: MockUserRepository()
+            ),
             appleSignInCredentialBuilder: Self.makeCredentialBuilder(),
             googleSignInCredentialProvider: MockGoogleSignInCredentialProvider(),
             phoneVerificationProvider: MockPhoneVerificationProvider(),
@@ -40,7 +43,10 @@ struct FeatureAuthTests {
         var receivedUserID: String?
 
         let viewModel = SignInViewModel(
-            signInOrLinkUseCase: SignInOrLinkUseCase(authService: mockAuthService),
+            signInOrLinkUseCase: SignInOrLinkUseCase(
+                authService: mockAuthService,
+                userRepository: MockUserRepository()
+            ),
             appleSignInCredentialBuilder: Self.makeCredentialBuilder(),
             googleSignInCredentialProvider: MockGoogleSignInCredentialProvider(),
             phoneVerificationProvider: MockPhoneVerificationProvider(),
@@ -68,7 +74,10 @@ struct FeatureAuthTests {
         var receivedUserID: String?
 
         let viewModel = SignInViewModel(
-            signInOrLinkUseCase: SignInOrLinkUseCase(authService: mockAuthService),
+            signInOrLinkUseCase: SignInOrLinkUseCase(
+                authService: mockAuthService,
+                userRepository: MockUserRepository()
+            ),
             appleSignInCredentialBuilder: Self.makeCredentialBuilder(),
             googleSignInCredentialProvider: mockGoogleProvider,
             phoneVerificationProvider: MockPhoneVerificationProvider(),

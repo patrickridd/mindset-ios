@@ -263,16 +263,18 @@ extension FirebaseAuthService: AuthSessionManagement {
             throw Domain.AuthLinkError.notAuthenticated
         }
 
-        let credential: FirebaseAuthCredential
+        let domainCredential: DomainAuthCredential
+        let firebaseCredential: FirebaseAuthCredential
         switch provider {
-        case .credential(let domainCredential):
-            credential = try makeFirebaseCredentialForLinking(from: domainCredential)
+        case .credential(let dc):
+            domainCredential = dc
+            firebaseCredential = try makeFirebaseCredentialForLinking(from: dc)
         }
 
         do {
             try await withCheckedThrowingContinuation {
                 (continuation: CheckedContinuation<Void, Error>) in
-                currentUser.link(with: credential) { _, error in
+                currentUser.link(with: firebaseCredential) { _, error in
                     if let error {
                         continuation.resume(throwing: error)
                     } else {
@@ -284,6 +286,7 @@ extension FirebaseAuthService: AuthSessionManagement {
             logger.log(
                 "✅ Link account successful (provider: \(providerDescription)) uid=\(currentUser.uid)"
             )
+            await applyOAuthDisplayNameToFirebaseAfterLink(from: domainCredential)
         } catch {
             if let nsError = error as NSError?,
                 AuthErrorCode(_bridgedNSError: nsError) == .credentialAlreadyInUse
@@ -299,6 +302,14 @@ extension FirebaseAuthService: AuthSessionManagement {
             )
             throw error
         }
+    }
+
+    /// Sets Firebase `displayName` when linking with Apple/Google and the credential carries a name.
+    private func applyOAuthDisplayNameToFirebaseAfterLink(from credential: DomainAuthCredential) async {
+        guard case .oauth(_, _, _, let fullName?) = credential else { return }
+        let trimmed = fullName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        try? await updateUserProfile(displayName: trimmed)
     }
 
     public func deleteCurrentUser() async throws {
