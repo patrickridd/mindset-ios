@@ -12,6 +12,7 @@ import Foundation
 /// Application rule: When the user is anonymously signed in and provides a permanent credential
 /// (Apple, Google with tokens, or phone), link the credential to the existing account instead of
 /// creating a new one. Preserves onboarding data, ritual history, and subscription state.
+@MainActor
 public struct SignInOrLinkUseCase: Sendable {
     private let signInService: SignInService
     private let authStateQuery: AuthStateQuery

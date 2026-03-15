@@ -194,6 +194,9 @@ struct AppViewFactory: MainViewFactory {
             },
             onSeeHistory: {
                 coordinator.set(tab: .history)
+            },
+            onSecureAccount: {
+                coordinator.showAuth()
             })
         return AnyView(DashboardView(viewModel: dashboardViewModel))
     }

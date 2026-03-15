@@ -34,8 +34,9 @@ public final class DashboardViewModel {
     }
 
     // Navigation Actions
-    private var onStartMindset: () -> Void
+    private let onStartMindset: () -> Void
     private let onSeeHistory: () -> Void
+    private let onSecureAccount: () -> Void
 
     public init(
         userRepository: UserRepository,
@@ -44,7 +45,8 @@ public final class DashboardViewModel {
         getYesterdayGoalUseCase: GetYesterdayGoalUseCase,
         logger: AppLogger,
         onStartMindset: @escaping () -> Void,
-        onSeeHistory: @escaping () -> Void
+        onSeeHistory: @escaping () -> Void,
+        onSecureAccount: @escaping () -> Void
     ) {
         self.userRepository = userRepository
         self.mindsetRepository = mindsetRepository
@@ -53,6 +55,7 @@ public final class DashboardViewModel {
         self.logger = logger
         self.onStartMindset = onStartMindset
         self.onSeeHistory = onSeeHistory
+        self.onSecureAccount = onSecureAccount
     }
 
     public func loadDashboardData() async {
@@ -97,5 +100,9 @@ public final class DashboardViewModel {
 
     func seeHistoryBoxTapped() {
         onSeeHistory()
+    }
+
+    func secureAccountButtonTapped() {
+        onSecureAccount()
     }
 }

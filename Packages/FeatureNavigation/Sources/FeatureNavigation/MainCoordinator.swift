@@ -149,6 +149,10 @@ public final class MainCoordinator {
         }
     }
 
+    public func showAuth() {
+        set(rootState: .auth)
+    }
+
     public func showMainTabView() {
         set(fullScreenState: nil)
         refreshProfileTabTitle()

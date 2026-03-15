@@ -26,7 +26,7 @@ public struct DashboardView: View {
             ZStack {
                 backgroundView
                 ScrollView {
-                    VStack(alignment: .leading, spacing: MindsetLayout.spacing25) {
+                    VStack(alignment: .leading, spacing: MindsetLayout.spacing20) {
                         if viewModel.isLoading {
                             loadingView
                         } else {
@@ -36,6 +36,7 @@ public struct DashboardView: View {
                                 yesterdayBridge(text: yesterday)
                             }
                             statsGrid
+                            securitySection
                             Spacer(minLength: MindsetLayout.spacing4)
                             beginRitualButton
                         }
@@ -181,6 +182,23 @@ private extension DashboardView {
         .background(MindsetColors.backgroundSecondary(for: colorScheme))
         .cornerRadius(MindsetLayout.radiusCard)
     }
+    
+    @ViewBuilder
+    var securitySection: some View {
+        if let user = viewModel.userProfile {
+            if !user.isAccountSecured && viewModel.streakCount > 0 {
+                AccountSecurityCallout(
+                    streakCount: viewModel.streakCount,
+                    onLinkAction: {
+                        viewModel.secureAccountButtonTapped()
+                    }
+                )
+                .transition(.move(edge: .top).combined(with: .opacity))
+            }
+        } else {
+            EmptyView()
+        }
+    }
 }
 
 #Preview {
@@ -192,6 +210,8 @@ private extension DashboardView {
         getYesterdayGoalUseCase: GetYesterdayGoalUseCase(repository: mindsetRepository),
         logger: DebugLogger.shared,
         onStartMindset: {},
-        onSeeHistory: {})
+        onSeeHistory: {},
+        onSecureAccount: {}
+    )
     DashboardView(viewModel: viewModel)
 }

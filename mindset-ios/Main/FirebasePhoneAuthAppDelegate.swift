@@ -20,7 +20,7 @@ final class FirebasePhoneAuthAppDelegate: NSObject, UIApplicationDelegate {
     ) -> Bool {
         // Configure Firebase before any Auth API calls (e.g. setAPNSToken in didRegisterForRemoteNotifications).
         // AppDependencyContainer may configure again when useRealServices; configure() is idempotent.
-        if FirebaseApp.app() == nil { FirebaseApp.configure() }
+        FirebaseApp.configure()
         application.registerForRemoteNotifications()
         return true
     }
