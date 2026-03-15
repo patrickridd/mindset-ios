@@ -198,14 +198,21 @@ public final class MainCoordinator {
         // Reset to auth screen
         set(rootState: .auth)
         profileTabTitle = ""
+        resetNavigationStacks()
     }
 
     public func accountDeleted() {
-        set(rootState: .onboarding)
+        set(rootState: .auth)
         set(tab: .dashboard)
         profileTabTitle = ""
+        resetNavigationStacks()
     }
 
+    private func resetNavigationStacks() {
+        profilePath = NavigationPath()
+        signInPath = NavigationPath()
+        mindsetPath = NavigationPath()
+    }
     private func set(rootState: RootState) {
         withAnimation { self.rootState = rootState }
     }
