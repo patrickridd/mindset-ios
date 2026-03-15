@@ -11,7 +11,6 @@ import Observation
 import PhoneNumberKit
 
 @Observable
-@MainActor
 public final class PhoneSignInViewModel {
     public let signInViewModel: SignInViewModel
 

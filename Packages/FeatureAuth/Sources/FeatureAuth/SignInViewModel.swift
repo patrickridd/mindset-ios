@@ -11,7 +11,6 @@ import Foundation
 import Observation
 
 @Observable
-@MainActor
 public final class SignInViewModel {
     public var isLoading = false
     public var errorMessage: String?
