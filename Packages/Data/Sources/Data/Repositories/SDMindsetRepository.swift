@@ -26,6 +26,6 @@ public final class SDMindsetRepository: MindsetRepository {
     }
 
     public func addEntry(_ entry: MindsetEntry) async throws {
-        try await persistence.saveMindsetEntry(entry)
+        try await persistence.saveEntry(entry)
     }
 }

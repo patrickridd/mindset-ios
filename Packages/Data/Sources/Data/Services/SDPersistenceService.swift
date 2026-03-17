@@ -46,11 +46,22 @@ public final class SDPersistenceService: PersistenceService {
         let descriptor = FetchDescriptor<SDUserProfile>()
         return try modelContext.fetch(descriptor).first?.toDomain()
     }
-
-    public func saveMindsetEntry(_ entry: Domain.MindsetEntry) async throws {
-        // Map and save the daily ritual
-        let sdEntry = SDMindsetEntry.fromDomain(entry)
-        modelContext.insert(sdEntry)
+    
+    public func saveEntry(_ entry: MindsetEntry) async throws {
+        let entryId = entry.id
+        let descriptor = FetchDescriptor<SDMindsetEntry>(
+            predicate: #Predicate<SDMindsetEntry> { $0.id == entryId }
+        )
+        
+        if let existingEntry = try modelContext.fetch(descriptor).first {
+            // Update the existing tracked object
+            existingEntry.update(from: entry, in: modelContext)
+        } else {
+            // Create new
+            let newSD = SDMindsetEntry.fromDomain(entry)
+            modelContext.insert(newSD)
+        }
+        
         try modelContext.save()
     }
 

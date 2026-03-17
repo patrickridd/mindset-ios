@@ -68,3 +68,32 @@ public final class SDMindsetEntry {
         return sdEntry
     }
 }
+
+extension SDMindsetEntry {
+    func update(from domain: MindsetEntry, in context: ModelContext) {
+        self.userId = domain.userId
+        self.date = domain.date
+        self.archetypeTag = domain.archetypeTag
+        self.sentimentScore = domain.sentimentScore
+        
+        // --- Reconcile Responses ---
+        // 1. Remove old responses (Cascade delete handles this if using .cascade)
+        for response in self.responses {
+            context.delete(response)
+        }
+        
+        // 2. Map and add new responses
+        let newSDResponses = domain.responses.map { response in
+            let newSD = SDPromptResponse(
+                promptId: response.promptId,
+                categoryValue: response.category.rawValue,
+                userText: response.userText,
+                aiReflection: response.aiReflection
+            )
+            newSD.entry = self // Maintain the relationship
+            return newSD
+        }
+        
+        self.responses = newSDResponses
+    }
+}
