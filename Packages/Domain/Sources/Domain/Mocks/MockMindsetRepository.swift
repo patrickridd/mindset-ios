@@ -20,6 +20,7 @@ public final class MockMindsetRepository: MindsetRepository, @unchecked Sendable
 
             return MindsetEntry(
                 id: UUID(),
+                userId: UUID().uuidString,
                 date: date,
                 responses: [
                     PromptResponse(

@@ -74,7 +74,7 @@ public final class SDUserProfile {
 
     // MARK: - Mapping
 
-    /// Maps `SDUserProfile` to our Domain's `UserProfile`
+    /// Maps `SDUserProfile` to our Domain's ``UserProfile``
     public func toDomain() -> UserProfile {
         let onboarding = OnboardingData(
             overwhelmFrequency: overwhelmFrequency,

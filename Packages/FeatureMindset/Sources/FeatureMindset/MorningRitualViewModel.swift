@@ -243,6 +243,11 @@ public final class MorningRitualViewModel {
 
     public func saveMindsetEntry() async {
         do {
+            guard let userId = try await userRepository.fetchUserProfile()?.id else {
+                logger.log("🚨 userId not found, aborting saveMindsetEntry")
+                return
+            }
+
             // 1. Map current answers and reflections into PromptResponse objects
             let currentResponses = prompts.compactMap { prompt -> PromptResponse? in
                 guard let answer = answers[prompt.id] else { return nil }
@@ -266,9 +271,9 @@ public final class MorningRitualViewModel {
             if let primaryCategory = categoryCounts.max(by: { $0.value < $1.value })?.key {
                 self.generatedArchetype = "The \(primaryCategory.displayName)"
             }
-
             // 3. Create and Save the Parent MindsetEntry
             let entry = MindsetEntry(
+                userId: userId,
                 responses: currentResponses,
                 archetypeTag: self.generatedArchetype,
                 sentimentScore: 0.8  // In production, this would come from an AI sentiment analysis call
