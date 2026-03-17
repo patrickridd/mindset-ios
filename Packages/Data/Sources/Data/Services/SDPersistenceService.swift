@@ -13,39 +13,37 @@ import SwiftData
 public final class SDPersistenceService: PersistenceService {
 
     private let modelContext: ModelContext
+    private let logger: AppLogger
 
-    public init(modelContext: ModelContext) {
+    public init(modelContext: ModelContext, logger: AppLogger) {
         self.modelContext = modelContext
+        self.logger = logger
     }
 
     public func saveUserProfile(_ profile: UserProfile) async throws {
-        // 1. Check if one exists (to maintain our 'Unique' constraint)
-        let descriptor = FetchDescriptor<SDUserProfile>()
-        let existingSDUser = try modelContext.fetch(descriptor).first
-
-        if let existingSDUser {
-            // Update existing
-            existingSDUser.userName = profile.userName
-            existingSDUser.primaryGoal = profile.onboardingData.primaryGoal
-            existingSDUser.overwhelmFrequency = profile.onboardingData.overwhelmFrequency
-            existingSDUser.isOnboardingComplete = profile.isOnboardingComplete
-            existingSDUser.isAccountSecured = profile.isAccountSecured
-            existingSDUser.headspaceRaw = profile.onboardingData.headspace?.rawValue
-            existingSDUser.mentalMuscleRaw = profile.onboardingData.mentalMuscle?.rawValue
-            existingSDUser.responseToSetbackRaw = profile.onboardingData.responseToSetback?.rawValue
-            existingSDUser.habitGoalRaw = profile.onboardingData.habitGoal?.rawValue
-            existingSDUser.aiCoachToneRaw = profile.onboardingData.aiCoachTone?.rawValue
+        let userId = profile.id
+        let descriptor = FetchDescriptor<SDUserProfile>(
+            predicate: #Predicate<SDUserProfile> { $0.id == userId }
+        )
+        
+        // Check if the object already exists in the database
+        if let existingUser = try modelContext.fetch(descriptor).first {
+            logger.log("Updating **existing** `SDUserProfile`")
+            existingUser.update(from: profile)
         } else {
-            // Insert new
-            let sdModel = SDUserProfile.fromDomain(profile)
-            modelContext.insert(sdModel)
+            let newUser = SDUserProfile.fromDomain(profile)
+            logger.log("Creating **NEW** `SDUserProfile`")
+            
+            modelContext.insert(newUser)
         }
+        
         try modelContext.save()
+        logger.log("✅ Saved `SDUserProfile`")
     }
 
+    /// Fetches `SDUserProfile` and map the @Model back to our Domain `UserProfile`
     public func fetchUserProfile() async throws -> UserProfile? {
         let descriptor = FetchDescriptor<SDUserProfile>()
-        // 2. Map the @Model back to a Domain Struct
         return try modelContext.fetch(descriptor).first?.toDomain()
     }
 

@@ -38,7 +38,7 @@ final class AppDependencyContainer {
 
         // --- 3. Persistence ---
         self.container = try! ModelContainer(for: SDUserProfile.self, SDMindsetEntry.self)
-        self.persistence = SDPersistenceService(modelContext: container.mainContext)
+        self.persistence = SDPersistenceService(modelContext: container.mainContext, logger: logger)
 
         // --- 4. Repositories ---
         self.mindsetRepository = serviceFactory.makeMindsetRepository(persistence: persistence)

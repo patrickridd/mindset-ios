@@ -74,6 +74,7 @@ public final class SDUserProfile {
 
     // MARK: - Mapping
 
+    /// Maps `SDUserProfile` to our Domain's `UserProfile`
     public func toDomain() -> UserProfile {
         let onboarding = OnboardingData(
             overwhelmFrequency: overwhelmFrequency,
@@ -104,6 +105,7 @@ public final class SDUserProfile {
         )
     }
 
+    /// Use only for creation (Insert) into Swift Data.
     public static func fromDomain(_ domain: UserProfile) -> SDUserProfile {
         SDUserProfile(
             id: domain.id,
@@ -124,5 +126,29 @@ public final class SDUserProfile {
             archetype: domain.stats.archetype,
             badges: domain.stats.badges
         )
+    }
+}
+
+extension SDUserProfile {
+    /// UPDATES the current instance using values from a Domain struct
+    func update(from domain: UserProfile) {
+        self.userName = domain.userName
+        self.isAccountSecured = domain.isAccountSecured
+        self.isOnboardingComplete = domain.isOnboardingComplete
+        
+        // Onboarding
+        self.primaryGoal = domain.onboardingData.primaryGoal
+        self.headspaceRaw = domain.onboardingData.headspace?.rawValue
+        self.mentalMuscleRaw = domain.onboardingData.mentalMuscle?.rawValue
+        self.responseToSetbackRaw = domain.onboardingData.responseToSetback?.rawValue
+        self.habitGoalRaw = domain.onboardingData.habitGoal?.rawValue
+        self.aiCoachToneRaw = domain.onboardingData.aiCoachTone?.rawValue
+        
+        // Stats
+        self.streakCount = domain.stats.streakCount
+        self.totalXP = domain.stats.totalXP
+        self.lastRitualDate = domain.stats.lastRitualDate
+        self.archetype = domain.stats.archetype
+        self.badges = domain.stats.badges
     }
 }
