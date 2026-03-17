@@ -18,7 +18,7 @@ public struct GetYesterdayGoalUseCase: Sendable {
         let latest = try await repository.fetchLatestEntry()
 
         // Clean, readable, and easy to expand later
-        let yesterdayGoal = latest?.responses.first(where: { $0.category.isGoalOriented })
+        let yesterdayGoal = latest?.promptResponses.first(where: { $0.category.isGoalOriented })
 
         return yesterdayGoal?.userText
     }

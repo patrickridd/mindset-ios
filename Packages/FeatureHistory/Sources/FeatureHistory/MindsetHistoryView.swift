@@ -40,7 +40,7 @@ public struct MindsetHistoryView: View {
     private func historyRow(for entry: MindsetEntry) -> some View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing12) {
             HStack {
-                Text(entry.date.formatted(date: .abbreviated, time: .omitted))
+                Text(entry.dateCreated.formatted(date: .abbreviated, time: .omitted))
                     .font(MindsetFonts.captionBold)
                     .foregroundStyle(.secondary)
                 Spacer()
@@ -53,7 +53,7 @@ public struct MindsetHistoryView: View {
             }
 
             // Show the first AI reflection as a "highlight"
-            if let firstReflection = entry.responses.first?.aiReflection {
+            if let firstReflection = entry.promptResponses.first?.aiReflection {
                 Text("\"\(firstReflection)\"")
                     .font(MindsetFonts.subheadline)
                     .italic()

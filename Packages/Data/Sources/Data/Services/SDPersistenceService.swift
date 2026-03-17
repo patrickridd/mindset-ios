@@ -67,7 +67,7 @@ public final class SDPersistenceService: PersistenceService {
 
     public func fetchAllMindsetEntries() async throws -> [Domain.MindsetEntry] {
         let descriptor = FetchDescriptor<SDMindsetEntry>(sortBy: [
-            SortDescriptor(\SDMindsetEntry.date, order: .reverse)
+            SortDescriptor(\SDMindsetEntry.dateCreated, order: .reverse)
         ])
         let dbEntries = try modelContext.fetch(descriptor)
         return dbEntries.map { $0.toDomain() }

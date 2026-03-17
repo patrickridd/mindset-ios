@@ -94,7 +94,7 @@ public struct GetStreakUseCase: Sendable {
         let entries = try await repository.fetchAllEntries()
 
         return StreakCalculator.calculateStreak(
-            from: entries.map { $0.date },
+            from: entries.map { $0.dateCreated },
             relativeTo: now
         )
     }

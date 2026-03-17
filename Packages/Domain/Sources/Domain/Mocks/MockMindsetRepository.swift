@@ -21,8 +21,8 @@ public final class MockMindsetRepository: MindsetRepository, @unchecked Sendable
             return MindsetEntry(
                 id: UUID(),
                 userId: UUID().uuidString,
-                date: date,
-                responses: [
+                dateCreated: date,
+                promptResponses: [
                     PromptResponse(
                         promptId: UUID().uuidString, category: .gratitude,
                         userText: "I'm grateful for the progress on my app during day \(i).")

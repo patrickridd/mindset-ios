@@ -9,91 +9,137 @@ import Domain
 import Foundation
 import SwiftData
 
+import Domain
+import Foundation
+import SwiftData
+
+/// The persistent SwiftData storage model for a mindset entry.
+///
+/// This model acts as the database representation of a user's daily reflection or ritual.
+/// It maintains a parent-child relationship with ``SDPromptResponse`` and includes
+/// metadata for cloud synchronization and AI-driven analysis.
 @Model
 public final class SDMindsetEntry {
+    /// A unique identifier for the entry, shared between local and remote databases.
     @Attribute(.unique) public var id: UUID
-    public var userId: String // 👈 Added for cloud association
-    public var date: Date
+    
+    /// The unique identifier of the user who owns this entry.
+    /// Used for Firebase Security Rules and cross-device synchronization.
+    public var userId: String
+    
+    /// The timestamp when the entry was created.
+    public var dateCreated: Date
+    
+    /// A localized tag or identifier representing the AI-analyzed archetype for this day.
     public var archetypeTag: String?
+    
+    /// A numerical representation of the sentiment detected in the user's responses.
     public var sentimentScore: Double?
 
+    /// The collection of individual prompt-response pairs associated with this entry.
+    ///
+    /// This relationship uses a `.cascade` delete rule, ensuring that when an entry
+    /// is deleted, all associated responses are also removed from the persistent store.
     @Relationship(deleteRule: .cascade)
-    public var responses: [SDPromptResponse] = []
+    public var promptResponses: [SDPromptResponse] = []
 
+    /// Initializes a new storage model for a mindset entry.
+    /// - Parameters:
+    ///   - id: The unique UUID for this entry.
+    ///   - userId: The owner's unique identifier (from Firebase Auth).
+    ///   - date: The creation date of the entry.
+    ///   - archetypeTag: An optional archetype identifier.
+    ///   - sentimentScore: An optional sentiment analysis score.
     public init(
         id: UUID = UUID(),
         userId: String,
-        date: Date = Date(),
+        dateCreated: Date = Date(),
         archetypeTag: String? = nil,
         sentimentScore: Double? = nil
     ) {
         self.id = id
         self.userId = userId
-        self.date = date
+        self.dateCreated = dateCreated
         self.archetypeTag = archetypeTag
         self.sentimentScore = sentimentScore
     }
     
-    // Update mapping logic to include userId
+    /// Converts the persistent storage model into a clean Domain entity.
+    /// - Returns: A thread-safe ``MindsetEntry`` struct.
     public func toDomain() -> MindsetEntry {
         MindsetEntry(
             id: id,
             userId: userId,
-            date: date,
-            responses: responses.map { $0.toDomain() },
+            dateCreated: dateCreated,
+            promptResponses: promptResponses.map { $0.toDomain() },
             archetypeTag: archetypeTag,
             sentimentScore: sentimentScore
         )
     }
 
+    /// Creates a new persistent storage model from a Domain entity.
+    ///
+    /// Use this method primarily for the initial insertion of an entry into the database.
+    /// - Parameter domainEntry: The ``MindsetEntry`` struct to convert.
+    /// - Returns: A new ``SDMindsetEntry`` instance ready for insertion.
     public static func fromDomain(_ domainEntry: MindsetEntry) -> SDMindsetEntry {
         let sdEntry = SDMindsetEntry(
             id: domainEntry.id,
             userId: domainEntry.userId,
-            date: domainEntry.date,
+            dateCreated: domainEntry.dateCreated,
             archetypeTag: domainEntry.archetypeTag,
             sentimentScore: domainEntry.sentimentScore
         )
-        let sdResponses = domainEntry.responses.map { response in
+        
+        let sdResponses = domainEntry.promptResponses.map { response in
             let newResponse = SDPromptResponse(
                 promptId: response.promptId,
                 categoryValue: response.category.rawValue,
                 userText: response.userText,
                 aiReflection: response.aiReflection
             )
-            newResponse.entry = sdEntry  // Set the inverse relationship
+            newResponse.entry = sdEntry
             return newResponse
         }
-        sdEntry.responses = sdResponses
+        
+        sdEntry.promptResponses = sdResponses
         return sdEntry
     }
 }
 
 extension SDMindsetEntry {
+    /// Updates the existing persistent instance with new data from the Domain.
+    ///
+    /// This method performs a manual reconciliation of the `responses` relationship.
+    /// It deletes existing child records from the context before inserting new ones
+    /// to prevent "orphan" records in the persistent store.
+    ///
+    /// - Parameters:
+    ///   - domain: The updated ``MindsetEntry`` data.
+    ///   - context: The `ModelContext` used to manage the lifecycle of child responses.
     func update(from domain: MindsetEntry, in context: ModelContext) {
         self.userId = domain.userId
-        self.date = domain.date
+        self.dateCreated = domain.dateCreated
         self.archetypeTag = domain.archetypeTag
         self.sentimentScore = domain.sentimentScore
         
         // --- Reconcile Responses ---
-        // 1. Remove old responses (Cascade delete handles this if using .cascade)
-        for response in self.responses {
+        // We delete children to ensure a clean state, preventing database bloat.
+        for response in self.promptResponses {
             context.delete(response)
         }
         
-        // 2. Map and add new responses
-        let newSDResponses = domain.responses.map { response in
+        let newSDResponses = domain.promptResponses.map { response in
             let newSD = SDPromptResponse(
                 promptId: response.promptId,
                 categoryValue: response.category.rawValue,
                 userText: response.userText,
                 aiReflection: response.aiReflection
             )
-            newSD.entry = self // Maintain the relationship
+            newSD.entry = self
             return newSD
         }
         
-        self.responses = newSDResponses
+        self.promptResponses = newSDResponses
     }
 }

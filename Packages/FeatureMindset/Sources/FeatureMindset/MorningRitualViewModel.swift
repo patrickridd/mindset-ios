@@ -271,10 +271,12 @@ public final class MorningRitualViewModel {
             if let primaryCategory = categoryCounts.max(by: { $0.value < $1.value })?.key {
                 self.generatedArchetype = "The \(primaryCategory.displayName)"
             }
-            // 3. Create and Save the Parent MindsetEntry
+            // Create and Save the Parent MindsetEntry
+            let dateCreated = Date()
             let entry = MindsetEntry(
                 userId: userId,
-                responses: currentResponses,
+                dateCreated: dateCreated,
+                promptResponses: currentResponses,
                 archetypeTag: self.generatedArchetype,
                 sentimentScore: 0.8  // In production, this would come from an AI sentiment analysis call
             )

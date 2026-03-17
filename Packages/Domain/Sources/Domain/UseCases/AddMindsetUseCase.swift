@@ -13,7 +13,7 @@ public struct AddMindsetUseCase: Sendable {
     }
 
     public func execute(entry: MindsetEntry) async throws {
-        let totalCharacters = entry.responses.reduce(0) { $0 + $1.userText.count }
+        let totalCharacters = entry.promptResponses.reduce(0) { $0 + $1.userText.count }
 
         // Business Rule: Ensure the user actually wrote something in their responses
         guard totalCharacters > 9 else {
