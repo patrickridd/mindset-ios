@@ -21,20 +21,20 @@ public final class SDPersistenceService: PersistenceService {
     public func saveUserProfile(_ profile: UserProfile) async throws {
         // 1. Check if one exists (to maintain our 'Unique' constraint)
         let descriptor = FetchDescriptor<SDUserProfile>()
-        let existing = try modelContext.fetch(descriptor).first
+        let existingSDUser = try modelContext.fetch(descriptor).first
 
-        if let existing {
+        if let existingSDUser {
             // Update existing
-            existing.bestSelfName = profile.userName
-            existing.primaryGoal = profile.primaryGoal
-            existing.overwhelmedFrequency = profile.overwhelmedFrequency.rawValue
-            existing.isOnboardingComplete = profile.isOnboardingComplete
-            existing.isAccountSecured = profile.isAccountSecured
-            existing.headspaceRaw = profile.headspace?.rawValue
-            existing.mentalMuscleRaw = profile.mentalMuscle?.rawValue
-            existing.responseToSetbackRaw = profile.responseToSetback?.rawValue
-            existing.habitGoalRaw = profile.habitGoal?.rawValue
-            existing.aiCoachToneRaw = profile.aiCoachTone?.rawValue
+            existingSDUser.userName = profile.userName
+            existingSDUser.primaryGoal = profile.onboardingData.primaryGoal
+            existingSDUser.overwhelmFrequency = profile.onboardingData.overwhelmFrequency
+            existingSDUser.isOnboardingComplete = profile.isOnboardingComplete
+            existingSDUser.isAccountSecured = profile.isAccountSecured
+            existingSDUser.headspaceRaw = profile.onboardingData.headspace?.rawValue
+            existingSDUser.mentalMuscleRaw = profile.onboardingData.mentalMuscle?.rawValue
+            existingSDUser.responseToSetbackRaw = profile.onboardingData.responseToSetback?.rawValue
+            existingSDUser.habitGoalRaw = profile.onboardingData.habitGoal?.rawValue
+            existingSDUser.aiCoachToneRaw = profile.onboardingData.aiCoachTone?.rawValue
         } else {
             // Insert new
             let sdModel = SDUserProfile.fromDomain(profile)

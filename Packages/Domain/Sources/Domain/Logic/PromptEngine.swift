@@ -44,12 +44,7 @@ public struct PromptEngine {
     private func resolveCategories(for profile: UserProfile) -> [PromptCategory] {
         // Prefer new headspace (MLP quiz Q1); fall back to legacy overwhelmedFrequency
         let isOverwhelmed: Bool
-        if let headspace = profile.headspace {
-            isOverwhelmed = (headspace == .overwhelmed || headspace == .restless)
-        } else {
-            isOverwhelmed =
-                (profile.overwhelmedFrequency == .often || profile.overwhelmedFrequency == .always)
-        }
+        isOverwhelmed = (profile.onboardingData.headspace == .overwhelmed || profile.onboardingData.headspace == .restless)
 
         if isOverwhelmed {
             return [.savoring, .gratitude, .stoic, .futureSelf]

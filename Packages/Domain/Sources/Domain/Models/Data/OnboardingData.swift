@@ -1,25 +1,13 @@
 //
-//  UserProfile.swift
+//  OnboardingData.swift
 //  Domain
 //
-//  Created by patrick ridd on 1/9/26.
+//  Created by patrick ridd on 1/7/26.
 //
 
-import Foundation
-
-public struct UserProfile: Sendable {
-
-    /// Auth user identifier (e.g. from first sign-in). Required; no default.
-    public let id: String
-    public var userName: String
-    public var primaryGoal: String
-    public let createdAt: Date
-    public private(set) var isOnboardingComplete: Bool
-    /// True when the user has linked their anonymous account to a provider (Gmail, Apple, phone).
-    public var isAccountSecured: Bool
-    
-    /// Legacy field; prefer `headspace` when available. Kept for migration.
-    public var overwhelmedFrequency: OverwhelmedFrequency
+public struct OnboardingData: Sendable {
+    public var overwhelmFrequency: String = ""
+    public var primaryGoal: String = ""
 
     // MARK: - Onboarding Quiz Results (MLP)
 
@@ -34,39 +22,20 @@ public struct UserProfile: Sendable {
     /// Q5: AI feedback system prompt tone
     public var aiCoachTone: AICoachTone?
 
-    public init(
-        id: String,
-        userName: String,
-        primaryGoal: String,
-        isOnboardingComplete: Bool = false,
-        isAccountSecured: Bool = false,
-        overwhelmedFrequency: OverwhelmedFrequency = .sometimes,
-        headspace: Headspace? = nil,
-        mentalMuscle: MentalMuscle? = nil,
-        responseToSetback: ResponseToSetback? = nil,
-        habitGoal: HabitGoal? = nil,
-        aiCoachTone: AICoachTone? = nil,
-        createdAt: Date = Date()
-    ) {
-        self.id = id
-        self.userName = userName
+    public init(overwhelmFrequency: String, primaryGoal: String, headspace: Headspace? = nil, mentalMuscle: MentalMuscle? = nil, responseToSetback: ResponseToSetback? = nil, habitGoal: HabitGoal? = nil, aiCoachTone: AICoachTone? = nil) {
+        self.overwhelmFrequency = overwhelmFrequency
         self.primaryGoal = primaryGoal
-        self.isOnboardingComplete = isOnboardingComplete
-        self.isAccountSecured = isAccountSecured
-        self.overwhelmedFrequency = overwhelmedFrequency
         self.headspace = headspace
         self.mentalMuscle = mentalMuscle
         self.responseToSetback = responseToSetback
         self.habitGoal = habitGoal
         self.aiCoachTone = aiCoachTone
-        self.createdAt = createdAt
     }
 
-    mutating
-    public func onboarding(isComplete: Bool) {
-        self.isOnboardingComplete = isComplete
+    public init(overwhelmFrequency: String = "") {
+        self.overwhelmFrequency = overwhelmFrequency
     }
-
+    
     public enum OverwhelmedFrequency: String, Codable, CaseIterable, Sendable {
         case rarely = "Rarely"
         case sometimes = "Sometimes"

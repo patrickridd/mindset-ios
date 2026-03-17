@@ -88,7 +88,7 @@ private extension DashboardView {
                 .foregroundStyle(MindsetColors.textSecondaryDark)
 
             Text(
-                viewModel.userProfile?.primaryGoal
+                viewModel.userProfile?.onboardingData.primaryGoal
                     ?? FeatureDashboardStrings.Goal.defaultPlaceholder
             )
             .font(MindsetFonts.promptHeadline)

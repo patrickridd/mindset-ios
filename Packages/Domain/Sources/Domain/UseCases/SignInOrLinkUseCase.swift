@@ -73,11 +73,10 @@ public struct SignInOrLinkUseCase: Sendable {
         }
         let minimal = UserProfile(
             id: uid,
+            createdAt: Date(),
             userName: "",
-            primaryGoal: "Build a healthier mindset",
-            isOnboardingComplete: false,
-            isAccountSecured: isAccountSecured,
-            overwhelmedFrequency: .sometimes
+            isAccountSecured: false,
+            isOnboardingComplete: false
         )
         try? await userRepository.saveUserProfile(minimal)
     }

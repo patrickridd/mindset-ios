@@ -5,6 +5,8 @@
 //  Created by patrick ridd on 1/11/26.
 //
 
+import Foundation
+
 public final class MockUserRepository: UserRepository {
     private let mockProfile: UserProfile
 
@@ -13,15 +15,11 @@ public final class MockUserRepository: UserRepository {
         userName: String = "Patrick",
         primaryGoal: String = "Feel more confident",
         isOnboardingComplete: Bool = true,
-        overwhelmedFrequency: UserProfile.OverwhelmedFrequency = .often
+        overwhelmedFrequency: OnboardingData.OverwhelmedFrequency = .often,
+        isAccountSecured: Bool = true,
+        createdAt: Date = .init()
     ) {
-        self.mockProfile = UserProfile(
-            id: id,
-            userName: userName,
-            primaryGoal: primaryGoal,
-            isOnboardingComplete: isOnboardingComplete,
-            overwhelmedFrequency: overwhelmedFrequency
-        )
+        self.mockProfile = UserProfile(id: id, createdAt: createdAt, userName: userName, isAccountSecured: isAccountSecured, isOnboardingComplete: isOnboardingComplete, onboardingData: OnboardingData(), stats: UserStats())
     }
 
     public func isOnboardingComplete() -> Bool {

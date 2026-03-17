@@ -124,52 +124,42 @@ public final class OnboardingViewModel {
     }
 
     private func updateOrCreateNewAnonymousUser() async throws {
-        let userId: String
-        // Check if id exists and use that one if it does exists
-        if let existingId = try? await authStateQuery.getCurrentUserID() {
-            userId = existingId
+        var user: UserProfile
+        // Check if user exists
+        if let userProfile = try? await userRepository.fetchUserProfile() {
+            user = userProfile
         } else {
             // Else sign-in user anonymously and use that new id
-            userId = try await signInService.signIn(with: .anonymous)
+            let userId = try await signInService.signIn(with: .anonymous)
+            user = UserProfile(id: userId, createdAt: Date(), userName: "", isAccountSecured: false, isOnboardingComplete: true)
         }
-        
-        let updatedUserProfile = updateUserProfile(profileId: userId)
-        try? await userRepository.saveUserProfile(updatedUserProfile)
+
+        user.update(with: getOnboardingData())
+        try? await userRepository.saveUserProfile(user)
     }
 
     private func delayForAnalyzing() async {
         try? await Task.sleep(for: .seconds(2))
     }
 
-    private func updateUserProfile(profileId: String) -> UserProfile {
-        let headspace = answers[.headspace].flatMap { UserProfile.Headspace(rawValue: $0) }
-        let mentalMuscle = answers[.mentalMuscle].flatMap { UserProfile.MentalMuscle(rawValue: $0) }
+    private func getOnboardingData() -> OnboardingData {
+        let headspace = answers[.headspace].flatMap { OnboardingData.Headspace(rawValue: $0) }
+        let mentalMuscle = answers[.mentalMuscle].flatMap { OnboardingData.MentalMuscle(rawValue: $0) }
         let responseToSetback = answers[.responseToSetback].flatMap {
-            UserProfile.ResponseToSetback(rawValue: $0)
+            OnboardingData.ResponseToSetback(rawValue: $0)
         }
-        let habitGoal = answers[.habitGoal].flatMap { UserProfile.HabitGoal(rawValue: $0) }
-        let aiCoachTone = answers[.aiCoachTone].flatMap { UserProfile.AICoachTone(rawValue: $0) }
+        let habitGoal = answers[.habitGoal].flatMap { OnboardingData.HabitGoal(rawValue: $0) }
+        let aiCoachTone = answers[.aiCoachTone].flatMap { OnboardingData.AICoachTone(rawValue: $0) }
 
-        let overwhelmedFrequency = headspace.map { mapHeadspaceToOverwhelmed($0) } ?? .sometimes
+        let overwhelmFrequency = headspace.map { mapHeadspaceToOverwhelmed($0) } ?? .sometimes
         let primaryGoal = mentalMuscle?.rawValue ?? "Build a healthier mindset"
 
-        return UserProfile(
-            id: profileId,
-            userName: "",
-            primaryGoal: primaryGoal,
-            isOnboardingComplete: true,
-            overwhelmedFrequency: overwhelmedFrequency,
-            headspace: headspace,
-            mentalMuscle: mentalMuscle,
-            responseToSetback: responseToSetback,
-            habitGoal: habitGoal,
-            aiCoachTone: aiCoachTone
-        )
+        return OnboardingData(overwhelmFrequency: overwhelmFrequency.rawValue, primaryGoal: primaryGoal, headspace: headspace, mentalMuscle: mentalMuscle, responseToSetback: responseToSetback, habitGoal: habitGoal, aiCoachTone: aiCoachTone)
     }
 
     /// Legacy mapping for backward compatibility with PromptEngine
-    private func mapHeadspaceToOverwhelmed(_ headspace: UserProfile.Headspace)
-        -> UserProfile.OverwhelmedFrequency
+    private func mapHeadspaceToOverwhelmed(_ headspace: OnboardingData.Headspace)
+        -> OnboardingData.OverwhelmedFrequency
     {
         switch headspace {
         case .overwhelmed: return .often
