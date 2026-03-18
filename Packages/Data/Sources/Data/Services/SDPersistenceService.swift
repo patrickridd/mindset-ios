@@ -14,10 +14,12 @@ public final class SDPersistenceService: PersistenceService {
 
     private let modelContext: ModelContext
     private let logger: AppLogger
+    private let notificationCenter: NotificationCenter
 
-    public init(modelContext: ModelContext, logger: AppLogger) {
+    public init(modelContext: ModelContext, logger: AppLogger, notificationCenter: NotificationCenter = .default) {
         self.modelContext = modelContext
         self.logger = logger
+        self.notificationCenter = notificationCenter
     }
 
     public func saveUserProfile(_ profile: UserProfile) async throws {
@@ -39,6 +41,7 @@ public final class SDPersistenceService: PersistenceService {
         
         try modelContext.save()
         logger.log("✅ Saved `SDUserProfile`")
+        notificationCenter.post(name: .databaseDidChange, object: nil)
     }
 
     /// Fetches `SDUserProfile` and map the @Model back to our Domain `UserProfile`
@@ -56,13 +59,16 @@ public final class SDPersistenceService: PersistenceService {
         if let existingEntry = try modelContext.fetch(descriptor).first {
             // Update the existing tracked object
             existingEntry.update(from: entry, in: modelContext)
+            logger.log("✅ Updated `SDMindsetEntry`")
         } else {
             // Create new
             let newSD = SDMindsetEntry.fromDomain(entry)
             modelContext.insert(newSD)
+            logger.log("✅ Created/Saved `SDMindsetEntry`")
         }
         
         try modelContext.save()
+        notificationCenter.post(name: .databaseDidChange, object: nil)
     }
 
     public func fetchAllMindsetEntries() async throws -> [Domain.MindsetEntry] {
@@ -89,9 +95,9 @@ public final class SDPersistenceService: PersistenceService {
         do {
             try modelContext.save()
             logger.log("Deleted 🧹 all user data from device")
+            notificationCenter.post(name: .databaseDidChange, object: nil)
         } catch {
             logger.log("Coudn't delete local user data. Error: \(error)")
-
         }
     }
 }

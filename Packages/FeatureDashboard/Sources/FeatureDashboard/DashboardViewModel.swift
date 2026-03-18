@@ -17,7 +17,8 @@ public final class DashboardViewModel {
     private let getStreakUseCase: GetStreakUseCase
     private let getYesterdayGoalUseCase: GetYesterdayGoalUseCase
     private let logger: AppLogger
-
+    private let notificationCenter: NotificationCenter
+    
     // UI State
     public var userProfile: UserProfile?
     public var yesterdayGoal: String?
@@ -42,13 +43,14 @@ public final class DashboardViewModel {
     private let onStartMindset: () -> Void
     private let onSeeHistory: () -> Void
     private let onSecureAccount: () -> Void
-
+    
     public init(
         userRepository: UserRepository,
         mindsetRepository: MindsetRepository,
         getStreakUseCase: GetStreakUseCase,
         getYesterdayGoalUseCase: GetYesterdayGoalUseCase,
         logger: AppLogger,
+        notificationCenter: NotificationCenter = .default,
         onStartMindset: @escaping () -> Void,
         onSeeHistory: @escaping () -> Void,
         onSecureAccount: @escaping () -> Void
@@ -58,9 +60,28 @@ public final class DashboardViewModel {
         self.getStreakUseCase = getStreakUseCase
         self.getYesterdayGoalUseCase = getYesterdayGoalUseCase
         self.logger = logger
+        self.notificationCenter = notificationCenter
         self.onStartMindset = onStartMindset
         self.onSeeHistory = onSeeHistory
         self.onSecureAccount = onSecureAccount
+        setupDatabaseObserver()
+    }
+
+    private func setupDatabaseObserver() {
+        // It will automatically stop when 'self' (the ViewModel) is deallocated
+        // because of the [weak self] capture group below.
+        Task { [weak self] in
+            guard let self = self else { return }
+            let notifications = self.notificationCenter.notifications(named: .databaseDidChange)
+            for await _ in notifications {
+                // 1. If the Task was cancelled or self is gone, break the loop
+                guard let self = self, !Task.isCancelled else { break }
+                
+                // 2. Refresh the data
+                await self.loadDashboardData()
+            }
+            logger.log("🧼 Database Observer Task safely terminated.")
+        }
     }
 
     public func loadDashboardData() async {
