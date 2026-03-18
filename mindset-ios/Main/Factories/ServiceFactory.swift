@@ -103,7 +103,9 @@ struct ServiceFactory {
     func makeUserRepository(persistence: any PersistenceService) -> UserRepository {
         let base: any UserRepository
         if config.useRealServices {
-            base = SDUserRepository(persistence: persistence)
+            let local = SDUserRepository(persistence: persistence)
+            let remote = FirestoreUserRepository()
+            base = AppUserRepository(local: local, remote: remote)
         } else {
             base = MockUserRepository()
         }
