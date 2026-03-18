@@ -71,7 +71,8 @@ public final class SignInViewModel {
     // MARK: - Button actions
 
     public func dismissButtonTapped() async {
-       await signInAnonymously()
+        await signInAnonymously()
+        onSkip()
     }
 
     // MARK: - Sign in with Apple
@@ -123,7 +124,6 @@ public final class SignInViewModel {
         isLoading = true
         let anonymousId = try? await signInOrLinkUseCase.execute(with: .anonymous)
         isLoading = false
-        onSignInSuccess(anonymousId ?? "Anonymous")
     }
 
     // MARK: - Sign in with Google

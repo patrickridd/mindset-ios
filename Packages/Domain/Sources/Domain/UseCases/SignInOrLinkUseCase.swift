@@ -62,7 +62,7 @@ public struct SignInOrLinkUseCase: Sendable {
             uid = try await signInService.signIn(with: credential)
         }
 
-        var userProfile = await ensureProfileExists(uid: uid, credential: credential)
+        var userProfile = try await ensureLocalProfileExists(uid: uid, credential: credential)
         if !userProfile.isAccountSecured && isLinkable {
             await persistIsAccountSecured(for: &userProfile)
         }
@@ -70,7 +70,7 @@ public struct SignInOrLinkUseCase: Sendable {
         return uid
     }
 
-    private func ensureProfileExists(uid: String, credential: AuthCredential) async -> UserProfile {
+    private func ensureLocalProfileExists(uid: String, credential: AuthCredential) async throws -> UserProfile {
         if let existingUserProfile = try? await userRepository.fetchUserProfile() {
             return existingUserProfile
         }
@@ -81,6 +81,8 @@ public struct SignInOrLinkUseCase: Sendable {
             isAccountSecured: false,
             isOnboardingComplete: false
         )
+
+        try await userRepository.saveUserProfile(createUserProfile)
         return createUserProfile
     }
 
