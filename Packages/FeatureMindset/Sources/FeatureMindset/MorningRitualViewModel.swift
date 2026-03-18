@@ -14,6 +14,7 @@ import SharedLocalization
 @Observable
 public final class MorningRitualViewModel {
     // Dependencies
+    private let getStreakUseCase: GetStreakUseCase
     private let addMindsetUseCase: AddMindsetUseCase
     private let userRepository: UserRepository
     private let subscriptionService: SubscriptionService
@@ -77,6 +78,7 @@ public final class MorningRitualViewModel {
         userRepository: UserRepository,
         addMindsetUseCase: AddMindsetUseCase,
         subscriptionService: SubscriptionService,
+        getStreakUseCase: GetStreakUseCase,
         aiService: AIAnalysisService,
         logger: AppLogger,
         onNavigate: ((NavigationState) -> Void)?,
@@ -85,6 +87,7 @@ public final class MorningRitualViewModel {
         self.userRepository = userRepository
         self.addMindsetUseCase = addMindsetUseCase
         self.subscriptionService = subscriptionService
+        self.getStreakUseCase = getStreakUseCase
         self.aiService = aiService
         self.logger = logger
         self.onNavigate = onNavigate
@@ -92,8 +95,9 @@ public final class MorningRitualViewModel {
         Task {
             self.isPro = await subscriptionService.checkSubscriptionStatus()
         }
-        Task { await prepareRitual() }
-       
+        Task {
+            await prepareRitual()
+        }  
     }
 
     public func dismiss() {
@@ -196,7 +200,7 @@ public final class MorningRitualViewModel {
         } else {
             isRitualComplete = true
             Task {
-                await saveMindsetEntry()
+                try? await saveMindsetEntry()
             }
         }
     }
@@ -241,7 +245,7 @@ public final class MorningRitualViewModel {
 
     // MARK: - Completion
 
-    public func saveMindsetEntry() async {
+    public func saveMindsetEntry() async throws {
         do {
             guard let userId = try await userRepository.fetchUserProfile()?.id else {
                 logger.log("🚨 userId not found, aborting saveMindsetEntry")
@@ -280,7 +284,22 @@ public final class MorningRitualViewModel {
                 archetypeTag: self.generatedArchetype,
                 sentimentScore: 0.8  // In production, this would come from an AI sentiment analysis call
             )
+            
+            //  Save the entry to the database
             try await addMindsetUseCase.execute(entry: entry)
+            
+            // This ensures the streak is mathematically correct, even if they skipped a day.
+            let updatedStreak = try await getStreakUseCase.execute()
+            
+            // Update the User Profile
+            if var profile = try await userRepository.fetchUserProfile() {
+                profile.stats.streakCount = updatedStreak
+                profile.stats.totalXP += self.earnedXP
+                profile.stats.lastRitualDate = dateCreated
+                try await userRepository.saveUserProfile(profile)
+                
+                logger.log("✅ Entry saved. New Streak: \(updatedStreak), XP: \(profile.stats.totalXP)")
+            }
         } catch {
             logger.log("❌ Ritual save failed: \(error.localizedDescription)")
         }

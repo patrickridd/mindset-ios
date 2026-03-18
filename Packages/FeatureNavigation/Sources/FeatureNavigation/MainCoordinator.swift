@@ -132,11 +132,6 @@ public final class MainCoordinator {
 
     public func onboardingFinished() {
         Task {
-            if var user = try? await userProfileRepository.fetchUserProfile() {
-                user.onboarding(isComplete: true)
-                try? await userProfileRepository.saveUserProfile(user)
-            }
-
             let isAuthenticated = await authStateQuery.isAuthenticated()
 
             if isAuthenticated {

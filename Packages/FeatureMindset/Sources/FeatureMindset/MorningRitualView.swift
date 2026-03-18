@@ -516,6 +516,7 @@ private extension MorningRitualView {
                 repository: Domain.MockMindsetRepository(days: 7)
             ),
             subscriptionService: Domain.MockSubscriptionService(),
+            getStreakUseCase: GetStreakUseCase(repository: Domain.MockMindsetRepository(days: 7)),
             aiService: Domain.MockAIService(),
             logger: DebugLogger.shared,
             onNavigate: { _ in },

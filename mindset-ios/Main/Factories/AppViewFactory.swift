@@ -265,6 +265,7 @@ struct AppViewFactory: MainViewFactory {
             userRepository: userRepository,
             addMindsetUseCase: addMindsetUseCase,
             subscriptionService: subscriptionService,
+            getStreakUseCase: getStreakUseCase,
             aiService: aiService,
             logger: logger,
             onNavigate: { state in

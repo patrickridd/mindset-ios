@@ -113,7 +113,7 @@ public final class OnboardingViewModel {
         Task {
             async let delay: Void = delayForAnalyzing()
             
-            try? await updateOrCreateNewAnonymousUser()
+            try? await updateOrCreateNewAnonymousUser(isOnboardingComplete: true)
 
             _ = await delay
 
@@ -123,15 +123,16 @@ public final class OnboardingViewModel {
         }
     }
 
-    private func updateOrCreateNewAnonymousUser() async throws {
+    private func updateOrCreateNewAnonymousUser(isOnboardingComplete: Bool) async throws {
         var user: UserProfile
         // Check if user exists
         if let userProfile = try? await userRepository.fetchUserProfile() {
             user = userProfile
+            user.onboarding(isComplete: isOnboardingComplete)
         } else {
             // Else sign-in user anonymously and use that new id
             let userId = try await signInService.signIn(with: .anonymous)
-            user = UserProfile(id: userId, createdAt: Date(), userName: "", isAccountSecured: false, isOnboardingComplete: true)
+            user = UserProfile(id: userId, createdAt: Date(), userName: "", isAccountSecured: false, isOnboardingComplete: isOnboardingComplete)
         }
 
         user.update(with: getOnboardingData())
@@ -172,8 +173,7 @@ public final class OnboardingViewModel {
     public func skipOnboarding() {
         onboardingFinished?()
         Task {
-            // Sign in Anonymously
-            _ = try await signInService.signIn(with: .anonymous)
+            try? await updateOrCreateNewAnonymousUser(isOnboardingComplete: false)
         }
     }
     

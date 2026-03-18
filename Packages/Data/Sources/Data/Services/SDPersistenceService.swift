@@ -28,11 +28,11 @@ public final class SDPersistenceService: PersistenceService {
         
         // Check if the object already exists in the database
         if let existingUser = try modelContext.fetch(descriptor).first {
-            logger.log("Updating **existing** `SDUserProfile`")
+            logger.log("👤 Updating **Existing** `SDUserProfile`")
             existingUser.update(from: profile)
         } else {
             let newUser = SDUserProfile.fromDomain(profile)
-            logger.log("Creating **NEW** `SDUserProfile`")
+            logger.log("👤 Creating **NEW** `SDUserProfile`")
             
             modelContext.insert(newUser)
         }
@@ -86,6 +86,12 @@ public final class SDPersistenceService: PersistenceService {
             modelContext.delete(entry)
         }
 
-        try modelContext.save()
+        do {
+            try modelContext.save()
+            logger.log("Deleted 🧹 all user data from device")
+        } catch {
+            logger.log("Coudn't delete local user data. Error: \(error)")
+
+        }
     }
 }

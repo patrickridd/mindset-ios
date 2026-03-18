@@ -338,10 +338,12 @@ extension FirebaseAuthService: AuthSessionManagement {
 
         try await withCheckedThrowingContinuation {
             (continuation: CheckedContinuation<Void, Error>) in
-            user.delete { error in
+            user.delete { [logger] error in
                 if let error {
+                    logger.log("Failed 🚨 to delete Firebase user. Error: \(error)")
                     continuation.resume(throwing: error)
                 } else {
+                    logger.log("Deleted 🧹 Firebase user")
                     continuation.resume(returning: ())
                 }
             }
