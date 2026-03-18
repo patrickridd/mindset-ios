@@ -38,4 +38,9 @@ public struct UserProfile: Sendable {
     public func onboarding(isComplete: Bool) {
         self.isOnboardingComplete = isComplete
     }
+
+    mutating
+    public func isAccount(secured: Bool) {
+        self.isAccountSecured = secured
+    }
 }

@@ -338,7 +338,8 @@ private extension PhoneSignInView {
     let signInViewModel = SignInViewModel(
         signInOrLinkUseCase: SignInOrLinkUseCase(
             authService: MockAuthService(),
-            userRepository: MockUserRepository()
+            userRepository: MockUserRepository(),
+            logger: DebugLogger.shared
         ),
         appleSignInCredentialBuilder: AppleSignInCredentialBuilder(
             nonceStorage: AppleSignInNonceStorage()),
@@ -358,7 +359,8 @@ private extension PhoneSignInView {
     let signInViewModel = SignInViewModel(
         signInOrLinkUseCase: SignInOrLinkUseCase(
             authService: MockAuthService(),
-            userRepository: MockUserRepository()
+            userRepository: MockUserRepository(),
+            logger: DebugLogger.shared
         ),
         appleSignInCredentialBuilder: AppleSignInCredentialBuilder(
             nonceStorage: AppleSignInNonceStorage()),

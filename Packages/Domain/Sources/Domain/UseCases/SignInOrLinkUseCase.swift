@@ -21,25 +21,29 @@ public struct SignInOrLinkUseCase: Sendable {
     private let authStateQuery: AuthStateQuery
     private let authSessionManagement: AuthSessionManagement
     private let userRepository: UserRepository
+    private let logger: AppLogger
 
     public init(
         signInService: SignInService,
         authStateQuery: AuthStateQuery,
         authSessionManagement: AuthSessionManagement,
-        userRepository: UserRepository
+        userRepository: UserRepository,
+        logger: AppLogger
     ) {
         self.signInService = signInService
         self.authStateQuery = authStateQuery
         self.authSessionManagement = authSessionManagement
         self.userRepository = userRepository
+        self.logger = logger
     }
 
     /// Convenience init when a single AuthService instance provides all capabilities.
-    public init(authService: AuthService, userRepository: UserRepository) {
+    public init(authService: AuthService, userRepository: UserRepository, logger: AppLogger) {
         self.signInService = authService
         self.authStateQuery = authService
         self.authSessionManagement = authService
         self.userRepository = userRepository
+        self.logger = logger
     }
 
     /// Authenticate with the credential. Links to anonymous account when applicable.
@@ -58,27 +62,33 @@ public struct SignInOrLinkUseCase: Sendable {
             uid = try await signInService.signIn(with: credential)
         }
 
-        await ensureProfileExists(uid: uid, credential: credential)
+        var userProfile = await ensureProfileExists(uid: uid, credential: credential)
+        if !userProfile.isAccountSecured && isLinkable {
+            await persistIsAccountSecured(for: &userProfile)
+        }
         await persistOAuthDisplayNameIfNeeded(from: credential)
         return uid
     }
 
-    private func ensureProfileExists(uid: String, credential: AuthCredential) async {
-        guard (try? await userRepository.fetchUserProfile()) == nil else { return }
-        let isAccountSecured: Bool
-        if case .anonymous = credential {
-            isAccountSecured = false
-        } else {
-            isAccountSecured = true
+    private func ensureProfileExists(uid: String, credential: AuthCredential) async -> UserProfile {
+        if let existingUserProfile = try? await userRepository.fetchUserProfile() {
+            return existingUserProfile
         }
-        let minimal = UserProfile(
+        let createUserProfile = UserProfile(
             id: uid,
             createdAt: Date(),
             userName: "",
             isAccountSecured: false,
             isOnboardingComplete: false
         )
-        try? await userRepository.saveUserProfile(minimal)
+        return createUserProfile
+    }
+
+    /// Helper method to set the current ``UserProfile``'s ``isAccountSecured`` property to `TRUE` and persist it in Repository
+    private func persistIsAccountSecured(for userProfile: inout UserProfile) async {
+        userProfile.isAccount(secured: true)
+        logger.log("🔗 `isAccountSecured` saved to TRUE")
+        try? await userRepository.saveUserProfile(userProfile)
     }
 
     private func persistOAuthDisplayNameIfNeeded(from credential: AuthCredential) async {

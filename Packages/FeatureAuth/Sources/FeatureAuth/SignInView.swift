@@ -265,7 +265,8 @@ private extension SignInView {
     let viewModel = SignInViewModel(
         signInOrLinkUseCase: SignInOrLinkUseCase(
             authService: mockAuth,
-            userRepository: MockUserRepository()
+            userRepository: MockUserRepository(),
+            logger: DebugLogger.shared
         ),
         appleSignInCredentialBuilder: AppleSignInCredentialBuilder(
             nonceStorage: AppleSignInNonceStorage()),

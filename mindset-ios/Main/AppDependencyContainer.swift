@@ -55,7 +55,8 @@ final class AppDependencyContainer {
 
         let signInOrLinkUseCase = SignInOrLinkUseCase(
             authService: authService,
-            userRepository: userRepository
+            userRepository: userRepository,
+            logger: logger
         )
 
         // --- 7. Coordinator & View Factory ---
