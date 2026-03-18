@@ -237,5 +237,5 @@ private struct PreviewPersistenceService: PersistenceService {
     func fetchUserProfile() async throws -> UserProfile? { nil }
     func saveEntry(_ entry: MindsetEntry) async throws {}
     func fetchAllMindsetEntries() async throws -> [MindsetEntry] { [] }
-    func deleteAllUserData() async throws {}
+    func deleteAllLocalUserData() async throws {}
 }

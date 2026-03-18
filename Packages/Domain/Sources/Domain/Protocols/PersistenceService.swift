@@ -14,5 +14,5 @@ public protocol PersistenceService: Sendable {
 
     /// Delete all locally persisted user data (profile + journal history).
     /// Used for account deletion and privacy resets.
-    func deleteAllUserData() async throws
+    func deleteAllLocalUserData() async throws
 }

@@ -73,7 +73,7 @@ public final class SDPersistenceService: PersistenceService {
         return dbEntries.map { $0.toDomain() }
     }
 
-    public func deleteAllUserData() async throws {
+    public func deleteAllLocalUserData() async throws {
         let profileDescriptor = FetchDescriptor<SDUserProfile>()
         let profiles = try modelContext.fetch(profileDescriptor)
         for profile in profiles {

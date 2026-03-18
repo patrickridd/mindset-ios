@@ -127,7 +127,7 @@ public final class SettingsViewModel {
 
         do {
             try await authSessionManagement.signOut()
-
+            try await persistence.deleteAllLocalUserData()
             appleSignInNonceStorage.clearSessionData()
 
             isSigningOut = false
@@ -156,7 +156,7 @@ public final class SettingsViewModel {
 
         do {
             try await authSessionManagement.deleteCurrentUser()
-            try await persistence.deleteAllUserData()
+            try await persistence.deleteAllLocalUserData()
 
             appleSignInNonceStorage.clearSessionData()
 
