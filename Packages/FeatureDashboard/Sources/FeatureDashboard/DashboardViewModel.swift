@@ -27,6 +27,12 @@ public final class DashboardViewModel {
     public var totalRituals: Int = 0  // New property for the stats grid
     public var latestEntry: MindsetEntry?
 
+    /// Determine if we should display AccountSecurityCallout to remind our User to sign-in and link their anonymous account
+    public var shouldDisplayLinkAccountSection: Bool {
+        guard let userProfile else { return true }
+        return userProfile.isAccountSecured == false && streakCount > 0
+    }
+
     // Dynamic Archetype based on the most recent ritual
     public var currentArchetype: String {
         latestEntry?.archetypeTag ?? "The Visionary"

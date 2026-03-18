@@ -185,16 +185,14 @@ private extension DashboardView {
     
     @ViewBuilder
     var securitySection: some View {
-        if let user = viewModel.userProfile {
-            if !user.isAccountSecured && viewModel.streakCount > 0 {
-                AccountSecurityCallout(
-                    streakCount: viewModel.streakCount,
-                    onLinkAction: {
-                        viewModel.secureAccountButtonTapped()
-                    }
-                )
-                .transition(.move(edge: .top).combined(with: .opacity))
-            }
+        if viewModel.shouldDisplayLinkAccountSection {
+            AccountSecurityCallout(
+                streakCount: viewModel.streakCount,
+                onLinkAction: {
+                    viewModel.secureAccountButtonTapped()
+                }
+            )
+            .transition(.move(edge: .top).combined(with: .opacity))
         } else {
             EmptyView()
         }
