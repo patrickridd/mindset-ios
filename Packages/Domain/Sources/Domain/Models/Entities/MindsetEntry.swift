@@ -27,6 +27,9 @@ public struct MindsetEntry: Identifiable, Sendable {
     /// The timestamp indicating when the reflection session was initiated.
     public let dateCreated: Date
     
+    /// The timestamp indicating when the reflection session was last updated.
+    public var lastUpdatedAt: Date
+    
     /// The ordered collection of individual prompt-response pairs that make up the session.
     public let promptResponses: [PromptResponse]
     
@@ -48,6 +51,7 @@ public struct MindsetEntry: Identifiable, Sendable {
         id: UUID = UUID(),
         userId: String,
         dateCreated: Date = Date(),
+        lastUpdatedAt: Date = Date(),
         promptResponses: [PromptResponse],
         archetypeTag: String? = nil,
         sentimentScore: Double? = nil
@@ -55,6 +59,7 @@ public struct MindsetEntry: Identifiable, Sendable {
         self.id = id
         self.userId = userId
         self.dateCreated = dateCreated
+        self.lastUpdatedAt = lastUpdatedAt
         self.promptResponses = promptResponses
         self.archetypeTag = archetypeTag
         self.sentimentScore = sentimentScore
