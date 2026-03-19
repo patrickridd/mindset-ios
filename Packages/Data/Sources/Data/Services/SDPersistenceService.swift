@@ -80,24 +80,18 @@ public final class SDPersistenceService: PersistenceService {
     }
 
     public func deleteAllLocalUserData() async throws {
-        let profileDescriptor = FetchDescriptor<SDUserProfile>()
-        let profiles = try modelContext.fetch(profileDescriptor)
-        for profile in profiles {
-            modelContext.delete(profile)
-        }
-
-        let entryDescriptor = FetchDescriptor<SDMindsetEntry>()
-        let entries = try modelContext.fetch(entryDescriptor)
-        for entry in entries {
-            modelContext.delete(entry)
-        }
-
-        do {
-            try modelContext.save()
-            logger.log("Deleted 🧹 all user data from device")
-            notificationCenter.post(name: .databaseDidChange, object: nil)
-        } catch {
-            logger.log("Coudn't delete local user data. Error: \(error)")
-        }
+        logger.log("🧹 Starting full local data wipe...")
+        
+        // Efficient bulk deletion
+        try modelContext.delete(model: SDUserProfile.self)
+        try modelContext.delete(model: SDMindsetEntry.self)
+        
+        // Save the context to finalize the wipe
+        try modelContext.save()
+        
+        logger.log("✅ All local user data deleted successfully.")
+        
+        // Notify any remaining UI components that the world has changed
+        notificationCenter.post(name: .databaseDidChange, object: nil)
     }
 }
