@@ -10,16 +10,18 @@ import Development
 #endif
 import Domain
 import FeatureNavigation
+import Firebase
 import SharedUI
+import SharedUtils
 import SwiftData
 import SwiftUI
 
 @main
 struct MindsetApp: App {
     @UIApplicationDelegateAdaptor(FirebasePhoneAuthAppDelegate.self) private var appDelegate
+    @StateObject private var dependencyContainer: AppDependencyContainer = AppDependencyContainer()
     @State private var appRootID = UUID()
-    @State private var dependencyContainer = AppDependencyContainer()
-
+    
     var body: some Scene {
         WindowGroup {
             MainCoordinatorView(
@@ -28,11 +30,7 @@ struct MindsetApp: App {
             )
             .modifier(DebugWrapper())
             .onReceive(NotificationCenter.default.publisher(for: .restartApp)) { _ in
-                dependencyContainer = AppDependencyContainer()
-                
-                withAnimation(.easeInOut(duration: 0.5)) {
-                    appRootID = UUID()
-                }
+                 restartApp()
             }
             .onOpenURL { url in
                 _ = dependencyContainer.authService.handleAuthCallback(url: url)
@@ -40,5 +38,12 @@ struct MindsetApp: App {
             .id(appRootID)
         }
         .modelContainer(dependencyContainer.container)
+    }
+
+    func restartApp() {
+        withAnimation(.easeInOut(duration: 0.5)) {
+            DebugLogger.shared.log("🔄 Restarting app...")
+            appRootID = UUID()
+        }
     }
 }

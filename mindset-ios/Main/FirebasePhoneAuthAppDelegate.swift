@@ -6,6 +6,7 @@
 //  works when app delegate swizzling is disabled.
 //
 
+import SharedUtils
 import FirebaseAuth
 import FirebaseCore
 import UIKit
@@ -21,6 +22,7 @@ final class FirebasePhoneAuthAppDelegate: NSObject, UIApplicationDelegate {
         // Configure Firebase before any Auth API calls (e.g. setAPNSToken in didRegisterForRemoteNotifications).
         // AppDependencyContainer may configure again when useRealServices; configure() is idempotent.
         FirebaseApp.configure()
+        DebugLogger.shared.log("🔥 Firebase Configured")
         application.registerForRemoteNotifications()
         return true
     }

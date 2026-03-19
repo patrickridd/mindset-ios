@@ -5,6 +5,7 @@
 //  Created by patrick ridd on 3/1/26.
 //
 
+import Combine
 import Data
 import Domain
 import FeatureDashboard
@@ -18,8 +19,12 @@ import SharedUI
 import SharedUtils
 import SwiftData
 
-@Observable
-final class AppDependencyContainer {
+@MainActor
+final class AppDependencyContainer: ObservableObject {
+    
+    // 1. Manually add the publisher the compiler is asking for
+    public let objectWillChange = ObservableObjectPublisher()
+    // Properties remain let/constant as they are dependencies
     let serviceFactory: ServiceFactory
     let authService: AuthService
     let userRepository: UserRepository
@@ -30,7 +35,7 @@ final class AppDependencyContainer {
     let persistence: PersistenceService
 
     init() {
-        // --- Logger (Composition Root owns the single instance) ---
+        // --- Logger ---
         let logger: AppLogger = DebugLogger.shared
 
         // --- Config & Firebase ---
@@ -41,6 +46,8 @@ final class AppDependencyContainer {
         self.authService = serviceFactory.makeAuthService()
 
         // --- Persistence ---
+        // Using try! is okay here since this is the Composition Root
+        // and we want to know immediately if the DB schema is broken.
         self.container = try! ModelContainer(for: SDUserProfile.self, SDMindsetEntry.self)
         self.persistence = SDPersistenceService(modelContext: container.mainContext, logger: logger)
 
@@ -84,5 +91,7 @@ final class AppDependencyContainer {
             logger: logger,
             appleSignInNonceStorage: appleSignInNonceStorage
         )
+        
+        logger.log("🏗️ AppDependencyContainer fully initialized.")
     }
 }
