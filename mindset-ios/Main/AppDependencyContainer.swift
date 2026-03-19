@@ -30,28 +30,28 @@ final class AppDependencyContainer {
     let persistence: PersistenceService
 
     init() {
-        // --- 1. Logger (Composition Root owns the single instance) ---
+        // --- Logger (Composition Root owns the single instance) ---
         let logger: AppLogger = DebugLogger.shared
 
-        // --- 2. Config & Firebase ---
+        // --- Config & Firebase ---
         self.serviceFactory = ServiceFactory(config: .default, logger: logger)
 
-        // --- 3. Persistence ---
+        // --- Services ---
+        let subService = serviceFactory.makeSubscriptionService()
+        self.authService = serviceFactory.makeAuthService()
+
+        // --- Persistence ---
         self.container = try! ModelContainer(for: SDUserProfile.self, SDMindsetEntry.self)
         self.persistence = SDPersistenceService(modelContext: container.mainContext, logger: logger)
 
-        // --- 4. Repositories ---
+        // --- Repositories ---
         self.mindsetRepository = serviceFactory.makeMindsetRepository(persistence: persistence)
-        self.userRepository = serviceFactory.makeUserRepository(persistence: persistence)
+        self.userRepository = serviceFactory.makeUserRepository(persistence: persistence, authStateQuery: authService, logger: logger)
 
-        // --- 5. Use Cases ---
+        // --- Use Cases ---
         let getStreak = GetStreakUseCase(repository: mindsetRepository)
         let addMindset = AddMindsetUseCase(repository: mindsetRepository)
         let getYesterday = GetYesterdayGoalUseCase(repository: mindsetRepository)
-
-        // --- 6. Services ---
-        let subService = serviceFactory.makeSubscriptionService()
-        self.authService = serviceFactory.makeAuthService()
 
         let signInOrLinkUseCase = SignInOrLinkUseCase(
             authService: authService,
@@ -59,7 +59,7 @@ final class AppDependencyContainer {
             logger: logger
         )
 
-        // --- 7. Coordinator & View Factory ---
+        // --- Coordinator & View Factory ---
         self.coordinator = MainCoordinator(
             authStateQuery: authService,
             subscriptionService: subService,

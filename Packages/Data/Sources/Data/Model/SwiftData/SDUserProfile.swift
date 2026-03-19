@@ -14,6 +14,7 @@ public final class SDUserProfile {
     @Attribute(.unique) public var id: String
     public var userName: String
     public var createdAt: Date
+    public var lastUpdatedAt: Date
     public var isOnboardingComplete: Bool
     public var isAccountSecured: Bool
     
@@ -38,6 +39,7 @@ public final class SDUserProfile {
         id: String,
         userName: String,
         createdAt: Date,
+        lastUpdatedAt: Date,
         isAccountSecured: Bool,
         isOnboardingComplete: Bool,
         primaryGoal: String,
@@ -56,6 +58,7 @@ public final class SDUserProfile {
         self.id = id
         self.userName = userName
         self.createdAt = createdAt
+        self.lastUpdatedAt = lastUpdatedAt
         self.isAccountSecured = isAccountSecured
         self.isOnboardingComplete = isOnboardingComplete
         self.primaryGoal = primaryGoal
@@ -97,6 +100,7 @@ public final class SDUserProfile {
         return UserProfile(
             id: id,
             createdAt: createdAt,
+            lastUpdatedAt: lastUpdatedAt,
             userName: userName,
             isAccountSecured: isAccountSecured,
             isOnboardingComplete: isOnboardingComplete,
@@ -111,6 +115,7 @@ public final class SDUserProfile {
             id: domain.id,
             userName: domain.userName,
             createdAt: domain.createdAt,
+            lastUpdatedAt: domain.lastUpdatedAt,
             isAccountSecured: domain.isAccountSecured,
             isOnboardingComplete: domain.isOnboardingComplete,
             primaryGoal: domain.onboardingData.primaryGoal,

@@ -74,9 +74,11 @@ public struct SignInOrLinkUseCase: Sendable {
         if let existingUserProfile = try? await userRepository.fetchUserProfile() {
             return existingUserProfile
         }
+        let dateCreated = Date()
         let createUserProfile = UserProfile(
             id: uid,
-            createdAt: Date(),
+            createdAt: dateCreated,
+            lastUpdatedAt: dateCreated,
             userName: "",
             isAccountSecured: false,
             isOnboardingComplete: false
@@ -101,6 +103,7 @@ public struct SignInOrLinkUseCase: Sendable {
         else {
             return
         }
+
         profile.userName = trimmed
         try? await userRepository.saveUserProfile(profile)
     }

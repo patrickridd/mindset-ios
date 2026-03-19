@@ -100,12 +100,12 @@ struct ServiceFactory {
         }
     }
     
-    func makeUserRepository(persistence: any PersistenceService) -> UserRepository {
+    func makeUserRepository(persistence: any PersistenceService, authStateQuery: AuthStateQuery, logger: AppLogger) -> UserRepository {
         let base: any UserRepository
         if config.useRealServices {
             let local = SDUserRepository(persistence: persistence)
             let remote = FirestoreUserRepository()
-            base = AppUserRepository(local: local, remote: remote)
+            base = AppUserRepository(local: local, remote: remote, authStateQuery: authStateQuery, logger:  logger)
         } else {
             base = MockUserRepository()
         }

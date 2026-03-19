@@ -25,6 +25,9 @@ public struct UserProfile: Sendable {
     /// The timestamp indicating when the user's account was first created.
     public let createdAt: Date
     
+    /// Timestamp indicating when the user's account was last updated
+    public var lastUpdatedAt: Date
+    
     /// The display name chosen by the user during onboarding.
     public var userName: String
     
@@ -47,6 +50,7 @@ public struct UserProfile: Sendable {
     public init(
         id: String,
         createdAt: Date,
+        lastUpdatedAt: Date,
         userName: String,
         isAccountSecured: Bool,
         isOnboardingComplete: Bool,
@@ -55,6 +59,7 @@ public struct UserProfile: Sendable {
     ) {
         self.id = id
         self.createdAt = createdAt
+        self.lastUpdatedAt = createdAt
         self.userName = userName
         self.isAccountSecured = isAccountSecured
         self.isOnboardingComplete = isOnboardingComplete

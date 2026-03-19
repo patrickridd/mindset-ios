@@ -19,7 +19,16 @@ public final class MockUserRepository: UserRepository {
         isAccountSecured: Bool = true,
         createdAt: Date = .init()
     ) {
-        self.mockProfile = UserProfile(id: id, createdAt: createdAt, userName: userName, isAccountSecured: isAccountSecured, isOnboardingComplete: isOnboardingComplete, onboardingData: OnboardingData(), stats: UserStats())
+        self.mockProfile = UserProfile(
+            id: id,
+            createdAt: createdAt,
+            lastUpdatedAt: createdAt,
+            userName: userName,
+            isAccountSecured: isAccountSecured,
+            isOnboardingComplete: isOnboardingComplete,
+            onboardingData: OnboardingData(),
+            stats: UserStats()
+        )
     }
 
     public func isOnboardingComplete() -> Bool {

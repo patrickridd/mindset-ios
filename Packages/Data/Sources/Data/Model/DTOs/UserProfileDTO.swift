@@ -15,6 +15,7 @@ import Foundation
 public struct UserProfileDTO: Codable {
     public let id: String
     public let createdAt: Date
+    public let lastUpdatedAt: Date
     public let userName: String
     public let isAccountSecured: Bool
     public let isOnboardingComplete: Bool
@@ -25,6 +26,7 @@ public struct UserProfileDTO: Codable {
     public init(from domain: UserProfile) {
         self.id = domain.id
         self.createdAt = domain.createdAt
+        self.lastUpdatedAt = domain.lastUpdatedAt
         self.userName = domain.userName
         self.isAccountSecured = domain.isAccountSecured
         self.isOnboardingComplete = domain.isOnboardingComplete
@@ -37,6 +39,7 @@ public struct UserProfileDTO: Codable {
         UserProfile(
             id: id,
             createdAt: createdAt,
+            lastUpdatedAt: lastUpdatedAt,
             userName: userName,
             isAccountSecured: isAccountSecured,
             isOnboardingComplete: isOnboardingComplete,
