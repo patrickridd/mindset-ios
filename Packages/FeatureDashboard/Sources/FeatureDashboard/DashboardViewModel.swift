@@ -13,7 +13,7 @@ import Observation
 public final class DashboardViewModel {
     // Dependencies
     private let userRepository: UserRepository
-    private let mindsetRepository: MindsetRepository
+    private let mindsetRepository: MindsetEntryRepository
     private let getStreakUseCase: GetStreakUseCase
     private let getYesterdayGoalUseCase: GetYesterdayGoalUseCase
     private let logger: AppLogger
@@ -46,7 +46,7 @@ public final class DashboardViewModel {
     
     public init(
         userRepository: UserRepository,
-        mindsetRepository: MindsetRepository,
+        mindsetRepository: MindsetEntryRepository,
         getStreakUseCase: GetStreakUseCase,
         getYesterdayGoalUseCase: GetYesterdayGoalUseCase,
         logger: AppLogger,

@@ -42,7 +42,7 @@ struct AppViewFactory: MainViewFactory {
     let authService: AuthService
     let signInOrLinkUseCase: SignInOrLinkUseCase
     let userRepository: UserRepository
-    let mindsetRepository: MindsetRepository
+    let mindsetRepository: MindsetEntryRepository
     let getStreakUseCase: GetStreakUseCase
     let addMindsetUseCase: AddMindsetUseCase
     let getYesterdayGoalUseCase: GetYesterdayGoalUseCase

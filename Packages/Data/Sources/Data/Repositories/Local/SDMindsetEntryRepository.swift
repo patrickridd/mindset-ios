@@ -10,7 +10,7 @@ import Foundation
 import SwiftData
 
 @MainActor
-public final class SDMindsetRepository: MindsetRepository {
+public final class SDMindsetEntryRepository: MindsetEntryRepository {
     private let persistence: PersistenceService
 
     public init(persistence: PersistenceService) {

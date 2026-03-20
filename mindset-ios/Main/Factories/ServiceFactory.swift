@@ -92,9 +92,11 @@ struct ServiceFactory {
     
     // MARK: - Repository Creation
     
-    func makeMindsetRepository(persistence: any PersistenceService) -> MindsetRepository {
+    func makeMindsetRepository(persistence: any PersistenceService, authStateQuery: AuthStateQuery) -> MindsetEntryRepository {
         if config.useRealServices {
-            return SDMindsetRepository(persistence: persistence)
+            let local = SDMindsetEntryRepository(persistence: persistence)
+            let remote = FirestoreMindsetEntryRepository()
+            return AppMindsetEntryRepository(local: local, remote: remote, authStateQuery: authStateQuery)
         } else {
             return MockMindsetRepository(days: 11)
         }

@@ -6,7 +6,7 @@
 //
 
 
-/// A specialized repository for handling remote operations.
+/// A specialized repository for handling remote operations concerning our ``UserProfile``.
 public protocol RemoteUserRepository: Sendable {
     /// Fetches the user profile from backend using the authenticated UID.
     func fetchRemoteProfile(uid: String) async throws -> UserProfile?

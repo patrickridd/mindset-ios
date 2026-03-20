@@ -76,11 +76,11 @@ public struct StreakCalculator: Sendable {
 ///
 /// Use this in ViewModels to display gamified progress or to trigger streak-based rewards.
 public struct GetStreakUseCase: Sendable {
-    private let repository: MindsetRepository
+    private let repository: MindsetEntryRepository
     
     /// Creates a new GetStreakUseCase.
     /// - Parameter repository: The repository used to fetch ``MindsetEntry`` history.
-    public init(repository: MindsetRepository) {
+    public init(repository: MindsetEntryRepository) {
         self.repository = repository
     }
 

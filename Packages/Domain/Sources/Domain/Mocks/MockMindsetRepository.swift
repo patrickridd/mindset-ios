@@ -8,7 +8,7 @@
 import Domain
 import Foundation
 
-public final class MockMindsetRepository: MindsetRepository, @unchecked Sendable {
+public final class MockMindsetRepository: MindsetEntryRepository, @unchecked Sendable {
 
     public var mockEntries: [MindsetEntry] = []
 

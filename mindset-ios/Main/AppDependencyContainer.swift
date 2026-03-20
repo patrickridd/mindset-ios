@@ -28,7 +28,7 @@ final class AppDependencyContainer: ObservableObject {
     let serviceFactory: ServiceFactory
     let authService: AuthService
     let userRepository: UserRepository
-    let mindsetRepository: MindsetRepository
+    let mindsetRepository: MindsetEntryRepository
     let coordinator: MainCoordinator
     let viewFactory: AppViewFactory
     let container: ModelContainer
@@ -52,7 +52,7 @@ final class AppDependencyContainer: ObservableObject {
         self.persistence = SDPersistenceService(modelContext: container.mainContext, logger: logger)
 
         // --- Repositories ---
-        self.mindsetRepository = serviceFactory.makeMindsetRepository(persistence: persistence)
+        self.mindsetRepository = serviceFactory.makeMindsetRepository(persistence: persistence, authStateQuery: authService)
         self.userRepository = serviceFactory.makeUserRepository(persistence: persistence, authStateQuery: authService, logger: logger)
 
         // --- Use Cases ---

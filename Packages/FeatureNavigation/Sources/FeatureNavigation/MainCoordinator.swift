@@ -59,7 +59,7 @@ public final class MainCoordinator {
 
     private let authStateQuery: AuthStateQuery
     private let subscriptionService: SubscriptionService
-    private let mindsetRepository: MindsetRepository
+    private let mindsetRepository: MindsetEntryRepository
     private let userProfileRepository: UserRepository
     /// Manages the internal push stack of the Mindset modal
     public var mindsetPath = NavigationPath()
@@ -71,7 +71,7 @@ public final class MainCoordinator {
     public init(
         authStateQuery: AuthStateQuery,
         subscriptionService: SubscriptionService,
-        mindsetRepository: MindsetRepository,
+        mindsetRepository: MindsetEntryRepository,
         userRepository: UserRepository
     ) {
         self.authStateQuery = authStateQuery

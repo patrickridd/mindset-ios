@@ -6,9 +6,9 @@
 //
 
 public struct AddMindsetUseCase: Sendable {
-    private let repository: MindsetRepository
+    private let repository: MindsetEntryRepository
 
-    public init(repository: MindsetRepository) {
+    public init(repository: MindsetEntryRepository) {
         self.repository = repository
     }
 
