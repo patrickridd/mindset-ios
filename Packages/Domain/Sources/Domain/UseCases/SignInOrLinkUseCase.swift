@@ -62,7 +62,7 @@ public struct SignInOrLinkUseCase: Sendable {
             uid = try await signInService.signIn(with: credential)
         }
 
-        var userProfile = try await ensureLocalProfileExists(uid: uid, credential: credential)
+        var userProfile = try await provisionUserProfile(uid: uid, credential: credential)
         if !userProfile.isAccountSecured && isLinkable {
             await persistIsAccountSecured(for: &userProfile)
         }
@@ -70,22 +70,32 @@ public struct SignInOrLinkUseCase: Sendable {
         return uid
     }
 
-    private func ensureLocalProfileExists(uid: String, credential: AuthCredential) async throws -> UserProfile {
-        if let existingUserProfile = try? await userRepository.fetchUserProfile() {
-            return existingUserProfile
+    private func provisionUserProfile(uid: String, credential: AuthCredential) async throws -> UserProfile {
+        // 1. Resolve the current state (Existing or New)
+        let existingProfile = try? await userRepository.fetchUserProfile()
+        
+        let profile: UserProfile
+        if let existing = existingProfile {
+            profile = existing
+            logger.log("👤 Provisioning: Existing profile found for \(uid)")
+        } else {
+            let now = Date()
+            profile = UserProfile(
+                id: uid,
+                createdAt: now,
+                lastUpdatedAt: now,
+                userName: "",
+                isAccountSecured: false,
+                isOnboardingComplete: false
+            )
+            logger.log("👤 Provisioning: Creating NEW profile for \(uid)")
         }
-        let dateCreated = Date()
-        let createUserProfile = UserProfile(
-            id: uid,
-            createdAt: dateCreated,
-            lastUpdatedAt: dateCreated,
-            userName: "",
-            isAccountSecured: false,
-            isOnboardingComplete: false
-        )
 
-        try await userRepository.saveUserProfile(createUserProfile)
-        return createUserProfile
+        // 2. The "Synchronize" Action
+        // This triggers the AppUserRepository's logic: Local Save + Background Remote Push
+        try await userRepository.saveUserProfile(profile)
+        
+        return profile
     }
 
     /// Helper method to set the current ``UserProfile``'s ``isAccountSecured`` property to `TRUE` and persist it in Repository
