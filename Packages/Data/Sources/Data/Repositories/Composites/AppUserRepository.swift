@@ -67,11 +67,21 @@ public final class AppUserRepository: UserRepository {
         var updatedProfile = profile
         updatedProfile.lastUpdatedAt = Date()
         
-        // 2. Save locally (SwiftData)
+        // 2. Save locally (SwiftData) - INSTANT
         try await localStore.saveUserProfile(updatedProfile)
         
-        // 3. Firebase handles the 'push' whenever connectivity is restored
-        try await remoteStore.uploadProfile(updatedProfile)
+        // 3. FIRE-AND-FORGET Remote Sync
+        // We wrap this in a Task so it doesn't 'await' the network response.
+        // Firebase SDK will internally queue this write even if the user is offline.
+        Task {
+            do {
+                try await remoteStore.uploadProfile(updatedProfile)
+                logger.log("☁️ Profile successfully queued/synced to Firestore")
+            } catch {
+                // We log it, but we DON'T throw, because the local save was successful.
+                logger.log("⚠️ Remote profile sync queued (Offline/Error): \(error.localizedDescription)")
+            }
+        }
     }
     
     public func isOnboardingComplete() async -> Bool {
