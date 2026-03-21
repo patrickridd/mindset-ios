@@ -81,4 +81,21 @@ public struct UserProfile: Sendable {
     mutating public func isAccount(secured: Bool) {
         self.isAccountSecured = secured
     }
+    
+    public static func anonymousUser(
+        id: String,
+        createdAt: Date = .init(),
+        lastUpdatedAt: Date = .init(),
+        userName: String = "",
+        isAccountSecured: Bool = false,
+        isOnboardingComplete: Bool = false
+    ) -> Self {
+        self.init(id: id,
+             createdAt: createdAt,
+             lastUpdatedAt: createdAt,
+             userName: userName,
+             isAccountSecured: isAccountSecured,
+             isOnboardingComplete: isOnboardingComplete
+        )
+    }
 }

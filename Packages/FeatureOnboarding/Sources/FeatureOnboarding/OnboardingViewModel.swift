@@ -132,8 +132,7 @@ public final class OnboardingViewModel {
         } else {
             // Else sign-in user anonymously and use that new id
             let userId = try await signInService.signIn(with: .anonymous)
-            let dateCreated = Date()
-            user = UserProfile(id: userId, createdAt: dateCreated, lastUpdatedAt: dateCreated, userName: "", isAccountSecured: false, isOnboardingComplete: isOnboardingComplete)
+            user = UserProfile.anonymousUser(id: userId)
         }
 
         user.update(with: getOnboardingData())
