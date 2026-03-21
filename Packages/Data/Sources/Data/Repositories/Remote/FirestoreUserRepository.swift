@@ -12,18 +12,35 @@ import FirebaseFirestore
 public final class FirestoreUserRepository: RemoteUserRepository {
     private let db = Firestore.firestore()
     private let collectionPath = "users"
-
-    public init() {}
+    private let logger: AppLogger
+    public init(logger: AppLogger) {
+        self.logger = logger
+    }
 
     public func fetchRemoteProfile(uid: String) async throws -> UserProfile? {
-        let snapshot = try await db.collection(collectionPath).document(uid).getDocument()
+
+        let docRef = db.collection(collectionPath).document(uid)
         
-        // If the document doesn't exist, this is a new user (or local-only)
-        guard snapshot.exists, let data = try? snapshot.data(as: UserProfileDTO.self) else {
+        do {
+            let snapshot = try await docRef.getDocument()
+            
+            // 1. Check if the document actually exists in Firestore
+            guard snapshot.exists else {
+                logger.log("☁️ Firestore: Document does not exist for UID: \(uid). Returning nil.")
+                return nil
+            }
+            
+            // 2. Try to decode the data
+            let dto = try snapshot.data(as: UserProfileDTO.self)
+            return dto.toDomain()
+            
+        } catch {
+            // 3. Handle the 'Permission Denied' or 'API Disabled' error gracefully
+            // We log it for debugging, but return nil so the AppUserRepository
+            // knows it needs to perform an upload.
+            logger.log("⚠️ Firestore Fetch suppressed error: \(error.localizedDescription)")
             return nil
         }
-        
-        return data.toDomain()
     }
 
     public func uploadProfile(_ profile: UserProfile) async throws {

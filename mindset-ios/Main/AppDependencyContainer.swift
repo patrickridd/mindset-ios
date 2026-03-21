@@ -33,6 +33,7 @@ final class AppDependencyContainer: ObservableObject {
     let viewFactory: AppViewFactory
     let container: ModelContainer
     let persistence: PersistenceService
+    let syncService: UserSyncService
 
     init() {
         // --- Logger ---
@@ -55,6 +56,12 @@ final class AppDependencyContainer: ObservableObject {
         self.mindsetRepository = serviceFactory.makeMindsetRepository(persistence: persistence, authStateQuery: authService)
         self.userRepository = serviceFactory.makeUserRepository(persistence: persistence, authStateQuery: authService, logger: logger)
 
+        self.syncService = UserSyncService(
+            userRepository: userRepository,
+            authService: authService,
+            logger: logger
+        )
+
         // --- Use Cases ---
         let getStreak = GetStreakUseCase(repository: mindsetRepository)
         let addMindset = AddMindsetUseCase(repository: mindsetRepository)
@@ -71,7 +78,8 @@ final class AppDependencyContainer: ObservableObject {
             authStateQuery: authService,
             subscriptionService: subService,
             mindsetRepository: mindsetRepository,
-            userRepository: userRepository
+            userRepository: userRepository,
+            syncService: syncService
         )
 
         let appleSignInNonceStorage = AppleSignInNonceStorage()

@@ -23,8 +23,6 @@ public final class FirestoreMindsetEntryRepository: RemoteMindsetEntryRepository
     }
 
     public func fetchEntries(userId: String) async throws -> [MindsetEntry] {
-        print("🔍 Fetching for UID: \(userId) | Auth UID: \(Auth.auth().currentUser?.uid ?? "N/A")")
-
         let snapshot = try await entriesRef(for: userId)
             .order(by: "dateCreated", descending: true)
             .getDocuments()

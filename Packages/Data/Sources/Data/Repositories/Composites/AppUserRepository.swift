@@ -8,12 +8,18 @@
 import Foundation
 import Domain
 
+@MainActor
 public final class AppUserRepository: UserRepository {
     private let localStore: UserRepository
     private let remoteStore: RemoteUserRepository
     private let authStateQuery: AuthStateQuery
     private let logger: AppLogger
     private let notificationCenter: NotificationCenter
+    private var syncTask: Task<Void, Never>?
+    
+    private var isSyncing: Bool {
+        syncTask != nil
+    }
     
     public init(local: UserRepository, remote: RemoteUserRepository, authStateQuery: AuthStateQuery, logger: AppLogger, notificationCenter: NotificationCenter = .default) {
         self.localStore = local
@@ -22,11 +28,19 @@ public final class AppUserRepository: UserRepository {
         self.logger = logger
         self.notificationCenter = notificationCenter
     }
-
+    
     public func fetchUserProfile() async throws -> UserProfile? {
         let localUser = try await localStore.fetchUserProfile()
         
-        Task {
+        // Only start a new sync if one isn't already running
+        if isSyncing {
+            return localUser
+        }
+
+        // Only start a new sync if one isn't already running
+        syncTask = Task {
+            defer { syncTask = nil } // Clear the task when done
+            
             guard let uid = await authStateQuery.getCurrentUserID() else {
                 logger.log("📵 Not signed in, skipping sync")
                 return
@@ -34,16 +48,18 @@ public final class AppUserRepository: UserRepository {
             do {
                 if let remoteUser = try await remoteStore.fetchRemoteProfile(uid: uid) {
                     await resolveSync(localUser: localUser, remoteUser: remoteUser)
+                } else if let localUser {
+                    logger.log("🛠 Sync: No remote found. Uploading local to create Firestore anchor...")
+                    try await remoteStore.uploadProfile(localUser)
                 }
             } catch {
                 logger.log("☁️ Sync failed: \(error.localizedDescription)")
             }
         }
-        
+
         return localUser
     }
 
-    @MainActor
     private func resolveSync(localUser: UserProfile?, remoteUser: UserProfile?) async {
         // 1. If we have a remote profile, compare and update
         if let remote = remoteUser {

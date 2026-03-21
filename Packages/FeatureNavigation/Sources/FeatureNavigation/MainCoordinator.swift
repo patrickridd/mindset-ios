@@ -61,6 +61,8 @@ public final class MainCoordinator {
     private let subscriptionService: SubscriptionService
     private let mindsetRepository: MindsetEntryRepository
     private let userProfileRepository: UserRepository
+    private let syncService: UserSyncService
+
     /// Manages the internal push stack of the Mindset modal
     public var mindsetPath = NavigationPath()
     /// Manages the internal push stack of the Profile tab
@@ -72,45 +74,46 @@ public final class MainCoordinator {
         authStateQuery: AuthStateQuery,
         subscriptionService: SubscriptionService,
         mindsetRepository: MindsetEntryRepository,
-        userRepository: UserRepository
+        userRepository: UserRepository,
+        syncService: UserSyncService
     ) {
         self.authStateQuery = authStateQuery
         self.subscriptionService = subscriptionService
         self.mindsetRepository = mindsetRepository
         self.userProfileRepository = userRepository
+        self.syncService = syncService
 
         // Initial check: Where should we start?
         Task { await evaluateInitialState() }
     }
 
     public func evaluateInitialState() async {
-        // Quiz First, Auth Last Strategy (Duolingo-style)
-
         // 1. Check if Onboarding is complete FIRST
         let isOboardingComplete: Bool = await userProfileRepository.isOnboardingComplete()
 
         if !isOboardingComplete {
-            // Show onboarding (quiz + content) regardless of auth status
             set(rootState: .onboarding)
             return
         }
 
-        // 2. Check if user's anonymous account has been linked
-        let isAuthenticated = await authStateQuery.isAuthenticated()
+        // 2. Auth Check
         let isAnonymousAccountLinked = await authStateQuery.isAnonymousAccountLinked()
         if !isAnonymousAccountLinked {
-            // Onboarding complete but not signed in yet → show auth
             set(rootState: .auth)
             return
         }
 
-        // 3. User is authenticated and onboarding complete → show mainTabView
+        // --- SYNC POINT A: Initial Launch ---
+        // User is authed and onboarding is done. Kick off the self-healing sync.
+        // We don't 'await' this because we want the UI to load mainTabView immediately.
+        Task { await syncService.syncUserOnLaunch() }
+
+        // 3. Setup UI
         refreshProfileTabTitle()
         set(rootState: .mainTabView)
 
-        // 4. Check subscription status and show paywall if needed
+        // 4. Paywall Check
         let isPro = await subscriptionService.checkSubscriptionStatus()
-
         if !isPro {
             set(fullScreenState: .paywall)
         }
@@ -119,6 +122,9 @@ public final class MainCoordinator {
     // Navigation Actions
 
     public func signInCompleted() {
+        // User just successfully logged in or linked their account.
+        Task { await syncService.syncUserOnLaunch() }
+
         refreshProfileTabTitle()
         set(tab: .dashboard)
         set(rootState: .mainTabView)
