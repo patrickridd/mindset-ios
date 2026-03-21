@@ -24,7 +24,7 @@ public final class AppUserRepository: UserRepository {
     }
 
     public func fetchUserProfile() async throws -> UserProfile? {
-        let local = try await localStore.fetchUserProfile()
+        let localUser = try await localStore.fetchUserProfile()
         
         Task {
             guard let uid = await authStateQuery.getCurrentUserID() else {
@@ -32,33 +32,40 @@ public final class AppUserRepository: UserRepository {
                 return
             }
             do {
-                if let remote = try await remoteStore.fetchRemoteProfile(uid: uid) {
-                    await resolveSync(local: local, remote: remote)
+                if let remoteUser = try await remoteStore.fetchRemoteProfile(uid: uid) {
+                    await resolveSync(localUser: localUser, remoteUser: remoteUser)
                 }
             } catch {
                 logger.log("☁️ Sync failed: \(error.localizedDescription)")
             }
         }
         
-        return local
+        return localUser
     }
 
     @MainActor
-    private func resolveSync(local: UserProfile?, remote: UserProfile) async {
-        guard let local = local else {
-            // New device: Bootstrap local from remote
-            try? await localStore.saveUserProfile(remote)
-            return
-        }
-        
-        if remote.lastUpdatedAt > local.lastUpdatedAt {
-            // Cloud is newer: Update local
-            try? await localStore.saveUserProfile(remote)
-            // 📢 Trigger that .databaseDidChange notification to refresh UI!
-            notificationCenter.post(name: .databaseDidChange, object: nil)
-        } else if local.lastUpdatedAt > remote.lastUpdatedAt {
-            // Local is newer: Push to cloud
-            try? await remoteStore.uploadProfile(local)
+    private func resolveSync(localUser: UserProfile?, remoteUser: UserProfile?) async {
+        // 1. If we have a remote profile, compare and update
+        if let remote = remoteUser {
+            if localUser == nil {
+                // New device bootstrap
+                try? await localStore.saveUserProfile(remote)
+                notificationCenter.post(name: .databaseDidChange, object: nil)
+            } else if remote.lastUpdatedAt > localUser!.lastUpdatedAt {
+                // Cloud is newer
+                try? await localStore.saveUserProfile(remote)
+                notificationCenter.post(name: .databaseDidChange, object: nil)
+            } else if localUser!.lastUpdatedAt > remote.lastUpdatedAt {
+                // Local is newer
+                try? await remoteStore.uploadProfile(localUser!)
+            }
+        } else {
+            // 2. If remote is NIL and local is NIL, we need to ensure
+            // that the 'Parent' document is created at least once.
+            if localUser == nil, let uid = await authStateQuery.getCurrentUserID() {
+                let placeholder = UserProfile.anonymousUser(id: uid)
+                try? await saveUserProfile(placeholder)
+            }
         }
     }
 
