@@ -13,4 +13,7 @@ public protocol RemoteUserRepository: Sendable {
     
     /// Uploads the local profile to remote profile.
     func uploadProfile(_ profile: UserProfile) async throws
+
+    /// Deletes Remote UserProfile that has the `uid`
+    func deleteRemoteProfile(uid: String) async throws
 }

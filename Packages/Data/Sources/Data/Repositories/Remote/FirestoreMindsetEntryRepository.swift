@@ -13,8 +13,11 @@ public final class FirestoreMindsetEntryRepository: RemoteMindsetEntryRepository
     private let db = Firestore.firestore()
     private let userSideCollection = "users"
     private let entrySubCollection = "entries"
+    private let logger: AppLogger
     
-    public init() {}
+    public init(logger: AppLogger) {
+        self.logger = logger
+    }
 
     private func entriesRef(for userId: String) -> CollectionReference {
         db.collection(userSideCollection)
@@ -38,5 +41,15 @@ public final class FirestoreMindsetEntryRepository: RemoteMindsetEntryRepository
         try entriesRef(for: entry.userId)
             .document(dto.id) // Using the UUID string as doc ID
             .setData(from: dto, merge: true)
+    }
+
+    public func deleteRemoteEntries(for uid: String) async throws {
+        let collectionRef = db.collection("users").document(uid).collection("entries")
+        let snapshot = try await collectionRef.getDocuments()
+        
+        for doc in snapshot.documents {
+            try await doc.reference.delete()
+        }
+        logger.log("🗑️ Remote entries purged for \(uid)")
     }
 }

@@ -52,4 +52,9 @@ public final class FirestoreUserRepository: RemoteUserRepository {
             .document(profile.id)
             .setData(from: dto, merge: true)
     }
+
+    public func deleteRemoteProfile(uid: String) async throws {
+        try await db.collection("users").document(uid).delete()
+        logger.log("🗑️ Remote profile anchor purged for \(uid)")
+    }
 }

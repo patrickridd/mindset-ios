@@ -11,4 +11,6 @@ public protocol RemoteMindsetEntryRepository: Sendable {
     func uploadEntry(_ entry: MindsetEntry) async throws
     /// Fetches the entries from backend using the user's authenticated UID.
     func fetchEntries(userId: String) async throws -> [MindsetEntry]
+    /// Deletes the backend entries that are associated the user's authenticated UID.
+    func deleteRemoteEntries(for uid: String) async throws
 }
