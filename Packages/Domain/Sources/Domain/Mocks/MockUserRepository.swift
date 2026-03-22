@@ -44,4 +44,8 @@ public final class MockUserRepository: UserRepository {
     public func saveUserProfile(_ profile: UserProfile) async throws {
         // No-op for mocks
     }
+
+    public func deleteProfile() async throws {
+        // No-op for mocks
+    }
 }

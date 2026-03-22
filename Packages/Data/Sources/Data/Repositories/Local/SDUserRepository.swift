@@ -23,6 +23,10 @@ public final class SDUserRepository: UserRepository {
         try await persistence.saveUserProfile(profile)
     }
 
+    public func deleteProfile() async throws {
+        try await persistence.deleteAllLocalUserData()
+    }
+
     public func isOnboardingComplete() async -> Bool {
         guard let user = try? await persistence.fetchUserProfile() else {
             return false

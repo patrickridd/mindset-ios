@@ -9,15 +9,23 @@ import Domain
 import FirebaseFirestore
 
 @MainActor
-public final class FirestoreUserRepository: RemoteUserRepository {
+public final class FirestoreUserRepository: UserRepository {
+
     private let db = Firestore.firestore()
     private let collectionPath = "users"
+    private let authStateQuery: AuthStateQuery
     private let logger: AppLogger
-    public init(logger: AppLogger) {
+
+    public init(authStateQuery: AuthStateQuery, logger: AppLogger) {
+        self.authStateQuery = authStateQuery
         self.logger = logger
     }
 
-    public func fetchRemoteProfile(uid: String) async throws -> UserProfile? {
+    public func fetchUserProfile() async throws -> UserProfile? {
+        guard let uid = await authStateQuery.getCurrentUserID() else {
+            logger.log("📵 User not logged in. Cannot fetch remote user profile. Returning nil.")
+            return nil
+        }
 
         let docRef = db.collection(collectionPath).document(uid)
         
@@ -43,7 +51,7 @@ public final class FirestoreUserRepository: RemoteUserRepository {
         }
     }
 
-    public func uploadProfile(_ profile: UserProfile) async throws {
+    public func saveUserProfile(_ profile: UserProfile) async throws {
         let dto = UserProfileDTO(from: profile)
         
         // Use setData with merge: true to avoid accidentally overwriting 
@@ -53,8 +61,17 @@ public final class FirestoreUserRepository: RemoteUserRepository {
             .setData(from: dto, merge: true)
     }
 
-    public func deleteRemoteProfile(uid: String) async throws {
-        try await db.collection("users").document(uid).delete()
+    public func deleteProfile() async throws {
+        guard let uid = await authStateQuery.getCurrentUserID() else {
+            logger.log("📵 User not logged in. Cannot delete remote user profile")
+            return
+        }
+
+        try await db.collection(collectionPath).document(uid).delete()
         logger.log("🗑️ Remote profile anchor purged for \(uid)")
+    }
+
+    public func isOnboardingComplete() async -> Bool {
+        (try? await fetchUserProfile()?.isOnboardingComplete) ?? false
     }
 }

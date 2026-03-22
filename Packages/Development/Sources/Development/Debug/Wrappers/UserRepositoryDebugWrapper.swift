@@ -37,4 +37,8 @@ public final class UserRepositoryDebugWrapper: UserRepository, @unchecked Sendab
             return await wrapped.isOnboardingComplete()
         }
     }
+
+    public func deleteProfile() async throws {
+        try await wrapped.deleteProfile()
+    }
 }

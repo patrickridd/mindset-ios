@@ -11,7 +11,7 @@ import Domain
 @MainActor
 public final class AppUserRepository: UserRepository {
     private let localStore: UserRepository
-    private let remoteStore: RemoteUserRepository
+    private let remoteStore: UserRepository
     private let authStateQuery: AuthStateQuery
     private let logger: AppLogger
     private let notificationCenter: NotificationCenter
@@ -21,7 +21,7 @@ public final class AppUserRepository: UserRepository {
         syncTask != nil
     }
     
-    public init(local: UserRepository, remote: RemoteUserRepository, authStateQuery: AuthStateQuery, logger: AppLogger, notificationCenter: NotificationCenter = .default) {
+    public init(local: UserRepository, remote: UserRepository, authStateQuery: AuthStateQuery, logger: AppLogger, notificationCenter: NotificationCenter = .default) {
         self.localStore = local
         self.remoteStore = remote
         self.authStateQuery = authStateQuery
@@ -46,11 +46,11 @@ public final class AppUserRepository: UserRepository {
                 return
             }
             do {
-                if let remoteUser = try await remoteStore.fetchRemoteProfile(uid: uid) {
+                if let remoteUser = try await remoteStore.fetchUserProfile() {
                     await resolveSync(localUser: localUser, remoteUser: remoteUser)
                 } else if let localUser {
                     logger.log("🛠 Sync: No remote found. Uploading local to create Firestore anchor...")
-                    try await remoteStore.uploadProfile(localUser)
+                    try await remoteStore.saveUserProfile(localUser)
                 }
             } catch {
                 logger.log("☁️ Sync failed: \(error.localizedDescription)")
@@ -73,7 +73,7 @@ public final class AppUserRepository: UserRepository {
                 notificationCenter.post(name: .databaseDidChange, object: nil)
             } else if localUser!.lastUpdatedAt > remote.lastUpdatedAt {
                 // Local is newer
-                try? await remoteStore.uploadProfile(localUser!)
+                try? await remoteStore.saveUserProfile(localUser!)
             }
         } else {
             // 2. If remote is NIL and local is NIL, we need to ensure
@@ -98,7 +98,7 @@ public final class AppUserRepository: UserRepository {
         // Firebase SDK will internally queue this write even if the user is offline.
         Task {
             do {
-                try await remoteStore.uploadProfile(updatedProfile)
+                try await remoteStore.saveUserProfile(updatedProfile)
                 logger.log("☁️ Profile successfully queued/synced to Firestore")
             } catch {
                 // We log it, but we DON'T throw, because the local save was successful.
@@ -106,7 +106,17 @@ public final class AppUserRepository: UserRepository {
             }
         }
     }
-    
+
+    public func deleteProfile() async throws {
+        // 1. Kill the cloud first (while we still have Auth tokens)
+        try await remoteStore.deleteProfile()
+        
+        // 2. Kill the local cache
+        try await localStore.deleteProfile()
+
+        logger.log("🗑️ AppUserRepository: Local and Remote profiles purged.")
+    }
+
     public func isOnboardingComplete() async -> Bool {
         await localStore.isOnboardingComplete()
     }

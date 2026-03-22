@@ -26,4 +26,8 @@ public final class MutableMockUserRepository: UserRepository {
     public func isOnboardingComplete() async -> Bool {
         profile?.isOnboardingComplete ?? false
     }
+
+    public func deleteProfile() async throws {
+        profile = nil
+    }
 }
