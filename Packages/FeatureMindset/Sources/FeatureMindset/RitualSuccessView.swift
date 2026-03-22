@@ -36,7 +36,7 @@ public struct RitualSuccessView: View {
                     .frame(
                         width: MindsetLayout.heroCircleSize, height: MindsetLayout.heroCircleSize)
 
-                Image(systemName: "figure.mindful")
+                Image(systemName: "figure.mind.and.body.circle")
                     .resizable()
                     .scaledToFit()
                     .frame(width: MindsetLayout.iconLarge)
@@ -107,5 +107,10 @@ public struct RitualSuccessView: View {
                 }
             }
         }
+    }
+}
+
+#Preview {
+    RitualSuccessView(archetype: "stoic", xpEarned: 300) {
     }
 }
