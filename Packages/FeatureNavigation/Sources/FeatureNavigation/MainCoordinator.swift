@@ -59,7 +59,7 @@ public final class MainCoordinator {
 
     private let authStateQuery: AuthStateQuery
     private let subscriptionService: SubscriptionService
-    private let mindsetRepository: MindsetEntryRepository
+    private let mindsetRepository: EntryRepository
     private let userProfileRepository: UserRepository
     private let syncService: UserSyncService
 
@@ -73,7 +73,7 @@ public final class MainCoordinator {
     public init(
         authStateQuery: AuthStateQuery,
         subscriptionService: SubscriptionService,
-        mindsetRepository: MindsetEntryRepository,
+        mindsetRepository: EntryRepository,
         userRepository: UserRepository,
         syncService: UserSyncService
     ) {

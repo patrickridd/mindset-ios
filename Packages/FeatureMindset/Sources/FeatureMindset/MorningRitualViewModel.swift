@@ -277,7 +277,7 @@ public final class MorningRitualViewModel {
             }
             // Create and Save the Parent MindsetEntry
             let dateCreated = Date()
-            let entry = MindsetEntry(
+            let entry = Entry(
                 userId: userId,
                 dateCreated: dateCreated,
                 promptResponses: currentResponses,

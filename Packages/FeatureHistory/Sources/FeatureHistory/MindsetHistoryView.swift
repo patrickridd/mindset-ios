@@ -37,7 +37,7 @@ public struct MindsetHistoryView: View {
         }
     }
 
-    private func historyRow(for entry: MindsetEntry) -> some View {
+    private func historyRow(for entry: Entry) -> some View {
         VStack(alignment: .leading, spacing: MindsetLayout.spacing12) {
             HStack {
                 Text(entry.dateCreated.formatted(date: .abbreviated, time: .omitted))

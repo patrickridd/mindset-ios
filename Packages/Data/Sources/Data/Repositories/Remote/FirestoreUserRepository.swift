@@ -12,7 +12,7 @@ import FirebaseFirestore
 public final class FirestoreUserRepository: UserRepository {
 
     private let db = Firestore.firestore()
-    private let collectionPath = "users"
+    private let usersCollectionPath = "users"
     private let authStateQuery: AuthStateQuery
     private let logger: AppLogger
 
@@ -27,7 +27,7 @@ public final class FirestoreUserRepository: UserRepository {
             return nil
         }
 
-        let docRef = db.collection(collectionPath).document(uid)
+        let docRef = db.collection(usersCollectionPath).document(uid)
         
         do {
             let snapshot = try await docRef.getDocument()
@@ -56,7 +56,7 @@ public final class FirestoreUserRepository: UserRepository {
         
         // Use setData with merge: true to avoid accidentally overwriting 
         // fields if you ever add server-side properties (like 'isPremium')
-        try db.collection(collectionPath)
+        try db.collection(usersCollectionPath)
             .document(profile.id)
             .setData(from: dto, merge: true)
     }
@@ -67,7 +67,7 @@ public final class FirestoreUserRepository: UserRepository {
             return
         }
 
-        try await db.collection(collectionPath).document(uid).delete()
+        try await db.collection(usersCollectionPath).document(uid).delete()
         logger.log("🗑️ Remote profile anchor purged for \(uid)")
     }
 

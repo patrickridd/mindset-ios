@@ -50,7 +50,7 @@ public final class SDPersistenceService: PersistenceService {
         return try modelContext.fetch(descriptor).first?.toDomain()
     }
     
-    public func saveEntry(_ entry: MindsetEntry) async throws {
+    public func saveEntry(_ entry: Entry) async throws {
         let entryId = entry.id
         let descriptor = FetchDescriptor<SDMindsetEntry>(
             predicate: #Predicate<SDMindsetEntry> { $0.id == entryId }
@@ -71,7 +71,7 @@ public final class SDPersistenceService: PersistenceService {
         notificationCenter.post(name: .databaseDidChange, object: nil)
     }
 
-    public func fetchAllMindsetEntries() async throws -> [Domain.MindsetEntry] {
+    public func fetchAllMindsetEntries() async throws -> [Domain.Entry] {
         let descriptor = FetchDescriptor<SDMindsetEntry>(sortBy: [
             SortDescriptor(\SDMindsetEntry.dateCreated, order: .reverse)
         ])

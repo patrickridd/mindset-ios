@@ -11,12 +11,12 @@ import Observation
 
 @Observable
 public final class MindsetHistoryViewModel {
-    private let repository: MindsetEntryRepository
+    private let repository: EntryRepository
     private let logger: AppLogger
-    public var entries: [MindsetEntry] = []
+    public var entries: [Entry] = []
     public var isLoading = false
 
-    public init(repository: MindsetEntryRepository, logger: AppLogger) {
+    public init(repository: EntryRepository, logger: AppLogger) {
         self.repository = repository
         self.logger = logger
     }

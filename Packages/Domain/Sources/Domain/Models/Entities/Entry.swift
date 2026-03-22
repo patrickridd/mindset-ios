@@ -1,5 +1,5 @@
 //
-//  MindsetEntry.swift
+//  Entry.swift
 //  Domain
 //
 //  Created by patrick ridd on 1/6/26.
@@ -9,13 +9,13 @@ import Foundation
 
 /// A core domain entity representing a single session of user reflection and AI interaction.
 ///
-/// `MindsetEntry` serves as the primary container for a user's daily mindset ritual.
+/// `Entry` serves as the primary container for a user's daily mindset ritual.
 /// It aggregates multiple ``PromptResponse`` objects and stores high-level metadata
 /// derived from AI analysis, such as the user's current archetype and emotional sentiment.
 ///
 /// This entity is ``Sendable`` and immutable by default, ensuring thread-safety
 /// across your synchronization and analysis pipelines.
-public struct MindsetEntry: Identifiable, Sendable {
+public struct Entry: Identifiable, Sendable {
     
     /// The unique identifier for this specific session.
     public let id: UUID
@@ -39,7 +39,7 @@ public struct MindsetEntry: Identifiable, Sendable {
     /// A numerical value (typically -1.0 to 1.0) representing the emotional tone of the entry.
     public var sentimentScore: Double?
 
-    /// Initializes a new MindsetEntry.
+    /// Initializes a new Entry.
     /// - Parameters:
     ///   - id: A unique identifier. Defaults to a new `UUID`.
     ///   - userId: The author's unique identifier.

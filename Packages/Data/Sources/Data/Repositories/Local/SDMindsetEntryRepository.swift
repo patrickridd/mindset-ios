@@ -10,22 +10,27 @@ import Foundation
 import SwiftData
 
 @MainActor
-public final class SDMindsetEntryRepository: MindsetEntryRepository {
+public final class SDMindsetEntryRepository: EntryRepository {
+    
     private let persistence: PersistenceService
 
     public init(persistence: PersistenceService) {
         self.persistence = persistence
     }
 
-    public func fetchLatestEntry() async throws -> MindsetEntry? {
+    public func fetchLatestEntry() async throws -> Entry? {
         try await persistence.fetchAllMindsetEntries().first
     }
 
-    public func fetchAllEntries() async throws -> [MindsetEntry] {
+    public func fetchAllEntries() async throws -> [Entry] {
         return try await persistence.fetchAllMindsetEntries()
     }
 
-    public func addEntry(_ entry: MindsetEntry) async throws {
+    public func save(entry: Entry) async throws {
         try await persistence.saveEntry(entry)
+    }
+
+    public func deleteAllEntries() async throws {
+        try await persistence.deleteAllLocalUserData()
     }
 }

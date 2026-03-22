@@ -13,7 +13,7 @@ import Observation
 public final class DashboardViewModel {
     // Dependencies
     private let userRepository: UserRepository
-    private let mindsetRepository: MindsetEntryRepository
+    private let mindsetRepository: EntryRepository
     private let getStreakUseCase: GetStreakUseCase
     private let getYesterdayGoalUseCase: GetYesterdayGoalUseCase
     private let logger: AppLogger
@@ -22,11 +22,11 @@ public final class DashboardViewModel {
     // UI State
     public var userProfile: UserProfile?
     public var yesterdayGoal: String?
-    public var recentEntries: [MindsetEntry] = []
+    public var recentEntries: [Entry] = []
     public var isLoading = false
     public var streakCount: Int = 0  // Initialized to 0, fetched from UseCase
     public var totalRituals: Int = 0  // New property for the stats grid
-    public var latestEntry: MindsetEntry?
+    public var latestEntry: Entry?
 
     /// Determine if we should display AccountSecurityCallout to remind our User to sign-in and link their anonymous account
     public var shouldDisplayLinkAccountSection: Bool {
@@ -46,7 +46,7 @@ public final class DashboardViewModel {
     
     public init(
         userRepository: UserRepository,
-        mindsetRepository: MindsetEntryRepository,
+        mindsetRepository: EntryRepository,
         getStreakUseCase: GetStreakUseCase,
         getYesterdayGoalUseCase: GetYesterdayGoalUseCase,
         logger: AppLogger,

@@ -235,7 +235,7 @@ extension SettingsView {
 private struct PreviewPersistenceService: PersistenceService {
     func saveUserProfile(_ profile: UserProfile) async throws {}
     func fetchUserProfile() async throws -> UserProfile? { nil }
-    func saveEntry(_ entry: MindsetEntry) async throws {}
-    func fetchAllMindsetEntries() async throws -> [MindsetEntry] { [] }
+    func saveEntry(_ entry: Entry) async throws {}
+    func fetchAllMindsetEntries() async throws -> [Entry] { [] }
     func deleteAllLocalUserData() async throws {}
 }

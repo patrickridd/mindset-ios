@@ -7,28 +7,28 @@
 
 import Domain
 
-public final class AppMindsetEntryRepository: MindsetEntryRepository {
-    private let local: MindsetEntryRepository
-    private let remote: RemoteMindsetEntryRepository
+public final class AppMindsetEntryRepository: EntryRepository {
+    private let local: EntryRepository
+    private let remote: EntryRepository
     private let authStateQuery: AuthStateQuery // To get the current UID
 
-    public init(local: MindsetEntryRepository, remote: RemoteMindsetEntryRepository, authStateQuery: AuthStateQuery) {
+    public init(local: EntryRepository, remote: EntryRepository, authStateQuery: AuthStateQuery) {
         self.local = local
         self.remote = remote
         self.authStateQuery = authStateQuery
     }
 
-    public func addEntry(_ entry: MindsetEntry) async throws {
+    public func save(entry: Entry) async throws {
         // 1. Instant UI: Save to SwiftData
-        try await local.addEntry(entry)
+        try await local.save(entry: entry)
         
         // 2. Background Sync: Push to Firebase
         Task {
-            try? await remote.uploadEntry(entry)
+            try? await remote.save(entry: entry)
         }
     }
 
-    public func fetchAllEntries() async throws -> [MindsetEntry] {
+    public func fetchAllEntries() async throws -> [Entry] {
         // 1. Return local immediately
         let localEntries = try await local.fetchAllEntries()
 
@@ -36,8 +36,8 @@ public final class AppMindsetEntryRepository: MindsetEntryRepository {
         // see if there's data from other devices
         if let uid = await authStateQuery.getCurrentUserID() {
             Task {
-                let remoteEntries = try? await remote.fetchEntries(userId: uid)
-                // Here you would run your 'Comparison/Sync' logic 
+                let remoteEntries = try? await remote.fetchAllEntries()
+                // Here you would run your 'Comparison/Sync' logic
                 // using lastUpdatedAt if needed
             }
         }
@@ -45,7 +45,13 @@ public final class AppMindsetEntryRepository: MindsetEntryRepository {
         return localEntries
     }
     
-    public func fetchLatestEntry() async throws -> MindsetEntry? {
+    public func fetchLatestEntry() async throws -> Entry? {
         try await local.fetchAllEntries().first
+    }
+
+    public func deleteAllEntries() async throws {
+        try await local.deleteAllEntries()
+        
+        
     }
 }

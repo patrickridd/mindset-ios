@@ -8,9 +8,9 @@
 import Domain
 import Foundation
 
-public final class MockMindsetRepository: MindsetEntryRepository, @unchecked Sendable {
+public final class MockMindsetRepository: EntryRepository, @unchecked Sendable {
 
-    public var mockEntries: [MindsetEntry] = []
+    public var mockEntries: [Entry] = []
 
     public init(days: Int) {
         let calendar = Calendar.current
@@ -18,7 +18,7 @@ public final class MockMindsetRepository: MindsetEntryRepository, @unchecked Sen
             let date = calendar.startOfDay(
                 for: calendar.date(byAdding: .day, value: -i, to: Date())!)
 
-            return MindsetEntry(
+            return Entry(
                 id: UUID(),
                 userId: UUID().uuidString,
                 dateCreated: date,
@@ -33,15 +33,19 @@ public final class MockMindsetRepository: MindsetEntryRepository, @unchecked Sen
         }
     }
 
-    public func fetchAllEntries() async throws -> [MindsetEntry] {
+    public func fetchAllEntries() async throws -> [Entry] {
         mockEntries
     }
 
-    public func addEntry(_ entry: MindsetEntry) async throws {
+    public func save(entry: Entry) async throws {
         mockEntries.append(entry)
     }
 
-    public func fetchLatestEntry() async throws -> Domain.MindsetEntry? {
+    public func fetchLatestEntry() async throws -> Domain.Entry? {
         mockEntries.last
+    }
+
+    public func deleteAllEntries() async throws {
+        mockEntries = []
     }
 }

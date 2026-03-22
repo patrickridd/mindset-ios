@@ -8,9 +8,9 @@
 import Foundation
 
 public struct GetYesterdayGoalUseCase: Sendable {
-    private let repository: MindsetEntryRepository
+    private let repository: EntryRepository
 
-    public init(repository: MindsetEntryRepository) {
+    public init(repository: EntryRepository) {
         self.repository = repository
     }
 

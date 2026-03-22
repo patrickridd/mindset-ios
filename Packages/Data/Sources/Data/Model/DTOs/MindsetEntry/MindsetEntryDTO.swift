@@ -18,7 +18,7 @@ public struct MindsetEntryDTO: Codable {
     public let archetypeTag: String?
     public let sentimentScore: Double?
 
-    public init(from domain: MindsetEntry) {
+    public init(from domain: Entry) {
         self.id = domain.id.uuidString
         self.userId = domain.userId
         self.dateCreated = domain.dateCreated
@@ -28,8 +28,8 @@ public struct MindsetEntryDTO: Codable {
         self.sentimentScore = domain.sentimentScore
     }
 
-    public func toDomain() -> MindsetEntry {
-        MindsetEntry(
+    public func toDomain() -> Entry {
+        Entry(
             id: UUID(uuidString: id) ?? UUID(),
             userId: userId,
             dateCreated: dateCreated,

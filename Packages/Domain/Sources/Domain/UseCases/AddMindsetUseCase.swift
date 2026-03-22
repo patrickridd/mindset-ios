@@ -6,13 +6,13 @@
 //
 
 public struct AddMindsetUseCase: Sendable {
-    private let repository: MindsetEntryRepository
+    private let repository: EntryRepository
 
-    public init(repository: MindsetEntryRepository) {
+    public init(repository: EntryRepository) {
         self.repository = repository
     }
 
-    public func execute(entry: MindsetEntry) async throws {
+    public func execute(entry: Entry) async throws {
         let totalCharacters = entry.promptResponses.reduce(0) { $0 + $1.userText.count }
 
         // Business Rule: Ensure the user actually wrote something in their responses
@@ -20,6 +20,6 @@ public struct AddMindsetUseCase: Sendable {
             throw DomainError.incompleteRitual
         }
 
-        try await repository.addEntry(entry)
+        try await repository.save(entry: entry)
     }
 }

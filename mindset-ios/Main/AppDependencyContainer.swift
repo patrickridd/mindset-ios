@@ -28,7 +28,7 @@ final class AppDependencyContainer: ObservableObject {
     let serviceFactory: ServiceFactory
     let authService: AuthService
     let userRepository: UserRepository
-    let mindsetRepository: MindsetEntryRepository
+    let mindsetRepository: EntryRepository
     let coordinator: MainCoordinator
     let viewFactory: AppViewFactory
     let container: ModelContainer

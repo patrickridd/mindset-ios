@@ -9,25 +9,33 @@ import Domain
 import FirebaseFirestore
 import FirebaseAuth
 @MainActor
-public final class FirestoreMindsetEntryRepository: RemoteMindsetEntryRepository {
+public final class FirestoreMindsetEntryRepository: EntryRepository {
     private let db = Firestore.firestore()
-    private let userSideCollection = "users"
+    private let usersCollection = "users"
     private let entrySubCollection = "entries"
+    private let dateCreatedKey = "dateCreated"
+    private let authStateQuery: AuthStateQuery
     private let logger: AppLogger
     
-    public init(logger: AppLogger) {
+    public init(authStateQuery: AuthStateQuery, logger: AppLogger) {
+        self.authStateQuery = authStateQuery
         self.logger = logger
     }
 
     private func entriesRef(for userId: String) -> CollectionReference {
-        db.collection(userSideCollection)
+        db.collection(usersCollection)
             .document(userId)
             .collection(entrySubCollection)
     }
 
-    public func fetchEntries(userId: String) async throws -> [MindsetEntry] {
+    public func fetchAllEntries() async throws -> [Entry] {
+        guard let userId = await authStateQuery.getCurrentUserID() else {
+            logger.log("📵 No user is signed in. Returning empty entries.")
+            return []
+        }
+
         let snapshot = try await entriesRef(for: userId)
-            .order(by: "dateCreated", descending: true)
+            .order(by: dateCreatedKey, descending: true)
             .getDocuments()
 
         return snapshot.documents.compactMap { doc in
@@ -35,7 +43,7 @@ public final class FirestoreMindsetEntryRepository: RemoteMindsetEntryRepository
         }
     }
 
-    public func uploadEntry(_ entry: MindsetEntry) async throws {
+    public func save(entry: Entry) async throws {
         let dto = MindsetEntryDTO(from: entry)
         
         try entriesRef(for: entry.userId)
@@ -44,12 +52,37 @@ public final class FirestoreMindsetEntryRepository: RemoteMindsetEntryRepository
     }
 
     public func deleteRemoteEntries(for uid: String) async throws {
-        let collectionRef = db.collection("users").document(uid).collection("entries")
+        let collectionRef = db.collection(usersCollection).document(uid).collection(entrySubCollection)
         let snapshot = try await collectionRef.getDocuments()
         
         for doc in snapshot.documents {
             try await doc.reference.delete()
         }
         logger.log("🗑️ Remote entries purged for \(uid)")
+    }
+
+    public func fetchLatestEntry() async throws -> Domain.Entry? {
+        (try? await fetchAllEntries().first) ?? nil
+    }
+    
+    public func deleteAllEntries() async throws {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            logger.log("📵 No user signed in, can't delete remote entries.")
+            return
+        }
+        
+        let entriesRef = db.collection(usersCollection).document(uid).collection(entrySubCollection)
+        
+        // 3. Fetch all entries
+        let snapshot = try await entriesRef.getDocuments()
+        
+        // 4. Batch delete (Atomically delete up to 500 docs)
+        let batch = db.batch()
+        for doc in snapshot.documents {
+            batch.deleteDocument(doc.reference)
+        }
+        
+        try await batch.commit()
+        logger.log("🗑️ Firestore: Sub-collection 'entries' purged for user \(uid)")
     }
 }

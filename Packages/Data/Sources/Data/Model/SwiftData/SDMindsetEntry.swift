@@ -66,8 +66,8 @@ public final class SDMindsetEntry {
     
     /// Converts the persistent storage model into a clean Domain entity.
     /// - Returns: A thread-safe ``MindsetEntry`` struct.
-    public func toDomain() -> MindsetEntry {
-        MindsetEntry(
+    public func toDomain() -> Entry {
+        Entry(
             id: id,
             userId: userId,
             dateCreated: dateCreated,
@@ -82,7 +82,7 @@ public final class SDMindsetEntry {
     /// Use this method primarily for the initial insertion of an entry into the database.
     /// - Parameter domainEntry: The ``MindsetEntry`` struct to convert.
     /// - Returns: A new ``SDMindsetEntry`` instance ready for insertion.
-    public static func fromDomain(_ domainEntry: MindsetEntry) -> SDMindsetEntry {
+    public static func fromDomain(_ domainEntry: Entry) -> SDMindsetEntry {
         let sdEntry = SDMindsetEntry(
             id: domainEntry.id,
             userId: domainEntry.userId,
@@ -117,7 +117,7 @@ extension SDMindsetEntry {
     /// - Parameters:
     ///   - domain: The updated ``MindsetEntry`` data.
     ///   - context: The `ModelContext` used to manage the lifecycle of child responses.
-    func update(from domain: MindsetEntry, in context: ModelContext) {
+    func update(from domain: Entry, in context: ModelContext) {
         self.userId = domain.userId
         self.dateCreated = domain.dateCreated
         self.archetypeTag = domain.archetypeTag
