@@ -8,6 +8,7 @@
 import Domain
 import FirebaseFirestore
 import FirebaseAuth
+
 @MainActor
 public final class FirestoreEntryRepository: EntryRepository {
     private let db = Firestore.firestore()
@@ -44,45 +45,67 @@ public final class FirestoreEntryRepository: EntryRepository {
     }
 
     public func save(entry: Entry) async throws {
+        // Ensure we are saving to the CURRENT user's path,
+        // regardless of what the entry object says (Security first)
+        guard let userId = await authStateQuery.getCurrentUserID() else {
+            logger.log("📵 Cannot save remote entry: No authenticated user.")
+            return
+        }
+
         let dto = EntryDTO(from: entry)
         
-        try entriesRef(for: entry.userId)
+        try entriesRef(for: userId)
             .document(dto.id) // Using the UUID string as doc ID
             .setData(from: dto, merge: true)
     }
 
-    public func deleteRemoteEntries(for uid: String) async throws {
-        let collectionRef = db.collection(usersCollection).document(uid).collection(entrySubCollection)
-        let snapshot = try await collectionRef.getDocuments()
+    public func fetchLatestEntry() async throws -> Domain.Entry? {
+        guard let userId = await authStateQuery.getCurrentUserID() else { return nil }
         
-        for doc in snapshot.documents {
-            try await doc.reference.delete()
-        }
-        logger.log("🗑️ Remote entries purged for \(uid)")
+        let snapshot = try await entriesRef(for: userId)
+            .order(by: dateCreatedKey, descending: true)
+            .limit(to: 1) // Only download 1 document
+            .getDocuments()
+        
+        return try snapshot.documents.first?.data(as: EntryDTO.self).toDomain()
     }
 
-    public func fetchLatestEntry() async throws -> Domain.Entry? {
-        (try? await fetchAllEntries().first) ?? nil
+    public func deleteAllEntries() async throws {
+        guard let uid = await authStateQuery.getCurrentUserID() else { return }
+        try await deleteRemoteEntries(for: uid)
     }
     
-    public func deleteAllEntries() async throws {
-        guard let uid = Auth.auth().currentUser?.uid else {
-            logger.log("📵 No user signed in, can't delete remote entries.")
+    private func deleteRemoteEntries(for uid: String) async throws {
+        let ref = entriesRef(for: uid)
+        
+        // 1. Fetch all documents in the sub-collection
+        // Note: iOS SDK downloads the full doc, but this is required for client-side batching
+        let snapshot = try await ref.getDocuments()
+        let documents = snapshot.documents
+        
+        guard !documents.isEmpty else {
+            logger.log("ℹ️ No remote entries to delete.")
             return
         }
-        
-        let entriesRef = db.collection(usersCollection).document(uid).collection(entrySubCollection)
-        
-        // 3. Fetch all entries
-        let snapshot = try await entriesRef.getDocuments()
-        
-        // 4. Batch delete (Atomically delete up to 500 docs)
-        let batch = db.batch()
-        for doc in snapshot.documents {
-            batch.deleteDocument(doc.reference)
+
+        logger.log("🗑️ Preparing to delete \(documents.count) entries in batches...")
+
+        // 2. Chunk the documents into groups of 500 to stay under the limit
+        let strideSize = 500
+        for i in stride(from: 0, to: documents.count, by: strideSize) {
+            let endIndex = min(i + strideSize, documents.count)
+            let chunk = documents[i..<endIndex]
+            
+            let batch = db.batch()
+            for doc in chunk {
+                batch.deleteDocument(doc.reference)
+            }
+            
+            // 3. Commit this specific batch
+            try await batch.commit()
+            logger.log("🧹 Batch complete: Deleted docs \(i + 1) through \(endIndex)")
         }
         
-        try await batch.commit()
-        logger.log("🗑️ Firestore: Sub-collection 'entries' purged for user \(uid)")
+        logger.log("✅ All remote entries purged successfully.")
     }
 }

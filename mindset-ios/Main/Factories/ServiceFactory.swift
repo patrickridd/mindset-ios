@@ -96,7 +96,7 @@ struct ServiceFactory {
         if config.useRealServices {
             let local = SDEntryRepository(persistence: persistence)
             let remote = FirestoreEntryRepository(authStateQuery: authStateQuery, logger: logger)
-            return AppEntryRepository(local: local, remote: remote, authStateQuery: authStateQuery)
+            return AppEntryRepository(local: local, remote: remote, authStateQuery: authStateQuery, logger: logger)
         } else {
             return MockMindsetRepository(days: 11)
         }
