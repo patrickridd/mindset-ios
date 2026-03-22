@@ -49,7 +49,7 @@ final class AppDependencyContainer: ObservableObject {
         // --- Persistence ---
         // Using try! is okay here since this is the Composition Root
         // and we want to know immediately if the DB schema is broken.
-        self.container = try! ModelContainer(for: SDUserProfile.self, SDMindsetEntry.self)
+        self.container = try! ModelContainer(for: SDUserProfile.self, SDEntry.self)
         self.persistence = SDPersistenceService(modelContext: container.mainContext, logger: logger)
 
         // --- Repositories ---
@@ -64,7 +64,7 @@ final class AppDependencyContainer: ObservableObject {
 
         // --- Use Cases ---
         let getStreak = GetStreakUseCase(repository: mindsetRepository)
-        let addMindset = AddMindsetUseCase(repository: mindsetRepository)
+        let addMindset = AddEntryUseCase(repository: mindsetRepository)
         let getYesterday = GetYesterdayGoalUseCase(repository: mindsetRepository)
 
         let signInOrLinkUseCase = SignInOrLinkUseCase(
@@ -91,7 +91,7 @@ final class AppDependencyContainer: ObservableObject {
             userRepository: userRepository,
             mindsetRepository: mindsetRepository,
             getStreakUseCase: getStreak,
-            addMindsetUseCase: addMindset,
+            addEntryUseCase: addMindset,
             getYesterdayGoalUseCase: getYesterday,
             subscriptionService: subService,
             serviceFactory: serviceFactory,

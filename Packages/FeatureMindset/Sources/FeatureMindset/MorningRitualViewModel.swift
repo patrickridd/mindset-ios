@@ -15,7 +15,7 @@ import SharedLocalization
 public final class MorningRitualViewModel {
     // Dependencies
     private let getStreakUseCase: GetStreakUseCase
-    private let addMindsetUseCase: AddMindsetUseCase
+    private let addEntryUseCase: AddEntryUseCase
     private let userRepository: UserRepository
     private let subscriptionService: SubscriptionService
     private let promptEngine = PromptEngine()
@@ -76,7 +76,7 @@ public final class MorningRitualViewModel {
 
     public init(
         userRepository: UserRepository,
-        addMindsetUseCase: AddMindsetUseCase,
+        addEntryUseCase: AddEntryUseCase,
         subscriptionService: SubscriptionService,
         getStreakUseCase: GetStreakUseCase,
         aiService: AIAnalysisService,
@@ -85,7 +85,7 @@ public final class MorningRitualViewModel {
         onDismiss: (() -> Void)? = nil
     ) {
         self.userRepository = userRepository
-        self.addMindsetUseCase = addMindsetUseCase
+        self.addEntryUseCase = addEntryUseCase
         self.subscriptionService = subscriptionService
         self.getStreakUseCase = getStreakUseCase
         self.aiService = aiService
@@ -200,7 +200,7 @@ public final class MorningRitualViewModel {
         } else {
             isRitualComplete = true
             Task {
-                try? await saveMindsetEntry()
+                try? await saveEntry()
             }
         }
     }
@@ -245,10 +245,10 @@ public final class MorningRitualViewModel {
 
     // MARK: - Completion
 
-    public func saveMindsetEntry() async throws {
+    public func saveEntry() async throws {
         do {
             guard let userId = try await userRepository.fetchUserProfile()?.id else {
-                logger.log("🚨 userId not found, aborting saveMindsetEntry")
+                logger.log("🚨 userId not found, aborting saveEntry")
                 return
             }
 
@@ -275,7 +275,7 @@ public final class MorningRitualViewModel {
             if let primaryCategory = categoryCounts.max(by: { $0.value < $1.value })?.key {
                 self.generatedArchetype = "The \(primaryCategory.displayName)"
             }
-            // Create and Save the Parent MindsetEntry
+            // Create and Save the Parent Entry
             let dateCreated = Date()
             let entry = Entry(
                 userId: userId,
@@ -286,7 +286,7 @@ public final class MorningRitualViewModel {
             )
             
             //  Save the entry to the database
-            try await addMindsetUseCase.execute(entry: entry)
+            try await addEntryUseCase.execute(entry: entry)
             
             // This ensures the streak is mathematically correct, even if they skipped a day.
             let updatedStreak = try await getStreakUseCase.execute()

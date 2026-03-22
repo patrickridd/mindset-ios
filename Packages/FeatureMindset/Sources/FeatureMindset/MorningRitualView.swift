@@ -512,7 +512,7 @@ private extension MorningRitualView {
     MorningRitualView(
         viewModel: MorningRitualViewModel(
             userRepository: Domain.MockUserRepository(),
-            addMindsetUseCase: AddMindsetUseCase(
+            addEntryUseCase: AddEntryUseCase(
                 repository: Domain.MockMindsetRepository(days: 7)
             ),
             subscriptionService: Domain.MockSubscriptionService(),

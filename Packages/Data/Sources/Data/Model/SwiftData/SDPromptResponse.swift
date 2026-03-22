@@ -18,7 +18,7 @@ public final class SDPromptResponse {
     public var aiReflection: String?
 
     // Relationship back to the parent
-    public var entry: SDMindsetEntry?
+    public var entry: SDEntry?
 
     public init(
         id: UUID = UUID(),
@@ -44,7 +44,7 @@ public final class SDPromptResponse {
         )
     }
 
-    public static func fromDomain(_ domain: PromptResponse, with entry: SDMindsetEntry)
+    public static func fromDomain(_ domain: PromptResponse, with entry: SDEntry)
         -> SDPromptResponse
     {
         let response = SDPromptResponse(

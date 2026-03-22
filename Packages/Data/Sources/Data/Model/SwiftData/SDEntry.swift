@@ -1,5 +1,5 @@
 //
-//  SDMindsetEntry.swift
+//  SDEntry.swift
 //  Data
 //
 //  Created by patrick ridd on 1/9/26.
@@ -19,7 +19,7 @@ import SwiftData
 /// It maintains a parent-child relationship with ``SDPromptResponse`` and includes
 /// metadata for cloud synchronization and AI-driven analysis.
 @Model
-public final class SDMindsetEntry {
+public final class SDEntry {
     /// A unique identifier for the entry, shared between local and remote databases.
     @Attribute(.unique) public var id: UUID
     
@@ -65,7 +65,7 @@ public final class SDMindsetEntry {
     }
     
     /// Converts the persistent storage model into a clean Domain entity.
-    /// - Returns: A thread-safe ``MindsetEntry`` struct.
+    /// - Returns: A thread-safe ``Entry`` struct.
     public func toDomain() -> Entry {
         Entry(
             id: id,
@@ -80,10 +80,10 @@ public final class SDMindsetEntry {
     /// Creates a new persistent storage model from a Domain entity.
     ///
     /// Use this method primarily for the initial insertion of an entry into the database.
-    /// - Parameter domainEntry: The ``MindsetEntry`` struct to convert.
-    /// - Returns: A new ``SDMindsetEntry`` instance ready for insertion.
-    public static func fromDomain(_ domainEntry: Entry) -> SDMindsetEntry {
-        let sdEntry = SDMindsetEntry(
+    /// - Parameter domainEntry: The ``Entry`` struct to convert.
+    /// - Returns: A new ``SDEntry`` instance ready for insertion.
+    public static func fromDomain(_ domainEntry: Entry) -> SDEntry {
+        let sdEntry = SDEntry(
             id: domainEntry.id,
             userId: domainEntry.userId,
             dateCreated: domainEntry.dateCreated,
@@ -107,7 +107,7 @@ public final class SDMindsetEntry {
     }
 }
 
-extension SDMindsetEntry {
+extension SDEntry {
     /// Updates the existing persistent instance with new data from the Domain.
     ///
     /// This method performs a manual reconciliation of the `responses` relationship.
@@ -115,7 +115,7 @@ extension SDMindsetEntry {
     /// to prevent "orphan" records in the persistent store.
     ///
     /// - Parameters:
-    ///   - domain: The updated ``MindsetEntry`` data.
+    ///   - domain: The updated ``Entry`` data.
     ///   - context: The `ModelContext` used to manage the lifecycle of child responses.
     func update(from domain: Entry, in context: ModelContext) {
         self.userId = domain.userId

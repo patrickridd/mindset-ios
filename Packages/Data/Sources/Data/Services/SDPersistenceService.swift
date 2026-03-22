@@ -52,19 +52,19 @@ public final class SDPersistenceService: PersistenceService {
     
     public func saveEntry(_ entry: Entry) async throws {
         let entryId = entry.id
-        let descriptor = FetchDescriptor<SDMindsetEntry>(
-            predicate: #Predicate<SDMindsetEntry> { $0.id == entryId }
+        let descriptor = FetchDescriptor<SDEntry>(
+            predicate: #Predicate<SDEntry> { $0.id == entryId }
         )
         
         if let existingEntry = try modelContext.fetch(descriptor).first {
             // Update the existing tracked object
             existingEntry.update(from: entry, in: modelContext)
-            logger.log("✅ Updated `SDMindsetEntry`")
+            logger.log("✅ Updated `SDEntry`")
         } else {
             // Create new
-            let newSD = SDMindsetEntry.fromDomain(entry)
+            let newSD = SDEntry.fromDomain(entry)
             modelContext.insert(newSD)
-            logger.log("✅ Created/Saved `SDMindsetEntry`")
+            logger.log("✅ Created/Saved `SDEntry`")
         }
         
         try modelContext.save()
@@ -72,8 +72,8 @@ public final class SDPersistenceService: PersistenceService {
     }
 
     public func fetchAllMindsetEntries() async throws -> [Domain.Entry] {
-        let descriptor = FetchDescriptor<SDMindsetEntry>(sortBy: [
-            SortDescriptor(\SDMindsetEntry.dateCreated, order: .reverse)
+        let descriptor = FetchDescriptor<SDEntry>(sortBy: [
+            SortDescriptor(\SDEntry.dateCreated, order: .reverse)
         ])
         let dbEntries = try modelContext.fetch(descriptor)
         return dbEntries.map { $0.toDomain() }
@@ -84,7 +84,7 @@ public final class SDPersistenceService: PersistenceService {
         
         // Efficient bulk deletion
         try modelContext.delete(model: SDUserProfile.self)
-        try modelContext.delete(model: SDMindsetEntry.self)
+        try modelContext.delete(model: SDEntry.self)
         
         // Save the context to finalize the wipe
         try modelContext.save()

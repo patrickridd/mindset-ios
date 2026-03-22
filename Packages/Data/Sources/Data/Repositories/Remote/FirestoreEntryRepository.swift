@@ -9,7 +9,7 @@ import Domain
 import FirebaseFirestore
 import FirebaseAuth
 @MainActor
-public final class FirestoreMindsetEntryRepository: EntryRepository {
+public final class FirestoreEntryRepository: EntryRepository {
     private let db = Firestore.firestore()
     private let usersCollection = "users"
     private let entrySubCollection = "entries"
@@ -39,12 +39,12 @@ public final class FirestoreMindsetEntryRepository: EntryRepository {
             .getDocuments()
 
         return snapshot.documents.compactMap { doc in
-            try? doc.data(as: MindsetEntryDTO.self).toDomain()
+            try? doc.data(as: EntryDTO.self).toDomain()
         }
     }
 
     public func save(entry: Entry) async throws {
-        let dto = MindsetEntryDTO(from: entry)
+        let dto = EntryDTO(from: entry)
         
         try entriesRef(for: entry.userId)
             .document(dto.id) // Using the UUID string as doc ID

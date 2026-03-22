@@ -1,5 +1,5 @@
 //
-//  SwiftDataMindsetRepository.swift
+//  SDEntryRepository.swift
 //  Data
 //
 //  Created by patrick ridd on 1/6/26.
@@ -10,7 +10,7 @@ import Foundation
 import SwiftData
 
 @MainActor
-public final class SDMindsetEntryRepository: EntryRepository {
+public final class SDEntryRepository: EntryRepository {
     
     private let persistence: PersistenceService
 

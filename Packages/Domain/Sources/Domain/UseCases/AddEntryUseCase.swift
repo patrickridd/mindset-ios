@@ -1,11 +1,11 @@
 //
-//  AddMindsetUseCase.swift
+//  AddEntryUseCase.swift
 //  Domain
 //
 //  Created by patrick ridd on 1/6/26.
 //
 
-public struct AddMindsetUseCase: Sendable {
+public struct AddEntryUseCase: Sendable {
     private let repository: EntryRepository
 
     public init(repository: EntryRepository) {

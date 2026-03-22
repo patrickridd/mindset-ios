@@ -1,5 +1,5 @@
 //
-//  AppMindsetEntryRepository.swift
+//  AppEntryRepository.swift
 //  Data
 //
 //  Created by patrick ridd on 3/19/26.
@@ -7,7 +7,7 @@
 
 import Domain
 
-public final class AppMindsetEntryRepository: EntryRepository {
+public final class AppEntryRepository: EntryRepository {
     private let local: EntryRepository
     private let remote: EntryRepository
     private let authStateQuery: AuthStateQuery // To get the current UID

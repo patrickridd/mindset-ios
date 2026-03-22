@@ -44,7 +44,7 @@ struct AppViewFactory: MainViewFactory {
     let userRepository: UserRepository
     let mindsetRepository: EntryRepository
     let getStreakUseCase: GetStreakUseCase
-    let addMindsetUseCase: AddMindsetUseCase
+    let addEntryUseCase: AddEntryUseCase
     let getYesterdayGoalUseCase: GetYesterdayGoalUseCase
     let subscriptionService: SubscriptionService
     let serviceFactory: ServiceFactory
@@ -263,7 +263,7 @@ struct AppViewFactory: MainViewFactory {
         let aiService = serviceFactory.makeAIService()
         let viewModel = MorningRitualViewModel(
             userRepository: userRepository,
-            addMindsetUseCase: addMindsetUseCase,
+            addEntryUseCase: addEntryUseCase,
             subscriptionService: subscriptionService,
             getStreakUseCase: getStreakUseCase,
             aiService: aiService,

@@ -79,7 +79,7 @@ public struct GetStreakUseCase: Sendable {
     private let repository: EntryRepository
     
     /// Creates a new GetStreakUseCase.
-    /// - Parameter repository: The repository used to fetch ``MindsetEntry`` history.
+    /// - Parameter repository: The repository used to fetch ``Entry`` history.
     public init(repository: EntryRepository) {
         self.repository = repository
     }
