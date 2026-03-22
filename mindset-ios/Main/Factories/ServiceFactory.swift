@@ -8,6 +8,7 @@
 import Data
 import Development
 import Domain
+import SwiftData
 import SharedUtils
 
 /// Configuration for which services to use (real vs mock)
@@ -51,7 +52,7 @@ struct ServiceFactory {
         }
     }
 
-    func makeGoogleSignInCredentialProvider(logger: AppLogger) -> GoogleSignInCredentialProvider {
+    func makeGoogleSignInCredentialProvider() -> GoogleSignInCredentialProvider {
         if config.useRealServices {
             return GoogleSignInCredentialProviderImpl(logger: logger)
         } else {
@@ -59,7 +60,7 @@ struct ServiceFactory {
         }
     }
 
-    func makePhoneVerificationProvider(logger: AppLogger) -> PhoneVerificationProvider {
+    func makePhoneVerificationProvider() -> PhoneVerificationProvider {
         if config.useRealServices {
             return PhoneVerificationProviderImpl(logger: logger)
         } else {
@@ -92,9 +93,9 @@ struct ServiceFactory {
     
     // MARK: - Repository Creation
     
-    func makeMindsetRepository(persistence: any PersistenceService, authStateQuery: AuthStateQuery) -> EntryRepository {
+    func makeEntryRepository(modelContext: ModelContext, authStateQuery: AuthStateQuery) -> EntryRepository {
         if config.useRealServices {
-            let local = SDEntryRepository(persistence: persistence)
+            let local = SDEntryRepository(modelContext: modelContext, logger: logger)
             let remote = FirestoreEntryRepository(authStateQuery: authStateQuery, logger: logger)
             return AppEntryRepository(local: local, remote: remote, authStateQuery: authStateQuery, logger: logger)
         } else {
@@ -102,10 +103,10 @@ struct ServiceFactory {
         }
     }
     
-    func makeUserRepository(persistence: any PersistenceService, authStateQuery: AuthStateQuery, logger: AppLogger) -> UserRepository {
+    func makeUserRepository(modelContext: ModelContext, authStateQuery: AuthStateQuery) -> UserRepository {
         let base: any UserRepository
         if config.useRealServices {
-            let local = SDUserRepository(persistence: persistence)
+            let local = SDUserRepository(modelContext: modelContext, logger: logger)
             let remote = FirestoreUserRepository(authStateQuery: authStateQuery, logger: logger)
             base = AppUserRepository(local: local, remote: remote, authStateQuery: authStateQuery, logger:  logger)
         } else {

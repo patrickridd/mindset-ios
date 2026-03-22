@@ -45,6 +45,7 @@ struct AppViewFactory: MainViewFactory {
     let mindsetRepository: EntryRepository
     let getStreakUseCase: GetStreakUseCase
     let addEntryUseCase: AddEntryUseCase
+    let deleteAccountUseCase: DeleteAccountUseCase
     let getYesterdayGoalUseCase: GetYesterdayGoalUseCase
     let subscriptionService: SubscriptionService
     let serviceFactory: ServiceFactory
@@ -68,9 +69,8 @@ struct AppViewFactory: MainViewFactory {
         let signInViewModel = SignInViewModel(
             signInOrLinkUseCase: signInOrLinkUseCase,
             appleSignInCredentialBuilder: appleSignInCredentialBuilder,
-            googleSignInCredentialProvider: serviceFactory.makeGoogleSignInCredentialProvider(
-                logger: logger),
-            phoneVerificationProvider: serviceFactory.makePhoneVerificationProvider(logger: logger),
+            googleSignInCredentialProvider: serviceFactory.makeGoogleSignInCredentialProvider(),
+            phoneVerificationProvider: serviceFactory.makePhoneVerificationProvider(),
             logger: logger,
             onPhoneSignInButtonTapped: {
                 coordinator.signInPath.append(SignInDestination.phoneSignIn)
@@ -183,9 +183,8 @@ struct AppViewFactory: MainViewFactory {
         let signInViewModel = SignInViewModel(
             signInOrLinkUseCase: signInOrLinkUseCase,
             appleSignInCredentialBuilder: appleSignInCredentialBuilder,
-            googleSignInCredentialProvider: serviceFactory.makeGoogleSignInCredentialProvider(
-                logger: logger),
-            phoneVerificationProvider: serviceFactory.makePhoneVerificationProvider(logger: logger),
+            googleSignInCredentialProvider: serviceFactory.makeGoogleSignInCredentialProvider(),
+            phoneVerificationProvider: serviceFactory.makePhoneVerificationProvider(),
             logger: logger,
             embedInNavigationStack: false,
             onPhoneSignInButtonTapped: {
@@ -238,6 +237,7 @@ struct AppViewFactory: MainViewFactory {
             authStateQuery: authService,
             persistence: persistence,
             appleSignInNonceStorage: appleSignInNonceStorage,
+            deleteAccountUseCase: deleteAccountUseCase,
             onSignOut: {
                 coordinator.signOutCompleted()
             },

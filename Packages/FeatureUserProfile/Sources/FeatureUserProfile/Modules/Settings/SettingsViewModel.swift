@@ -14,8 +14,8 @@ import SharedUtils
 public final class SettingsViewModel {
     public var isSigningOut = false
     public var isDeletingAccount = false
-    var activeSheet: SettingsSheet?
 
+    var activeSheet: SettingsSheet?
     var errorTitle = FeatureUserProfileStrings.SignOut.errorTitle
     var errorMessage: String?
 
@@ -23,6 +23,7 @@ public final class SettingsViewModel {
     private let authStateQuery: AuthStateQuery
     private let persistence: PersistenceService
     private let appleSignInNonceStorage: AppleSignInNonceStorageProtocol
+    private let deleteAccountUseCase: DeleteAccountUseCase
     private let onSignOut: () -> Void
     private let onDeleteAccount: () -> Void
     private let onNavigateToPrivacyPolicy: () -> Void
@@ -33,6 +34,7 @@ public final class SettingsViewModel {
         authStateQuery: AuthStateQuery,
         persistence: PersistenceService,
         appleSignInNonceStorage: AppleSignInNonceStorageProtocol,
+        deleteAccountUseCase: DeleteAccountUseCase,
         onSignOut: @escaping () -> Void,
         onDeleteAccount: @escaping () -> Void,
         onNavigateToPrivacyPolicy: @escaping () -> Void,
@@ -42,6 +44,7 @@ public final class SettingsViewModel {
         self.authStateQuery = authStateQuery
         self.persistence = persistence
         self.appleSignInNonceStorage = appleSignInNonceStorage
+        self.deleteAccountUseCase = deleteAccountUseCase
         self.onSignOut = onSignOut
         self.onDeleteAccount = onDeleteAccount
         self.onNavigateToPrivacyPolicy = onNavigateToPrivacyPolicy
@@ -148,17 +151,15 @@ public final class SettingsViewModel {
         dismissConfirmationSheet()
     }
 
-    public func deleteAccount() async {
+    public func deleteAccountConfirmed() async {
         guard !isBusy else { return }
 
         isDeletingAccount = true
         dismissConfirmationSheet()
 
         do {
-            try await authSessionManagement.deleteCurrentUser()
-            try await persistence.deleteAllLocalUserData()
-
             appleSignInNonceStorage.clearSessionData()
+            try await deleteAccountUseCase.execute()
 
             isDeletingAccount = false
             onDeleteAccount()

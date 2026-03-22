@@ -6,31 +6,53 @@
 //
 
 import Domain
+import Foundation
+import SwiftData
 
+@MainActor
 public final class SDUserRepository: UserRepository {
 
-    private let persistence: PersistenceService
+    private let modelContext: ModelContext
+    private let logger: AppLogger
+    private let notificationCenter: NotificationCenter
 
-    public init(persistence: PersistenceService) {
-        self.persistence = persistence
+    public init(modelContext: ModelContext, logger: AppLogger, notificationCenter: NotificationCenter = .default) {
+        self.modelContext = modelContext
+        self.logger = logger
+        self.notificationCenter = notificationCenter
     }
 
     public func fetchUserProfile() async throws -> UserProfile? {
-        return try await persistence.fetchUserProfile()
+        let descriptor = FetchDescriptor<SDUserProfile>()
+        return try modelContext.fetch(descriptor).first?.toDomain()
     }
 
     public func saveUserProfile(_ profile: UserProfile) async throws {
-        try await persistence.saveUserProfile(profile)
+        let userId = profile.id
+        let descriptor = FetchDescriptor<SDUserProfile>(
+            predicate: #Predicate<SDUserProfile> { $0.id == userId }
+        )
+        
+        // Check if the object already exists in the database
+        if let existingUser = try modelContext.fetch(descriptor).first {
+            logger.log("👤 Updating **Existing** `SDUserProfile`")
+            existingUser.update(from: profile)
+        } else {
+            let newUser = SDUserProfile.fromDomain(profile)
+            logger.log("👤 Creating **NEW** `SDUserProfile`")
+            
+            modelContext.insert(newUser)
+        }
+        
+        try modelContext.save()
     }
 
     public func deleteProfile() async throws {
-        try await persistence.deleteAllLocalUserData()
+        try modelContext.delete(model: SDUserProfile.self)
+        try modelContext.save()
     }
 
     public func isOnboardingComplete() async -> Bool {
-        guard let user = try? await persistence.fetchUserProfile() else {
-            return false
-        }
-        return user.isOnboardingComplete
+        (try? await fetchUserProfile()?.isOnboardingComplete) ?? false
     }
 }

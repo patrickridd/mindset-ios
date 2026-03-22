@@ -12,25 +12,51 @@ import SwiftData
 @MainActor
 public final class SDEntryRepository: EntryRepository {
     
-    private let persistence: PersistenceService
+    private let modelContext: ModelContext
+    private let logger: AppLogger
+    private let notificationCenter: NotificationCenter
 
-    public init(persistence: PersistenceService) {
-        self.persistence = persistence
-    }
-
-    public func fetchLatestEntry() async throws -> Entry? {
-        try await persistence.fetchAllMindsetEntries().first
+    public init(modelContext: ModelContext, logger: AppLogger, notificationCenter: NotificationCenter = .default) {
+        self.modelContext = modelContext
+        self.logger = logger
+        self.notificationCenter = notificationCenter
     }
 
     public func fetchAllEntries() async throws -> [Entry] {
-        return try await persistence.fetchAllMindsetEntries()
+        let descriptor = FetchDescriptor<SDEntry>(sortBy: [
+            SortDescriptor(\SDEntry.dateCreated, order: .reverse)
+        ])
+        let dbEntries = try modelContext.fetch(descriptor)
+        return dbEntries.map { $0.toDomain() }
+    }
+
+    public func fetchLatestEntry() async throws -> Entry? {
+        try await fetchAllEntries().first
     }
 
     public func save(entry: Entry) async throws {
-        try await persistence.saveEntry(entry)
+        let entryId = entry.id
+        let descriptor = FetchDescriptor<SDEntry>(
+            predicate: #Predicate<SDEntry> { $0.id == entryId }
+        )
+        
+        if let existingEntry = try modelContext.fetch(descriptor).first {
+            // Update the existing tracked object
+            existingEntry.update(from: entry, in: modelContext)
+            logger.log("✅ Updated `SDEntry`")
+        } else {
+            // Create new
+            let newSD = SDEntry.fromDomain(entry)
+            modelContext.insert(newSD)
+            logger.log("✅ Created/Saved `SDEntry`")
+        }
+        
+        try modelContext.save()
+        notificationCenter.post(name: .databaseDidChange, object: nil)
     }
 
     public func deleteAllEntries() async throws {
-        try await persistence.deleteAllLocalUserData()
+        try modelContext.delete(model: SDEntry.self)
+        try modelContext.save()
     }
 }

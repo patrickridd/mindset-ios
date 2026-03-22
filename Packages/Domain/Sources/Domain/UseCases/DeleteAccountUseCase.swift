@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 public struct DeleteAccountUseCase {
     private let authService: AuthService
     private let userRepository: UserRepository

@@ -53,8 +53,8 @@ final class AppDependencyContainer: ObservableObject {
         self.persistence = SDPersistenceService(modelContext: container.mainContext, logger: logger)
 
         // --- Repositories ---
-        self.mindsetRepository = serviceFactory.makeMindsetRepository(persistence: persistence, authStateQuery: authService)
-        self.userRepository = serviceFactory.makeUserRepository(persistence: persistence, authStateQuery: authService, logger: logger)
+        self.mindsetRepository = serviceFactory.makeEntryRepository(modelContext: container.mainContext, authStateQuery: authService)
+        self.userRepository = serviceFactory.makeUserRepository(modelContext: container.mainContext, authStateQuery: authService)
 
         self.syncService = UserSyncService(
             userRepository: userRepository,
@@ -66,7 +66,8 @@ final class AppDependencyContainer: ObservableObject {
         let getStreak = GetStreakUseCase(repository: mindsetRepository)
         let addMindset = AddEntryUseCase(repository: mindsetRepository)
         let getYesterday = GetYesterdayGoalUseCase(repository: mindsetRepository)
-
+        let deleteAccountUseCase = DeleteAccountUseCase(authService: authService, userRepository: userRepository, entryRepository: mindsetRepository, logger: logger)
+        
         let signInOrLinkUseCase = SignInOrLinkUseCase(
             authService: authService,
             userRepository: userRepository,
@@ -92,6 +93,7 @@ final class AppDependencyContainer: ObservableObject {
             mindsetRepository: mindsetRepository,
             getStreakUseCase: getStreak,
             addEntryUseCase: addMindset,
+            deleteAccountUseCase: deleteAccountUseCase,
             getYesterdayGoalUseCase: getYesterday,
             subscriptionService: subService,
             serviceFactory: serviceFactory,

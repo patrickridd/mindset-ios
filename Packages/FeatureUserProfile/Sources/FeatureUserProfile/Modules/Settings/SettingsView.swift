@@ -68,7 +68,7 @@ public struct SettingsView: View {
     }
 
     private func confirmAndDeleteAccount() {
-        Task { await viewModel.deleteAccount() }
+        Task { await viewModel.deleteAccountConfirmed() }
     }
 
     private func privacyPolicyTapped() {
@@ -204,12 +204,14 @@ extension SettingsView {
 
 #Preview("Securely Linked Account") {
     let mockAuth = MockAuthService(isAnonymousAccountLinked: true)
-    return SettingsView(
+    let deleteAccountUseCase = DeleteAccountUseCase(authService: mockAuth, userRepository: MockUserRepository(), entryRepository: MockMindsetRepository(days: 1999), logger: DebugLogger.shared)
+    SettingsView(
         viewModel: SettingsViewModel(
             authSessionManagement: mockAuth,
             authStateQuery: mockAuth,
             persistence: PreviewPersistenceService(),
             appleSignInNonceStorage: AppleSignInNonceStorage(),
+            deleteAccountUseCase: deleteAccountUseCase,
             onSignOut: {},
             onDeleteAccount: {},
             onNavigateToPrivacyPolicy: {}
@@ -219,12 +221,14 @@ extension SettingsView {
 
 #Preview("Anonymous Account") {
     let mockAuth = MockAuthService(isAnonymousAccountLinked: false)
-    return SettingsView(
+    let deleteAccountUseCase = DeleteAccountUseCase(authService: mockAuth, userRepository: MockUserRepository(), entryRepository: MockMindsetRepository(days: 2), logger: DebugLogger.shared)
+    SettingsView(
         viewModel: SettingsViewModel(
             authSessionManagement: mockAuth,
             authStateQuery: mockAuth,
             persistence: PreviewPersistenceService(),
             appleSignInNonceStorage: AppleSignInNonceStorage(),
+            deleteAccountUseCase: deleteAccountUseCase,
             onSignOut: {},
             onDeleteAccount: {},
             onNavigateToPrivacyPolicy: {}
