@@ -21,7 +21,6 @@ public final class SettingsViewModel {
 
     private let authSessionManagement: AuthSessionManagement
     private let authStateQuery: AuthStateQuery
-    private let persistence: PersistenceService
     private let deleteAccountUseCase: DeleteAccountUseCase
     private let signOutUseCase: SignOutUseCase
     private let onSignOut: () -> Void
@@ -32,7 +31,6 @@ public final class SettingsViewModel {
     public init(
         authSessionManagement: AuthSessionManagement,
         authStateQuery: AuthStateQuery,
-        persistence: PersistenceService,
         deleteAccountUseCase: DeleteAccountUseCase,
         signOutUseCase: SignOutUseCase,
         onSignOut: @escaping () -> Void,
@@ -42,7 +40,6 @@ public final class SettingsViewModel {
     ) {
         self.authSessionManagement = authSessionManagement
         self.authStateQuery = authStateQuery
-        self.persistence = persistence
         self.deleteAccountUseCase = deleteAccountUseCase
         self.signOutUseCase = signOutUseCase
         self.onSignOut = onSignOut

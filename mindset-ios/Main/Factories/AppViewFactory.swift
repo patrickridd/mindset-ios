@@ -50,7 +50,6 @@ struct AppViewFactory: MainViewFactory {
     let getYesterdayGoalUseCase: GetYesterdayGoalUseCase
     let subscriptionService: SubscriptionService
     let serviceFactory: ServiceFactory
-    let persistence: PersistenceService
     let logger: AppLogger
     let appleSignInNonceStorage: AppleSignInNonceStorageProtocol
 
@@ -236,7 +235,6 @@ struct AppViewFactory: MainViewFactory {
         let viewModel = SettingsViewModel(
             authSessionManagement: authService,
             authStateQuery: authService,
-            persistence: persistence,
             deleteAccountUseCase: deleteAccountUseCase, signOutUseCase: signOutUseCase,
             onSignOut: {
                 coordinator.signOutCompleted()

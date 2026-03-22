@@ -213,7 +213,6 @@ extension SettingsView {
         viewModel: SettingsViewModel(
             authSessionManagement: mockAuth,
             authStateQuery: mockAuth,
-            persistence: PreviewPersistenceService(),
             deleteAccountUseCase: deleteAccountUseCase,
             signOutUseCase: signOutUseCase,
             onSignOut: {},
@@ -234,7 +233,6 @@ extension SettingsView {
         viewModel: SettingsViewModel(
             authSessionManagement: mockAuth,
             authStateQuery: mockAuth,
-            persistence: PreviewPersistenceService(),
             deleteAccountUseCase: deleteAccountUseCase,
             signOutUseCase: signOutUseCase,
             onSignOut: {},
@@ -242,12 +240,4 @@ extension SettingsView {
             onNavigateToPrivacyPolicy: {}
         )
     )
-}
-
-private struct PreviewPersistenceService: PersistenceService {
-    func saveUserProfile(_ profile: UserProfile) async throws {}
-    func fetchUserProfile() async throws -> UserProfile? { nil }
-    func saveEntry(_ entry: Entry) async throws {}
-    func fetchAllMindsetEntries() async throws -> [Entry] { [] }
-    func deleteAllLocalUserData() async throws {}
 }

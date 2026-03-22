@@ -47,8 +47,8 @@ struct MindsetApp: App {
         // Wipe the data using the current (active) container
         Task {
             do {
-                try await dependencyContainer.persistence.deleteAllLocalUserData()
-                
+                try await dependencyContainer.signOutUseCase.execute()
+
                 // Once data is gone, reset the UI identity on the Main Actor
                 await MainActor.run {
                     withAnimation(.easeInOut(duration: 0.5)) {

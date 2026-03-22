@@ -32,8 +32,8 @@ final class AppDependencyContainer: ObservableObject {
     let coordinator: MainCoordinator
     let viewFactory: AppViewFactory
     let container: ModelContainer
-    let persistence: PersistenceService
     let syncService: UserSyncService
+    let signOutUseCase: SignOutUseCase
 
     init() {
         // --- Logger ---
@@ -50,7 +50,6 @@ final class AppDependencyContainer: ObservableObject {
         // Using try! is okay here since this is the Composition Root
         // and we want to know immediately if the DB schema is broken.
         self.container = try! ModelContainer(for: SDUserProfile.self, SDEntry.self)
-        self.persistence = SDPersistenceService(modelContext: container.mainContext, logger: logger)
 
         // --- Repositories ---
         self.mindsetRepository = serviceFactory.makeEntryRepository(modelContext: container.mainContext, authStateQuery: authService)
@@ -63,7 +62,11 @@ final class AppDependencyContainer: ObservableObject {
         )
     
         let appleSignInNonceStorage = AppleSignInNonceStorage()
-
+        let localDataCleaners: [LocalDataCleaner] = [
+            SDUserRepository(modelContext: container.mainContext, logger: logger),
+            SDEntryRepository(modelContext: container.mainContext, logger: logger)
+        ]
+            
         // --- Use Cases ---
         let getStreak = GetStreakUseCase(repository: mindsetRepository)
         let addMindset = AddEntryUseCase(repository: mindsetRepository)
@@ -76,10 +79,9 @@ final class AppDependencyContainer: ObservableObject {
             logger: logger
         )
 
-        let signOutUseCase = SignOutUseCase(
+        self.signOutUseCase = SignOutUseCase(
             authService: authService,
-            cleaners: [SDUserRepository(modelContext: container.mainContext, logger: logger),
-                       SDEntryRepository(modelContext: container.mainContext, logger: logger)],
+            cleaners: localDataCleaners,
             clearNonce: appleSignInNonceStorage.clearSessionData,
             logger: logger
         )
@@ -112,7 +114,6 @@ final class AppDependencyContainer: ObservableObject {
             getYesterdayGoalUseCase: getYesterday,
             subscriptionService: subService,
             serviceFactory: serviceFactory,
-            persistence: persistence,
             logger: logger,
             appleSignInNonceStorage: appleSignInNonceStorage
         )
