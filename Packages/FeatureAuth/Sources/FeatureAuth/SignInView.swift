@@ -163,10 +163,6 @@ private extension SignInView {
                 icon: "phone.circle.fill",
                 iconColor: .green,
                 title: FeatureAuthStrings.signInWithPhone,
-                isLoading: Binding(
-                    get: { viewModel.isLoading },
-                    set: { viewModel.isLoading = $0 }
-                ),
                 action: {
                     viewModel.onPhoneSignInButtonTapped()
                 }
