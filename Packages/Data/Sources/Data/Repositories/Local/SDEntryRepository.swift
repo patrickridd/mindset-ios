@@ -60,3 +60,9 @@ public final class SDEntryRepository: EntryRepository {
         try modelContext.save()
     }
 }
+
+extension SDEntryRepository: LocalDataCleaner {
+    public func purgeLocalCache() async throws {
+        try await deleteAllEntries()
+    }
+}

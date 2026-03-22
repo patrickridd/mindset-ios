@@ -119,18 +119,7 @@ struct ServiceFactory {
         #endif
     }
 
-    // MARK: - Use Case Creation
-    
-    func makeSignOutUseCase(modelContext: ModelContext, authService: AuthService, clearNonceStorageSessionData: @escaping () -> Void) -> SignOutUseCase {
-        let localUserRepository = SDUserRepository(modelContext: modelContext, logger: logger)
-        let localEntryRepository = SDEntryRepository(modelContext: modelContext, logger: logger)
-        
-        return SignOutUseCase(
-            authService: authService,
-            userRepository: localUserRepository,
-            entryRepository: localEntryRepository,
-            clearNonceStorageSessionData: clearNonceStorageSessionData,
-            logger: logger
-        )
+    func makeLocalDataCleaners(modelContext: ModelContext) -> [LocalDataCleaner] {
+        [SDUserRepository(modelContext: modelContext, logger: logger), SDEntryRepository(modelContext: modelContext, logger: logger)]
     }
 }

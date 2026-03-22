@@ -56,3 +56,9 @@ public final class SDUserRepository: UserRepository {
         (try? await fetchUserProfile()?.isOnboardingComplete) ?? false
     }
 }
+
+extension SDUserRepository: LocalDataCleaner {
+    public func purgeLocalCache() async throws {
+        try await deleteProfile()
+    }
+}

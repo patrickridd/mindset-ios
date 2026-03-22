@@ -206,8 +206,8 @@ extension SettingsView {
     let mockAuth = MockAuthService(isAnonymousAccountLinked: true)
     let mockMindsetRepository = MockMindsetRepository(days: 1999)
     let mockUserRepository = MockUserRepository()
-    let deleteAccountUseCase = DeleteAccountUseCase(authService: mockAuth, userRepository: mockUserRepository, entryRepository: mockMindsetRepository, clearNonceStorageSessionData: {}, logger: DebugLogger.shared)
-    let signOutUseCase = SignOutUseCase(authService: mockAuth, userRepository: mockUserRepository, entryRepository: mockMindsetRepository, clearNonceStorageSessionData: {}, logger: DebugLogger.shared)
+    let deleteAccountUseCase = DeleteAccountUseCase(authService: mockAuth, userRepository: mockUserRepository, entryRepository: mockMindsetRepository, clearNonce: {}, logger: DebugLogger.shared)
+    let signOutUseCase = SignOutUseCase(authService: mockAuth, cleaners: [], clearNonce: {}, logger: DebugLogger.shared)
     
     SettingsView(
         viewModel: SettingsViewModel(
@@ -227,8 +227,8 @@ extension SettingsView {
     let mockAuth = MockAuthService(isAnonymousAccountLinked: false)
     let mockMindsetRepository = MockMindsetRepository(days: 2)
     let mockUserRepository = MockUserRepository()
-    let deleteAccountUseCase = DeleteAccountUseCase(authService: mockAuth, userRepository: mockUserRepository, entryRepository: mockMindsetRepository, clearNonceStorageSessionData: {}, logger: DebugLogger.shared)
-    let signOutUseCase = SignOutUseCase(authService: mockAuth, userRepository: mockUserRepository, entryRepository: mockMindsetRepository, clearNonceStorageSessionData: {}, logger: DebugLogger.shared)
+    let deleteAccountUseCase = DeleteAccountUseCase(authService: mockAuth, userRepository: mockUserRepository, entryRepository: mockMindsetRepository, clearNonce: {}, logger: DebugLogger.shared)
+    let signOutUseCase = SignOutUseCase(authService: mockAuth, cleaners: [], clearNonce: {}, logger: DebugLogger.shared)
 
     SettingsView(
         viewModel: SettingsViewModel(

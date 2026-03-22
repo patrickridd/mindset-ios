@@ -12,7 +12,7 @@ public struct DeleteAccountUseCase {
     private let authService: AuthService
     private let userRepository: UserRepository
     private let entryRepository: EntryRepository
-    private let clearNonceStorageSessionData: () -> Void
+    private let clearNonce: () -> Void
     private let logger: AppLogger
     private let notificationCenter: NotificationCenter
 
@@ -20,14 +20,14 @@ public struct DeleteAccountUseCase {
         authService: AuthService,
         userRepository: UserRepository,
         entryRepository: EntryRepository,
-        clearNonceStorageSessionData: @escaping () -> Void,
+        clearNonce: @escaping () -> Void,
         logger: AppLogger,
         notificationCenter: NotificationCenter = .default
     ) {
         self.authService = authService
         self.userRepository = userRepository
         self.entryRepository = entryRepository
-        self.clearNonceStorageSessionData = clearNonceStorageSessionData
+        self.clearNonce = clearNonce
         self.logger = logger
         self.notificationCenter = notificationCenter
     }
@@ -38,7 +38,7 @@ public struct DeleteAccountUseCase {
         try await userRepository.deleteProfile()
         try await authService.deleteCurrentUser()
 
-        clearNonceStorageSessionData()
+        clearNonce()
         
         logger.log("👤 Account fully purged from Earth and Cloud.")
         notificationCenter.post(name: .databaseDidChange, object: nil)

@@ -68,8 +68,21 @@ final class AppDependencyContainer: ObservableObject {
         let getStreak = GetStreakUseCase(repository: mindsetRepository)
         let addMindset = AddEntryUseCase(repository: mindsetRepository)
         let getYesterday = GetYesterdayGoalUseCase(repository: mindsetRepository)
-        let deleteAccountUseCase = DeleteAccountUseCase(authService: authService, userRepository: userRepository, entryRepository: mindsetRepository, clearNonceStorageSessionData: appleSignInNonceStorage.clearSessionData, logger: logger)
-        let signOutUseCase = serviceFactory.makeSignOutUseCase(modelContext: container.mainContext, authService: authService, clearNonceStorageSessionData: appleSignInNonceStorage.clearSessionData)
+
+        let deleteAccountUseCase = DeleteAccountUseCase(
+            authService: authService, userRepository: userRepository,
+            entryRepository: mindsetRepository,
+            clearNonce: appleSignInNonceStorage.clearSessionData,
+            logger: logger
+        )
+
+        let signOutUseCase = SignOutUseCase(
+            authService: authService,
+            cleaners: [SDUserRepository(modelContext: container.mainContext, logger: logger),
+                       SDEntryRepository(modelContext: container.mainContext, logger: logger)],
+            clearNonce: appleSignInNonceStorage.clearSessionData,
+            logger: logger
+        )
 
         let signInOrLinkUseCase = SignInOrLinkUseCase(
             authService: authService,
