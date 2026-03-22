@@ -41,17 +41,25 @@ public final class AppUserRepository: UserRepository {
         syncTask = Task {
             defer { syncTask = nil } // Clear the task when done
             
+            // Check for cancellation before starting network work
+            if Task.isCancelled { return }
+            
             guard let uid = await authStateQuery.getCurrentUserID() else {
                 logger.log("📵 Not signed in, skipping sync")
                 return
             }
             do {
                 if let remoteUser = try await remoteStore.fetchUserProfile() {
+                    // Check again before we write to local store
+                    try Task.checkCancellation()
                     await resolveSync(localUser: localUser, remoteUser: remoteUser)
                 } else if let localUser {
+                    try Task.checkCancellation()
                     logger.log("🛠 Sync: No remote found. Uploading local to create Firestore anchor...")
                     try await remoteStore.saveUserProfile(localUser)
                 }
+            } catch is CancellationError {
+                logger.log("Sync cancelled: User initiated a newer save.")
             } catch {
                 logger.log("☁️ Sync failed: \(error.localizedDescription)")
             }
@@ -86,14 +94,19 @@ public final class AppUserRepository: UserRepository {
     }
 
     public func saveUserProfile(_ profile: UserProfile) async throws {
-        // 1. Update the timestamp locally
+        // Cancel any background 'Sync' that might be trying to pull
+        // older data from the cloud while we are trying to save NEW data.
+        syncTask?.cancel()
+        syncTask = nil
+        
+        // Update the timestamp locally
         var updatedProfile = profile
         updatedProfile.lastUpdatedAt = Date()
         
-        // 2. Save locally (SwiftData) - INSTANT
+        // Save locally (SwiftData) - INSTANT
         try await localStore.saveUserProfile(updatedProfile)
         
-        // 3. FIRE-AND-FORGET Remote Sync
+        // FIRE-AND-FORGET Remote Sync
         // We wrap this in a Task so it doesn't 'await' the network response.
         // Firebase SDK will internally queue this write even if the user is offline.
         Task {
