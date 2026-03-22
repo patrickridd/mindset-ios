@@ -31,16 +31,11 @@ public struct RitualSuccessView: View {
 
             // 1. Hero Icon
             ZStack {
-                Circle()
-                    .fill(MindsetColors.accentOrangeSoft)
-                    .frame(
-                        width: MindsetLayout.heroCircleSize, height: MindsetLayout.heroCircleSize)
-
-                Image(systemName: "figure.mind.and.body.circle")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: MindsetLayout.iconLarge)
-                    .foregroundStyle(MindsetColors.accentOrange)
+                MindsetIconView(
+                    icon: "figure.mind.and.body.circle",
+                    color: MindsetColors.accentOrange,
+                    sizeRatio: 5
+                )
             }
 
             // 2. Archetype Reveal

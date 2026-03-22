@@ -126,7 +126,7 @@ private extension PhoneSignInView {
     @ViewBuilder
     var titleSection: some View {
         HStack(alignment: .top, spacing: MindsetLayout.spacing8) {
-            MindsetIconButton(icon: phoneViewModel.step.icon, color: .green, sizeRatio: 0.75)
+            MindsetIconView(icon: phoneViewModel.step.icon, color: .green, sizeRatio: 0.75)
             Text(phoneViewModel.step.title)
                 .font(MindsetFonts.displayHeadline)
                 .foregroundStyle(MindsetColors.textPrimaryDark)

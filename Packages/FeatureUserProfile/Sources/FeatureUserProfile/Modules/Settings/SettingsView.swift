@@ -131,7 +131,7 @@ extension SettingsView {
             viewModel.presentConfirmSignOut()
         } label: {
             HStack(spacing: MindsetLayout.spacing12) {
-                MindsetIconButton(
+                MindsetIconView(
                     icon: "rectangle.portrait.and.arrow.right",
                     color: MindsetColors.accentCoral,
                     iconSize: 20,
@@ -155,7 +155,7 @@ extension SettingsView {
             viewModel.presentDeleteAccountConfirmation()
         } label: {
             HStack(spacing: MindsetLayout.spacing12) {
-                MindsetIconButton(
+                MindsetIconView(
                     icon: "trash",
                     color: MindsetColors.accentDestructiveRed,
                     iconSize: 20

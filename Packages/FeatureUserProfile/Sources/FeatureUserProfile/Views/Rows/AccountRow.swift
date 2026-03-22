@@ -18,7 +18,7 @@ struct AccountRow: View {
 
     var body: some View {
         HStack(spacing: MindsetLayout.spacing16) {
-            MindsetIconButton(icon: icon, color: color)
+            MindsetIconView(icon: icon, color: color)
             labelStack
             Spacer()
         }

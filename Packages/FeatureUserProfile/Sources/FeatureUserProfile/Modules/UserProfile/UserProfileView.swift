@@ -50,7 +50,7 @@ extension UserProfileView {
 
     private var profileHeader: some View {
         VStack(spacing: MindsetLayout.spacing16) {
-            MindsetIconButton(
+            MindsetIconView(
                 icon: "person.crop.circle.fill",
                 color: MindsetColors.accentOrange,
                 circleSize: MindsetLayout.avatarSize,

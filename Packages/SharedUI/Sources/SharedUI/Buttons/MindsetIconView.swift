@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public struct MindsetIconButton: View {
+public struct MindsetIconView: View {
 
     let icon: String
     let color: Color
@@ -57,7 +57,7 @@ public struct MindsetIconButton: View {
 
 
 #Preview("Delete") {
-    MindsetIconButton(
+    MindsetIconView(
         icon: "trash",
         color: MindsetColors.accentDestructiveRed,
         iconSize: 20
@@ -65,7 +65,7 @@ public struct MindsetIconButton: View {
 }
 
 #Preview("Sign Out") {
-    MindsetIconButton(
+    MindsetIconView(
         icon: "rectangle.portrait.and.arrow.forward",
         color: MindsetColors.accentOrange,
         iconSize: 20,
