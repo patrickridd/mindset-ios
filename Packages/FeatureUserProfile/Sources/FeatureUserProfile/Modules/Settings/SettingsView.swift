@@ -64,7 +64,7 @@ public struct SettingsView: View {
     }
 
     private func confirmAndSignOut() {
-        Task { await viewModel.signOut() }
+        Task { await viewModel.signOutConfirmed() }
     }
 
     private func confirmAndDeleteAccount() {
@@ -204,14 +204,18 @@ extension SettingsView {
 
 #Preview("Securely Linked Account") {
     let mockAuth = MockAuthService(isAnonymousAccountLinked: true)
-    let deleteAccountUseCase = DeleteAccountUseCase(authService: mockAuth, userRepository: MockUserRepository(), entryRepository: MockMindsetRepository(days: 1999), logger: DebugLogger.shared)
+    let mockMindsetRepository = MockMindsetRepository(days: 1999)
+    let mockUserRepository = MockUserRepository()
+    let deleteAccountUseCase = DeleteAccountUseCase(authService: mockAuth, userRepository: mockUserRepository, entryRepository: mockMindsetRepository, clearNonceStorageSessionData: {}, logger: DebugLogger.shared)
+    let signOutUseCase = SignOutUseCase(authService: mockAuth, userRepository: mockUserRepository, entryRepository: mockMindsetRepository, clearNonceStorageSessionData: {}, logger: DebugLogger.shared)
+    
     SettingsView(
         viewModel: SettingsViewModel(
             authSessionManagement: mockAuth,
             authStateQuery: mockAuth,
             persistence: PreviewPersistenceService(),
-            appleSignInNonceStorage: AppleSignInNonceStorage(),
             deleteAccountUseCase: deleteAccountUseCase,
+            signOutUseCase: signOutUseCase,
             onSignOut: {},
             onDeleteAccount: {},
             onNavigateToPrivacyPolicy: {}
@@ -221,14 +225,18 @@ extension SettingsView {
 
 #Preview("Anonymous Account") {
     let mockAuth = MockAuthService(isAnonymousAccountLinked: false)
-    let deleteAccountUseCase = DeleteAccountUseCase(authService: mockAuth, userRepository: MockUserRepository(), entryRepository: MockMindsetRepository(days: 2), logger: DebugLogger.shared)
+    let mockMindsetRepository = MockMindsetRepository(days: 2)
+    let mockUserRepository = MockUserRepository()
+    let deleteAccountUseCase = DeleteAccountUseCase(authService: mockAuth, userRepository: mockUserRepository, entryRepository: mockMindsetRepository, clearNonceStorageSessionData: {}, logger: DebugLogger.shared)
+    let signOutUseCase = SignOutUseCase(authService: mockAuth, userRepository: mockUserRepository, entryRepository: mockMindsetRepository, clearNonceStorageSessionData: {}, logger: DebugLogger.shared)
+
     SettingsView(
         viewModel: SettingsViewModel(
             authSessionManagement: mockAuth,
             authStateQuery: mockAuth,
             persistence: PreviewPersistenceService(),
-            appleSignInNonceStorage: AppleSignInNonceStorage(),
             deleteAccountUseCase: deleteAccountUseCase,
+            signOutUseCase: signOutUseCase,
             onSignOut: {},
             onDeleteAccount: {},
             onNavigateToPrivacyPolicy: {}

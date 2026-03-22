@@ -46,6 +46,7 @@ struct AppViewFactory: MainViewFactory {
     let getStreakUseCase: GetStreakUseCase
     let addEntryUseCase: AddEntryUseCase
     let deleteAccountUseCase: DeleteAccountUseCase
+    let signOutUseCase: SignOutUseCase
     let getYesterdayGoalUseCase: GetYesterdayGoalUseCase
     let subscriptionService: SubscriptionService
     let serviceFactory: ServiceFactory
@@ -236,8 +237,7 @@ struct AppViewFactory: MainViewFactory {
             authSessionManagement: authService,
             authStateQuery: authService,
             persistence: persistence,
-            appleSignInNonceStorage: appleSignInNonceStorage,
-            deleteAccountUseCase: deleteAccountUseCase,
+            deleteAccountUseCase: deleteAccountUseCase, signOutUseCase: signOutUseCase,
             onSignOut: {
                 coordinator.signOutCompleted()
             },

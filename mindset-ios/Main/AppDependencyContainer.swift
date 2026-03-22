@@ -61,13 +61,16 @@ final class AppDependencyContainer: ObservableObject {
             authService: authService,
             logger: logger
         )
+    
+        let appleSignInNonceStorage = AppleSignInNonceStorage()
 
         // --- Use Cases ---
         let getStreak = GetStreakUseCase(repository: mindsetRepository)
         let addMindset = AddEntryUseCase(repository: mindsetRepository)
         let getYesterday = GetYesterdayGoalUseCase(repository: mindsetRepository)
-        let deleteAccountUseCase = DeleteAccountUseCase(authService: authService, userRepository: userRepository, entryRepository: mindsetRepository, logger: logger)
-        
+        let deleteAccountUseCase = DeleteAccountUseCase(authService: authService, userRepository: userRepository, entryRepository: mindsetRepository, clearNonceStorageSessionData: appleSignInNonceStorage.clearSessionData, logger: logger)
+        let signOutUseCase = serviceFactory.makeSignOutUseCase(modelContext: container.mainContext, authService: authService, clearNonceStorageSessionData: appleSignInNonceStorage.clearSessionData)
+
         let signInOrLinkUseCase = SignInOrLinkUseCase(
             authService: authService,
             userRepository: userRepository,
@@ -83,8 +86,6 @@ final class AppDependencyContainer: ObservableObject {
             syncService: syncService
         )
 
-        let appleSignInNonceStorage = AppleSignInNonceStorage()
-
         self.viewFactory = AppViewFactory(
             coordinator: coordinator,
             authService: authService,
@@ -94,6 +95,7 @@ final class AppDependencyContainer: ObservableObject {
             getStreakUseCase: getStreak,
             addEntryUseCase: addMindset,
             deleteAccountUseCase: deleteAccountUseCase,
+            signOutUseCase: signOutUseCase,
             getYesterdayGoalUseCase: getYesterday,
             subscriptionService: subService,
             serviceFactory: serviceFactory,

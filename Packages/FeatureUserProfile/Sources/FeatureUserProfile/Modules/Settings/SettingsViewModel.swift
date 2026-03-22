@@ -22,8 +22,8 @@ public final class SettingsViewModel {
     private let authSessionManagement: AuthSessionManagement
     private let authStateQuery: AuthStateQuery
     private let persistence: PersistenceService
-    private let appleSignInNonceStorage: AppleSignInNonceStorageProtocol
     private let deleteAccountUseCase: DeleteAccountUseCase
+    private let signOutUseCase: SignOutUseCase
     private let onSignOut: () -> Void
     private let onDeleteAccount: () -> Void
     private let onNavigateToPrivacyPolicy: () -> Void
@@ -33,8 +33,8 @@ public final class SettingsViewModel {
         authSessionManagement: AuthSessionManagement,
         authStateQuery: AuthStateQuery,
         persistence: PersistenceService,
-        appleSignInNonceStorage: AppleSignInNonceStorageProtocol,
         deleteAccountUseCase: DeleteAccountUseCase,
+        signOutUseCase: SignOutUseCase,
         onSignOut: @escaping () -> Void,
         onDeleteAccount: @escaping () -> Void,
         onNavigateToPrivacyPolicy: @escaping () -> Void,
@@ -43,8 +43,8 @@ public final class SettingsViewModel {
         self.authSessionManagement = authSessionManagement
         self.authStateQuery = authStateQuery
         self.persistence = persistence
-        self.appleSignInNonceStorage = appleSignInNonceStorage
         self.deleteAccountUseCase = deleteAccountUseCase
+        self.signOutUseCase = signOutUseCase
         self.onSignOut = onSignOut
         self.onDeleteAccount = onDeleteAccount
         self.onNavigateToPrivacyPolicy = onNavigateToPrivacyPolicy
@@ -122,16 +122,14 @@ public final class SettingsViewModel {
         activeSheet = nil
     }
 
-    public func signOut() async {
+    public func signOutConfirmed() async {
         guard !isBusy else { return }
 
         isSigningOut = true
         dismissConfirmationSheet()
 
         do {
-            try await authSessionManagement.signOut()
-            try await persistence.deleteAllLocalUserData()
-            appleSignInNonceStorage.clearSessionData()
+            try await signOutUseCase.execute()
 
             isSigningOut = false
             onSignOut()
@@ -158,7 +156,6 @@ public final class SettingsViewModel {
         dismissConfirmationSheet()
 
         do {
-            appleSignInNonceStorage.clearSessionData()
             try await deleteAccountUseCase.execute()
 
             isDeletingAccount = false

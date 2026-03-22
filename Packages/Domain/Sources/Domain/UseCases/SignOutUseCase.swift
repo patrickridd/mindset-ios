@@ -1,5 +1,5 @@
 //
-//  DeleteAccountUseCase.swift
+//  SignOutUseCase.swift
 //  Domain
 //
 //  Created by patrick ridd on 3/22/26.
@@ -8,7 +8,7 @@
 import Foundation
 
 @MainActor
-public struct DeleteAccountUseCase {
+public struct SignOutUseCase {
     private let authService: AuthService
     private let userRepository: UserRepository
     private let entryRepository: EntryRepository
@@ -33,14 +33,21 @@ public struct DeleteAccountUseCase {
     }
 
     public func execute() async throws {
-        //  Delete Data (Order matters: Entries -> UserProfile -> Auth User)
+        // 1. Sign out from Firebase/Auth provider
+        // We do this first so any background listeners are killed immediately
+        try await authService.signOut()
+
+        // 2. Clear Local Data Only
+        // Note: We call these on the Repositories, which should handle 
+        // Ensure we inject Local SwiftData User/Entry Repositories (NOT the Firestore 'delete').
         try await entryRepository.deleteAllEntries()
         try await userRepository.deleteProfile()
-        try await authService.deleteCurrentUser()
 
+        // 3. Clear Apple Sign-In Nonce/Session data
         clearNonceStorageSessionData()
-        
-        logger.log("👤 Account fully purged from Earth and Cloud.")
+
+        logger.log("🚪 User signed out. Local cache cleared. Remote data preserved.")
+
         notificationCenter.post(name: .databaseDidChange, object: nil)
     }
 }
