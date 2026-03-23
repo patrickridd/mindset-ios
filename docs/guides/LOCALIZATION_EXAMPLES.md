@@ -255,7 +255,7 @@ final class MorningRitualViewModel {
         isSubmitting = true
         
         do {
-            let entry = MindsetEntry(/* ... */)
+            let entry = Entry(/* ... */)
             try await addMindsetUseCase.execute(entry)
             isSubmitting = false
             // Success - no error
