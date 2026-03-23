@@ -92,14 +92,14 @@ public final class MainCoordinator {
         let isOboardingComplete: Bool = await userProfileRepository.isOnboardingComplete()
 
         if !isOboardingComplete {
-            set(rootState: .onboarding)
+            showOnboarding()
             return
         }
 
         // 2. Auth Check
         let isAnonymousAccountLinked = await authStateQuery.isAnonymousAccountLinked()
         if !isAnonymousAccountLinked {
-            set(rootState: .auth)
+            showAuth()
             return
         }
 
@@ -110,7 +110,7 @@ public final class MainCoordinator {
 
         // 3. Setup UI
         refreshProfileTabTitle()
-        set(rootState: .mainTabView)
+        showDashboard()
 
         // 4. Paywall Check
         let isPro = await subscriptionService.checkSubscriptionStatus()
@@ -126,8 +126,7 @@ public final class MainCoordinator {
         Task { await syncService.syncUserOnLaunch() }
 
         refreshProfileTabTitle()
-        set(tab: .dashboard)
-        set(rootState: .mainTabView)
+        showDashboard()
         Task {
             let isPro = await subscriptionService.checkSubscriptionStatus()
             if !isPro {
@@ -142,15 +141,24 @@ public final class MainCoordinator {
 
             if isAuthenticated {
                 refreshProfileTabTitle()
-                set(rootState: .mainTabView)
+                showDashboard()
             } else {
-                set(rootState: .auth)
+                showAuth()
             }
         }
     }
 
     public func showAuth() {
         set(rootState: .auth)
+    }
+
+    public func showOnboarding() {
+        set(rootState: .onboarding)
+    }
+
+    public func showDashboard() {
+        set(tab: .dashboard)
+        set(rootState: .mainTabView)
     }
 
     public func showMainTabView() {
