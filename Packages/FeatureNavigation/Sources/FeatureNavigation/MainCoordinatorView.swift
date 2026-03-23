@@ -8,6 +8,7 @@
 import SwiftUI
 
 public protocol MainViewFactory {
+    func makeStartView() -> AnyView
     func makeSignInView() -> AnyView
     func makeOnboardingView() -> AnyView
     func makePaywallView() -> AnyView
@@ -41,6 +42,7 @@ public struct MainCoordinatorView: View {
         ZStack {
             // Root Layer
             switch coordinator.rootState {
+            case .start: factory.decoratePresentedView(factory.makeStartView())
             case .auth: factory.decoratePresentedView(factory.makeSignInView())
             case .onboarding: factory.decoratePresentedView(factory.makeOnboardingView())
             case .mainTabView: factory.decoratePresentedView(factory.makeTabView())

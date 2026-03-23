@@ -13,6 +13,7 @@ public final class MainCoordinator {
 
     // Exclusive primary screens
     public enum RootState {
+        case start
         case auth
         case onboarding
         case mainTabView
@@ -92,7 +93,11 @@ public final class MainCoordinator {
         let isOboardingComplete: Bool = await userProfileRepository.isOnboardingComplete()
 
         if !isOboardingComplete {
-            showOnboarding()
+            if authStateQuery.isAuthenticated() {
+                showOnboarding()
+            } else {
+                showStart()
+            }
             return
         }
 
@@ -150,6 +155,10 @@ public final class MainCoordinator {
 
     public func showAuth() {
         set(rootState: .auth)
+    }
+
+    public func showStart() {
+        set(rootState: .start)
     }
 
     public func showOnboarding() {

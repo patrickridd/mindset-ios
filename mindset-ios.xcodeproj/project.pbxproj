@@ -23,6 +23,7 @@
 		21BB0A4A2F54FA2200958F2B /* Development in Frameworks */ = {isa = PBXBuildFile; productRef = 21BB0A492F54FA2200958F2B /* Development */; };
 		21D3BCC02F2FE115005A8D2F /* FeatureAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 21D3BCBF2F2FE115005A8D2F /* FeatureAuth */; };
 		21F0B9E02F0F67B1008710CE /* FeatureDashboard in Frameworks */ = {isa = PBXBuildFile; productRef = 21F0B9DF2F0F67B1008710CE /* FeatureDashboard */; };
+		21F1A0B32F60000100721D72 /* FeatureStart in Frameworks */ = {isa = PBXBuildFile; productRef = 21F1A0B22F60000100721D71 /* FeatureStart */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -101,6 +102,7 @@
 				21BB0A4A2F54FA2200958F2B /* Development in Frameworks */,
 				21F0B9E02F0F67B1008710CE /* FeatureDashboard in Frameworks */,
 				2187FBA62F0A1E5400C028A9 /* Domain in Frameworks */,
+				21F1A0B32F60000100721D72 /* FeatureStart in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -186,6 +188,7 @@
 				214565422F3034F600C4DB49 /* FirebaseFirestore */,
 				213E05A72F3045D4009223A6 /* FeatureUserProfile */,
 				21BB0A492F54FA2200958F2B /* Development */,
+				21F1A0B22F60000100721D71 /* FeatureStart */,
 			);
 			productName = "mindset-ios";
 			productReference = 21DE280D2F08CCB900266CF8 /* mindset-ios.app */;
@@ -286,6 +289,7 @@
 				21E0DB3E2F30362E004FC166 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				213E05A62F3045BA009223A6 /* XCLocalSwiftPackageReference "Packages/FeatureUserProfile" */,
 				21791F122F54F53A00049A55 /* XCLocalSwiftPackageReference "Packages/Development" */,
+				21F1A0B12F60000100721D70 /* XCLocalSwiftPackageReference "Packages/FeatureStart" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 21DE280E2F08CCB900266CF8 /* Products */;
@@ -750,6 +754,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/FeatureAuth;
 		};
+		21F1A0B12F60000100721D70 /* XCLocalSwiftPackageReference "Packages/FeatureStart" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/FeatureStart;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -854,6 +862,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 21996CD12F0F678700438DBD /* XCLocalSwiftPackageReference "Packages/FeatureDashboard" */;
 			productName = FeatureDashboard;
+		};
+		21F1A0B22F60000100721D71 /* FeatureStart */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 21F1A0B12F60000100721D70 /* XCLocalSwiftPackageReference "Packages/FeatureStart" */;
+			productName = FeatureStart;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

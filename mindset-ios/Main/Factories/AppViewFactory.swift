@@ -13,6 +13,7 @@ import FeatureHistory
 import FeatureMindset
 import FeatureNavigation
 import FeatureOnboarding
+import FeatureStart
 import FeatureSubscription
 import FeatureUserProfile
 import Foundation
@@ -63,6 +64,23 @@ struct AppViewFactory: MainViewFactory {
         #else
             view
         #endif
+    }
+
+    func makeStartView() -> AnyView {
+        let viewModel = StartViewModel(
+            signInService: authService,
+            logger: logger,
+            onGetStarted: {
+                coordinator.showOnboarding()
+            },
+            onAlreadyHaveAccount: {
+                coordinator.showAuth()
+            },
+            onGuestSignedIn: {
+                coordinator.showOnboarding()
+            }
+        )
+        return AnyView(StartView(viewModel: viewModel))
     }
 
     func makeSignInView() -> AnyView {
