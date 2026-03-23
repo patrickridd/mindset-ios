@@ -20,7 +20,7 @@ public struct StartView: View {
     public var body: some View {
         ZStack {
             BackgroundLinearGradientView()
-
+            
             VStack(alignment: .leading, spacing: MindsetLayout.spacing24) {
                 heroSection
                 Spacer(minLength: MindsetLayout.spacing40)
@@ -63,7 +63,7 @@ public struct StartView: View {
     }
 
     private var actionSection: some View {
-        VStack(spacing: MindsetLayout.spacing16) {
+        VStack(spacing: MindsetLayout.spacing20) {
             if let message = viewModel.guestErrorMessage {
                 Text(message)
                     .font(MindsetFonts.footnote)
@@ -72,17 +72,20 @@ public struct StartView: View {
                     .frame(maxWidth: .infinity)
             }
 
-            Button {
+            Button(action: {
                 HapticManager.action()
                 viewModel.onGetStarted()
-            } label: {
-                Text(FeatureStartStrings.Actions.getStarted)
-                    .font(MindsetFonts.button)
-                    .foregroundStyle(MindsetColors.textPrimaryAdaptive(for: colorScheme))
-                    .frame(maxWidth: .infinity)
-                    .frame(height: MindsetLayout.buttonHeight)
+            }) {
+                HStack {
+                    Text(FeatureStartStrings.Actions.getStarted)
+                    Image(systemName: "sparkles")
+                }
+                .font(MindsetFonts.button)
+                .foregroundStyle(MindsetColors.textOnAccent(for: colorScheme))
+                .frame(maxWidth: .infinity)
+                .frame(height: MindsetLayout.buttonHeight)
+                .background(Capsule().fill(MindsetColors.accentOrange))
             }
-            .mindsetButton()
 
             Button {
                 HapticManager.selection()
