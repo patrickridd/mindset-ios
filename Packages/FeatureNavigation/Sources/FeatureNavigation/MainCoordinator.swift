@@ -220,8 +220,7 @@ public final class MainCoordinator {
     }
 
     public func accountDeleted() {
-        set(rootState: .auth)
-        set(tab: .dashboard)
+        showStart()
         profileTabTitle = ""
         resetNavigationStacks()
     }
