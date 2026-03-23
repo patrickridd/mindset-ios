@@ -83,7 +83,7 @@ struct MindsetApp: App {
         
         // Then initialize your other services
         container = try! ModelContainer(for: SDUserProfile.self, SDMindsetEntry.self)
-        persistence = SDPersistenceService(modelContext: container.mainContext)
+        userRepository = SDUserRepository(modelContext: container.mainContext)
         // ... rest of init
     }
     

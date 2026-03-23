@@ -6,4 +6,4 @@ globs: ["Packages/Data/**/*.swift", "Packages/Domain/**/*.swift", "**/Models/**/
 - **Identity:** Firebase UID is the single source of truth.
 - **Sync:** SwiftData (Local-first) + Firestore (Cloud backup).
 - **Security:** Never hardcode keys. Use `Secrets.plist` or Environment Variables.
-- **Naming:** Data layer types use `SD` prefix (e.g., `SDMindsetEntry`).
+- **Naming:** Data layer types use `SD` prefix (e.g., `SDEntry`).

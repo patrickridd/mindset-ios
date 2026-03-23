@@ -92,10 +92,8 @@ struct MindsetApp: App {
         FirebaseApp.configure()
         
         // Then initialize your services
-        container = try! ModelContainer(for: SDUserProfile.self, SDMindsetEntry.self)
-        persistence = SDPersistenceService(modelContext: container.mainContext)
-        mindsetRepository = SDMindsetRepository(persistence: persistence)
-        userRepository = SDUserRepository(persistence: persistence)
+        container = try! ModelContainer(for: SDUserProfile.self, SDEntry.self)
+        userRepository = SDUserRepository(modelContext: container.mainContext)
         
         // ... rest of init
     }
