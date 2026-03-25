@@ -10,6 +10,7 @@ import Observation
 @Observable
 public final class StartViewModel {
     private let signInService: SignInService
+    private let userRepository: UserRepository
     private let logger: AppLogger
 
     public var isGuestLoading = false
@@ -21,12 +22,14 @@ public final class StartViewModel {
 
     public init(
         signInService: SignInService,
+        userRepository: UserRepository,
         logger: AppLogger,
         onGetStarted: @escaping () -> Void,
         onAlreadyHaveAccount: @escaping () -> Void,
         onGuestSignedIn: @escaping () -> Void
     ) {
         self.signInService = signInService
+        self.userRepository = userRepository
         self.logger = logger
         self.onGetStarted = onGetStarted
         self.onAlreadyHaveAccount = onAlreadyHaveAccount
@@ -40,12 +43,12 @@ public final class StartViewModel {
 
         Task { @MainActor in
             do {
-                _ = try await signInService.signIn(with: .anonymous)
-                logger.log("✅ Start: anonymous sign-in succeeded")
+                let userId = try await signInService.signIn(with: .anonymous)
+                let user = UserProfile.anonymousUser(id: userId)
+                try await userRepository.saveUserProfile(user)
                 isGuestLoading = false
                 onGuestSignedIn()
             } catch {
-                logger.log("⚠️ Start: anonymous sign-in failed: \(error.localizedDescription)")
                 isGuestLoading = false
                 guestErrorMessage = FeatureStartStrings.Error.guestSignInFailed
             }

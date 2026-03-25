@@ -20,26 +20,38 @@ public struct OnboardingView: View {
     // MARK: - Body Composition
 
     public var body: some View {
-        NavigationStack {
-            ZStack {
-                BackgroundLinearGradientView()
-                mainContentStack
+        Group {
+            if viewModel.usesEmbeddedNavigationStack {
+                NavigationStack {
+                    onboardingChrome
+                }
+            } else {
+                onboardingChrome
             }
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    if viewModel.isBackButtonDisplayed {
-                        Button {
-                            HapticManager.selection()
-                            viewModel.selectedOption = nil
-                            viewModel.isGoingBack = true
-                            withAnimation(.easeInOut(duration: 0.35)) {
-                                viewModel.goBack()
-                            }
-                        } label: {
-                            Image(systemName: "chevron.left")
+        }
+    }
+
+    private var onboardingChrome: some View {
+        ZStack {
+            BackgroundLinearGradientView()
+            mainContentStack
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                if viewModel.isBackButtonDisplayed {
+                    Button {
+                        HapticManager.selection()
+                        viewModel.selectedOption = nil
+                        viewModel.isGoingBack = true
+                        withAnimation(.easeInOut(duration: 0.35)) {
+                            viewModel.goBack()
                         }
+                    } label: {
+                        Image(systemName: "chevron.left")
                     }
                 }
+            }
+            if viewModel.shouldDisplayDismissButton {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(role: .cancel) {
                         HapticManager.selection()
@@ -64,12 +76,12 @@ private extension OnboardingView {
                 Spacer()
                 CalculatingView(onAppear: {
                 })
-                    .padding(.bottom, MindsetLayout.paddingXLarge)
+                .padding(.bottom, MindsetLayout.paddingXLarge)
                 Spacer()
             } else {
                 questionContent
                 Spacer()
-                
+
                 skipButton
             }
             Spacer()
@@ -241,7 +253,9 @@ private struct CalculatingView: View {
                     isComplete ? MindsetColors.successEmerald : MindsetColors.textMuted)
 
             Text(text)
-                .foregroundStyle(isComplete ? MindsetColors.textSecondaryDark : MindsetColors.textMuted)
+                .foregroundStyle(
+                    isComplete ? MindsetColors.textSecondaryDark : MindsetColors.textMuted
+                )
                 .opacity(isComplete ? 1 : (isPulsing ? 0.6 : 1.0))
         }
         .onAppear {
@@ -261,7 +275,8 @@ private struct CalculatingView: View {
         userRepository: MockUserRepository(),
         signInService: mockAuth,
         authStateQuery: mockAuth,
-        onboardingFinished: nil
+        onboardingFinished: nil,
+        usesEmbeddedNavigationStack: true
     )
     return OnboardingView(viewModel: viewModel)
 }

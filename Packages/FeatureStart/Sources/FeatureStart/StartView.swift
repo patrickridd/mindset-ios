@@ -126,6 +126,7 @@ public struct StartView: View {
         StartView(
             viewModel: StartViewModel(
                 signInService: MockAuthService(),
+                userRepository: MockUserRepository(),
                 logger: MockAppLogger(),
                 onGetStarted: {},
                 onAlreadyHaveAccount: {},

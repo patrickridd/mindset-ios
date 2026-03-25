@@ -67,20 +67,67 @@ struct AppViewFactory: MainViewFactory {
     }
 
     func makeStartView() -> AnyView {
-        let viewModel = StartViewModel(
+        let startListViewModel = StartViewModel(
             signInService: authService,
+            userRepository: userRepository,
             logger: logger,
             onGetStarted: {
-                coordinator.showOnboarding()
+                coordinator.startPath.append(StartDestination.onboarding)
             },
             onAlreadyHaveAccount: {
-                coordinator.showAuth()
+                coordinator.startPath.append(StartDestination.signIn)
             },
             onGuestSignedIn: {
-                coordinator.showOnboarding()
+                coordinator.showDashboard()
             }
         )
-        return AnyView(StartView(viewModel: viewModel))
+
+        let funnelOnboardingViewModel = OnboardingViewModel(
+            userRepository: userRepository,
+            signInService: authService,
+            authStateQuery: authService,
+            onboardingFinished: {
+                coordinator.onboardingFinished()
+            },
+            usesEmbeddedNavigationStack: false
+        )
+
+        let funnelSignInViewModel = SignInViewModel(
+            signInOrLinkUseCase: signInOrLinkUseCase,
+            appleSignInCredentialBuilder: appleSignInCredentialBuilder,
+            googleSignInCredentialProvider: serviceFactory.makeGoogleSignInCredentialProvider(),
+            phoneVerificationProvider: serviceFactory.makePhoneVerificationProvider(),
+            logger: logger,
+            embedInNavigationStack: false,
+            onPhoneSignInButtonTapped: {
+                coordinator.startPath.append(StartDestination.phoneSignIn)
+            },
+            onSignInSuccess: { _ in
+                coordinator.signInCompleted()
+            },
+            onSkip: {
+                coordinator.signInCompleted()
+            }
+        )
+
+        return AnyView(
+            NavigationStack(path: Bindable(coordinator).startPath) {
+                StartView(viewModel: startListViewModel)
+                    .toolbar(.hidden, for: .navigationBar)
+                    .navigationDestination(for: StartDestination.self) { destination in
+                        switch destination {
+                        case .onboarding:
+                            OnboardingView(viewModel: funnelOnboardingViewModel)
+                        case .signIn:
+                            SignInView(viewModel: funnelSignInViewModel)
+                        case .phoneSignIn:
+                            let phoneSignInViewModel = PhoneSignInViewModel(
+                                signInViewModel: funnelSignInViewModel)
+                            PhoneSignInView(phoneViewModel: phoneSignInViewModel)
+                        }
+                    }
+            }
+        )
     }
 
     func makeSignInView() -> AnyView {

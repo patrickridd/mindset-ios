@@ -70,6 +70,8 @@ public final class MainCoordinator {
     public var profilePath = NavigationPath()
     /// Manages the internal push stack of the SignInView
     public var signInPath = NavigationPath()
+    /// Pushes onboarding / sign-in on top of `StartView` while `rootState == .start`
+    public var startPath = NavigationPath()
 
     public init(
         authStateQuery: AuthStateQuery,
@@ -154,29 +156,35 @@ public final class MainCoordinator {
     }
 
     public func showAuth() {
+        clearStartPath()
         set(rootState: .auth)
     }
 
     public func showStart() {
+        clearStartPath()
         set(rootState: .start)
     }
 
     public func showOnboarding() {
+        clearStartPath()
         set(rootState: .onboarding)
     }
 
     public func showDashboard() {
+        clearStartPath()
         set(tab: .dashboard)
         set(rootState: .mainTabView)
     }
 
     public func showMainTabView() {
+        clearStartPath()
         set(fullScreenState: nil)
         refreshProfileTabTitle()
         set(rootState: .mainTabView)
     }
 
     public func subscriptionPurchased() {
+        clearStartPath()
         set(rootState: .mainTabView)
     }
 
@@ -229,6 +237,11 @@ public final class MainCoordinator {
         profilePath = NavigationPath()
         signInPath = NavigationPath()
         mindsetPath = NavigationPath()
+        clearStartPath()
+    }
+
+    private func clearStartPath() {
+        startPath = NavigationPath()
     }
     private func set(rootState: RootState) {
         withAnimation { self.rootState = rootState }

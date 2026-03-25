@@ -16,6 +16,8 @@ public final class OnboardingViewModel {
     private let authStateQuery: AuthStateQuery
     public var onboardingFinished: (() -> Void)?
 
+    /// - Parameter usesEmbeddedNavigationStack: When `false`, the parent supplies `NavigationStack` (e.g. start funnel). Default `true` preserves standalone behavior.
+    public var usesEmbeddedNavigationStack: Bool
     public var currentStep = 0
     public var isCalculating = false
 
@@ -36,12 +38,14 @@ public final class OnboardingViewModel {
         userRepository: UserRepository,
         signInService: SignInService,
         authStateQuery: AuthStateQuery,
-        onboardingFinished: (() -> Void)?
+        onboardingFinished: (() -> Void)?,
+        usesEmbeddedNavigationStack: Bool = true
     ) {
         self.userRepository = userRepository
         self.signInService = signInService
         self.authStateQuery = authStateQuery
         self.onboardingFinished = onboardingFinished
+        self.usesEmbeddedNavigationStack = usesEmbeddedNavigationStack
     }
 
     /// Handles option tap: selection state, delayed advance. Caller (View) owns haptics and animation.
@@ -75,9 +79,14 @@ public final class OnboardingViewModel {
         return answers[questions[currentStep].logic]
     }
 
-    /// True when the back button should be shown (not calculating and not on first step).
+    /// Only display when our View``usesEmbeddedNavigationStack`` that has back button
+    public var shouldDisplayDismissButton: Bool {
+        usesEmbeddedNavigationStack
+    }
+
+    /// True when the back button should be shown (not calculating and not on first step) && when our View already ``usesEmbeddedNavigationStack``
     public var isBackButtonDisplayed: Bool {
-        !isCalculating && currentStep > 0
+        !isCalculating && currentStep > 0 && usesEmbeddedNavigationStack
     }
 
     /// Progress for the step progress bar (0...1). First step shows a small nub (0.025); calculating shows full.
