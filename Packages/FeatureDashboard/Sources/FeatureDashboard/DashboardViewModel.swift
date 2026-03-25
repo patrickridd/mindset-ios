@@ -31,7 +31,7 @@ public final class DashboardViewModel {
     /// Determine if we should display AccountSecurityCallout to remind our User to sign-in and link their anonymous account
     public var shouldDisplayLinkAccountSection: Bool {
         guard let userProfile else { return true }
-        return userProfile.isAccountSecured == false && streakCount > 0
+        return userProfile.isAccountSecured == false && (streakCount > 0 || userProfile.isOnboardingComplete)
     }
 
     // Dynamic Archetype based on the most recent ritual
