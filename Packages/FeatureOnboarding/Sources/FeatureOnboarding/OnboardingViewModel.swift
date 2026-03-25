@@ -137,13 +137,13 @@ public final class OnboardingViewModel {
         // Check if user exists
         if let userProfile = try? await userRepository.fetchUserProfile() {
             user = userProfile
-            user.onboarding(isComplete: isOnboardingComplete)
         } else {
             // Else sign-in user anonymously and use that new id
             let userId = try await signInService.signIn(with: .anonymous)
             user = UserProfile.anonymousUser(id: userId)
         }
 
+        user.onboarding(isComplete: isOnboardingComplete)
         user.update(with: getOnboardingData())
         try? await userRepository.saveUserProfile(user)
     }
