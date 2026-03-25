@@ -69,28 +69,46 @@ public final class AppUserRepository: UserRepository {
     }
 
     private func resolveSync(localUser: UserProfile?, remoteUser: UserProfile?) async {
-        // 1. If we have a remote profile, compare and update
-        if let remote = remoteUser {
-            if localUser == nil {
-                // New device bootstrap
-                try? await localStore.saveUserProfile(remote)
-                notificationCenter.post(name: .databaseDidChange, object: nil)
-            } else if remote.lastUpdatedAt > localUser!.lastUpdatedAt {
-                // Cloud is newer
-                try? await localStore.saveUserProfile(remote)
-                notificationCenter.post(name: .databaseDidChange, object: nil)
-            } else if localUser!.lastUpdatedAt > remote.lastUpdatedAt {
-                // Local is newer
-                try? await remoteStore.saveUserProfile(localUser!)
-            }
-        } else {
-            // 2. If remote is NIL and local is NIL, we need to ensure
-            // that the 'Parent' document is created at least once.
-            if localUser == nil, let uid = await authStateQuery.getCurrentUserID() {
-                let placeholder = UserProfile.anonymousUser(id: uid)
-                try? await saveUserProfile(placeholder)
+        // 1. Identify the current user session
+        guard let uid = await authStateQuery.getCurrentUserID() else {
+            logger.log("📵 Sync aborted: No authenticated UID found.")
+            return
+        }
+        
+        // 2. Map the data state to a specific SyncState
+        let state = SyncState(localUser: localUser, remoteUser: remoteUser, uid: uid)
+
+        // 3. Execute the strategy based on the state
+        switch state {
+        case .newUserCreation(let uid):
+            logger.log("🆕 Sync: Creating initial profile for new user.")
+            let placeholder = UserProfile.anonymousUser(id: uid)
+            try? await saveUserProfile(placeholder)
+
+        case .remoteOnly(let remote):
+            logger.log("☁️ Sync: Bootstrapping local store from Cloud.")
+            await updateLocal(with: remote)
+
+        case .localOnly(let local):
+            logger.log("🛠 Sync: Uploading local-only profile to Cloud.")
+            try? await remoteStore.saveUserProfile(local)
+
+        case .resolve(let local, let remote):
+            if remote.lastUpdatedAt > local.lastUpdatedAt {
+                logger.log("🔄 Sync: Cloud is newer. Updating local.")
+                await updateLocal(with: remote)
+            } else if local.lastUpdatedAt > remote.lastUpdatedAt {
+                logger.log("🔄 Sync: Local is newer. Updating cloud.")
+                try? await remoteStore.saveUserProfile(local)
+            } else {
+                logger.log("✅ Sync: Local and Cloud are already identical.")
             }
         }
+    }
+
+    private func updateLocal(with remote: UserProfile) async {
+        try? await localStore.saveUserProfile(remote)
+        notificationCenter.post(name: .databaseDidChange, object: nil)
     }
 
     public func saveUserProfile(_ profile: UserProfile) async throws {
@@ -132,5 +150,30 @@ public final class AppUserRepository: UserRepository {
 
     public func isOnboardingComplete() async -> Bool {
         await localStore.isOnboardingComplete()
+    }
+}
+
+
+private enum SyncState {
+    case newUserCreation(uid: String)
+    case remoteOnly(remote: UserProfile)
+    case localOnly(local: UserProfile)
+    case resolve(local: UserProfile, remote: UserProfile)
+
+    init(localUser: UserProfile?, remoteUser: UserProfile?, uid: String) {
+        switch (localUser, remoteUser) {
+        // 1. Total Void: New User / First Sign In
+        case (nil, nil):
+            self = .newUserCreation(uid: uid)
+        // 2. New Device / Data Recovery: Remote exists, Local doesn't
+        case (nil, .some(let remoteUser)):
+            self = .remoteOnly(remote: remoteUser)
+        // 3. First-time Upload: Local exists, Remote doesn't (or document was deleted)
+        case (.some(let localUser), nil):
+            self = .localOnly(local: localUser)
+        // 4. Comparison: Both exist, may the newest timestamp win
+        case (.some(let localUser), .some(let remoteUser)):
+            self = .resolve(local: localUser, remote: remoteUser)
+        }
     }
 }
