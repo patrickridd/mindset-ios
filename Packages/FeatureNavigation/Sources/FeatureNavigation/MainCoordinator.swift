@@ -91,19 +91,18 @@ public final class MainCoordinator {
     }
 
     public func evaluateInitialState() async {
-        // 1. Check if Onboarding is complete FIRST
+        guard authStateQuery.isAuthenticated() else {
+            return showStart()
+        }
+        // Check if Onboarding is complete FIRST
         let isOboardingComplete: Bool = await userProfileRepository.isOnboardingComplete()
 
         if !isOboardingComplete {
-            if authStateQuery.isAuthenticated() {
-                showOnboarding()
-            } else {
-                showStart()
-            }
+            showOnboarding()
             return
         }
 
-        // 2. Auth Check
+        // 2. Account still anonymous?
         let isAnonymousAccountLinked = await authStateQuery.isAnonymousAccountLinked()
         if !isAnonymousAccountLinked {
             showAuth()
@@ -114,11 +113,11 @@ public final class MainCoordinator {
         // We don't 'await' this because we want the UI to load mainTabView immediately.
         Task { await syncService.syncAllData() }
 
-        // 3. Setup UI
+        // Setup UI
         refreshProfileTabTitle()
         showDashboard()
 
-        // 4. Paywall Check
+        // Paywall Check
         let isPro = await subscriptionService.checkSubscriptionStatus()
         if !isPro {
             set(fullScreenState: .paywall)
@@ -221,7 +220,7 @@ public final class MainCoordinator {
 
     public func signOutCompleted() {
         // Reset to auth screen
-        set(rootState: .auth)
+        showStart()
         profileTabTitle = ""
         resetNavigationStacks()
     }
