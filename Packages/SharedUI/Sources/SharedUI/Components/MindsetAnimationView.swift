@@ -8,18 +8,14 @@
 import Lottie
 import SwiftUI
 
-public enum MindsetAnimation: String {
-    case checkmarkSuccess = "Checkmark-Animation"
-}
-
 public struct MindsetAnimationView: View {
     let animation: MindsetAnimation
     let loopMode: LottieLoopMode
     let speed: Double
     let onCompleted: (() -> Void)?
-    
+
     @State private var isPlaying = false
-    
+
     public init(
         animation: MindsetAnimation,
         loopMode: LottieLoopMode = .playOnce,
@@ -41,7 +37,9 @@ public struct MindsetAnimationView: View {
             lottie.contentMode = .scaleAspectFit
             lottie.configuration.renderingEngine = .mainThread
         }
-        .playbackMode(isPlaying ? .playing(.fromProgress(0, toProgress: 1, loopMode: loopMode)) : .paused)
+        .playbackMode(
+            isPlaying ? .playing(.fromProgress(0, toProgress: 1, loopMode: loopMode)) : .paused
+        )
         .animationDidFinish { completed in
             if completed { onCompleted?() }
         }

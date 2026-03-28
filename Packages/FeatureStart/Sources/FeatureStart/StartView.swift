@@ -11,6 +11,7 @@ import SwiftUI
 public struct StartView: View {
     @Bindable private var viewModel: StartViewModel
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var heroPulse = false
 
     public init(viewModel: StartViewModel) {
@@ -18,17 +19,25 @@ public struct StartView: View {
     }
 
     public var body: some View {
-        ZStack {
-            BackgroundLinearGradientView()
-            
-            VStack(alignment: .leading, spacing: MindsetLayout.spacing24) {
-                heroSection
-                Spacer(minLength: MindsetLayout.spacing40)
-                actionSection
+        VStack(alignment: .leading, spacing: MindsetLayout.spacing24) {
+            heroSection
+            Spacer(minLength: MindsetLayout.spacing40)
+            actionSection
+        }
+        .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
+        .padding(.top, MindsetLayout.paddingLarge)
+        .padding(.bottom, MindsetLayout.paddingStandard)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .background {
+            ZStack {
+                if !reduceMotion {
+                    MindsetAmbientAnimationView()
+                }
+                BackgroundLinearGradientView()
+                    .opacity(reduceMotion ? 1.0 : 0.88)
             }
-            .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
-            .padding(.top, MindsetLayout.paddingLarge)
-            .padding(.bottom, MindsetLayout.paddingStandard)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .ignoresSafeArea()
         }
     }
 
