@@ -32,7 +32,7 @@ final class AppDependencyContainer: ObservableObject {
     let coordinator: MainCoordinator
     let viewFactory: AppViewFactory
     let container: ModelContainer
-    let syncService: UserSyncService
+    let syncService: AppSyncService
     let signOutUseCase: SignOutUseCase
 
     init() {
@@ -50,12 +50,19 @@ final class AppDependencyContainer: ObservableObject {
         // Using try! is okay here since this is the Composition Root
         // and we want to know immediately if the DB schema is broken.
         self.container = try! ModelContainer(for: SDUserProfile.self, SDEntry.self)
+        let modelContext: ModelContext = container.mainContext
 
         // --- Repositories ---
-        self.entryRepository = serviceFactory.makeEntryRepository(modelContext: container.mainContext, authStateQuery: authService)
-        self.userRepository = serviceFactory.makeUserRepository(modelContext: container.mainContext, authStateQuery: authService)
+        self.entryRepository = serviceFactory.makeEntryRepository(modelContext: modelContext, authStateQuery: authService)
+        self.userRepository = serviceFactory.makeUserRepository(modelContext: modelContext, authStateQuery: authService)
 
-        self.syncService = UserSyncService(localStore: serviceFactory.makeLocalUserRepository(modelContext: container.mainContext), remoteStore: serviceFactory.makeRemoteUserRepository(authStateQuery: authService), authService: authService, logger: logger)
+        self.syncService = AppSyncService(
+            userLocal: serviceFactory.makeLocalUserRepository(modelContext: modelContext),
+            userRemote: serviceFactory.makeRemoteUserRepository(authStateQuery: authService),
+            entryLocal: serviceFactory.makeLocalEntryRepository(modelContext: modelContext),
+            entryRemote: serviceFactory.makeRemoteEntryRepository(authStateQuery: authService),
+            authService: authService, logger: logger
+        )
     
         let appleSignInNonceStorage = AppleSignInNonceStorage()
         let localDataCleaners: [LocalDataCleaner] = [

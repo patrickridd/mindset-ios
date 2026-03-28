@@ -62,7 +62,7 @@ public final class MainCoordinator {
     private let subscriptionService: SubscriptionService
     private let entryRepository: EntryRepository
     private let userProfileRepository: UserRepository
-    private let syncService: UserSyncService
+    private let syncService: AppSyncService
 
     /// Manages the internal push stack of the Mindset modal
     public var mindsetPath = NavigationPath()
@@ -78,7 +78,7 @@ public final class MainCoordinator {
         subscriptionService: SubscriptionService,
         entryRepository: EntryRepository,
         userRepository: UserRepository,
-        syncService: UserSyncService
+        syncService: AppSyncService
     ) {
         self.authStateQuery = authStateQuery
         self.subscriptionService = subscriptionService
@@ -111,9 +111,8 @@ public final class MainCoordinator {
         }
 
         // --- SYNC POINT A: Initial Launch ---
-        // User is authed and onboarding is done. Kick off the self-healing sync.
         // We don't 'await' this because we want the UI to load mainTabView immediately.
-        Task { await syncService.syncUserOnLaunch() }
+        Task { await syncService.syncAllData() }
 
         // 3. Setup UI
         refreshProfileTabTitle()
@@ -130,7 +129,7 @@ public final class MainCoordinator {
 
     public func signInCompleted() {
         // User just successfully logged in or linked their account.
-        Task { await syncService.syncUserOnLaunch() }
+        Task { await syncService.syncAllData() }
 
         refreshProfileTabTitle()
         showDashboard()

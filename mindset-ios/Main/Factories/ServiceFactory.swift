@@ -91,18 +91,36 @@ struct ServiceFactory {
         }
     }
     
-    // MARK: - Repository Creation
+    // MARK: - Entry Repository Creation
     
     func makeEntryRepository(modelContext: ModelContext, authStateQuery: AuthStateQuery) -> EntryRepository {
         if config.useRealServices {
-            let local = SDEntryRepository(modelContext: modelContext, logger: logger)
-            let remote = FirestoreEntryRepository(authStateQuery: authStateQuery, logger: logger)
+            let local = makeLocalEntryRepository(modelContext: modelContext)
+            let remote = makeRemoteEntryRepository(authStateQuery: authStateQuery)
             return AppEntryRepository(local: local, remote: remote, authStateQuery: authStateQuery, logger: logger)
         } else {
             return MockEntryRepository(days: 11)
         }
     }
-    
+
+    func makeLocalEntryRepository(modelContext: ModelContext) -> EntryRepository {
+        if config.useRealServices {
+            return SDEntryRepository(modelContext: modelContext, logger: logger)
+        } else {
+            return MockEntryRepository(days: 11)
+        }
+    }
+
+    func makeRemoteEntryRepository(authStateQuery: AuthStateQuery) -> EntryRepository {
+        if config.useRealServices {
+            return FirestoreEntryRepository(authStateQuery: authStateQuery, logger: logger)
+        } else {
+            return MockEntryRepository(days: 11)
+        }
+    }
+
+    // MARK: - User Repository Creation
+
     func makeUserRepository(modelContext: ModelContext, authStateQuery: AuthStateQuery) -> UserRepository {
         let base: any UserRepository
         if config.useRealServices {
