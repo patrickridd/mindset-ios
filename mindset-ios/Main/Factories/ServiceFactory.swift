@@ -168,4 +168,18 @@ struct ServiceFactory {
     func makeLocalDataCleaners(modelContext: ModelContext) -> [LocalDataCleaner] {
         [SDUserRepository(modelContext: modelContext, logger: logger), SDEntryRepository(modelContext: modelContext, logger: logger)]
     }
+    
+    // MARK: - Sync Service
+    
+    func makeSyncService(modelContext: ModelContext, authService: AuthService) -> AppSyncService {
+        AppSyncService(
+            userLocal: makeLocalUserRepository(modelContext: modelContext),
+            userRemote: makeRemoteUserRepository(authStateQuery: authService),
+            entryLocal: makeLocalEntryRepository(modelContext: modelContext),
+            entryRemote: makeRemoteEntryRepository(authStateQuery: authService),
+            authService: authService,
+            logger: logger
+        )
+    }
+        
 }
