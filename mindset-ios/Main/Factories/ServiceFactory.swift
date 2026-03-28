@@ -106,9 +106,37 @@ struct ServiceFactory {
     func makeUserRepository(modelContext: ModelContext, authStateQuery: AuthStateQuery) -> UserRepository {
         let base: any UserRepository
         if config.useRealServices {
-            let local = SDUserRepository(modelContext: modelContext, logger: logger)
-            let remote = FirestoreUserRepository(authStateQuery: authStateQuery, logger: logger)
+            let local = makeLocalUserRepository(modelContext: modelContext)
+            let remote = makeRemoteUserRepository(authStateQuery: authStateQuery)
             base = AppUserRepository(local: local, remote: remote, authStateQuery: authStateQuery, logger:  logger)
+        } else {
+            base = MockUserRepository()
+        }
+        #if DEBUG
+        return UserRepositoryDebugWrapper(wrapping: base)
+        #else
+        return base
+        #endif
+    }
+
+    func makeLocalUserRepository(modelContext: ModelContext) -> UserRepository {
+        let base: any UserRepository
+        if config.useRealServices {
+            base = SDUserRepository(modelContext: modelContext, logger: logger)
+        } else {
+            base = MockUserRepository()
+        }
+        #if DEBUG
+        return UserRepositoryDebugWrapper(wrapping: base)
+        #else
+        return base
+        #endif
+    }
+
+    func makeRemoteUserRepository(authStateQuery: AuthStateQuery) -> UserRepository {
+        let base: any UserRepository
+        if config.useRealServices {
+            base = FirestoreUserRepository(authStateQuery: authStateQuery, logger: logger)
         } else {
             base = MockUserRepository()
         }

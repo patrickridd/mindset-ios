@@ -55,11 +55,7 @@ final class AppDependencyContainer: ObservableObject {
         self.mindsetRepository = serviceFactory.makeEntryRepository(modelContext: container.mainContext, authStateQuery: authService)
         self.userRepository = serviceFactory.makeUserRepository(modelContext: container.mainContext, authStateQuery: authService)
 
-        self.syncService = UserSyncService(
-            userRepository: userRepository,
-            authService: authService,
-            logger: logger
-        )
+        self.syncService = UserSyncService(localStore: serviceFactory.makeLocalUserRepository(modelContext: container.mainContext), remoteStore: serviceFactory.makeRemoteUserRepository(authStateQuery: authService), authService: authService, logger: logger)
     
         let appleSignInNonceStorage = AppleSignInNonceStorage()
         let localDataCleaners: [LocalDataCleaner] = [
