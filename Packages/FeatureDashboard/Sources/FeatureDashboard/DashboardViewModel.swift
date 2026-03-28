@@ -16,6 +16,7 @@ public final class DashboardViewModel {
     private let entryRepository: EntryRepository
     private let getStreakUseCase: GetStreakUseCase
     private let getYesterdayGoalUseCase: GetYesterdayGoalUseCase
+    private let syncService: AppSyncService
     private let logger: AppLogger
     private let notificationCenter: NotificationCenter
     
@@ -49,6 +50,7 @@ public final class DashboardViewModel {
         entryRepository: EntryRepository,
         getStreakUseCase: GetStreakUseCase,
         getYesterdayGoalUseCase: GetYesterdayGoalUseCase,
+        syncService: AppSyncService,
         logger: AppLogger,
         notificationCenter: NotificationCenter = .default,
         onStartMindset: @escaping () -> Void,
@@ -59,6 +61,7 @@ public final class DashboardViewModel {
         self.entryRepository = entryRepository
         self.getStreakUseCase = getStreakUseCase
         self.getYesterdayGoalUseCase = getYesterdayGoalUseCase
+        self.syncService = syncService
         self.logger = logger
         self.notificationCenter = notificationCenter
         self.onStartMindset = onStartMindset
@@ -130,5 +133,12 @@ public final class DashboardViewModel {
 
     func secureAccountButtonTapped() {
         onSecureAccount()
+    }
+
+    func pullToRefreshTriggered() async {
+        isLoading = true
+        await syncService.syncAllData()
+        try? await loadDashboardData()
+        isLoading = false
     }
 }

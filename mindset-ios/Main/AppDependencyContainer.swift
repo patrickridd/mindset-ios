@@ -104,6 +104,7 @@ final class AppDependencyContainer: ObservableObject {
             signInOrLinkUseCase: signInOrLinkUseCase,
             userRepository: userRepository,
             entryRepository: entryRepository,
+            syncService: syncService,
             getStreakUseCase: getStreak,
             addEntryUseCase: addMindset,
             deleteAccountUseCase: deleteAccountUseCase,

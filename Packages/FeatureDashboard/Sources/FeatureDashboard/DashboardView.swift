@@ -51,6 +51,9 @@ public struct DashboardView: View {
             .task {
                 await viewModel.loadDashboardData()
             }
+            .refreshable {
+                await viewModel.pullToRefreshTriggered()
+            }
         }
     }
 }
@@ -201,11 +204,14 @@ private extension DashboardView {
 
 #Preview {
     let entryRepository = MockEntryRepository(days: 1)
+    let userRepository = MockUserRepository()
+    let appSyncService = AppSyncService(userLocal: userRepository, userRemote: userRepository, entryLocal: entryRepository, entryRemote: entryRepository, authService: MockAuthService(), logger: DebugLogger.shared)
     let viewModel = DashboardViewModel(
-        userRepository: MockUserRepository(),
-                    entryRepository: entryRepository,
+        userRepository: userRepository,
+        entryRepository: entryRepository,
         getStreakUseCase: GetStreakUseCase(repository: entryRepository),
         getYesterdayGoalUseCase: GetYesterdayGoalUseCase(repository: entryRepository),
+        syncService: appSyncService,
         logger: DebugLogger.shared,
         onStartMindset: {},
         onSeeHistory: {},

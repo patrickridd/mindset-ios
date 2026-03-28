@@ -44,6 +44,7 @@ struct AppViewFactory: MainViewFactory {
     let signInOrLinkUseCase: SignInOrLinkUseCase
     let userRepository: UserRepository
     let entryRepository: EntryRepository
+    let syncService: AppSyncService
     let getStreakUseCase: GetStreakUseCase
     let addEntryUseCase: AddEntryUseCase
     let deleteAccountUseCase: DeleteAccountUseCase
@@ -210,6 +211,7 @@ struct AppViewFactory: MainViewFactory {
             entryRepository: entryRepository,
             getStreakUseCase: getStreakUseCase,
             getYesterdayGoalUseCase: getYesterdayGoalUseCase,
+            syncService: syncService,
             logger: logger,
             onStartMindset: {
                 coordinator.startMorningMindset()
