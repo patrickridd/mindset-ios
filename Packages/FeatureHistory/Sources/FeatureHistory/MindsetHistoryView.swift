@@ -34,6 +34,9 @@ public struct MindsetHistoryView: View {
             }
             .navigationTitle("Your Evolution")
             .task { await viewModel.fetchHistory() }
+            .refreshable {
+                await viewModel.pulledToRefresh()
+            }
         }
     }
 
@@ -66,6 +69,8 @@ public struct MindsetHistoryView: View {
 }
 
 #Preview {
-    MindsetHistoryView(
-        viewModel: MindsetHistoryViewModel(entryRepository: MockEntryRepository(days: 2), logger: DebugLogger.shared))
+    let mockEntryRepo = MockEntryRepository(days: 2)
+    let syncService = AppSyncService(userLocal: MockUserRepository(), userRemote: MockUserRepository(), entryLocal: mockEntryRepo, entryRemote: mockEntryRepo, authService: MockAuthService(), logger: DebugLogger.shared)
+    let viewModel = MindsetHistoryViewModel(entryRepository: mockEntryRepo, syncService: syncService, logger: DebugLogger.shared)
+    MindsetHistoryView(viewModel: viewModel)
 }

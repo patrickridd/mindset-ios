@@ -320,7 +320,7 @@ struct AppViewFactory: MainViewFactory {
     }
 
     func makeMindsetHistoryView() -> AnyView {
-        let viewModel = MindsetHistoryViewModel(entryRepository: entryRepository, logger: logger)
+        let viewModel = MindsetHistoryViewModel(entryRepository: entryRepository, syncService: syncService, logger: logger)
         return AnyView(MindsetHistoryView(viewModel: viewModel))
     }
 
