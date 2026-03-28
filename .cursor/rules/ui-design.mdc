@@ -13,7 +13,7 @@ globs: "**/*View.swift", "**/SharedUI/**", "**/Components/**", "**/Styles/**"
 - **Platform Safety:** Handle iOS 26+ `.glassEffect` vs. legacy backgrounds internally within `SharedUI` modifiers. Feature views should never check `#available`.
 
 ## Lottie & Motion
-- **Tool:** Use `LottieView` from the Lottie library (Native SwiftUI).
+- **Tool:** Use `LottieView` from the Lottie library (see .cursor/rules/skill-lottie.mdc) (Native SwiftUI). 
 - **Component:** ALWAYS use the `MindsetAnimation` wrapper in `SharedUI`.
 - **Async Loading:** Because `.lottie` files are compressed, they MUST be loaded via the `async` initializer: `LottieView { try await DotLottieFile.named(name, bundle: .module) }`.
 - **Syncing:** Trigger `HapticManager.success()` or `action()` in the `onCompleted` closure of `MindsetAnimation` for transitions.
