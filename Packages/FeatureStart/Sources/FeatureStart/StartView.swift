@@ -31,10 +31,13 @@ public struct StartView: View {
         .background {
             ZStack {
                 if !reduceMotion {
-                    MindsetAmbientAnimationView()
+                    MindsetAmbientAnimationView(
+                        animation: .startBackground,
+                        speed: 0.3,
+                        opacity: 0.6
+                    )
                 }
-                BackgroundLinearGradientView()
-                    .opacity(reduceMotion ? 1.0 : 0.88)
+                VignetteBackgroundView()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .ignoresSafeArea()
@@ -49,7 +52,7 @@ public struct StartView: View {
                 .font(.system(size: MindsetLayout.iconLarge))
                 .foregroundStyle(MindsetColors.accentOrange)
                 .symbolRenderingMode(.hierarchical)
-                .scaleEffect(heroPulse ? 1.08 : 1.0)
+                .scaleEffect(heroPulse ? 1.25 : 1.0)
                 .opacity(heroPulse ? 1.0 : 0.78)
                 .accessibilityHidden(true)
 
@@ -72,7 +75,7 @@ public struct StartView: View {
     }
 
     private var actionSection: some View {
-        VStack(spacing: MindsetLayout.spacing20) {
+        VStack(spacing: MindsetLayout.spacing30) {
             if let message = viewModel.guestErrorMessage {
                 Text(message)
                     .font(MindsetFonts.footnote)

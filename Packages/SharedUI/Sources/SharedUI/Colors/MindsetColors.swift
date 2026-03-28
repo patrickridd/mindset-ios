@@ -63,7 +63,7 @@ public enum MindsetColors {
     public static let textSecondaryLight = Color(red: 0.22, green: 0.22, blue: 0.26)
     
     /// Tertiary / muted text (for dark backgrounds)
-    public static let textMuted = Color.white.opacity(0.4)
+    public static let textMuted = Color.white.opacity(0.6)
 
     /// Primary text — adapts to light/dark mode. Use on adaptive backgrounds (e.g. backgroundGrouped).
     public static func textPrimaryAdaptive(for colorScheme: ColorScheme) -> Color {

@@ -15,7 +15,7 @@ public struct MindsetAmbientAnimationView: View {
     @State private var isPlaying = false
 
     public init(
-        animation: MindsetAnimation = .startAmbient,
+        animation: MindsetAnimation = .startBackground,
         speed: Double = 0.6,
         opacity: Double = 1.0
     ) {
