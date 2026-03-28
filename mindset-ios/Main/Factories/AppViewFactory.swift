@@ -43,7 +43,7 @@ struct AppViewFactory: MainViewFactory {
     let authService: AuthService
     let signInOrLinkUseCase: SignInOrLinkUseCase
     let userRepository: UserRepository
-    let mindsetRepository: EntryRepository
+    let entryRepository: EntryRepository
     let getStreakUseCase: GetStreakUseCase
     let addEntryUseCase: AddEntryUseCase
     let deleteAccountUseCase: DeleteAccountUseCase
@@ -207,7 +207,7 @@ struct AppViewFactory: MainViewFactory {
     func makeDashboardView() -> AnyView {
         let dashboardViewModel = DashboardViewModel(
             userRepository: userRepository,
-            mindsetRepository: mindsetRepository,
+            entryRepository: entryRepository,
             getStreakUseCase: getStreakUseCase,
             getYesterdayGoalUseCase: getYesterdayGoalUseCase,
             logger: logger,
@@ -318,7 +318,7 @@ struct AppViewFactory: MainViewFactory {
     }
 
     func makeMindsetHistoryView() -> AnyView {
-        let viewModel = MindsetHistoryViewModel(repository: mindsetRepository, logger: logger)
+        let viewModel = MindsetHistoryViewModel(entryRepository: entryRepository, logger: logger)
         return AnyView(MindsetHistoryView(viewModel: viewModel))
     }
 

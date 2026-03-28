@@ -28,7 +28,7 @@ final class AppDependencyContainer: ObservableObject {
     let serviceFactory: ServiceFactory
     let authService: AuthService
     let userRepository: UserRepository
-    let mindsetRepository: EntryRepository
+    let entryRepository: EntryRepository
     let coordinator: MainCoordinator
     let viewFactory: AppViewFactory
     let container: ModelContainer
@@ -52,7 +52,7 @@ final class AppDependencyContainer: ObservableObject {
         self.container = try! ModelContainer(for: SDUserProfile.self, SDEntry.self)
 
         // --- Repositories ---
-        self.mindsetRepository = serviceFactory.makeEntryRepository(modelContext: container.mainContext, authStateQuery: authService)
+        self.entryRepository = serviceFactory.makeEntryRepository(modelContext: container.mainContext, authStateQuery: authService)
         self.userRepository = serviceFactory.makeUserRepository(modelContext: container.mainContext, authStateQuery: authService)
 
         self.syncService = UserSyncService(localStore: serviceFactory.makeLocalUserRepository(modelContext: container.mainContext), remoteStore: serviceFactory.makeRemoteUserRepository(authStateQuery: authService), authService: authService, logger: logger)
@@ -64,13 +64,13 @@ final class AppDependencyContainer: ObservableObject {
         ]
             
         // --- Use Cases ---
-        let getStreak = GetStreakUseCase(repository: mindsetRepository)
-        let addMindset = AddEntryUseCase(repository: mindsetRepository)
-        let getYesterday = GetYesterdayGoalUseCase(repository: mindsetRepository)
+        let getStreak = GetStreakUseCase(repository: entryRepository)
+        let addMindset = AddEntryUseCase(repository: entryRepository)
+        let getYesterday = GetYesterdayGoalUseCase(repository: entryRepository)
 
         let deleteAccountUseCase = DeleteAccountUseCase(
             authService: authService, userRepository: userRepository,
-            entryRepository: mindsetRepository,
+            entryRepository: entryRepository,
             clearNonce: appleSignInNonceStorage.clearSessionData,
             logger: logger
         )
@@ -92,7 +92,7 @@ final class AppDependencyContainer: ObservableObject {
         self.coordinator = MainCoordinator(
             authStateQuery: authService,
             subscriptionService: subService,
-            mindsetRepository: mindsetRepository,
+            entryRepository: entryRepository,
             userRepository: userRepository,
             syncService: syncService
         )
@@ -102,7 +102,7 @@ final class AppDependencyContainer: ObservableObject {
             authService: authService,
             signInOrLinkUseCase: signInOrLinkUseCase,
             userRepository: userRepository,
-            mindsetRepository: mindsetRepository,
+            entryRepository: entryRepository,
             getStreakUseCase: getStreak,
             addEntryUseCase: addMindset,
             deleteAccountUseCase: deleteAccountUseCase,

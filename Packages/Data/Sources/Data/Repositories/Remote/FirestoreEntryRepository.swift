@@ -1,5 +1,5 @@
 //
-//  FirestoreMindsetRepository.swift
+//  FirestoreEntryRepository.swift
 //  Data
 //
 //  Created by patrick ridd on 3/19/26.

@@ -71,7 +71,7 @@ public struct StreakCalculator: Sendable {
 
 /// A Use Case that retrieves and calculates the user's current mindset entry streak.
 ///
-/// This service orchestrates the fetching of data from the `MindsetRepository` and
+/// This service orchestrates the fetching of data from the ``EntryRepository`` and
 /// leverages the ``StreakCalculator`` to determine the numerical streak value.
 ///
 /// Use this in ViewModels to display gamified progress or to trigger streak-based rewards.
@@ -90,7 +90,7 @@ public struct GetStreakUseCase: Sendable {
     /// - Returns: The current streak count as an `Int`.
     /// - Throws: An error if the repository fails to fetch entries.
     public func execute(relativeTo now: Date = Date()) async throws -> Int {
-        // Match the naming convention we used in SDMindsetRepository
+        // Match the naming convention we used in SDEntryRepository
         let entries = try await repository.fetchAllEntries()
 
         return StreakCalculator.calculateStreak(

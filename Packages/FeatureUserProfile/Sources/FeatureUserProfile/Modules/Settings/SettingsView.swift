@@ -204,9 +204,9 @@ extension SettingsView {
 
 #Preview("Securely Linked Account") {
     let mockAuth = MockAuthService(isAnonymousAccountLinked: true)
-    let mockMindsetRepository = MockMindsetRepository(days: 1999)
+    let mockEntryRepository = MockEntryRepository(days: 1999)
     let mockUserRepository = MockUserRepository()
-    let deleteAccountUseCase = DeleteAccountUseCase(authService: mockAuth, userRepository: mockUserRepository, entryRepository: mockMindsetRepository, clearNonce: {}, logger: DebugLogger.shared)
+    let deleteAccountUseCase = DeleteAccountUseCase(authService: mockAuth, userRepository: mockUserRepository, entryRepository: mockEntryRepository, clearNonce: {}, logger: DebugLogger.shared)
     let signOutUseCase = SignOutUseCase(authService: mockAuth, cleaners: [], clearNonce: {}, logger: DebugLogger.shared)
     
     SettingsView(
@@ -224,9 +224,9 @@ extension SettingsView {
 
 #Preview("Anonymous Account") {
     let mockAuth = MockAuthService(isAnonymousAccountLinked: false)
-    let mockMindsetRepository = MockMindsetRepository(days: 2)
+    let mockEntryRepository = MockEntryRepository(days: 2)
     let mockUserRepository = MockUserRepository()
-    let deleteAccountUseCase = DeleteAccountUseCase(authService: mockAuth, userRepository: mockUserRepository, entryRepository: mockMindsetRepository, clearNonce: {}, logger: DebugLogger.shared)
+    let deleteAccountUseCase = DeleteAccountUseCase(authService: mockAuth, userRepository: mockUserRepository, entryRepository: mockEntryRepository, clearNonce: {}, logger: DebugLogger.shared)
     let signOutUseCase = SignOutUseCase(authService: mockAuth, cleaners: [], clearNonce: {}, logger: DebugLogger.shared)
 
     SettingsView(

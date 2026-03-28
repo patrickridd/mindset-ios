@@ -13,7 +13,7 @@ import Observation
 public final class DashboardViewModel {
     // Dependencies
     private let userRepository: UserRepository
-    private let mindsetRepository: EntryRepository
+    private let entryRepository: EntryRepository
     private let getStreakUseCase: GetStreakUseCase
     private let getYesterdayGoalUseCase: GetYesterdayGoalUseCase
     private let logger: AppLogger
@@ -46,7 +46,7 @@ public final class DashboardViewModel {
     
     public init(
         userRepository: UserRepository,
-        mindsetRepository: EntryRepository,
+        entryRepository: EntryRepository,
         getStreakUseCase: GetStreakUseCase,
         getYesterdayGoalUseCase: GetYesterdayGoalUseCase,
         logger: AppLogger,
@@ -56,7 +56,7 @@ public final class DashboardViewModel {
         onSecureAccount: @escaping () -> Void
     ) {
         self.userRepository = userRepository
-        self.mindsetRepository = mindsetRepository
+        self.entryRepository = entryRepository
         self.getStreakUseCase = getStreakUseCase
         self.getYesterdayGoalUseCase = getYesterdayGoalUseCase
         self.logger = logger
@@ -97,7 +97,7 @@ public final class DashboardViewModel {
             self.userProfile = try await userRepository.fetchUserProfile()
 
             // 2. Fetch all entries to calculate totals and recent history
-            let allEntries = try await mindsetRepository.fetchAllEntries()
+            let allEntries = try await entryRepository.fetchAllEntries()
             self.recentEntries = Array(allEntries.prefix(3))  // Get last 3 for a "Recent" list
             self.totalRituals = allEntries.count
 

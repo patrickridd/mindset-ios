@@ -11,20 +11,20 @@ import Observation
 
 @Observable
 public final class MindsetHistoryViewModel {
-    private let repository: EntryRepository
+    private let entryRepository: EntryRepository
     private let logger: AppLogger
     public var entries: [Entry] = []
     public var isLoading = false
 
-    public init(repository: EntryRepository, logger: AppLogger) {
-        self.repository = repository
+    public init(entryRepository: EntryRepository, logger: AppLogger) {
+        self.entryRepository = entryRepository
         self.logger = logger
     }
 
     public func fetchHistory() async {
         isLoading = true
         do {
-            self.entries = try await repository.fetchAllEntries()
+            self.entries = try await entryRepository.fetchAllEntries()
         } catch {
             logger.log("❌ History load failed: \(error.localizedDescription)")
         }

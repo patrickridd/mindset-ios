@@ -513,10 +513,10 @@ private extension MorningRitualView {
         viewModel: MorningRitualViewModel(
             userRepository: Domain.MockUserRepository(),
             addEntryUseCase: AddEntryUseCase(
-                repository: Domain.MockMindsetRepository(days: 7)
+                repository: Domain.MockEntryRepository(days: 7)
             ),
             subscriptionService: Domain.MockSubscriptionService(),
-            getStreakUseCase: GetStreakUseCase(repository: Domain.MockMindsetRepository(days: 7)),
+            getStreakUseCase: GetStreakUseCase(repository: Domain.MockEntryRepository(days: 7)),
             aiService: Domain.MockAIService(),
             logger: DebugLogger.shared,
             onNavigate: { _ in },

@@ -1,5 +1,5 @@
 //
-//  MockMindsetRepository.swift
+//  MockEntryRepository.swift
 //  FeatureMindset
 //
 //  Created by patrick ridd on 1/6/26.
@@ -8,7 +8,7 @@
 import Domain
 import Foundation
 
-public final class MockMindsetRepository: EntryRepository, @unchecked Sendable {
+public final class MockEntryRepository: EntryRepository, @unchecked Sendable {
 
     public var mockEntries: [Entry] = []
 

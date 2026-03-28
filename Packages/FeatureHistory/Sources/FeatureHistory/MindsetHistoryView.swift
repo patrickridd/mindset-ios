@@ -67,5 +67,5 @@ public struct MindsetHistoryView: View {
 
 #Preview {
     MindsetHistoryView(
-        viewModel: MindsetHistoryViewModel(repository: MockMindsetRepository(days: 2), logger: DebugLogger.shared))
+        viewModel: MindsetHistoryViewModel(entryRepository: MockEntryRepository(days: 2), logger: DebugLogger.shared))
 }

@@ -200,12 +200,12 @@ private extension DashboardView {
 }
 
 #Preview {
-    let mindsetRepository = MockMindsetRepository(days: 1)
+    let entryRepository = MockEntryRepository(days: 1)
     let viewModel = DashboardViewModel(
         userRepository: MockUserRepository(),
-        mindsetRepository: mindsetRepository,
-        getStreakUseCase: GetStreakUseCase(repository: mindsetRepository),
-        getYesterdayGoalUseCase: GetYesterdayGoalUseCase(repository: mindsetRepository),
+                    entryRepository: entryRepository,
+        getStreakUseCase: GetStreakUseCase(repository: entryRepository),
+        getYesterdayGoalUseCase: GetYesterdayGoalUseCase(repository: entryRepository),
         logger: DebugLogger.shared,
         onStartMindset: {},
         onSeeHistory: {},

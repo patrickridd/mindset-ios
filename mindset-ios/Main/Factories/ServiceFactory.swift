@@ -99,7 +99,7 @@ struct ServiceFactory {
             let remote = FirestoreEntryRepository(authStateQuery: authStateQuery, logger: logger)
             return AppEntryRepository(local: local, remote: remote, authStateQuery: authStateQuery, logger: logger)
         } else {
-            return MockMindsetRepository(days: 11)
+            return MockEntryRepository(days: 11)
         }
     }
     
