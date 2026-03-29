@@ -11,7 +11,6 @@ public struct MindsetAmbientAnimationView: View {
     let animation: MindsetAnimation
     let speed: Double
     let opacity: Double
-
     @State private var isPlaying = false
 
     public init(
@@ -33,14 +32,13 @@ public struct MindsetAmbientAnimationView: View {
                 }
                 .configure { lottie in
                     lottie.animationSpeed = speed
-                    lottie.contentMode = .scaleAspectFill
+                    lottie.contentMode = .scaleAspectFit
                     lottie.configuration.renderingEngine = .mainThread
                 }
                 .playbackMode(
                     isPlaying ? .playing(.fromProgress(0, toProgress: 1, loopMode: .loop)) : .paused
                 )
                 .resizable()
-                .scaledToFill()
                 .opacity(opacity)
                 .clipped()
             }
@@ -54,5 +52,5 @@ public struct MindsetAmbientAnimationView: View {
 }
 
 #Preview("Ambient") {
-    MindsetAmbientAnimationView()
+    MindsetAmbientAnimationView(animation: .backgroundLinesWave)
 }

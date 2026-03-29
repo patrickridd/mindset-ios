@@ -32,9 +32,9 @@ public struct StartView: View {
             ZStack {
                 if !reduceMotion {
                     MindsetAmbientAnimationView(
-                        animation: .startBackground,
-                        speed: 0.3,
-                        opacity: 0.6
+                        animation: .backgroundLinesWave,
+                        speed: 0.4,
+                        opacity: 1.0
                     )
                 }
                 VignetteBackgroundView()
@@ -59,11 +59,15 @@ public struct StartView: View {
             Text(FeatureStartStrings.Screen.title)
                 .font(MindsetFonts.displayLarge)
                 .foregroundStyle(MindsetColors.textPrimaryDark)
+                .shadow(color: .black.opacity(0.6), radius: 4, x: 0, y: 2) // <--- The magic line
                 .fixedSize(horizontal: false, vertical: true)
 
             Text(FeatureStartStrings.Screen.subheadline)
                 .font(MindsetFonts.body)
-                .foregroundStyle(MindsetColors.textSecondaryDark)
+                .fontWeight(.medium)
+                .foregroundStyle(.white)
+                .shadow(color: .black.opacity(0.6), radius: 4, x: 0, y: 2) // <--- The magic line
+
                 .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -96,7 +100,17 @@ public struct StartView: View {
                 .foregroundStyle(MindsetColors.textOnAccent(for: colorScheme))
                 .frame(maxWidth: .infinity)
                 .frame(height: MindsetLayout.buttonHeight)
-                .background(Capsule().fill(MindsetColors.accentOrange))
+                .background(
+                    ZStack {
+                        // The iOS System Orange
+                        Capsule().fill(MindsetColors.accentOrange)
+                        
+                        // A subtle white glow on the top edge
+                        LinearGradient(colors: [.white.opacity(0.3), .clear], startPoint: .top, endPoint: .bottom)
+                    }
+                    .cornerRadius(26)
+                    .shadow(color: .orange.opacity(0.3), radius: 10, x: 0, y: 5)
+                )
             }
 
             Button {
@@ -105,8 +119,12 @@ public struct StartView: View {
             } label: {
                 Text(FeatureStartStrings.Actions.alreadyHaveAccount)
                     .font(MindsetFonts.bodyMedium)
-                    .foregroundStyle(MindsetColors.textPrimaryDark)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(MindsetColors.accentOrange)
                     .frame(maxWidth: .infinity)
+                    .shadow(color: .black.opacity(0.6), radius: 4, x: 0, y: 2) // <--- The magic line
+                
+                
             }
             .buttonStyle(.plain)
 
@@ -121,7 +139,8 @@ public struct StartView: View {
                     } else {
                         Text(FeatureStartStrings.Actions.continueAsGuest)
                             .font(MindsetFonts.subheadline)
-                            .foregroundStyle(MindsetColors.textMuted)
+                            .foregroundStyle(.white)
+                            .shadow(color: .black.opacity(0.6), radius: 4, x: 0, y: 2) // <--- The magic line
                     }
                 }
                 .frame(maxWidth: .infinity)

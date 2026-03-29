@@ -11,4 +11,6 @@ public enum MindsetAnimation: String {
     /// Full-screen ambient loop for the Start / welcome screen background.
     case startAmbient = "Start-Ambient"
     case startBackground = "start-background"
+    case startViewBackground = "start-view-background"
+    case backgroundLinesWave = "background-lines-wave"
 }
