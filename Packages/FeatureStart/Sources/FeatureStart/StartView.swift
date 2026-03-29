@@ -59,14 +59,14 @@ public struct StartView: View {
             Text(FeatureStartStrings.Screen.title)
                 .font(MindsetFonts.displayLarge)
                 .foregroundStyle(MindsetColors.textPrimaryDark)
-                .shadow(color: .black.opacity(0.6), radius: 4, x: 0, y: 2) // <--- The magic line
+                .elevatedShadow()
                 .fixedSize(horizontal: false, vertical: true)
 
             Text(FeatureStartStrings.Screen.subheadline)
                 .font(MindsetFonts.body)
                 .fontWeight(.medium)
                 .foregroundStyle(.white)
-                .shadow(color: .black.opacity(0.6), radius: 4, x: 0, y: 2) // <--- The magic line
+                .textGlowShadow()
 
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -122,7 +122,7 @@ public struct StartView: View {
                     .fontWeight(.semibold)
                     .foregroundStyle(MindsetColors.accentOrange)
                     .frame(maxWidth: .infinity)
-                    .shadow(color: .black.opacity(0.6), radius: 4, x: 0, y: 2) // <--- The magic line
+                    .elevatedShadow()
                 
                 
             }
@@ -140,7 +140,7 @@ public struct StartView: View {
                         Text(FeatureStartStrings.Actions.continueAsGuest)
                             .font(MindsetFonts.subheadline)
                             .foregroundStyle(.white)
-                            .shadow(color: .black.opacity(0.6), radius: 4, x: 0, y: 2) // <--- The magic line
+                            .textGlowShadow()
                     }
                 }
                 .frame(maxWidth: .infinity)
@@ -170,3 +170,4 @@ public struct StartView: View {
         func log(_ message: String) {}
     }
 #endif
+
