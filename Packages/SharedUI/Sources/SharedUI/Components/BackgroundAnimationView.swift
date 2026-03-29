@@ -1,5 +1,5 @@
 //
-//  MindsetAmbientAnimationView.swift
+//  BackgroundAnimationView.swift
 //  SharedUI
 //
 
@@ -7,14 +7,14 @@ import Lottie
 import SwiftUI
 
 /// Full-bleed looping Lottie for screen backgrounds. Does not intercept touches; hidden from VoiceOver.
-public struct MindsetAmbientAnimationView: View {
+public struct BackgroundAnimationView: View {
     let animation: MindsetAnimation
     let speed: Double
     let opacity: Double
     @State private var isPlaying = false
 
     public init(
-        animation: MindsetAnimation = .startBackground,
+        animation: MindsetAnimation = .wavyLinesBackground,
         speed: Double = 0.6,
         opacity: Double = 1.0
     ) {
@@ -51,6 +51,6 @@ public struct MindsetAmbientAnimationView: View {
     }
 }
 
-#Preview("Ambient") {
-    MindsetAmbientAnimationView(animation: .backgroundLinesWave)
+#Preview("wavyLinesBackground") {
+    BackgroundAnimationView(animation: .wavyLinesBackground)
 }

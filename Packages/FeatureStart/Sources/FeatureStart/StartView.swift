@@ -31,8 +31,8 @@ public struct StartView: View {
         .background {
             ZStack {
                 if !reduceMotion {
-                    MindsetAmbientAnimationView(
-                        animation: .backgroundLinesWave,
+                    BackgroundAnimationView(
+                        animation: .wavyLinesBackground,
                         speed: 0.4,
                         opacity: 1.0
                     )
