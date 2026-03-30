@@ -19,7 +19,6 @@ public final class SDUserProfile {
     public var isAccountSecured: Bool
     
     // Flattened Onboarding Data
-    public var primaryGoal: String
     public var overwhelmFrequency: String
     public var headspaceRaw: String?
     public var mentalMuscleRaw: String?
@@ -42,7 +41,6 @@ public final class SDUserProfile {
         lastUpdatedAt: Date,
         isAccountSecured: Bool,
         isOnboardingComplete: Bool,
-        primaryGoal: String,
         overwhelmFrequency: String,
         headspaceRaw: String?,
         mentalMuscleRaw: String?,
@@ -61,7 +59,6 @@ public final class SDUserProfile {
         self.lastUpdatedAt = lastUpdatedAt
         self.isAccountSecured = isAccountSecured
         self.isOnboardingComplete = isOnboardingComplete
-        self.primaryGoal = primaryGoal
         self.overwhelmFrequency = overwhelmFrequency
         self.headspaceRaw = headspaceRaw
         self.mentalMuscleRaw = mentalMuscleRaw
@@ -81,7 +78,6 @@ public final class SDUserProfile {
     public func toDomain() -> UserProfile {
         let onboarding = OnboardingData(
             overwhelmFrequency: overwhelmFrequency,
-            primaryGoal: primaryGoal,
             headspace: headspaceRaw.flatMap { OnboardingData.Headspace(rawValue: $0) },
             mentalMuscle: mentalMuscleRaw.flatMap { OnboardingData.MentalMuscle(rawValue: $0) },
             responseToSetback: responseToSetbackRaw.flatMap { OnboardingData.ResponseToSetback(rawValue: $0) },
@@ -118,7 +114,6 @@ public final class SDUserProfile {
             lastUpdatedAt: domain.lastUpdatedAt,
             isAccountSecured: domain.isAccountSecured,
             isOnboardingComplete: domain.isOnboardingComplete,
-            primaryGoal: domain.onboardingData.primaryGoal,
             overwhelmFrequency: domain.onboardingData.overwhelmFrequency,
             headspaceRaw: domain.onboardingData.headspace?.rawValue,
             mentalMuscleRaw: domain.onboardingData.mentalMuscle?.rawValue,
@@ -142,7 +137,6 @@ extension SDUserProfile {
         self.isOnboardingComplete = domain.isOnboardingComplete
         
         // Onboarding
-        self.primaryGoal = domain.onboardingData.primaryGoal
         self.headspaceRaw = domain.onboardingData.headspace?.rawValue
         self.mentalMuscleRaw = domain.onboardingData.mentalMuscle?.rawValue
         self.responseToSetbackRaw = domain.onboardingData.responseToSetback?.rawValue

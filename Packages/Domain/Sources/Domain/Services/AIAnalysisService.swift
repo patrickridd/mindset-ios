@@ -6,5 +6,5 @@
 //
 
 public protocol AIAnalysisService: Sendable {
-    func generateFeedback(for prompt: MindsetPrompt, answer: String) async throws -> String
+    func generateFeedback(for prompt: Prompt, answer: String) async throws -> String
 }

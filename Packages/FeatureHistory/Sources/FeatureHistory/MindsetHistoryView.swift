@@ -55,8 +55,8 @@ public struct MindsetHistoryView: View {
                     .foregroundStyle(MindsetColors.accentOrange)
             }
 
-            // Show the first AI reflection as a "highlight"
-            if let firstReflection = entry.promptResponses.first?.aiReflection {
+            // First response may be a multi-slot answer with no reflection; use first non-nil.
+            if let firstReflection = entry.promptResponses.compactMap(\.aiReflection).first {
                 Text("\"\(firstReflection)\"")
                     .font(MindsetFonts.subheadline)
                     .italic()

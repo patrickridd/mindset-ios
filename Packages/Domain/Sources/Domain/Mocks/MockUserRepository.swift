@@ -13,7 +13,6 @@ public final class MockUserRepository: UserRepository {
     public init(
         id: String = "mock-user-id",
         userName: String = "Patrick",
-        primaryGoal: String = "Feel more confident",
         isOnboardingComplete: Bool = true,
         overwhelmedFrequency: OnboardingData.OverwhelmedFrequency = .often,
         isAccountSecured: Bool = true,

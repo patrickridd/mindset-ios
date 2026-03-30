@@ -18,7 +18,7 @@ public final class GeminiAIService: AIAnalysisService, @unchecked Sendable {
         self.logger = logger
     }
 
-    public func generateFeedback(for prompt: MindsetPrompt, answer: String) async throws -> String {
+    public func generateFeedback(for prompt: Prompt, answer: String) async throws -> String {
         logger.log("🤖 Sending history to Gemini 2.0 Flash...")
         // We provide a "System Instruction" to keep Gemini in 'Coach Mode'
         let systemPrompt = """

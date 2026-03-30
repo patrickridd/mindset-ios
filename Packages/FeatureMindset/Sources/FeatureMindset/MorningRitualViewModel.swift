@@ -23,16 +23,23 @@ public final class MorningRitualViewModel {
     private let logger: AppLogger
 
     // Dynamic Content
-    public var prompts: [MindsetPrompt] = []
-    public var currentStepIndex: Int = 0
+    public var prompts: [Prompt] = []
+    /// Index into `prompts` (logical prompt).
+    public var currentPromptIndex: Int = 0
+    /// Slot within the current logical prompt (0 ..< responseSlotCount).
+    public var currentSlotIndex: Int = 0
 
-    // User Answers & AI Reflections (Keyed by Prompt ID)
+    // User Answers & AI Reflections (answers keyed by composite id; reflections by logical prompt id)
     public var answers: [String: String] = [:]
-    public var reflections: [String: String] = [:]  // Store reflections per prompt
+    public var reflections: [String: String] = [:]
 
     // Typewriter Animation State
     public var animatedPromptIds: Set<String> = []
     public var isGeneratingPrompt: Bool = false
+
+    /// Brief shimmer on the answer field after advancing to the next slot within the same prompt.
+    public var isInterSlotTextFieldShimmering: Bool = false
+    private var interSlotShimmerTask: Task<Void, Never>?
 
     // UI State
     public var isLoading: Bool = false
@@ -42,7 +49,7 @@ public final class MorningRitualViewModel {
     public var isCurrentPromptSubmitted: Bool = false
     public var maxProgressAchieved: Double = 0.0
     public var isRitualCompleteAnimationDone: Bool = false
-    
+
     public var onNavigate: ((NavigationState) -> Void)?
 
     public var isAiThinking: Bool = false
@@ -52,7 +59,7 @@ public final class MorningRitualViewModel {
     private var isPro: Bool = false
 
     public var shouldShowTextField: Bool {
-        currentStepIndex < prompts.count
+        currentPromptIndex < prompts.count
     }
 
     public var currentAiReflection: String? {
@@ -60,12 +67,32 @@ public final class MorningRitualViewModel {
         return reflections[id]
     }
 
-    public var shouldAnimateCurrentPrompt: Bool {
-        guard let promptId = currentPrompt?.id else { return false }
-        return !isGeneratingPrompt && !animatedPromptIds.contains(promptId)
+    /// Composite storage key for the active slot (matches persisted `PromptResponse.promptId`).
+    public var currentCompositeAnswerKey: String? {
+        guard let prompt = currentPrompt else { return nil }
+        return Prompt.compositePromptId(baseId: prompt.id, slotIndex: currentSlotIndex)
     }
-    
-    public var  displayRitualSuccessAnimation: Bool {
+
+    /// e.g. "2 of 3" when the logical prompt has multiple slots; `nil` for a single-slot prompt.
+    public var slotPositionLabel: String? {
+        guard let prompt = currentPrompt, prompt.responseSlotCount > 1 else { return nil }
+        return "\(currentSlotIndex + 1) / \(prompt.responseSlotCount)"
+    }
+
+    public var totalMicroSteps: Int {
+        prompts.reduce(0) { $0 + $1.responseSlotCount }
+    }
+
+    private var completedSlotsBeforeCurrentPrompt: Int {
+        prompts.prefix(currentPromptIndex).reduce(0) { $0 + $1.responseSlotCount }
+    }
+
+    public var shouldAnimateCurrentPrompt: Bool {
+        guard let key = currentCompositeAnswerKey else { return false }
+        return !isGeneratingPrompt && !animatedPromptIds.contains(key)
+    }
+
+    public var displayRitualSuccessAnimation: Bool {
         isRitualComplete && !isRitualCompleteAnimationDone
     }
 
@@ -97,7 +124,7 @@ public final class MorningRitualViewModel {
         }
         Task {
             await prepareRitual()
-        }  
+        }
     }
 
     public func dismiss() {
@@ -106,69 +133,66 @@ public final class MorningRitualViewModel {
 
     private func prepareRitual() async {
         isLoading = true
-        // Reset local state for a fresh start
-        self.currentStepIndex = 0
+        self.currentPromptIndex = 0
+        self.currentSlotIndex = 0
         self.answers = [:]
         self.reflections = [:]
         self.isCurrentPromptSubmitted = false
         self.maxProgressAchieved = 0.0
         self.animatedPromptIds = []
         self.isGeneratingPrompt = false
+        cancelInterSlotShimmerTask()
+        self.isInterSlotTextFieldShimmering = false
 
         do {
             let profile = try await userRepository.fetchUserProfile()
-
-            // Ensure we pass the actual completedCount if you have it, or 0 for now
-            let newPrompts = promptEngine.fetchPrompts(for: profile, completedCount: 0)
-
-            // Assigning to self.prompts triggers the UI update
-            self.prompts = newPrompts
+            self.prompts = promptEngine.fetchPrompts(for: profile, completedCount: 0)
         } catch {
             logger.log("❌ Ritual setup failed: \(error.localizedDescription)")
             self.prompts = promptEngine.fetchPrompts(for: nil, completedCount: 0)
         }
         isLoading = false
 
-        // Trigger generation animation for first prompt
         await startPromptGeneration()
     }
 
     // MARK: - Navigation Logic
 
-    public var currentPrompt: MindsetPrompt? {
-        guard !prompts.isEmpty, currentStepIndex < prompts.count else { return nil }
-        return prompts[currentStepIndex]
+    public var currentPrompt: Prompt? {
+        guard !prompts.isEmpty, currentPromptIndex < prompts.count else { return nil }
+        return prompts[currentPromptIndex]
     }
 
     public var canProceed: Bool {
-        guard let currentId = currentPrompt?.id else { return false }
-        let currentAnswerCount = answers[currentId]?.count ?? 0
+        guard let key = currentCompositeAnswerKey else { return false }
+        let currentAnswerCount = answers[key]?.count ?? 0
         return currentAnswerCount >= 3
     }
 
-    /// Progress for the step progress bar (0...1). First step shows a small nub (0.025).
+    /// Progress for the step progress bar (0...1). Uses sequential micro-steps; first step shows a small nub (0.025).
     public var progress: Double {
-        guard !prompts.isEmpty else { return 0 }
-        let baseProgress = Double(currentStepIndex) / Double(prompts.count)
-        if isCurrentPromptSubmitted && currentStepIndex < prompts.count - 1 {
-            // If current prompt is submitted, and it's not the last step, show progress for the next step
-            maxProgressAchieved = max(
-                maxProgressAchieved, Double(currentStepIndex + 1) / Double(prompts.count))
-        } else if isCurrentPromptSubmitted && currentStepIndex == prompts.count - 1 {
-            // If it's the last step and submitted, show full progress
-            maxProgressAchieved = max(maxProgressAchieved, 1.0)
+        guard !prompts.isEmpty, totalMicroSteps > 0 else { return 0 }
+        let slotsFilled: Int
+        if isCurrentPromptSubmitted, let p = currentPrompt {
+            slotsFilled = completedSlotsBeforeCurrentPrompt + p.responseSlotCount
         } else {
-            maxProgressAchieved = max(maxProgressAchieved, baseProgress)
+            slotsFilled = completedSlotsBeforeCurrentPrompt + currentSlotIndex
+        }
+        let base = Double(slotsFilled) / Double(totalMicroSteps)
+        if slotsFilled == 0 && !isCurrentPromptSubmitted {
+            maxProgressAchieved = max(maxProgressAchieved, 0.025)
+        } else {
+            maxProgressAchieved = max(maxProgressAchieved, base)
         }
         return maxProgressAchieved
     }
 
     public var shouldDisplayFooterButton: Bool {
-        return isCurrentPromptSubmitted
+        isCurrentPromptSubmitted
     }
 
     public var isLastStep: Bool {
-        return currentStepIndex >= prompts.count - 1
+        currentPromptIndex >= prompts.count - 1
     }
 
     public var footerButtonText: String {
@@ -182,18 +206,21 @@ public final class MorningRitualViewModel {
     }
 
     public var showFooterButtonEnabledStyle: Bool {
-        return !isAiThinking
+        !isAiThinking
     }
 
     public var isFooterButtonDisabled: Bool {
-        return isAiThinking
+        isAiThinking
     }
 
     public func nextStep() {
         isCoachTipVisible = false
         isCurrentPromptSubmitted = false
-        if currentStepIndex < prompts.count - 1 {
-            currentStepIndex += 1
+        cancelInterSlotShimmerTask()
+        isInterSlotTextFieldShimmering = false
+        if currentPromptIndex < prompts.count - 1 {
+            currentPromptIndex += 1
+            currentSlotIndex = 0
             Task {
                 await startPromptGeneration()
             }
@@ -210,8 +237,8 @@ public final class MorningRitualViewModel {
     }
 
     public func markCurrentPromptAnimated() {
-        guard let promptId = currentPrompt?.id else { return }
-        animatedPromptIds.insert(promptId)
+        guard let key = currentCompositeAnswerKey else { return }
+        animatedPromptIds.insert(key)
     }
 
     private func startPromptGeneration() async {
@@ -220,15 +247,45 @@ public final class MorningRitualViewModel {
         isGeneratingPrompt = false
     }
 
+    private func cancelInterSlotShimmerTask() {
+        interSlotShimmerTask?.cancel()
+        interSlotShimmerTask = nil
+    }
+
+    private func beginInterSlotTextFieldShimmer() {
+        cancelInterSlotShimmerTask()
+        isInterSlotTextFieldShimmering = true
+        interSlotShimmerTask = Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(900))
+            guard !Task.isCancelled else { return }
+            isInterSlotTextFieldShimmering = false
+            interSlotShimmerTask = nil
+        }
+    }
+
     public func submitCurrentAnswer() async {
-        guard let prompt = currentPrompt, let answer = answers[prompt.id] else { return }
+        guard let prompt = currentPrompt else { return }
+        let key = Prompt.compositePromptId(baseId: prompt.id, slotIndex: currentSlotIndex)
+        guard let answer = answers[key], answer.count >= 3 else { return }
+
+        let isLastSlot = currentSlotIndex >= prompt.responseSlotCount - 1
+        if !isLastSlot {
+            currentSlotIndex += 1
+            beginInterSlotTextFieldShimmer()
+            return
+        }
 
         isCurrentPromptSubmitted = true
         isAiThinking = true
 
+        let combined = (0..<prompt.responseSlotCount).map { slot -> String in
+            let slotKey = Prompt.compositePromptId(baseId: prompt.id, slotIndex: slot)
+            return answers[slotKey] ?? ""
+        }.enumerated().map { "\($0.offset + 1). \($0.element)" }.joined(separator: "\n")
+
         do {
-            let reflection = try await aiService.generateFeedback(for: prompt, answer: answer)
-            reflections[prompt.id] = reflection  // Save reflection for this specific prompt
+            let reflection = try await aiService.generateFeedback(for: prompt, answer: combined)
+            reflections[prompt.id] = reflection
         } catch {
             reflections[prompt.id] = "That's a thoughtful reflection. Keep going!"
         }
@@ -252,53 +309,53 @@ public final class MorningRitualViewModel {
                 return
             }
 
-            // 1. Map current answers and reflections into PromptResponse objects
-            let currentResponses = prompts.compactMap { prompt -> PromptResponse? in
-                guard let answer = answers[prompt.id] else { return nil }
-                return PromptResponse(
-                    promptId: prompt.id,
-                    category: prompt.category,
-                    userText: answer,
-                    aiReflection: reflections[prompt.id]
-                )
+            var currentResponses: [PromptResponse] = []
+            for prompt in prompts {
+                for slot in 0..<prompt.responseSlotCount {
+                    let cid = Prompt.compositePromptId(baseId: prompt.id, slotIndex: slot)
+                    guard let text = answers[cid],
+                        !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                    else { continue }
+                    let reflection =
+                        slot == prompt.responseSlotCount - 1 ? reflections[prompt.id] : nil
+                    currentResponses.append(
+                        PromptResponse(
+                            promptId: cid,
+                            category: prompt.category,
+                            userText: text,
+                            aiReflection: reflection
+                        ))
+                }
             }
 
-            // 2. Calculate Gamification Data
-            // Sum XP based on categories used in this session
-            self.earnedXP = currentResponses.reduce(0) { $0 + $1.category.xpValue }
+            self.earnedXP = RitualGamification.earnedXP(from: currentResponses)
 
-            // Determine Archetype by finding the most frequent category performed
-            let categoryCounts = currentResponses.reduce(into: [:]) { counts, res in
-                counts[res.category, default: 0] += 1
-            }
-
-            if let primaryCategory = categoryCounts.max(by: { $0.value < $1.value })?.key {
+            if let primaryCategory = RitualGamification.primaryCategory(from: currentResponses) {
                 self.generatedArchetype = "The \(primaryCategory.displayName)"
             }
-            // Create and Save the Parent Entry
+
             let dateCreated = Date()
             let entry = Entry(
                 userId: userId,
                 dateCreated: dateCreated,
                 promptResponses: currentResponses,
                 archetypeTag: self.generatedArchetype,
-                sentimentScore: 0.8  // In production, this would come from an AI sentiment analysis call
+                sentimentScore: 0.8
             )
-            
-            //  Save the entry to the database
+
             try await addEntryUseCase.execute(entry: entry)
-            
-            // This ensures the streak is mathematically correct, even if they skipped a day.
+
             let updatedStreak = try await getStreakUseCase.execute()
-            
-            // Update the User Profile
+
             if var profile = try await userRepository.fetchUserProfile() {
                 profile.stats.streakCount = updatedStreak
                 profile.stats.totalXP += self.earnedXP
                 profile.stats.lastRitualDate = dateCreated
                 try await userRepository.saveUserProfile(profile)
-                
-                logger.log("✅ Entry saved. New Streak: \(updatedStreak), XP: \(profile.stats.totalXP)")
+
+                logger.log(
+                    "✅ Entry saved. New Streak: \(updatedStreak), XP: \(profile.stats.totalXP)"
+                )
             }
         } catch {
             logger.log("❌ Ritual save failed: \(error.localizedDescription)")

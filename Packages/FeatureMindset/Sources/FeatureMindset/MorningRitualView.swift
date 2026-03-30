@@ -84,7 +84,9 @@ private extension MorningRitualView {
 
     @ViewBuilder
     var mainContentOrLoading: some View {
-        if viewModel.isLoading && viewModel.prompts.isEmpty || viewModel.isRitualCompleteAnimationDone {
+        if (viewModel.isLoading && viewModel.prompts.isEmpty)
+            || viewModel.isRitualCompleteAnimationDone
+        {
             initialLoadingOverlay
         } else if viewModel.displayRitualSuccessAnimation {
             MindsetAnimationView(animation: .checkmarkSuccess, loopMode: .playOnce) {
@@ -236,10 +238,17 @@ private extension MorningRitualView {
             }
 
             if let prompt = viewModel.currentPrompt {
-                Text(prompt.category.displayName.uppercased())
-                    .font(MindsetFonts.labelUppercase)
-                    .tracking(1.5)
-                    .foregroundStyle(MindsetColors.labelAccent(for: colorScheme))
+                VStack(spacing: MindsetLayout.spacing4) {
+                    Text(prompt.category.displayName.uppercased())
+                        .font(MindsetFonts.labelUppercase)
+                        .tracking(1.5)
+                        .foregroundStyle(MindsetColors.labelAccent(for: colorScheme))
+                    if let slotLabel = viewModel.slotPositionLabel {
+                        Text(slotLabel)
+                            .font(MindsetFonts.caption)
+                            .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
+                    }
+                }
             }
         }
         .padding(.horizontal)
@@ -296,7 +305,12 @@ private extension MorningRitualView {
                     HapticManager.success()
                 }
             }
-            .onChange(of: viewModel.currentStepIndex) { _, _ in
+            .onChange(of: viewModel.currentPromptIndex) { _, _ in
+                DispatchQueue.main.asyncAfter(deadline: .now() + Self.animationDelayShort) {
+                    isTextFieldFocused = viewModel.shouldShowTextField
+                }
+            }
+            .onChange(of: viewModel.currentSlotIndex) { _, _ in
                 DispatchQueue.main.asyncAfter(deadline: .now() + Self.animationDelayShort) {
                     isTextFieldFocused = viewModel.shouldShowTextField
                 }
@@ -317,7 +331,8 @@ private extension MorningRitualView {
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .blur(radius: viewModel.isCoachTipVisible ? Self.blurRadius : 0, opaque: false)
-        .animation(.easeIn(duration: Self.animationDurationBlur), value: viewModel.isCoachTipVisible)
+        .animation(
+            .easeIn(duration: Self.animationDurationBlur), value: viewModel.isCoachTipVisible)
     }
 
     var keyboardBarOverlay: some View {
@@ -400,6 +415,7 @@ private extension MorningRitualView {
                                 .multilineTextAlignment(.leading)
                                 .lineSpacing(MindsetLayout.spacing4)
                                 .padding([.horizontal, .top], MindsetLayout.paddingSmall)
+                                .id("\(prompt.id)-slot-\(viewModel.currentSlotIndex)")
                                 .transition(
                                     .opacity.combined(with: .offset(y: Self.promptFadeInOffsetY))
                                 )
@@ -413,10 +429,16 @@ private extension MorningRitualView {
                     .easeOut(duration: Self.promptFadeInDuration),
                     value: currentPromptContentPhase
                 )
+                .animation(
+                    .easeOut(duration: Self.promptFadeInDuration),
+                    value: viewModel.currentSlotIndex
+                )
                 .padding(.top)
 
                 // textEditor should be outside the Group to be always present and not part of the phase transition
-                textEditor(promptId: prompt.id)
+                if let compositeKey = viewModel.currentCompositeAnswerKey {
+                    textEditor(compositeKey: compositeKey)
+                }
 
                 if (viewModel.isAiThinking || viewModel.currentAiReflection != nil)
                     && !isTextFieldFocused
@@ -430,29 +452,41 @@ private extension MorningRitualView {
                 }
             }
             .animation(.easeOut(duration: Self.promptFadeInDuration), value: viewModel.isAiThinking)
-            .id(prompt.id)
+            .id(viewModel.currentPromptIndex)
             .transition(stepTransition)
         }
     }
 
-    func textEditor(promptId: String) -> some View {
-        TextEditor(
-            text: Binding(
-                get: { viewModel.answers[promptId] ?? "" },
-                set: { viewModel.answers[promptId] = $0 }
+    func textEditor(compositeKey: String) -> some View {
+        ZStack {
+            TextEditor(
+                text: Binding(
+                    get: { viewModel.answers[compositeKey] ?? "" },
+                    set: { viewModel.answers[compositeKey] = $0 }
+                )
             )
-        )
-        .frame(minHeight: MindsetLayout.textEditorMinHeight)
-        .padding(MindsetLayout.paddingMedium)
-        .background(
-            RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).fill(
-                MindsetColors.backgroundSecondary(for: colorScheme))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).stroke(
-                MindsetColors.stoicSlateSoft, lineWidth: MindsetLayout.borderWidth)
-        )
-        .focused($isTextFieldFocused)
+            .frame(minHeight: MindsetLayout.textEditorMinHeight)
+            .padding(MindsetLayout.paddingMedium)
+            .background(
+                RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).fill(
+                    MindsetColors.backgroundSecondary(for: colorScheme))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).stroke(
+                    MindsetColors.stoicSlateSoft, lineWidth: MindsetLayout.borderWidth)
+            )
+            .focused($isTextFieldFocused)
+
+            if viewModel.isInterSlotTextFieldShimmering {
+                RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
+                    .fill(MindsetColors.backgroundSecondary(for: colorScheme).opacity(0.55))
+                    .shimmer()
+                    .allowsHitTesting(false)
+                    .transition(.opacity)
+            }
+        }
+        .animation(
+            .easeInOut(duration: 0.2), value: viewModel.isInterSlotTextFieldShimmering)
     }
 
     var footerButton: some View {

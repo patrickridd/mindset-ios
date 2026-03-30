@@ -10,8 +10,7 @@ import Domain
 /// A Codable container for onboarding responses, used to configure AI coaching parameters.
 public struct OnboardingDataDTO: Codable {
     public let overwhelmFrequency: String
-    public let primaryGoal: String
-    
+
     // MARK: - Quiz Results (MLP Configuration)
     public let headspace: String?
     public let mentalMuscle: String?
@@ -22,7 +21,6 @@ public struct OnboardingDataDTO: Codable {
     /// Maps the Domain ``OnboardingData`` to a DTO for Firebase storage.
     public init(from domain: OnboardingData) {
         self.overwhelmFrequency = domain.overwhelmFrequency
-        self.primaryGoal = domain.primaryGoal
         
         // We store the rawValue (String) to ensure Firestore compatibility
         self.headspace = domain.headspace?.rawValue
@@ -36,7 +34,6 @@ public struct OnboardingDataDTO: Codable {
     public func toDomain() -> OnboardingData {
         OnboardingData(
             overwhelmFrequency: overwhelmFrequency,
-            primaryGoal: primaryGoal,
             headspace: OnboardingData.Headspace(rawValue: headspace ?? ""),
             mentalMuscle: OnboardingData.MentalMuscle(rawValue: mentalMuscle ?? ""),
             responseToSetback: OnboardingData.ResponseToSetback(rawValue: responseToSetback ?? ""),

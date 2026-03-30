@@ -1,50 +1,62 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "dashboard.title" : {
-      "comment" : "Dashboard screen title",
+    "dashboard.archetype.title" : {
+      "comment" : "Archetype card title",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dashboard"
+            "value" : "Your Archetype"
           }
         }
       }
     },
-    "dashboard.navTitle" : {
-      "comment" : "Navigation bar title",
+    "dashboard.cta.beginMorningRitual" : {
+      "comment" : "Begin morning ritual button",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mindset"
+            "value" : "Begin Morning Ritual"
           }
         }
       }
     },
-    "dashboard.greeting.morning" : {
-      "comment" : "Morning greeting",
+    "dashboard.defaultUserName" : {
+      "comment" : "Default user name when profile missing",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Good morning"
+            "value" : "Visionary"
           }
         }
       }
     },
-    "dashboard.greeting.morningWithComma" : {
-      "comment" : "Morning greeting with comma for header",
+    "dashboard.goal.currentLabel" : {
+      "comment" : "Current goal card label",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Good morning,"
+            "value" : "CURRENT MINDSET GOAL"
+          }
+        }
+      }
+    },
+    "dashboard.goal.defaultPlaceholder" : {
+      "comment" : "Reminds user to set their goal to curate their experience.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set Mindset Goal HERE 👈"
           }
         }
       }
@@ -73,98 +85,38 @@
         }
       }
     },
-    "dashboard.goal.currentLabel" : {
-      "comment" : "Current goal card label",
+    "dashboard.greeting.morning" : {
+      "comment" : "Morning greeting",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "CURRENT GOAL"
+            "value" : "Good morning"
           }
         }
       }
     },
-    "dashboard.goal.defaultPlaceholder" : {
-      "comment" : "Default goal when none set",
+    "dashboard.greeting.morningWithComma" : {
+      "comment" : "Morning greeting with comma for header",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calibrate Your Mindset"
+            "value" : "Good morning,"
           }
         }
       }
     },
-    "dashboard.defaultUserName" : {
-      "comment" : "Default user name when profile missing",
+    "dashboard.navTitle" : {
+      "comment" : "Navigation bar title",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Visionary"
-          }
-        }
-      }
-    },
-    "dashboard.yesterday.label" : {
-      "comment" : "Yesterday's focus section label",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "YESTERDAY'S FOCUS"
-          }
-        }
-      }
-    },
-    "dashboard.cta.beginMorningRitual" : {
-      "comment" : "Begin morning ritual button",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Begin Morning Ritual"
-          }
-        }
-      }
-    },
-    "dashboard.streak.title" : {
-      "comment" : "Streak section title",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Current Streak"
-          }
-        }
-      }
-    },
-    "dashboard.streak.statLabel" : {
-      "comment" : "Streak stat box label",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Streak"
-          }
-        }
-      }
-    },
-    "dashboard.streak.days" : {
-      "comment" : "Days count for streak",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld days"
+            "value" : "Mindset"
           }
         }
       }
@@ -193,26 +145,50 @@
         }
       }
     },
-    "dashboard.xp.title" : {
-      "comment" : "XP section title",
+    "dashboard.streak.days" : {
+      "comment" : "Days count for streak",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Total XP"
+            "value" : "%lld days"
           }
         }
       }
     },
-    "dashboard.todayRitual.title" : {
-      "comment" : "Today's ritual card title",
+    "dashboard.streak.statLabel" : {
+      "comment" : "Streak stat box label",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Today's Ritual"
+            "value" : "Streak"
+          }
+        }
+      }
+    },
+    "dashboard.streak.title" : {
+      "comment" : "Streak section title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current Streak"
+          }
+        }
+      }
+    },
+    "dashboard.title" : {
+      "comment" : "Dashboard screen title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dashboard"
           }
         }
       }
@@ -241,14 +217,26 @@
         }
       }
     },
-    "dashboard.archetype.title" : {
-      "comment" : "Archetype card title",
+    "dashboard.todayRitual.title" : {
+      "comment" : "Today's ritual card title",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your Archetype"
+            "value" : "Today's Ritual"
+          }
+        }
+      }
+    },
+    "dashboard.weeklySummary.ritualsCompleted" : {
+      "comment" : "Rituals completed count",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld rituals completed"
           }
         }
       }
@@ -265,14 +253,26 @@
         }
       }
     },
-    "dashboard.weeklySummary.ritualsCompleted" : {
-      "comment" : "Rituals completed count",
+    "dashboard.xp.title" : {
+      "comment" : "XP section title",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld rituals completed"
+            "value" : "Total XP"
+          }
+        }
+      }
+    },
+    "dashboard.yesterday.label" : {
+      "comment" : "Yesterday's focus section label",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "YESTERDAY'S FOCUS"
           }
         }
       }

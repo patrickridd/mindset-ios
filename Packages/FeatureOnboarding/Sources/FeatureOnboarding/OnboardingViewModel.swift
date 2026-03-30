@@ -164,7 +164,7 @@ public final class OnboardingViewModel {
         let overwhelmFrequency = headspace.map { mapHeadspaceToOverwhelmed($0) } ?? .sometimes
         let primaryGoal = mentalMuscle?.rawValue ?? "Build a healthier mindset"
 
-        return OnboardingData(overwhelmFrequency: overwhelmFrequency.rawValue, primaryGoal: primaryGoal, headspace: headspace, mentalMuscle: mentalMuscle, responseToSetback: responseToSetback, habitGoal: habitGoal, aiCoachTone: aiCoachTone)
+        return OnboardingData(overwhelmFrequency: overwhelmFrequency.rawValue, headspace: headspace, mentalMuscle: mentalMuscle, responseToSetback: responseToSetback, habitGoal: habitGoal, aiCoachTone: aiCoachTone)
     }
 
     /// Legacy mapping for backward compatibility with PromptEngine

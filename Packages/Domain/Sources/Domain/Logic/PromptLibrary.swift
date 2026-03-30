@@ -6,9 +6,44 @@
 //
 
 public struct PromptLibrary {
-    public static let allPrompts: [PromptCategory: [MindsetPrompt]] = [
+    /// Default morning ritual: gratitude (3 slots), priorities (3 slots), intention (1 slot).
+    public static let morningStartTemplate: [Prompt] = [
+        Prompt(
+            id: "template_morning_grateful",
+            category: .gratitude,
+            headline: "Grateful feelings",
+            questionText: "What are 3 things that make you 'feel' grateful?",
+            coachTip:
+                "Name the feeling each one evokes—warmth, relief, joy—not just the object.",
+            scientificRationale:
+                "Affect-focused gratitude strengthens emotional granularity and well-being.",
+            responseSlotCount: 3
+        ),
+        Prompt(
+            id: "template_morning_todos",
+            category: .futureSelf,
+            headline: "Today's priorities",
+            questionText: "What are your top 3 things to get done today?",
+            coachTip: "Be specific enough that you'd know if each item were done by tonight.",
+            scientificRationale:
+                "Clear daily intentions improve follow-through and reduce cognitive load.",
+            responseSlotCount: 3
+        ),
+        Prompt(
+            id: "template_morning_feel",
+            category: .futureSelf,
+            headline: "Today's intention",
+            questionText: "How do you want to feel today and how could you accomplish that?",
+            coachTip: "Link one concrete action to the emotional state you want.",
+            scientificRationale:
+                "Aligning behavior with desired affect supports self-regulation and mood.",
+            responseSlotCount: 1
+        ),
+    ]
+
+    public static let allPrompts: [PromptCategory: [Prompt]] = [
         .kindness: [
-            MindsetPrompt(
+            Prompt(
                 id: "kindness_01",
                 category: .kindness,
                 headline: "The Kindness Booster",
@@ -21,7 +56,7 @@ public struct PromptLibrary {
             )
         ],
         .savoring: [
-            MindsetPrompt(
+            Prompt(
                 id: "savoring_01",
                 category: .savoring,
                 headline: "Present-Moment Savoring",
@@ -34,7 +69,7 @@ public struct PromptLibrary {
             )
         ],
         .bestPossibleSelf: [
-            MindsetPrompt(
+            Prompt(
                 id: "bps_01",
                 category: .bestPossibleSelf,
                 headline: "The Optimism Bridge",
@@ -47,7 +82,7 @@ public struct PromptLibrary {
             )
         ],
         .signatureStrength: [
-            MindsetPrompt(
+            Prompt(
                 id: "strength_01",
                 category: .signatureStrength,
                 headline: "Strength Deployment",
@@ -60,7 +95,7 @@ public struct PromptLibrary {
             )
         ],
         .mementoMori: [
-            MindsetPrompt(
+            Prompt(
                 id: "memento_01",
                 category: .mementoMori,
                 headline: "The Perspective Reset",
@@ -72,7 +107,7 @@ public struct PromptLibrary {
             )
         ],
         .gratitude: [
-            MindsetPrompt(
+            Prompt(
                 id: "gratitude_01",
                 category: .gratitude,
                 headline: "The Gratitude Scan",
@@ -84,7 +119,7 @@ public struct PromptLibrary {
             )
         ],
         .stoic: [
-            MindsetPrompt(
+            Prompt(
                 id: "stoic_01",
                 category: .stoic,
                 headline: "The Circle of Control",
@@ -96,7 +131,7 @@ public struct PromptLibrary {
             )
         ],
         .futureSelf: [
-            MindsetPrompt(
+            Prompt(
                 id: "future_01",
                 category: .futureSelf,
                 headline: "The Intention Bridge",

@@ -8,9 +8,16 @@
 public struct PromptEngine {
     public init() {}
 
-    /// Fetches prompts based on user profile with a guaranteed fallback to prevent blank screens.
-    public func fetchPrompts(for profile: UserProfile?, completedCount: Int) -> [MindsetPrompt] {
-        var selectedPrompts: [MindsetPrompt] = []
+    /// Fetches the default morning ritual template (`PromptLibrary.morningStartTemplate`).
+    /// - Parameters:
+    ///   - profile: Reserved for future personalization; currently unused.
+    ///   - completedCount: Reserved for future rotation across template variants.
+    public func fetchPrompts(for profile: UserProfile?, completedCount: Int) -> [Prompt] {
+        guard let goal = profile?.onboardingData.habitGoal else {
+            return PromptLibrary.morningStartTemplate
+        }
+
+        var selectedPrompts: [Prompt] = []
 
         // 1. Resolve categories based on profile (if it exists)
         let categories: [PromptCategory]
@@ -35,14 +42,17 @@ public struct PromptEngine {
         // 3. THE SAFETY NET: If the library is empty or logic failed,
         // return hardcoded "Emergency" prompts.
         if selectedPrompts.isEmpty {
-            return fallbackPrompts
+            return PromptLibrary.morningStartTemplate
         }
-
         return selectedPrompts
     }
 
     private func resolveCategories(for profile: UserProfile) -> [PromptCategory] {
         // Prefer new headspace (MLP quiz Q1); fall back to legacy overwhelmedFrequency
+        guard profile.onboardingData.habitGoal != nil else {
+            return PromptLibrary.morningStartTemplate.map { $0.category }
+        }
+
         let isOverwhelmed: Bool
         isOverwhelmed = (profile.onboardingData.headspace == .overwhelmed || profile.onboardingData.headspace == .restless)
 
@@ -54,9 +64,9 @@ public struct PromptEngine {
     }
 
     // Hardcoded fallbacks ensure the app works even if the PromptLibrary data is corrupted.
-    private var fallbackPrompts: [MindsetPrompt] {
+    private var fallbackPrompts: [Prompt] {
         [
-            MindsetPrompt(
+            Prompt(
                 id: "fb_gratitude",
                 category: .gratitude,
                 headline: "Small Wins",
@@ -65,7 +75,7 @@ public struct PromptEngine {
                 scientificRationale:
                     "Daily Gratitude has shown to reduce stress and improve mental health."
             ),
-            MindsetPrompt(
+            Prompt(
                 id: "fb_future",
                 category: .futureSelf,
                 headline: "Intentionality",

@@ -7,7 +7,6 @@
 
 public struct OnboardingData: Sendable {
     public var overwhelmFrequency: String = ""
-    public var primaryGoal: String = ""
 
     // MARK: - Onboarding Quiz Results (MLP)
 
@@ -22,9 +21,8 @@ public struct OnboardingData: Sendable {
     /// Q5: AI feedback system prompt tone
     public var aiCoachTone: AICoachTone?
 
-    public init(overwhelmFrequency: String, primaryGoal: String, headspace: Headspace? = nil, mentalMuscle: MentalMuscle? = nil, responseToSetback: ResponseToSetback? = nil, habitGoal: HabitGoal? = nil, aiCoachTone: AICoachTone? = nil) {
+    public init(overwhelmFrequency: String, headspace: Headspace? = nil, mentalMuscle: MentalMuscle? = nil, responseToSetback: ResponseToSetback? = nil, habitGoal: HabitGoal? = nil, aiCoachTone: AICoachTone? = nil) {
         self.overwhelmFrequency = overwhelmFrequency
-        self.primaryGoal = primaryGoal
         self.headspace = headspace
         self.mentalMuscle = mentalMuscle
         self.responseToSetback = responseToSetback

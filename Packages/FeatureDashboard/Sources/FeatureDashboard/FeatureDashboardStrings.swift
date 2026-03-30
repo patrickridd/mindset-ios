@@ -40,7 +40,7 @@ public enum FeatureDashboardStrings {
             comment: "Current goal card label")
         public static let defaultPlaceholder = String(
             localized: "dashboard.goal.defaultPlaceholder", bundle: .module,
-            comment: "Default goal when none set")
+            comment: "Reminds user to set their goal to curate their experience.")
     }
 
     public static let defaultUserName = String(

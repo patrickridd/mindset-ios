@@ -14,7 +14,6 @@ struct SignInOrLinkUseCaseTests {
         UserProfile(
             id: id,
             userName: userName,
-            primaryGoal: "Build a healthier mindset",
             isOnboardingComplete: true,
             overwhelmedFrequency: .sometimes
         )
