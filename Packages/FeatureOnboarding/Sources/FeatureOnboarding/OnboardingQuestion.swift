@@ -20,7 +20,7 @@ public struct OnboardingQuestion: Sendable {
         case headspace
         case mentalMuscle
         case responseToSetback
-        case habitGoal
+        case mindsetGoal
         case aiCoachTone
     }
 
@@ -60,7 +60,7 @@ extension OnboardingQuestion {
             id: 4,
             questionText: "What's your primary \"habit\" goal?",
             options: ["Consistency", "Deep Reflection", "Better Sleep"],
-            logic: .habitGoal
+            logic: .mindsetGoal
         ),
         OnboardingQuestion(
             id: 5,

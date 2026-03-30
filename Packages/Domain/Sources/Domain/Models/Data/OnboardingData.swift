@@ -16,17 +16,17 @@ public struct OnboardingData: Sendable {
     public var mentalMuscle: MentalMuscle?
     /// Q3: CBT vs. Stoic intervention needs
     public var responseToSetback: ResponseToSetback?
-    /// Q4: Notification timing and XP goals
-    public var habitGoal: HabitGoal?
+    /// Q4: Overall Mindset Goal
+    public var mindsetGoal: MindsetGoal?
     /// Q5: AI feedback system prompt tone
     public var aiCoachTone: AICoachTone?
 
-    public init(overwhelmFrequency: String, headspace: Headspace? = nil, mentalMuscle: MentalMuscle? = nil, responseToSetback: ResponseToSetback? = nil, habitGoal: HabitGoal? = nil, aiCoachTone: AICoachTone? = nil) {
+    public init(overwhelmFrequency: String, headspace: Headspace? = nil, mentalMuscle: MentalMuscle? = nil, responseToSetback: ResponseToSetback? = nil, mindsetGoal: MindsetGoal? = nil, aiCoachTone: AICoachTone? = nil) {
         self.overwhelmFrequency = overwhelmFrequency
         self.headspace = headspace
         self.mentalMuscle = mentalMuscle
         self.responseToSetback = responseToSetback
-        self.habitGoal = habitGoal
+        self.mindsetGoal = mindsetGoal
         self.aiCoachTone = aiCoachTone
     }
 
@@ -67,11 +67,12 @@ public struct OnboardingData: Sendable {
         case blameOthers = "Blame others"
     }
 
-    /// Q4: Notification timing and XP goals
-    public enum HabitGoal: String, Codable, CaseIterable, Sendable {
-        case consistency = "Consistency"
-        case deepReflection = "Deep Reflection"
-        case betterSleep = "Better Sleep"
+    /// Q4: Mindset Current Goal
+    public enum MindsetGoal: String, Codable, CaseIterable, Sendable {
+        case happier = "Happier"
+        case resilient = "Resilience"
+        case purpose = "Purpose"
+        case balanced = "Balanced"
     }
 
     /// Q5: AI feedback tone

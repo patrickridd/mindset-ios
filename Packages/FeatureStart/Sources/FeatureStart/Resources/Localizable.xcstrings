@@ -1,42 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "start.screen.title" : {
-      "comment" : "Pre-onboarding welcome title",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Master Your Mindset"
-          }
-        }
-      }
-    },
-    "start.screen.subheadline" : {
-      "comment" : "Pre-onboarding value proposition subheadline",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Science-backed rituals to clear your mind and conquer your day"
-          }
-        }
-      }
-    },
-    "start.actions.getStarted" : {
-      "comment" : "Primary CTA to begin onboarding",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Get Started"
-          }
-        }
-      }
-    },
     "start.actions.alreadyHaveAccount" : {
       "comment" : "Secondary action to open sign-in",
       "extractionState" : "manual",
@@ -61,6 +25,18 @@
         }
       }
     },
+    "start.actions.getStarted" : {
+      "comment" : "Primary CTA to begin onboarding",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get Started"
+          }
+        }
+      }
+    },
     "start.error.guestSignInFailed" : {
       "comment" : "Shown when anonymous sign-in fails; user can retry",
       "extractionState" : "manual",
@@ -69,6 +45,30 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Could not continue as guest. Please try again."
+          }
+        }
+      }
+    },
+    "start.screen.subheadline" : {
+      "comment" : "Pre-onboarding value proposition subheadline",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Science-backed rituals to set your mind and conquer your day"
+          }
+        }
+      }
+    },
+    "start.screen.title" : {
+      "comment" : "Pre-onboarding welcome title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mindset"
           }
         }
       }

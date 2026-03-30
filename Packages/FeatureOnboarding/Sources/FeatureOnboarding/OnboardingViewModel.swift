@@ -158,13 +158,13 @@ public final class OnboardingViewModel {
         let responseToSetback = answers[.responseToSetback].flatMap {
             OnboardingData.ResponseToSetback(rawValue: $0)
         }
-        let habitGoal = answers[.habitGoal].flatMap { OnboardingData.HabitGoal(rawValue: $0) }
+        let mindsetGoal = answers[.mindsetGoal].flatMap { OnboardingData.MindsetGoal(rawValue: $0) }
         let aiCoachTone = answers[.aiCoachTone].flatMap { OnboardingData.AICoachTone(rawValue: $0) }
 
         let overwhelmFrequency = headspace.map { mapHeadspaceToOverwhelmed($0) } ?? .sometimes
         let primaryGoal = mentalMuscle?.rawValue ?? "Build a healthier mindset"
 
-        return OnboardingData(overwhelmFrequency: overwhelmFrequency.rawValue, headspace: headspace, mentalMuscle: mentalMuscle, responseToSetback: responseToSetback, habitGoal: habitGoal, aiCoachTone: aiCoachTone)
+        return OnboardingData(overwhelmFrequency: overwhelmFrequency.rawValue, headspace: headspace, mentalMuscle: mentalMuscle, responseToSetback: responseToSetback, mindsetGoal: mindsetGoal, aiCoachTone: aiCoachTone)
     }
 
     /// Legacy mapping for backward compatibility with PromptEngine

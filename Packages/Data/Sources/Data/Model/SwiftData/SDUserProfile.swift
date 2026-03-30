@@ -23,7 +23,7 @@ public final class SDUserProfile {
     public var headspaceRaw: String?
     public var mentalMuscleRaw: String?
     public var responseToSetbackRaw: String?
-    public var habitGoalRaw: String?
+    public var mindsetGoalRaw: String?
     public var aiCoachToneRaw: String?
     
     // Flattened Stats Data
@@ -45,7 +45,7 @@ public final class SDUserProfile {
         headspaceRaw: String?,
         mentalMuscleRaw: String?,
         responseToSetbackRaw: String?,
-        habitGoalRaw: String?,
+        mindsetGoalRaw: String?,
         aiCoachToneRaw: String?,
         streakCount: Int = 0,
         totalXP: Int = 0,
@@ -63,7 +63,7 @@ public final class SDUserProfile {
         self.headspaceRaw = headspaceRaw
         self.mentalMuscleRaw = mentalMuscleRaw
         self.responseToSetbackRaw = responseToSetbackRaw
-        self.habitGoalRaw = habitGoalRaw
+        self.mindsetGoalRaw = mindsetGoalRaw
         self.aiCoachToneRaw = aiCoachToneRaw
         self.streakCount = streakCount
         self.totalXP = totalXP
@@ -81,7 +81,7 @@ public final class SDUserProfile {
             headspace: headspaceRaw.flatMap { OnboardingData.Headspace(rawValue: $0) },
             mentalMuscle: mentalMuscleRaw.flatMap { OnboardingData.MentalMuscle(rawValue: $0) },
             responseToSetback: responseToSetbackRaw.flatMap { OnboardingData.ResponseToSetback(rawValue: $0) },
-            habitGoal: habitGoalRaw.flatMap { OnboardingData.HabitGoal(rawValue: $0) },
+            mindsetGoal: mindsetGoalRaw.flatMap { OnboardingData.MindsetGoal(rawValue: $0) },
             aiCoachTone: aiCoachToneRaw.flatMap { OnboardingData.AICoachTone(rawValue: $0) }
         )
         
@@ -118,7 +118,7 @@ public final class SDUserProfile {
             headspaceRaw: domain.onboardingData.headspace?.rawValue,
             mentalMuscleRaw: domain.onboardingData.mentalMuscle?.rawValue,
             responseToSetbackRaw: domain.onboardingData.responseToSetback?.rawValue,
-            habitGoalRaw: domain.onboardingData.habitGoal?.rawValue,
+            mindsetGoalRaw: domain.onboardingData.mindsetGoal?.rawValue,
             aiCoachToneRaw: domain.onboardingData.aiCoachTone?.rawValue,
             streakCount: domain.stats.streakCount,
             totalXP: domain.stats.totalXP,
@@ -140,7 +140,7 @@ extension SDUserProfile {
         self.headspaceRaw = domain.onboardingData.headspace?.rawValue
         self.mentalMuscleRaw = domain.onboardingData.mentalMuscle?.rawValue
         self.responseToSetbackRaw = domain.onboardingData.responseToSetback?.rawValue
-        self.habitGoalRaw = domain.onboardingData.habitGoal?.rawValue
+        self.mindsetGoalRaw = domain.onboardingData.mindsetGoal?.rawValue
         self.aiCoachToneRaw = domain.onboardingData.aiCoachTone?.rawValue
         
         // Stats

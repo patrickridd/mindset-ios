@@ -15,7 +15,7 @@ public struct OnboardingDataDTO: Codable {
     public let headspace: String?
     public let mentalMuscle: String?
     public let responseToSetback: String?
-    public let habitGoal: String?
+    public let mindsetGoal: String?
     public let aiCoachTone: String?
 
     /// Maps the Domain ``OnboardingData`` to a DTO for Firebase storage.
@@ -26,7 +26,7 @@ public struct OnboardingDataDTO: Codable {
         self.headspace = domain.headspace?.rawValue
         self.mentalMuscle = domain.mentalMuscle?.rawValue
         self.responseToSetback = domain.responseToSetback?.rawValue
-        self.habitGoal = domain.habitGoal?.rawValue
+        self.mindsetGoal = domain.mindsetGoal?.rawValue
         self.aiCoachTone = domain.aiCoachTone?.rawValue
     }
 
@@ -37,7 +37,7 @@ public struct OnboardingDataDTO: Codable {
             headspace: OnboardingData.Headspace(rawValue: headspace ?? ""),
             mentalMuscle: OnboardingData.MentalMuscle(rawValue: mentalMuscle ?? ""),
             responseToSetback: OnboardingData.ResponseToSetback(rawValue: responseToSetback ?? ""),
-            habitGoal: OnboardingData.HabitGoal(rawValue: habitGoal ?? ""),
+            mindsetGoal: OnboardingData.MindsetGoal(rawValue: mindsetGoal ?? ""),
             aiCoachTone: OnboardingData.AICoachTone(rawValue: aiCoachTone ?? "")
         )
     }
