@@ -63,6 +63,7 @@ public final class MainCoordinator {
     private let entryRepository: EntryRepository
     private let userProfileRepository: UserRepository
     private let syncService: AppSyncService
+    private let getStreak: GetStreakUseCase
 
     /// Manages the internal push stack of the Mindset modal
     public var mindsetPath = NavigationPath()
@@ -78,12 +79,14 @@ public final class MainCoordinator {
         subscriptionService: SubscriptionService,
         entryRepository: EntryRepository,
         userRepository: UserRepository,
+        getStreak: GetStreakUseCase,
         syncService: AppSyncService
     ) {
         self.authStateQuery = authStateQuery
         self.subscriptionService = subscriptionService
         self.entryRepository = entryRepository
         self.userProfileRepository = userRepository
+        self.getStreak = getStreak
         self.syncService = syncService
 
         // Initial check: Where should we start?
@@ -94,24 +97,18 @@ public final class MainCoordinator {
         guard authStateQuery.isAuthenticated() else {
             return showStart()
         }
-        // Check if Onboarding is complete FIRST
-        let isOboardingComplete: Bool = await userProfileRepository.isOnboardingComplete()
-
-        if !isOboardingComplete {
-            showOnboarding()
-            return
-        }
-
-        // 2. Account still anonymous?
-        let isAnonymousAccountLinked = await authStateQuery.isAnonymousAccountLinked()
-        if !isAnonymousAccountLinked {
-            showAuth()
-            return
-        }
 
         // --- SYNC POINT A: Initial Launch ---
         // We don't 'await' this because we want the UI to load mainTabView immediately.
         Task { await syncService.syncAllData() }
+
+        // Check if Onboarding is complete FIRST
+        let isOboardingComplete: Bool = await userProfileRepository.isOnboardingComplete()
+
+        if await shouldShowAuth() {
+            showAuth()
+            return
+        }
 
         // Setup UI
         refreshProfileTabTitle()
@@ -122,6 +119,13 @@ public final class MainCoordinator {
         if !isPro {
             set(fullScreenState: .paywall)
         }
+    }
+
+    func shouldShowAuth() async -> Bool {
+        let isAnonymousAccountLinked = await authStateQuery.isAnonymousAccountLinked()
+        let isOboardingComplete: Bool = await userProfileRepository.isOnboardingComplete()
+        let streakCount = (try? await getStreak.execute()) ?? 0
+        return !isAnonymousAccountLinked && (isOboardingComplete || streakCount > 0)
     }
 
     // Navigation Actions

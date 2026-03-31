@@ -95,6 +95,7 @@ final class AppDependencyContainer: ObservableObject {
             subscriptionService: subService,
             entryRepository: entryRepository,
             userRepository: userRepository,
+            getStreak: getStreak,
             syncService: syncService
         )
 
