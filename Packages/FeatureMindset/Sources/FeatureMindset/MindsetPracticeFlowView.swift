@@ -1,5 +1,5 @@
 //
-//  MindsetPracticeView.swift
+//  MindsetPracticeFlowView.swift
 //  FeatureGratitude
 //
 //  Created by patrick ridd on 1/6/26.
@@ -11,12 +11,12 @@ import SharedUI
 import SharedUtils
 import SwiftUI
 
-public struct MindsetPracticeView: View {
+public struct MindsetPracticeFlowView: View {
     @Environment(\.colorScheme) private var colorScheme
-    @Bindable var viewModel: MindsetPracticeViewModel
+    @Bindable var viewModel: MindsetPracticeFlowViewModel
     @FocusState private var isTextFieldFocused: Bool
 
-    public init(viewModel: MindsetPracticeViewModel) {
+    public init(viewModel: MindsetPracticeFlowViewModel) {
         self.viewModel = viewModel
     }
 
@@ -36,7 +36,7 @@ public struct MindsetPracticeView: View {
 }
 
 // MARK: - Constants
-private extension MindsetPracticeView {
+private extension MindsetPracticeFlowView {
     // Layout
     private static let coachTipBottomPadding: CGFloat = 100
     private static let scrollViewBottomSpacerHeight: CGFloat = 100
@@ -58,7 +58,7 @@ private extension MindsetPracticeView {
 }
 
 // MARK: - Prompt Content Phase
-private extension MindsetPracticeView {
+private extension MindsetPracticeFlowView {
     enum PromptContentPhase: CaseIterable, Identifiable {
         case generating
         case `static`
@@ -76,7 +76,7 @@ private extension MindsetPracticeView {
 
 // MARK: - Body Composition
 
-private extension MindsetPracticeView {
+private extension MindsetPracticeFlowView {
     var backgroundView: some View {
         MindsetColors.backgroundGrouped(for: colorScheme)
             .ignoresSafeArea()
@@ -543,8 +543,8 @@ private extension MindsetPracticeView {
 // MARK: - Preview
 
 #Preview("Morning Ritual") {
-    MindsetPracticeView(
-        viewModel: MindsetPracticeViewModel(
+    MindsetPracticeFlowView(
+        viewModel: MindsetPracticeFlowViewModel(
             userRepository: Domain.MockUserRepository(),
             addEntryUseCase: AddEntryUseCase(
                 repository: Domain.MockEntryRepository(days: 7)

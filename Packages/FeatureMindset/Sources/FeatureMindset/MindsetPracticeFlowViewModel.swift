@@ -1,5 +1,5 @@
 //
-//  MindsetPracticeViewModel.swift
+//  MindsetPracticeFlowViewModel.swift
 //  FeatureGratitude
 //
 //  Created by patrick ridd on 1/6/26.
@@ -12,7 +12,7 @@ import SharedLocalization
 
 @MainActor
 @Observable
-public final class MindsetPracticeViewModel {
+public final class MindsetPracticeFlowViewModel {
     // Dependencies
     private let getStreakUseCase: GetStreakUseCase
     private let addEntryUseCase: AddEntryUseCase
