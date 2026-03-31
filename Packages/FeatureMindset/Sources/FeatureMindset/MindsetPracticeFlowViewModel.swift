@@ -13,6 +13,9 @@ import SharedLocalization
 @MainActor
 @Observable
 public final class MindsetPracticeFlowViewModel {
+    private static let minimumAnswerLength = 3
+    private static let todayGoalsPromptId = "template_todos"
+
     // Dependencies
     private let getStreakUseCase: GetStreakUseCase
     private let addEntryUseCase: AddEntryUseCase
@@ -164,9 +167,17 @@ public final class MindsetPracticeFlowViewModel {
     }
 
     public var canProceed: Bool {
+        guard let prompt = currentPrompt else { return false }
+        if isTodayGoalsPrompt(prompt) {
+            return (0..<prompt.responseSlotCount).allSatisfy { slot in
+                let key = Prompt.compositePromptId(baseId: prompt.id, slotIndex: slot)
+                let count = answers[key]?.trimmingCharacters(in: .whitespacesAndNewlines).count ?? 0
+                return count >= Self.minimumAnswerLength
+            }
+        }
         guard let key = currentCompositeAnswerKey else { return false }
-        let currentAnswerCount = answers[key]?.count ?? 0
-        return currentAnswerCount >= 3
+        let currentAnswerCount = answers[key]?.trimmingCharacters(in: .whitespacesAndNewlines).count ?? 0
+        return currentAnswerCount >= Self.minimumAnswerLength
     }
 
     /// Progress for the step progress bar (0...1). Uses sequential micro-steps; first step shows a small nub (0.025).
@@ -265,10 +276,16 @@ public final class MindsetPracticeFlowViewModel {
 
     public func submitCurrentAnswer() async {
         guard let prompt = currentPrompt else { return }
-        let key = Prompt.compositePromptId(baseId: prompt.id, slotIndex: currentSlotIndex)
-        guard let answer = answers[key], answer.count >= 3 else { return }
+        let isTodayGoals = isTodayGoalsPrompt(prompt)
+        if isTodayGoals {
+            guard canProceed else { return }
+        } else {
+            let key = Prompt.compositePromptId(baseId: prompt.id, slotIndex: currentSlotIndex)
+            let answerCount = answers[key]?.trimmingCharacters(in: .whitespacesAndNewlines).count ?? 0
+            guard answerCount >= Self.minimumAnswerLength else { return }
+        }
 
-        let isLastSlot = currentSlotIndex >= prompt.responseSlotCount - 1
+        let isLastSlot = isTodayGoals || currentSlotIndex >= prompt.responseSlotCount - 1
         if !isLastSlot {
             currentSlotIndex += 1
             beginInterSlotTextFieldShimmer()
@@ -290,6 +307,10 @@ public final class MindsetPracticeFlowViewModel {
             reflections[prompt.id] = "That's a thoughtful reflection. Keep going!"
         }
         isAiThinking = false
+    }
+
+    private func isTodayGoalsPrompt(_ prompt: Prompt) -> Bool {
+        prompt.id == Self.todayGoalsPromptId
     }
 
     public var loadingDescription: String {

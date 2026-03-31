@@ -29,7 +29,7 @@ struct PromptPracticeHostView: View {
                 promptPhaseView(for: prompt)
 
                 // Keep input outside phase animation so typing state remains stable.
-                if let compositeKey = viewModel.currentCompositeAnswerKey {
+                if shouldShowLegacyTextEditor, let compositeKey = viewModel.currentCompositeAnswerKey {
                     textEditor(compositeKey: compositeKey)
                 }
 
@@ -67,6 +67,15 @@ private extension PromptPracticeHostView {
             return .generating
         }
         return .static
+    }
+
+    var activePresentationKind: PromptPresentationKind? {
+        guard let prompt = viewModel.currentPrompt else { return nil }
+        return resolver.presentationKind(for: prompt)
+    }
+
+    var shouldShowLegacyTextEditor: Bool {
+        activePresentationKind != .todayGoals
     }
 
     @ViewBuilder
@@ -117,6 +126,12 @@ private extension PromptPracticeHostView {
             DefaultPromptQuestionView(prompt: prompt, colorScheme: colorScheme)
         case .guidedVisualization:
             GuidedVisualizationPromptQuestionView(prompt: prompt, colorScheme: colorScheme)
+        case .todayGoals:
+            TodayGoalsPromptQuestionView(
+                prompt: prompt,
+                viewModel: viewModel,
+                isTextFieldFocused: isTextFieldFocused
+            )
         }
     }
 

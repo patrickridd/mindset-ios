@@ -7,7 +7,10 @@ import Domain
 
 struct PromptPresentationResolver {
     func presentationKind(for prompt: Prompt) -> PromptPresentationKind {
-        presentationKind(for: prompt.category)
+        if prompt.id == "template_todos" {
+            return .todayGoals
+        }
+        return presentationKind(for: prompt.category)
     }
 
     func presentationKind(for category: PromptCategory) -> PromptPresentationKind {
