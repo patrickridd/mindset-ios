@@ -9,7 +9,7 @@ public struct PromptLibrary {
     /// Default morning ritual: gratitude (3 slots), priorities (3 slots), intention (1 slot).
     public static let morningStartTemplate: [Prompt] = [
         Prompt(
-            id: "template_morning_grateful",
+            id: "template_grateful",
             category: .gratitude,
             headline: "Grateful feelings",
             questionText: "What are 3 things that make you 'feel' grateful?",
@@ -20,7 +20,7 @@ public struct PromptLibrary {
             responseSlotCount: 3
         ),
         Prompt(
-            id: "template_morning_todos",
+            id: "template_todos",
             category: .futureSelf,
             headline: "Today's priorities",
             questionText: "What are your top 3 things to get done today?",
@@ -30,7 +30,7 @@ public struct PromptLibrary {
             responseSlotCount: 3
         ),
         Prompt(
-            id: "template_morning_feel",
+            id: "template_feel",
             category: .futureSelf,
             headline: "Today's intention",
             questionText: "How do you want to feel today and how could you accomplish that?",
