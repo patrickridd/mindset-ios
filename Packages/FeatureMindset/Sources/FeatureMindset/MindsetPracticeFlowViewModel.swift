@@ -59,7 +59,7 @@ public final class MindsetPracticeFlowViewModel {
     private var isPro: Bool = false
 
     public var shouldShowTextField: Bool {
-        currentPromptIndex < prompts.count
+        currentPromptIndex < prompts.count && !isCurrentPromptSubmitted && !isAiThinking
     }
 
     public var currentAiReflection: String? {

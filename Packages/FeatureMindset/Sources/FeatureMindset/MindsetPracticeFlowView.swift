@@ -41,8 +41,6 @@ private extension MindsetPracticeFlowView {
     private static let coachTipBottomPadding: CGFloat = 100
     private static let scrollViewBottomSpacerHeight: CGFloat = 100
     private static let blurRadius: CGFloat = 3
-    private static let phaseContainerMinHeight: CGFloat =
-        MindsetLayout.iconExtraLarge + MindsetLayout.spacing24
 
     // Animation Timing
     private static let animationDelayShort: Double = 0.1
@@ -51,27 +49,7 @@ private extension MindsetPracticeFlowView {
     private static let animationDurationNextStep: Double = 0.35
     private static let springAnimationResponse: Double = 0.35
     private static let springAnimationDamping: Double = 0.82
-    private static let promptFadeInDuration: Double = 0.55
-    private static let promptFadeInOffsetY: CGFloat = 10
     private static let scaleTransitionFactor: CGFloat = 0.94
-    private static let placeholderExitOffset: CGFloat = -10  // Small upward offset for smooth exit
-}
-
-// MARK: - Prompt Content Phase
-private extension MindsetPracticeFlowView {
-    enum PromptContentPhase: CaseIterable, Identifiable {
-        case generating
-        case `static`
-
-        var id: Self { self }
-    }
-
-    var currentPromptContentPhase: PromptContentPhase {
-        guard viewModel.currentPrompt != nil, !viewModel.isGeneratingPrompt else {
-            return .generating
-        }
-        return .static
-    }
 }
 
 // MARK: - Body Composition
@@ -112,59 +90,18 @@ private extension MindsetPracticeFlowView {
 
     private var customKeyboardBar: some View {
         HStack(alignment: .center) {
-
-            if #available(iOS 26.0, *) {
-                lightBulbButton
-                    .glassEffect(
-                        .regular.interactive(),
-                        in: .circle
-                    )
-            } else {
-                // Fallback on earlier versions
-                lightBulbButton
-                    .buttonStyle(.automatic)
-            }
+            lightBulbButton
 
             Spacer()
 
-            if #available(iOS 26.0, *) {
-                submitButtonGlass
-            } else {
-                // Fallback on earlier versions
-                submitButtonFallBack
-            }
+            submitButton
         }
-        .padding(.horizontal, MindsetLayout.paddingLarge)
+        .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
         .padding(.bottom, MindsetLayout.spacing8)
         .background(.clear)
     }
 
-    @available(iOS, deprecated: 26.0, renamed: "submitButtonGlass")
-    var submitButtonFallBack: some View {
-        Button(action: handleSubmit) {
-            Text(SharedLocalizedString.submit)
-                .font(MindsetFonts.button)
-                .foregroundStyle(
-                    viewModel.canProceed
-                        ? MindsetColors.textOnAccent(for: colorScheme)
-                        : MindsetColors.textDisabled(for: colorScheme)
-                )
-                .padding(.horizontal, MindsetLayout.spacing16)
-                .padding(.vertical, MindsetLayout.spacing8)
-                .background(
-                    Capsule().fill(
-                        viewModel.canProceed
-                            ? MindsetColors.accentOrange
-                            : MindsetColors.buttonDisabledBackground(for: colorScheme)
-                    )
-                )
-        }
-        .disabled(!viewModel.canProceed)
-        .buttonStyle(.automatic)
-    }
-
-    @available(iOS 26.0, *)
-    var submitButtonGlass: some View {
+    var submitButton: some View {
         Button(action: handleSubmit) {
             Text(SharedLocalizedString.submit)
                 .font(MindsetFonts.button)
@@ -177,20 +114,25 @@ private extension MindsetPracticeFlowView {
                 .padding(.vertical, MindsetLayout.spacing12)
         }
         .disabled(!viewModel.canProceed)
-        .glassEffect(
-            .regular.interactive().tint(
-                viewModel.canProceed
-                    ? MindsetColors.accentOrange
-                    : nil
-            ),
-            in: .capsule
+        .mindsetButton(
+            color: viewModel.canProceed
+                ? MindsetColors.accentOrange
+                : MindsetColors.buttonDisabledBackground(for: colorScheme),
+            radius: MindsetLayout.radiusButton
         )
     }
 
     private func handleSubmit() {
         HapticManager.action()
-        isTextFieldFocused = false
+        if shouldDismissKeyboardOnSubmit {
+            isTextFieldFocused = false
+        }
         Task { await viewModel.submitCurrentAnswer() }
+    }
+
+    var shouldDismissKeyboardOnSubmit: Bool {
+        guard let prompt = viewModel.currentPrompt else { return true }
+        return viewModel.currentSlotIndex >= prompt.responseSlotCount - 1
     }
 
     var lightBulbButton: some View {
@@ -210,6 +152,12 @@ private extension MindsetPracticeFlowView {
                     height: MindsetLayout.iconButtonLarge + 2
                 )
         }
+        .mindsetButton(
+            color: viewModel.isCoachTipVisible
+                ? MindsetColors.accentOrange
+                : MindsetColors.dismissButtonBackground(for: colorScheme),
+            radius: (MindsetLayout.iconButtonLarge + 2) / 2
+        )
         .accessibilityLabel(viewModel.isCoachTipVisible ? "Hide coach tip" : "Show coach tip")
         .accessibilityHint("Toggles visibility of the coach tip for the current prompt")
     }
@@ -251,7 +199,7 @@ private extension MindsetPracticeFlowView {
                 }
             }
         }
-        .padding(.horizontal)
+        .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
     }
 
     var progressBar: some View {
@@ -259,7 +207,7 @@ private extension MindsetPracticeFlowView {
             backgroundFillColor: MindsetColors.dismissButtonBackground(for: colorScheme),
             progress: viewModel.progress
         )
-        .padding(.horizontal)
+        .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
         .frame(maxWidth: .infinity)
     }
 
@@ -294,7 +242,7 @@ private extension MindsetPracticeFlowView {
                     Color.clear.frame(height: Self.scrollViewBottomSpacerHeight)
                         .id("bottom-spacer")
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)
             }
             .onChange(of: viewModel.isAiThinking) { oldValue, newValue in
                 if newValue {
@@ -386,107 +334,14 @@ private extension MindsetPracticeFlowView {
 
     @ViewBuilder
     var ritualContent: some View {
-        if let prompt = viewModel.currentPrompt {
-            VStack(spacing: MindsetLayout.spacing24) {
-                ZStack(alignment: .topLeading) {
-                    Group {
-                        switch currentPromptContentPhase {
-                        case .generating:
-                            VStack(spacing: MindsetLayout.spacing16) {
-                                PulsatingCoachView(emoji: "🧘‍♂️")
-                                ShimmerPlaceholderView()
-                                    .padding(.horizontal, MindsetLayout.paddingSmall)
-                            }
-                            .padding(.top, MindsetLayout.spacing12)
-                            .transition(
-                                .asymmetric(
-                                    insertion: .opacity.combined(with: .scale(scale: 0.95)),
-                                    removal: .opacity.combined(with: .scale(scale: 0.8)).combined(
-                                        with: .offset(y: Self.placeholderExitOffset))
-                                )
-                            )
-
-                        case .static:
-                            Text(prompt.questionText)
-                                .font(MindsetFonts.promptQuestion)
-                                .foregroundStyle(
-                                    MindsetColors.textPrimaryAdaptive(for: colorScheme)
-                                )
-                                .multilineTextAlignment(.leading)
-                                .lineSpacing(MindsetLayout.spacing4)
-                                .padding([.horizontal, .top], MindsetLayout.paddingSmall)
-                                .id("\(prompt.id)-slot-\(viewModel.currentSlotIndex)")
-                                .transition(
-                                    .opacity.combined(with: .offset(y: Self.promptFadeInOffsetY))
-                                )
-                                .onAppear { viewModel.markCurrentPromptAnimated() }
-                        }
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .topLeading)
-                .frame(minHeight: Self.phaseContainerMinHeight, alignment: .topLeading)
-                .animation(
-                    .easeOut(duration: Self.promptFadeInDuration),
-                    value: currentPromptContentPhase
-                )
-                .animation(
-                    .easeOut(duration: Self.promptFadeInDuration),
-                    value: viewModel.currentSlotIndex
-                )
-                .padding(.top)
-
-                // textEditor should be outside the Group to be always present and not part of the phase transition
-                if let compositeKey = viewModel.currentCompositeAnswerKey {
-                    textEditor(compositeKey: compositeKey)
-                }
-
-                if (viewModel.isAiThinking || viewModel.currentAiReflection != nil)
-                    && !isTextFieldFocused
-                {
-                    AIReflectionCard(
-                        reflection: viewModel.currentAiReflection,
-                        isThinking: viewModel.isAiThinking
-                    )
-                    .transition(.opacity.combined(with: .offset(y: Self.promptFadeInOffsetY)))
-                    .padding(.top)
-                }
-            }
-            .animation(.easeOut(duration: Self.promptFadeInDuration), value: viewModel.isAiThinking)
+        if viewModel.currentPrompt != nil {
+            PromptPracticeHostView(
+                viewModel: viewModel,
+                isTextFieldFocused: $isTextFieldFocused
+            )
             .id(viewModel.currentPromptIndex)
             .transition(stepTransition)
         }
-    }
-
-    func textEditor(compositeKey: String) -> some View {
-        ZStack {
-            TextEditor(
-                text: Binding(
-                    get: { viewModel.answers[compositeKey] ?? "" },
-                    set: { viewModel.answers[compositeKey] = $0 }
-                )
-            )
-            .frame(minHeight: MindsetLayout.textEditorMinHeight)
-            .padding(MindsetLayout.paddingMedium)
-            .background(
-                RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).fill(
-                    MindsetColors.backgroundSecondary(for: colorScheme))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).stroke(
-                    MindsetColors.stoicSlateSoft, lineWidth: MindsetLayout.borderWidth)
-            )
-            .focused($isTextFieldFocused)
-
-            if viewModel.isInterSlotTextFieldShimmering {
-                RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
-                    .fill(MindsetColors.backgroundSecondary(for: colorScheme).opacity(0.55))
-                    .shimmer()
-                    .allowsHitTesting(false)
-                    .transition(.opacity)
-            }
-        }
-        .animation(
-            .easeInOut(duration: 0.2), value: viewModel.isInterSlotTextFieldShimmering)
     }
 
     var footerButton: some View {
@@ -512,15 +367,15 @@ private extension MindsetPracticeFlowView {
                             : MindsetColors.textDisabled(for: colorScheme)
                     )
                     .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: MindsetLayout.radiusButton)
-                            .fill(
-                                viewModel.showFooterButtonEnabledStyle
-                                    ? MindsetColors.accentOrange
-                                    : MindsetColors.buttonDisabledBackground(for: colorScheme)))
                 }
                 .buttonStyle(.plain)
                 .disabled(viewModel.isFooterButtonDisabled)
+                .mindsetButton(
+                    color: viewModel.showFooterButtonEnabledStyle
+                        ? MindsetColors.accentOrange
+                        : MindsetColors.buttonDisabledBackground(for: colorScheme),
+                    radius: MindsetLayout.radiusButton
+                )
                 .padding()
                 .transition(.move(edge: .bottom).combined(with: .opacity))
             }
@@ -534,6 +389,7 @@ private extension MindsetPracticeFlowView {
     }
 
     private func handleNextStep() {
+        isTextFieldFocused = false
         withAnimation(.easeInOut(duration: Self.animationDurationNextStep)) {
             viewModel.nextStep()
         }
