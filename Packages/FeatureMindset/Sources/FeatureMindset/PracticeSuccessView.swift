@@ -1,5 +1,5 @@
 //
-//  RitualSuccessView.swift
+//  PracticeSuccessView.swift
 //  FeatureMindset
 //
 //  Created by patrick ridd on 1/13/26.
@@ -10,7 +10,7 @@ import SharedUI
 import SharedUtils
 import SwiftUI
 
-public struct RitualSuccessView: View {
+public struct PracticeSuccessView: View {
     @Environment(\.colorScheme) private var colorScheme
 
     let archetype: String
@@ -106,6 +106,6 @@ public struct RitualSuccessView: View {
 }
 
 #Preview {
-    RitualSuccessView(archetype: "stoic", xpEarned: 300) {
+    PracticeSuccessView(archetype: "stoic", xpEarned: 300) {
     }
 }

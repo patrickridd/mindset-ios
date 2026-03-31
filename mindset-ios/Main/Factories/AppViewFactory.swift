@@ -326,7 +326,7 @@ struct AppViewFactory: MainViewFactory {
 
     func makeMindsetRitualView() -> AnyView {
         let aiService = serviceFactory.makeAIService()
-        let viewModel = MorningRitualViewModel(
+        let viewModel = MindsetPracticeViewModel(
             userRepository: userRepository,
             addEntryUseCase: addEntryUseCase,
             subscriptionService: subscriptionService,
@@ -346,7 +346,7 @@ struct AppViewFactory: MainViewFactory {
         return AnyView(
             // Bind the stack to the coordinator's path
             NavigationStack(path: Bindable(coordinator).mindsetPath) {
-                MorningRitualView(viewModel: viewModel)
+                MindsetPracticeView(viewModel: viewModel)
                     .navigationDestination(for: RitualResult.self) { result in
                         // The factory uses the coordinator's data to build the next view
                         self.makeRitualSuccessView(archetype: result.archetype, xp: result.xp)
@@ -358,7 +358,7 @@ struct AppViewFactory: MainViewFactory {
 
     func makeRitualSuccessView(archetype: String, xp: Int) -> AnyView {
         AnyView(
-            RitualSuccessView(archetype: archetype, xpEarned: xp) {
+            PracticeSuccessView(archetype: archetype, xpEarned: xp) {
                 coordinator.showMainTabView()
                 coordinator.dismissSheet()
             })

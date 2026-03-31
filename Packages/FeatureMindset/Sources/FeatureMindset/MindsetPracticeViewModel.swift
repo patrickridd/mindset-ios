@@ -1,5 +1,5 @@
 //
-//  MorningRitualViewModel.swift
+//  MindsetPracticeViewModel.swift
 //  FeatureGratitude
 //
 //  Created by patrick ridd on 1/6/26.
@@ -12,7 +12,7 @@ import SharedLocalization
 
 @MainActor
 @Observable
-public final class MorningRitualViewModel {
+public final class MindsetPracticeViewModel {
     // Dependencies
     private let getStreakUseCase: GetStreakUseCase
     private let addEntryUseCase: AddEntryUseCase

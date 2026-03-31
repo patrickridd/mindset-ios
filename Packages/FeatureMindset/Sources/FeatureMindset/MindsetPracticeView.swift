@@ -1,5 +1,5 @@
 //
-//  MorningRitualView.swift
+//  MindsetPracticeView.swift
 //  FeatureGratitude
 //
 //  Created by patrick ridd on 1/6/26.
@@ -11,12 +11,12 @@ import SharedUI
 import SharedUtils
 import SwiftUI
 
-public struct MorningRitualView: View {
+public struct MindsetPracticeView: View {
     @Environment(\.colorScheme) private var colorScheme
-    @Bindable var viewModel: MorningRitualViewModel
+    @Bindable var viewModel: MindsetPracticeViewModel
     @FocusState private var isTextFieldFocused: Bool
 
-    public init(viewModel: MorningRitualViewModel) {
+    public init(viewModel: MindsetPracticeViewModel) {
         self.viewModel = viewModel
     }
 
@@ -36,7 +36,7 @@ public struct MorningRitualView: View {
 }
 
 // MARK: - Constants
-private extension MorningRitualView {
+private extension MindsetPracticeView {
     // Layout
     private static let coachTipBottomPadding: CGFloat = 100
     private static let scrollViewBottomSpacerHeight: CGFloat = 100
@@ -58,7 +58,7 @@ private extension MorningRitualView {
 }
 
 // MARK: - Prompt Content Phase
-private extension MorningRitualView {
+private extension MindsetPracticeView {
     enum PromptContentPhase: CaseIterable, Identifiable {
         case generating
         case `static`
@@ -76,7 +76,7 @@ private extension MorningRitualView {
 
 // MARK: - Body Composition
 
-private extension MorningRitualView {
+private extension MindsetPracticeView {
     var backgroundView: some View {
         MindsetColors.backgroundGrouped(for: colorScheme)
             .ignoresSafeArea()
@@ -543,8 +543,8 @@ private extension MorningRitualView {
 // MARK: - Preview
 
 #Preview("Morning Ritual") {
-    MorningRitualView(
-        viewModel: MorningRitualViewModel(
+    MindsetPracticeView(
+        viewModel: MindsetPracticeViewModel(
             userRepository: Domain.MockUserRepository(),
             addEntryUseCase: AddEntryUseCase(
                 repository: Domain.MockEntryRepository(days: 7)
