@@ -8,10 +8,11 @@ import SharedUI
 import SwiftUI
 
 struct TodayGoalsPromptQuestionView: View {
+    
     @Environment(\.colorScheme) private var colorScheme
+    @Bindable var viewModel: MindsetPracticeFlowViewModel
 
     let prompt: Prompt
-    @Bindable var viewModel: MindsetPracticeFlowViewModel
     let isTextFieldFocused: FocusState<Bool>.Binding
 
     var body: some View {
@@ -43,9 +44,8 @@ private extension TodayGoalsPromptQuestionView {
         VStack(spacing: MindsetLayout.spacing12) {
             ForEach(0..<prompt.responseSlotCount, id: \.self) { slotIndex in
                 PriorityTodoFieldView(
-                    rank: slotIndex + 1,
+                    text: bindingForSlot(slotIndex), rank: slotIndex + 1,
                     placeholder: placeholder(for: slotIndex),
-                    text: bindingForSlot(slotIndex),
                     isLast: slotIndex == prompt.responseSlotCount - 1,
                     isTextFieldFocused: isTextFieldFocused
                 )

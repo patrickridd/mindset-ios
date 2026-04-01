@@ -121,13 +121,13 @@ private extension PromptPracticeHostView {
     func promptQuestionView(for prompt: Prompt) -> some View {
         switch resolver.presentationKind(for: prompt) {
         case .defaultTextEntry:
-            DefaultPromptQuestionView(prompt: prompt, colorScheme: colorScheme)
+            DefaultPromptQuestionView(prompt: prompt)
         case .guidedVisualization:
-            GuidedVisualizationPromptQuestionView(prompt: prompt, colorScheme: colorScheme)
+            GuidedVisualizationPromptQuestionView(prompt: prompt)
         case .todayGoals:
             TodayGoalsPromptQuestionView(
-                prompt: prompt,
                 viewModel: viewModel,
+                prompt: prompt,
                 isTextFieldFocused: isTextFieldFocused
             )
         }

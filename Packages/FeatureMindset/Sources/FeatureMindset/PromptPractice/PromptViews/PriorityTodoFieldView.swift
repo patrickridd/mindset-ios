@@ -7,11 +7,12 @@ import SharedUI
 import SwiftUI
 
 struct PriorityTodoFieldView: View {
+
     @Environment(\.colorScheme) private var colorScheme
+    @Binding var text: String
 
     let rank: Int
     let placeholder: String
-    @Binding var text: String
     let isLast: Bool
     let isTextFieldFocused: FocusState<Bool>.Binding
 

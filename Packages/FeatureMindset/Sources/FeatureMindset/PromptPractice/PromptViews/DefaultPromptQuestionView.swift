@@ -8,8 +8,10 @@ import SharedUI
 import SwiftUI
 
 struct DefaultPromptQuestionView: View {
+    
+    @Environment(\.colorScheme) private var colorScheme
+
     let prompt: Prompt
-    let colorScheme: ColorScheme
 
     var body: some View {
         Text(prompt.questionText)
