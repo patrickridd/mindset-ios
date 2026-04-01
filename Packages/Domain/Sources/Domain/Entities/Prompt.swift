@@ -5,8 +5,10 @@
 //  Created by patrick ridd on 1/11/26.
 //
 
+public typealias PromptID = String
 public struct Prompt: Identifiable, Sendable {
-    public let id: String
+
+    public let id: PromptID
     public let category: PromptCategory
     public let headline: String
     /// e.g., "The Kindness Booster"
@@ -19,7 +21,7 @@ public struct Prompt: Identifiable, Sendable {
     public let responseSlotCount: Int
 
     public init(
-        id: String,
+        id: PromptID,
         category: PromptCategory,
         headline: String,
         questionText: String,
@@ -37,18 +39,18 @@ public struct Prompt: Identifiable, Sendable {
         self.responseSlotCount = responseSlotCount
     }
 
-    // MARK: - Composite keys (multi-slot rituals)
+    // MARK: - Composite keys (multi-part prompt)
 
     /// Separator between logical prompt id and slot index in persisted `PromptResponse.promptId` values.
     public static let compositeIdSeparator = "#"
 
     /// Storage key and persisted id for a specific slot under one logical prompt.
-    public static func compositePromptId(baseId: String, slotIndex: Int) -> String {
+    public static func compositePromptId(baseId: PromptID, slotIndex: Int) -> String {
         "\(baseId)\(compositeIdSeparator)\(slotIndex)"
     }
 
-    /// Logical prompt id for AI and XP grouping; returns `id` unchanged if there is no slot suffix.
-    public static func basePromptId(fromComposite compositeId: String) -> String {
+    /// Typed logical prompt id for AI and XP grouping. Returns `nil` for unknown ids.
+    public static func basePromptID(fromComposite compositeId: String) -> PromptID? {
         if let range = compositeId.range(of: compositeIdSeparator) {
             return String(compositeId[..<range.lowerBound])
         }

@@ -13,8 +13,8 @@ public struct PromptEngine {
     ///   - profile: Reserved for future personalization; currently unused.
     ///   - completedCount: Reserved for future rotation across template variants.
     public func fetchPrompts(for profile: UserProfile?, completedCount: Int) -> [Prompt] {
-        guard let goal = profile?.onboardingData.mindsetGoal else {
-            return PromptLibrary.morningStartTemplate
+        guard profile?.onboardingData.mindsetGoal != nil else {
+            return PromptCatalog.morningStartTemplate()
         }
 
         var selectedPrompts: [Prompt] = []
@@ -30,7 +30,8 @@ public struct PromptEngine {
 
         // 2. Select prompts from the Library
         for category in categories {
-            if let categoryPrompts = PromptLibrary.allPrompts[category] {
+            let categoryPrompts = PromptCatalog.prompts(for: category)
+            if !categoryPrompts.isEmpty {
                 // Use rotation logic: (completedCount % count)
                 let index = completedCount % categoryPrompts.count
                 selectedPrompts.append(categoryPrompts[index])
@@ -42,7 +43,7 @@ public struct PromptEngine {
         // 3. THE SAFETY NET: If the library is empty or logic failed,
         // return hardcoded "Emergency" prompts.
         if selectedPrompts.isEmpty {
-            return PromptLibrary.morningStartTemplate
+            return PromptCatalog.morningStartTemplate()
         }
         return selectedPrompts
     }
@@ -50,7 +51,7 @@ public struct PromptEngine {
     private func resolveCategories(for profile: UserProfile) -> [PromptCategory] {
         // Prefer new headspace (MLP quiz Q1); fall back to legacy overwhelmedFrequency
         guard profile.onboardingData.mindsetGoal != nil else {
-            return PromptLibrary.morningStartTemplate.map { $0.category }
+            return PromptCatalog.morningStartTemplate().map { $0.category }
         }
 
         let isOverwhelmed: Bool
@@ -61,29 +62,5 @@ public struct PromptEngine {
         } else {
             return [.bestPossibleSelf, .kindness, .signatureStrength]
         }
-    }
-
-    // Hardcoded fallbacks ensure the app works even if the PromptLibrary data is corrupted.
-    private var fallbackPrompts: [Prompt] {
-        [
-            Prompt(
-                id: "fb_gratitude",
-                category: .gratitude,
-                headline: "Small Wins",
-                questionText: "What is one thing that went well today?",
-                coachTip: "Noticing small wins recalibrates your brain for positivity.",
-                scientificRationale:
-                    "Daily Gratitude has shown to reduce stress and improve mental health."
-            ),
-            Prompt(
-                id: "fb_future",
-                category: .futureSelf,
-                headline: "Intentionality",
-                questionText: "What is your main focus for the next few hours?",
-                coachTip: "Defining a focus reduces cognitive load and anxiety.",
-                scientificRationale:
-                    "Being intentional has been proven to increase well-being and reduce stress."
-            ),
-        ]
     }
 }

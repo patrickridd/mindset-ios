@@ -8,10 +8,10 @@
 public enum RitualGamification {
     /// Sums category XP once per logical prompt (uses `Prompt.basePromptId` on each response id).
     public static func earnedXP(from responses: [PromptResponse]) -> Int {
-        var seenBaseIds = Set<String>()
+        var seenBaseIds = Set<PromptID>()
         var total = 0
         for response in responses {
-            let base = Prompt.basePromptId(fromComposite: response.promptId)
+            guard let base = Prompt.basePromptID(fromComposite: response.promptId) else { continue }
             guard !seenBaseIds.contains(base) else { continue }
             seenBaseIds.insert(base)
             total += response.category.xpValue
@@ -21,9 +21,9 @@ public enum RitualGamification {
 
     /// Picks the display category that appeared most often as distinct logical prompts (one vote per base id).
     public static func primaryCategory(from responses: [PromptResponse]) -> PromptCategory? {
-        var baseToCategory: [String: PromptCategory] = [:]
+        var baseToCategory: [PromptID: PromptCategory] = [:]
         for response in responses {
-            let base = Prompt.basePromptId(fromComposite: response.promptId)
+            guard let base = Prompt.basePromptID(fromComposite: response.promptId) else { continue }
             baseToCategory[base] = response.category
         }
         let categoryCounts = Dictionary(

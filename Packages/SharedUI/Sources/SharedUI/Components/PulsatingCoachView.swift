@@ -24,7 +24,7 @@ public struct PulsatingCoachView: View {
         static let pulseScaleMax: CGFloat = 1.2
         static let glowOpacityMin: Double = 0.3
         static let glowOpacityMax: Double = 0.8
-        static let emojiFontSize: CGFloat = 48
+        static let emojiFontSize: CGFloat = 44
     }
 
     private var currentScale: CGFloat {
@@ -77,7 +77,7 @@ public struct PulsatingCoachView: View {
     private var glowEffect: some View {
         Circle()
             .fill(.indigo.opacity(0.5))
-            .frame(width: MindsetLayout.iconExtraLarge, height: MindsetLayout.iconExtraLarge)
+            .frame(width: MindsetLayout.iconButtonLarge, height: MindsetLayout.iconButtonLarge)
             .scaleEffect(currentScale * 1.2)
             .opacity(currentGlowOpacity)
             .animation(.easeInOut(duration: Constants.animationDuration), value: isPulsing)

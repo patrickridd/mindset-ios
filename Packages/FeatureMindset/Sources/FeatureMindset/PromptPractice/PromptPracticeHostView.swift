@@ -81,42 +81,40 @@ private extension PromptPracticeHostView {
     @ViewBuilder
     func promptPhaseView(for prompt: Prompt) -> some View {
         ZStack(alignment: .topLeading) {
-            Group {
-                switch currentPromptContentPhase {
-                case .generating:
-                    VStack(spacing: MindsetLayout.spacing16) {
-                        PulsatingCoachView(emoji: "🧘‍♂️")
-                        ShimmerPlaceholderView()
-                            .padding(.horizontal, MindsetLayout.paddingSmall)
-                    }
-                    .padding(.top, MindsetLayout.spacing12)
-                    .transition(
-                        .asymmetric(
-                            insertion: .opacity.combined(with: .scale(scale: 0.95)),
-                            removal: .opacity.combined(with: .scale(scale: 0.8)).combined(
-                                with: .offset(y: Self.placeholderExitOffset))
-                        )
-                    )
-
-                case .static:
-                    promptQuestionView(for: prompt)
-                        .id("\(prompt.id)-slot-\(viewModel.currentSlotIndex)")
-                        .transition(.opacity.combined(with: .offset(y: Self.promptFadeInOffsetY)))
-                        .onAppear { viewModel.markCurrentPromptAnimated() }
+            switch currentPromptContentPhase {
+            case .generating:
+                VStack(spacing: MindsetLayout.spacing16) {
+                    PulsatingCoachView(emoji: "✨")
+                    ShimmerPlaceholderView()
+                        .padding(.horizontal, MindsetLayout.paddingSmall)
                 }
+                .padding(.top, MindsetLayout.spacing12)
+                .transition(generatingTransition) // Cleaner for the compiler
+
+            case .static:
+                promptQuestionView(for: prompt)
+                    .id("\(prompt.id)-slot-\(viewModel.currentSlotIndex)")
+                    .transition(.opacity.combined(with: .offset(y: Self.promptFadeInOffsetY)))
+                    .onAppear { viewModel.markCurrentPromptAnimated() }
+            
+            @unknown default: // Handles future cases or compiler gaps
+                EmptyView()
             }
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
         .frame(minHeight: Self.phaseContainerMinHeight, alignment: .topLeading)
-        .animation(
-            .easeOut(duration: Self.promptFadeInDuration),
-            value: currentPromptContentPhase
-        )
-        .animation(
-            .easeOut(duration: Self.promptFadeInDuration),
-            value: viewModel.currentSlotIndex
-        )
+        .animation(.easeOut(duration: Self.promptFadeInDuration), value: currentPromptContentPhase)
+        .animation(.easeOut(duration: Self.promptFadeInDuration), value: viewModel.currentSlotIndex)
         .padding(.top)
+    }
+
+    private var generatingTransition: AnyTransition {
+        .asymmetric(
+            insertion: .opacity.combined(with: .scale(scale: 0.95)),
+            removal: .opacity
+                .combined(with: .scale(scale: 0.8))
+                .combined(with: .offset(y: Self.placeholderExitOffset))
+        )
     }
 
     @ViewBuilder

@@ -132,7 +132,7 @@ private extension MindsetPracticeFlowView {
 
     var shouldDismissKeyboardOnSubmit: Bool {
         guard let prompt = viewModel.currentPrompt else { return true }
-        if prompt.id == "template_todos" {
+        if prompt.id == PromptDefinition.todoToday.id {
             return true
         }
         return viewModel.currentSlotIndex >= prompt.responseSlotCount - 1

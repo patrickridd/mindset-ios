@@ -14,7 +14,7 @@ import SharedLocalization
 @Observable
 public final class MindsetPracticeFlowViewModel {
     private static let minimumAnswerLength = 3
-    private static let todayGoalsPromptId = "template_todos"
+    private static let todayGoalsPromptId = PromptDefinition.todoToday.id
 
     // Dependencies
     private let getStreakUseCase: GetStreakUseCase
@@ -34,7 +34,7 @@ public final class MindsetPracticeFlowViewModel {
 
     // User Answers & AI Reflections (answers keyed by composite id; reflections by logical prompt id)
     public var answers: [String: String] = [:]
-    public var reflections: [String: String] = [:]
+    public var reflections: [PromptID: String] = [:]
 
     // Typewriter Animation State
     public var animatedPromptIds: Set<String> = []
