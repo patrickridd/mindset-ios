@@ -7,9 +7,10 @@ import Domain
 
 struct PromptPresentationResolver {
     func presentationKind(for prompt: Prompt) -> PromptPresentationKind {
-        if prompt.id == PromptDefinition.todoToday.id {
+        if prompt.id == PromptType.todoToday.id {
             return .todayGoals
         }
+
         return presentationKind(for: prompt.category)
     }
 
@@ -21,4 +22,5 @@ struct PromptPresentationResolver {
             .defaultTextEntry
         }
     }
+
 }

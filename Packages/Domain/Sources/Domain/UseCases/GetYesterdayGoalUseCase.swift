@@ -20,6 +20,6 @@ public struct GetYesterdayGoalUseCase: Sendable {
         // Clean, readable, and easy to expand later
         let yesterdayGoal = latest?.promptResponses.first(where: { $0.category.isGoalOriented })
 
-        return yesterdayGoal?.userText
+        return yesterdayGoal?.answers.first
     }
 }

@@ -28,9 +28,9 @@ struct PromptPracticeHostView: View {
             VStack(spacing: MindsetLayout.spacing24) {
                 promptPhaseView(for: prompt)
 
-                // Keep input outside phase animation so typing state remains stable.
-                if shouldShowLegacyTextEditor, let compositeKey = viewModel.currentCompositeAnswerKey {
-                    textEditor(compositeKey: compositeKey)
+                // Input field for standard (sequential) prompts
+                if shouldShowLegacyTextEditor {
+                    standardTextEditor(for: prompt)
                 }
 
                 if (viewModel.isAiThinking || viewModel.currentAiReflection != nil)
@@ -77,28 +77,19 @@ private extension PromptPracticeHostView {
     var shouldShowLegacyTextEditor: Bool {
         activePresentationKind != .todayGoals
     }
-
+    
     @ViewBuilder
     func promptPhaseView(for prompt: Prompt) -> some View {
         ZStack(alignment: .topLeading) {
             switch currentPromptContentPhase {
             case .generating:
-                VStack(spacing: MindsetLayout.spacing16) {
-                    PulsatingCoachView(emoji: "✨")
-                    ShimmerPlaceholderView()
-                        .padding(.horizontal, MindsetLayout.paddingSmall)
-                }
-                .padding(.top, MindsetLayout.spacing12)
-                .transition(generatingTransition) // Cleaner for the compiler
-
+                generationPlaceholder
             case .static:
                 promptQuestionView(for: prompt)
+                // Use a clean ID for transitions when slots change
                     .id("\(prompt.id)-slot-\(viewModel.currentSlotIndex)")
                     .transition(.opacity.combined(with: .offset(y: Self.promptFadeInOffsetY)))
                     .onAppear { viewModel.markCurrentPromptAnimated() }
-            
-            @unknown default: // Handles future cases or compiler gaps
-                EmptyView()
             }
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -106,15 +97,6 @@ private extension PromptPracticeHostView {
         .animation(.easeOut(duration: Self.promptFadeInDuration), value: currentPromptContentPhase)
         .animation(.easeOut(duration: Self.promptFadeInDuration), value: viewModel.currentSlotIndex)
         .padding(.top)
-    }
-
-    private var generatingTransition: AnyTransition {
-        .asymmetric(
-            insertion: .opacity.combined(with: .scale(scale: 0.95)),
-            removal: .opacity
-                .combined(with: .scale(scale: 0.8))
-                .combined(with: .offset(y: Self.placeholderExitOffset))
-        )
     }
 
     @ViewBuilder
@@ -133,35 +115,56 @@ private extension PromptPracticeHostView {
         }
     }
 
-    func textEditor(compositeKey: String) -> some View {
+    /// The input field for prompts that aren't using a custom multi-field layout
+    @ViewBuilder
+    func standardTextEditor(for prompt: Prompt) -> some View {
         ZStack {
-            TextEditor(
-                text: Binding(
-                    get: { viewModel.answers[compositeKey] ?? "" },
-                    set: { viewModel.answers[compositeKey] = $0 }
+            TextEditor(text: $viewModel.currentInputText) // Using the new computed property!
+                .frame(minHeight: MindsetLayout.textEditorMinHeight)
+                .padding(MindsetLayout.paddingMedium)
+                .background(
+                    RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
+                        .fill(MindsetColors.backgroundSecondary(for: colorScheme))
                 )
-            )
-            .frame(minHeight: MindsetLayout.textEditorMinHeight)
-            .padding(MindsetLayout.paddingMedium)
-            .background(
-                RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).fill(
-                    MindsetColors.backgroundSecondary(for: colorScheme))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: MindsetLayout.radiusCard).stroke(
-                    MindsetColors.stoicSlateSoft, lineWidth: MindsetLayout.borderWidth)
-            )
-            .focused(isTextFieldFocused)
-
+                .overlay(
+                    RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
+                        .stroke(MindsetColors.stoicSlateSoft, lineWidth: MindsetLayout.borderWidth)
+                )
+                .focused(isTextFieldFocused)
+            
             if viewModel.isInterSlotTextFieldShimmering {
-                RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
-                    .fill(MindsetColors.backgroundSecondary(for: colorScheme).opacity(0.55))
-                    .shimmer()
-                    .allowsHitTesting(false)
-                    .transition(.opacity)
+                shimmerOverlay
             }
         }
-        .animation(
-            .easeInOut(duration: 0.2), value: viewModel.isInterSlotTextFieldShimmering)
+        .animation(.easeInOut(duration: 0.2), value: viewModel.isInterSlotTextFieldShimmering)
+    }
+
+    // MARK: - Subviews & Helpers
+    
+    var generationPlaceholder: some View {
+        VStack(spacing: MindsetLayout.spacing16) {
+            PulsatingCoachView(emoji: "✨")
+            ShimmerPlaceholderView()
+                .padding(.horizontal, MindsetLayout.paddingSmall)
+        }
+        .padding(.top, MindsetLayout.spacing12)
+        .transition(generatingTransition)
+    }
+    
+    var shimmerOverlay: some View {
+        RoundedRectangle(cornerRadius: MindsetLayout.radiusCard)
+            .fill(MindsetColors.backgroundSecondary(for: colorScheme).opacity(0.55))
+            .shimmer()
+            .allowsHitTesting(false)
+            .transition(.opacity)
+    }
+
+    private var generatingTransition: AnyTransition {
+        .asymmetric(
+            insertion: .opacity.combined(with: .scale(scale: 0.95)),
+            removal: .opacity
+                .combined(with: .scale(scale: 0.8))
+                .combined(with: .offset(y: Self.placeholderExitOffset))
+        )
     }
 }

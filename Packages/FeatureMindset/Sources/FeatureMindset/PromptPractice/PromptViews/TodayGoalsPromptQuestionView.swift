@@ -8,7 +8,6 @@ import SharedUI
 import SwiftUI
 
 struct TodayGoalsPromptQuestionView: View {
-    
     @Environment(\.colorScheme) private var colorScheme
     @Bindable var viewModel: MindsetPracticeFlowViewModel
 
@@ -42,9 +41,11 @@ private extension TodayGoalsPromptQuestionView {
 
     var rankedTodoFields: some View {
         VStack(spacing: MindsetLayout.spacing12) {
+            // We use 0..<prompt.responseSlotCount because the slots are fixed by the prompt definition
             ForEach(0..<prompt.responseSlotCount, id: \.self) { slotIndex in
                 PriorityTodoFieldView(
-                    text: bindingForSlot(slotIndex), rank: slotIndex + 1,
+                    text: bindingForSlot(slotIndex),
+                    rank: slotIndex + 1,
                     placeholder: placeholder(for: slotIndex),
                     isLast: slotIndex == prompt.responseSlotCount - 1,
                     isTextFieldFocused: isTextFieldFocused
@@ -53,11 +54,21 @@ private extension TodayGoalsPromptQuestionView {
         }
     }
 
+    /// Clean, index-based binding into the ViewModel's answers dictionary
     func bindingForSlot(_ slotIndex: Int) -> Binding<String> {
-        let compositeKey = Prompt.compositePromptId(baseId: prompt.id, slotIndex: slotIndex)
-        return Binding(
-            get: { viewModel.answers[compositeKey] ?? "" },
-            set: { viewModel.answers[compositeKey] = $0 }
+        Binding(
+            get: {
+                let currentAnswers = viewModel.answers[prompt.id] ?? []
+                return currentAnswers.indices.contains(slotIndex) ? currentAnswers[slotIndex] : ""
+            },
+            set: { newValue in
+                // Ensure the array exists and is the right size
+                var currentAnswers = viewModel.answers[prompt.id] ?? Array(repeating: "", count: prompt.responseSlotCount)
+                if currentAnswers.indices.contains(slotIndex) {
+                    currentAnswers[slotIndex] = newValue
+                    viewModel.answers[prompt.id] = currentAnswers
+                }
+            }
         )
     }
 

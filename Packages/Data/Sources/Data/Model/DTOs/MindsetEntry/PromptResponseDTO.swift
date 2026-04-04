@@ -13,14 +13,14 @@ public struct PromptResponseDTO: Codable {
     public let id: String
     public let promptId: String
     public let category: String
-    public let userText: String
+    public let answers: [String]
     public let aiReflection: String?
 
     public init(from domain: PromptResponse) {
         self.id = domain.id.uuidString
         self.promptId = domain.promptId
         self.category = domain.category.rawValue
-        self.userText = domain.userText
+        self.answers = domain.answers
         self.aiReflection = domain.aiReflection
     }
 
@@ -29,7 +29,7 @@ public struct PromptResponseDTO: Codable {
             id: UUID(uuidString: id) ?? UUID(),
             promptId: promptId,
             category: PromptCategory(rawValue: category) ?? .gratitude, // Fallback to a default
-            userText: userText,
+            answers: answers,
             aiReflection: aiReflection
         )
     }

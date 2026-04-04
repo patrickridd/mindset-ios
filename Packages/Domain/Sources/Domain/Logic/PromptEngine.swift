@@ -14,7 +14,7 @@ public struct PromptEngine {
     ///   - completedCount: Reserved for future rotation across template variants.
     public func fetchPrompts(for profile: UserProfile?, completedCount: Int) -> [Prompt] {
         guard profile?.onboardingData.mindsetGoal != nil else {
-            return PromptCatalog.morningStartTemplate()
+            return PromptCatalog.morningStartTemplateDefinitions
         }
 
         var selectedPrompts: [Prompt] = []
@@ -43,7 +43,7 @@ public struct PromptEngine {
         // 3. THE SAFETY NET: If the library is empty or logic failed,
         // return hardcoded "Emergency" prompts.
         if selectedPrompts.isEmpty {
-            return PromptCatalog.morningStartTemplate()
+            return PromptCatalog.morningStartTemplateDefinitions
         }
         return selectedPrompts
     }
@@ -51,7 +51,7 @@ public struct PromptEngine {
     private func resolveCategories(for profile: UserProfile) -> [PromptCategory] {
         // Prefer new headspace (MLP quiz Q1); fall back to legacy overwhelmedFrequency
         guard profile.onboardingData.mindsetGoal != nil else {
-            return PromptCatalog.morningStartTemplate().map { $0.category }
+            return PromptCatalog.morningStartTemplateDefinitions.map { $0.category }
         }
 
         let isOverwhelmed: Bool

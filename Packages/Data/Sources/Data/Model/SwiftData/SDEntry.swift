@@ -95,7 +95,7 @@ public final class SDEntry {
             let newResponse = SDPromptResponse(
                 promptId: response.promptId,
                 categoryValue: response.category.rawValue,
-                userText: response.userText,
+                answers: response.answers,
                 aiReflection: response.aiReflection
             )
             newResponse.entry = sdEntry
@@ -133,7 +133,7 @@ extension SDEntry {
             let newSD = SDPromptResponse(
                 promptId: response.promptId,
                 categoryValue: response.category.rawValue,
-                userText: response.userText,
+                answers: response.answers,
                 aiReflection: response.aiReflection
             )
             newSD.entry = self
