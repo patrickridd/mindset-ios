@@ -5,6 +5,7 @@
 
 import Domain
 import SharedUI
+import SharedUtils
 import SwiftUI
 
 struct TodayGoalsPromptQuestionView: View {
@@ -78,5 +79,38 @@ private extension TodayGoalsPromptQuestionView {
         case 1: return "Second priority"
         default: return "Third priority"
         }
+    }
+}
+
+
+private struct PreviewFocusWrapper<Content: View>: View {
+      @FocusState private var isFocused: Bool
+      let content: (FocusState<Bool>.Binding) -> Content
+
+      init(@ViewBuilder content: @escaping (FocusState<Bool>.Binding) -> Content) {
+          self.content = content
+      }
+
+      var body: some View {
+          content($isFocused)
+      }
+  }
+
+#Preview {
+    // Stub prompt matching what the view expects
+    let prompt = PromptType.todoToday
+    
+    // Minimal view model setup for preview
+    let viewModel = MindsetPracticeFlowViewModel(userRepository: MockUserRepository(), addEntryUseCase: AddEntryUseCase(repository: MockEntryRepository(days: 11)), subscriptionService: MockSubscriptionService(), getStreakUseCase: GetStreakUseCase(repository: MockEntryRepository(days: 11)), aiService: MockAIService(), logger: DebugLogger.shared, onNavigate: nil)
+    
+    // Seed answers so fields render with sample content
+    viewModel.answers[prompt.id] = [
+        "Ship v1 onboarding",
+        "Triage bug backlog",
+        "Plan sprint tasks"
+    ]
+    
+    return PreviewFocusWrapper { isFocused in
+        TodayGoalsPromptQuestionView(viewModel: viewModel, prompt: prompt, isTextFieldFocused: isFocused)
     }
 }

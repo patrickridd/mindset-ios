@@ -94,3 +94,22 @@ private extension PriorityTodoFieldView {
         }
     }
 }
+
+#Preview {
+    struct PriorityTodoFieldView_PreviewContainer: View {
+        @State private var text: String = ""
+        @FocusState private var isFocused: Bool
+
+        var body: some View {
+            PriorityTodoFieldView(
+                text: $text,
+                rank: 1,
+                placeholder: "Number 1 spot",
+                isLast: false,
+                isTextFieldFocused: $isFocused
+            )
+        }
+    }
+
+    return PriorityTodoFieldView_PreviewContainer()
+}
