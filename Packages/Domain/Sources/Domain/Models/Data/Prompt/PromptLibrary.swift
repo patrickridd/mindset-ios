@@ -3,7 +3,7 @@
 //  Domain
 //
 
-public enum PromptType: String, Prompt, Codable, CaseIterable, Hashable, Sendable {
+public enum PromptLibrary: String, Prompt, Codable, CaseIterable, Hashable, Sendable {
 
     public var id: String { rawValue }
 

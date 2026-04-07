@@ -16,7 +16,7 @@ public struct PromptResponse: Identifiable, Sendable {
     
     public let id: UUID
     
-    /// The stable identifier of the ``PromptType`` (e.g., "gratitude").
+    /// The identifier of the ``Prompt`` to which it is in response to.
     public let promptId: String
     
     /// The category determines the thematic focus and XP weighting.
