@@ -12,5 +12,6 @@ public protocol Prompt: Sendable {
     var questionText: String { get }
     var coachTip: String { get }
     var scientificRationale: String { get }
+    var slots: [SlotMetadata] { get }
     var responseSlotCount: Int { get }
 }
