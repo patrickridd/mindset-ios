@@ -17,9 +17,9 @@ struct PromptPresentationResolver {
     func presentationKind(for category: PromptCategory) -> PromptPresentationKind {
         switch category {
         case .bestPossibleSelf, .mementoMori:
-            .guidedVisualization
-        case .gratitude, .credit, .savoring, .kindness, .futureSelf, .signatureStrength, .stoic:
-            .defaultTextEntry
+                .guidedVisualization
+        case .credit, .savoring, .kindness, .futureSelf, .signatureStrength, .stoic, .gratitude:
+                .defaultTextEntry
         }
     }
 

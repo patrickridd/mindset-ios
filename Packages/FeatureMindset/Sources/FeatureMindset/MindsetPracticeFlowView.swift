@@ -74,6 +74,8 @@ private extension MindsetPracticeFlowView {
                     viewModel.completeRitual()
                 }
             }
+
+            MindsetAnimationView(animation: .confetti, loopMode: .playOnce)
         } else {
             mainContentStack
         }
@@ -123,7 +125,13 @@ private extension MindsetPracticeFlowView {
     }
 
     private func handleSubmit() {
-        HapticManager.action()
+        // Light tap for each item, Success tap for the final ritual completion
+        if viewModel.currentSlotIndex < (viewModel.currentPrompt?.responseSlotCount ?? 1) - 1 {
+            HapticManager.impact(.light)
+        } else {
+            HapticManager.success() // Dopamine spike for finishing the set!
+        }
+        
         if shouldDismissKeyboardOnSubmit {
             isTextFieldFocused = false
         }
@@ -189,17 +197,10 @@ private extension MindsetPracticeFlowView {
             }
 
             if let prompt = viewModel.currentPrompt {
-                VStack(spacing: MindsetLayout.spacing4) {
-                    Text(prompt.category.displayName.uppercased())
-                        .font(MindsetFonts.labelUppercase)
-                        .tracking(1.5)
-                        .foregroundStyle(MindsetColors.labelAccent(for: colorScheme))
-                    if let slotLabel = viewModel.slotPositionLabel {
-                        Text(slotLabel)
-                            .font(MindsetFonts.caption)
-                            .foregroundStyle(MindsetColors.textSecondaryAdaptive(for: colorScheme))
-                    }
-                }
+                Text(prompt.category.displayName.uppercased())
+                    .font(MindsetFonts.labelUppercase)
+                    .tracking(1.5)
+                    .foregroundStyle(MindsetColors.labelAccent(for: colorScheme))
             }
         }
         .padding(.horizontal, MindsetLayout.paddingScreenHorizontal)

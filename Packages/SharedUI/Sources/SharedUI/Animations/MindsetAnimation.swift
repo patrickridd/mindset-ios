@@ -12,4 +12,5 @@ public enum MindsetAnimation: String {
     case ambientBackground = "start-background"
     case circlesMoving = "start-view-background"
     case wavyLinesBackground = "background-lines-wave"
+    case confetti = "confetti"
 }

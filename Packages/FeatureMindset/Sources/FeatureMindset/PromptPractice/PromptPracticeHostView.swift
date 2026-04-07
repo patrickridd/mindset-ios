@@ -5,6 +5,7 @@
 
 import Domain
 import SharedUI
+import SharedUtils
 import SwiftUI
 
 struct PromptPracticeHostView: View {
@@ -76,6 +77,7 @@ private extension PromptPracticeHostView {
 
     var shouldShowLegacyTextEditor: Bool {
         activePresentationKind != .todayGoals
+//        && activePresentationKind != .multiSlotInput
     }
     
     @ViewBuilder
@@ -107,11 +109,9 @@ private extension PromptPracticeHostView {
         case .guidedVisualization:
             GuidedVisualizationPromptQuestionView(prompt: prompt)
         case .todayGoals:
-            TodayGoalsPromptQuestionView(
-                viewModel: viewModel,
-                prompt: prompt,
-                isTextFieldFocused: isTextFieldFocused
-            )
+            TodayGoalsPromptQuestionView(viewModel: viewModel, prompt: prompt, isTextFieldFocused: isTextFieldFocused)
+        case .multiSlotInput:
+            MultiSlotPromptQuestionView(viewModel: viewModel, prompt: prompt, isTextFieldFocused: isTextFieldFocused)
         }
     }
 
@@ -132,11 +132,12 @@ private extension PromptPracticeHostView {
                 )
                 .focused(isTextFieldFocused)
             
-            if viewModel.isInterSlotTextFieldShimmering {
-                shimmerOverlay
-            }
+            // 3. Invisible TextField to capture hardware/software keyboard input
+            TextField("", text: $viewModel.currentInputText)
+                .focused(isTextFieldFocused)
+                .opacity(0)
+                .frame(height: 0)
         }
-        .animation(.easeInOut(duration: 0.2), value: viewModel.isInterSlotTextFieldShimmering)
     }
 
     // MARK: - Subviews & Helpers
@@ -166,5 +167,37 @@ private extension PromptPracticeHostView {
                 .combined(with: .scale(scale: 0.8))
                 .combined(with: .offset(y: Self.placeholderExitOffset))
         )
+    }
+}
+
+private struct PreviewFocusWrapper<Content: View>: View {
+      @FocusState private var isFocused: Bool
+      let content: (FocusState<Bool>.Binding) -> Content
+
+      init(@ViewBuilder content: @escaping (FocusState<Bool>.Binding) -> Content) {
+          self.content = content
+      }
+
+      var body: some View {
+          content($isFocused)
+      }
+  }
+
+#Preview {
+    // Stub prompt matching what the view expects
+    let prompt = PromptType.todoToday
+    
+    // Minimal view model setup for preview
+    let viewModel = MindsetPracticeFlowViewModel(userRepository: MockUserRepository(), addEntryUseCase: AddEntryUseCase(repository: MockEntryRepository(days: 11)), subscriptionService: MockSubscriptionService(), getStreakUseCase: GetStreakUseCase(repository: MockEntryRepository(days: 11)), aiService: MockAIService(), logger: DebugLogger.shared, onNavigate: nil)
+    
+    // Seed answers so fields render with sample content
+    viewModel.answers[prompt.id] = [
+        "Ship v1 onboarding",
+        "Triage bug backlog",
+        "Plan sprint tasks"
+    ]
+    
+    return PreviewFocusWrapper { isFocused in
+        PromptPracticeHostView(viewModel: viewModel, isTextFieldFocused: isFocused)
     }
 }

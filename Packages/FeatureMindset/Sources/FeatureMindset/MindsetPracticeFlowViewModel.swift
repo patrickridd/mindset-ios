@@ -87,6 +87,13 @@ public final class MindsetPracticeFlowViewModel {
             }
         }
     }
+
+    var encouragementText: String {
+        if currentInputText.count > 10 { return "That's deep! Keep it going." }
+        if currentSlotIndex == 1 { return "Nice one. What else?" }
+        if currentSlotIndex == 2 { return "Last one, make it count!" }
+        return "Take a deep breath..."
+    }
     
     public var slotPositionLabel: String? {
         guard let prompt = currentPrompt, prompt.responseSlotCount > 1 else { return nil }
