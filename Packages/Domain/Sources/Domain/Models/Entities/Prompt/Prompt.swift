@@ -14,4 +14,5 @@ public protocol Prompt: Sendable {
     var scientificRationale: String { get }
     var slots: [SlotMetadata] { get }
     var responseSlotCount: Int { get }
+    var type: PromptType { get }
 }

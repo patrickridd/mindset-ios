@@ -1,5 +1,5 @@
 //
-//  PromptDefinition.swift
+//  PromptLibrary.swift
 //  Domain
 //
 
@@ -270,6 +270,26 @@ public enum PromptLibrary: String, Prompt, Codable, CaseIterable, Hashable, Send
             ]
         default:
             return [SlotMetadata(label: "ENTRY", placeholder: "Type your reflection...", xpPoints: 20)]
+        }
+    }
+
+    public var type: PromptType {
+        switch self {
+            // Morning Rituals
+        case .gratitude, .todoToday, .feel, .futureSelf01, .bestPossibleSelf01, .subtracterWhat, .subtracterWho:
+            return .morning
+            
+            // Evening Rituals
+        case .eveningWins, .sensorySnapshot01, .silverLining, .mementoMori01, .gratitude01:
+            return .evening
+            
+            // Deep/Monthly Work
+        case .gratitudeMessage01, .gratitudeDeepDive, .signatureStrength01:
+            return .deepWork
+            
+            // Anytime / General
+        case .kindness01, .savoring01, .stoic01:
+            return .anytime
         }
     }
 }
