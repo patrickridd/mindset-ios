@@ -50,6 +50,7 @@ public struct Entry: Identifiable, Sendable {
     ///   - promptResponses: The list of completed ``PromptResponse`` objects.
     ///   - archetypeTag: An optional AI-generated archetype identifier.
     ///   - sentimentScore: An optional score representing detected sentiment.
+    ///   - totalXpEarned: Total XP Points earned for each PromptResponse in the `Entry` completed
     public init(
         id: UUID = UUID(),
         userId: String,

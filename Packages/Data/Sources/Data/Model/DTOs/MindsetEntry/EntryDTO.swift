@@ -17,6 +17,7 @@ public struct EntryDTO: Codable {
     public let promptResponses: [PromptResponseDTO]
     public let archetypeTag: String?
     public let sentimentScore: Double?
+    public let totalXpEarned: Int
 
     public init(from domain: Entry) {
         self.id = domain.id.uuidString
@@ -26,6 +27,7 @@ public struct EntryDTO: Codable {
         self.promptResponses = domain.promptResponses.map { PromptResponseDTO(from: $0) }
         self.archetypeTag = domain.archetypeTag
         self.sentimentScore = domain.sentimentScore
+        self.totalXpEarned = domain.totalXpEarned
     }
 
     public func toDomain() -> Entry {
@@ -36,7 +38,8 @@ public struct EntryDTO: Codable {
             lastUpdatedAt: lastUpdatedAt,
             promptResponses: promptResponses.map { $0.toDomain() },
             archetypeTag: archetypeTag,
-            sentimentScore: sentimentScore
+            sentimentScore: sentimentScore,
+            totalXpEarned: totalXpEarned
         )
     }
 }

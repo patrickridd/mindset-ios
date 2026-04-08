@@ -36,6 +36,9 @@ public final class SDEntry {
     /// A numerical representation of the sentiment detected in the user's responses.
     public var sentimentScore: Double?
 
+    /// Sum of XP Points earned for each PromptResponse in the `Entry` completed
+    public var totalXpEarned: Int
+
     /// The collection of individual prompt-response pairs associated with this entry.
     ///
     /// This relationship uses a `.cascade` delete rule, ensuring that when an entry
@@ -50,18 +53,21 @@ public final class SDEntry {
     ///   - date: The creation date of the entry.
     ///   - archetypeTag: An optional archetype identifier.
     ///   - sentimentScore: An optional sentiment analysis score.
+    ///   - totalXpEarned: Total XP Points earned for each PromptResponse in the Entry completed
     public init(
         id: UUID = UUID(),
         userId: String,
         dateCreated: Date = Date(),
         archetypeTag: String? = nil,
-        sentimentScore: Double? = nil
+        sentimentScore: Double? = nil,
+        totalXpEarned: Int
     ) {
         self.id = id
         self.userId = userId
         self.dateCreated = dateCreated
         self.archetypeTag = archetypeTag
         self.sentimentScore = sentimentScore
+        self.totalXpEarned = totalXpEarned
     }
     
     /// Converts the persistent storage model into a clean Domain entity.
@@ -73,7 +79,8 @@ public final class SDEntry {
             dateCreated: dateCreated,
             promptResponses: promptResponses.map { $0.toDomain() },
             archetypeTag: archetypeTag,
-            sentimentScore: sentimentScore
+            sentimentScore: sentimentScore,
+            totalXpEarned: totalXpEarned
         )
     }
 
@@ -88,7 +95,8 @@ public final class SDEntry {
             userId: domainEntry.userId,
             dateCreated: domainEntry.dateCreated,
             archetypeTag: domainEntry.archetypeTag,
-            sentimentScore: domainEntry.sentimentScore
+            sentimentScore: domainEntry.sentimentScore,
+            totalXpEarned: domainEntry.totalXpEarned
         )
         
         let sdResponses = domainEntry.promptResponses.map { response in
@@ -122,7 +130,7 @@ extension SDEntry {
         self.dateCreated = domain.dateCreated
         self.archetypeTag = domain.archetypeTag
         self.sentimentScore = domain.sentimentScore
-        
+        self.totalXpEarned = domain.totalXpEarned
         // --- Reconcile Responses ---
         // We delete children to ensure a clean state, preventing database bloat.
         for response in self.promptResponses {
