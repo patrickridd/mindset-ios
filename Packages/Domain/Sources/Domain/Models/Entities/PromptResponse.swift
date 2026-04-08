@@ -43,3 +43,36 @@ public struct PromptResponse: Identifiable, Sendable {
         self.aiReflection = aiReflection
     }
 }
+
+extension PromptResponse {
+    /// Minimum Character count required for each PromptResponse answer in our `answers` array.
+    public var minCharacterCount: Int { 3 }
+    
+    /// Business Rule: A response is valid if it has the correct number of answers and each answer meets the minimum character threshold.
+    public var isValid: Bool {
+        // 1. We try to find the Prompt.
+        // Today this is only MindsetPrompt, but tomorrow this could be
+        // a 'PromptProvider' that looks in the database for UserPrompts too.
+        let prompt = findPrompt(for: self.promptId)
+        
+        // 2. If we have a Prompt, we must match its slot count
+        if let prompt {
+            guard answers.count == prompt.slots.count else { return false }
+        } else {
+            // If no Prompt is found (fallback), we just need at least one answer
+            guard !answers.isEmpty else { return false }
+        }
+        
+        // 3. Quality Check
+        return answers.allSatisfy { answer in
+            answer.trimmingCharacters(in: .whitespacesAndNewlines).count >= 3
+        }
+    }
+
+    /// Helper abstracts "Where" the prompt comes from
+    private func findPrompt(for id: String) -> (any Prompt)? {
+        // Currently, we only have our built-in MindsetPrompts
+        return MindsetPrompt(rawValue: id)
+        // LATER: return MindsetPrompt(rawValue: id) ?? UserPromptRepository.find(id)
+    }
+}

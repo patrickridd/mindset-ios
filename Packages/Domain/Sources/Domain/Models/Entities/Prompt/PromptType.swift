@@ -19,13 +19,4 @@ public enum PromptType: String, Sendable, Codable {
         case .deepWork: return "book.closed.fill"
         }
     }
-    
-    public var themeColor: Color {
-        switch self {
-        case .morning: return .orange
-        case .evening: return .indigo
-        case .anytime: return .mint
-        case .deepWork: return .purple
-        }
-    }
 }

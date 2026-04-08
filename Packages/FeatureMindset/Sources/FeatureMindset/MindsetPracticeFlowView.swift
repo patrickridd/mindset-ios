@@ -407,7 +407,8 @@ private extension MindsetPracticeFlowView {
         viewModel: MindsetPracticeFlowViewModel(
             userRepository: Domain.MockUserRepository(),
             addEntryUseCase: AddEntryUseCase(
-                repository: Domain.MockEntryRepository(days: 7)
+                entryRepository: MockEntryRepository(days: 7),
+                userRepository: MockUserRepository()
             ),
             subscriptionService: Domain.MockSubscriptionService(),
             getStreakUseCase: GetStreakUseCase(repository: Domain.MockEntryRepository(days: 7)),

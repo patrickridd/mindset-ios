@@ -39,6 +39,9 @@ public struct Entry: Identifiable, Sendable {
     /// A numerical value (typically -1.0 to 1.0) representing the emotional tone of the entry.
     public var sentimentScore: Double?
 
+    /// Sum of XP Points earned for each PromptResponse in the `Entry` completed
+    public let totalXpEarned: Int
+
     /// Initializes a new Entry.
     /// - Parameters:
     ///   - id: A unique identifier. Defaults to a new `UUID`.
@@ -54,7 +57,8 @@ public struct Entry: Identifiable, Sendable {
         lastUpdatedAt: Date = Date(),
         promptResponses: [PromptResponse],
         archetypeTag: String? = nil,
-        sentimentScore: Double? = nil
+        sentimentScore: Double? = nil,
+        totalXpEarned: Int = 0
     ) {
         self.id = id
         self.userId = userId
@@ -63,6 +67,20 @@ public struct Entry: Identifiable, Sendable {
         self.promptResponses = promptResponses
         self.archetypeTag = archetypeTag
         self.sentimentScore = sentimentScore
+        self.totalXpEarned = totalXpEarned
+    }
+
+    init(entry: Entry, totalXpEarned: Int) {
+        self.init(
+            id: entry.id,
+            userId: entry.userId,
+            dateCreated: entry.dateCreated,
+            lastUpdatedAt: entry.lastUpdatedAt,
+            promptResponses: entry.promptResponses,
+            archetypeTag: entry.archetypeTag,
+            sentimentScore: entry.sentimentScore,
+            totalXpEarned: totalXpEarned
+        )
     }
 }
 

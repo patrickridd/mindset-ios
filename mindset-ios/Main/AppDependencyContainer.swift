@@ -66,7 +66,7 @@ final class AppDependencyContainer: ObservableObject {
             
         // --- Use Cases ---
         let getStreak = GetStreakUseCase(repository: entryRepository)
-        let addMindset = AddEntryUseCase(repository: entryRepository)
+        let addMindset = AddEntryUseCase(entryRepository: entryRepository, userRepository: userRepository)
         let getYesterday = GetYesterdayGoalUseCase(repository: entryRepository)
 
         let deleteAccountUseCase = DeleteAccountUseCase(
