@@ -5,16 +5,16 @@
 
 public enum PromptCatalog {
     
-    public static let allPrompts: [PromptLibrary] = PromptLibrary.allCases
+    public static let allPrompts: [MindsetPrompt] = MindsetPrompt.allCases
 
     // MARK: - Template Prompts
 
-    public static let morningStartTemplateDefinitions: [PromptLibrary] =
-        PromptLibrary.allCases.filter(\.isMorningTemplate)
+    public static let morningStartTemplateDefinitions: [MindsetPrompt] =
+        MindsetPrompt.allCases.filter(\.isMorningTemplate)
 
     // MARK: - Retrieval
 
-    public static func prompts(for category: PromptCategory) -> [PromptLibrary] {
+    public static func prompts(for category: PromptCategory) -> [MindsetPrompt] {
         allPrompts.filter { $0.category == category }
     }
 }

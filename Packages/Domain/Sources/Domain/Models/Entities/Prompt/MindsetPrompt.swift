@@ -1,9 +1,9 @@
 //
-//  PromptLibrary.swift
+//  MindsetPrompt.swift
 //  Domain
 //
 
-public enum PromptLibrary: String, Prompt, Codable, CaseIterable, Hashable, Sendable {
+public enum MindsetPrompt: String, Prompt, Codable, CaseIterable, Hashable, Sendable {
 
     public var id: String { rawValue }
 

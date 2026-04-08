@@ -14,7 +14,7 @@ import SharedLocalization
 @Observable
 public final class MindsetPracticeFlowViewModel {
     private static let minimumAnswerLength = 3
-    private static let todayGoalsPromptId = PromptLibrary.todoToday.id
+    private static let todayGoalsPromptId = MindsetPrompt.todoToday.id
 
     // Dependencies
     private let getStreakUseCase: GetStreakUseCase

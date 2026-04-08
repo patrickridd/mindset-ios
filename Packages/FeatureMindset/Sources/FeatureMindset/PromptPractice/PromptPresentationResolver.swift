@@ -7,7 +7,7 @@ import Domain
 
 struct PromptPresentationResolver {
     func presentationKind(for prompt: Prompt) -> PromptPresentationKind {
-        if prompt.id == PromptLibrary.todoToday.id {
+        if prompt.id == MindsetPrompt.todoToday.id {
             return .todayGoals
         }
 

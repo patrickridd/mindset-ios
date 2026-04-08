@@ -98,7 +98,7 @@ private struct PreviewFocusWrapper<Content: View>: View {
 
 #Preview {
     // Stub prompt matching what the view expects
-    let prompt = PromptLibrary.todoToday
+    let prompt = MindsetPrompt.todoToday
     
     // Minimal view model setup for preview
     let viewModel = MindsetPracticeFlowViewModel(userRepository: MockUserRepository(), addEntryUseCase: AddEntryUseCase(repository: MockEntryRepository(days: 11)), subscriptionService: MockSubscriptionService(), getStreakUseCase: GetStreakUseCase(repository: MockEntryRepository(days: 11)), aiService: MockAIService(), logger: DebugLogger.shared, onNavigate: nil)
