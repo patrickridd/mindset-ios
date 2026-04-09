@@ -7,36 +7,36 @@
 
 public struct AddEntryUseCase: Sendable {
     private let entryRepository: EntryRepository
-    private let userRepository: UserRepository
+    private let statsRepository: UserStatsRepository
 
-    public init(entryRepository: EntryRepository, userRepository: UserRepository) {
+    public init(entryRepository: EntryRepository, statsRepository: UserStatsRepository) {
         self.entryRepository = entryRepository
-        self.userRepository = userRepository
+        self.statsRepository = statsRepository
     }
 
     public func execute(entry: Entry) async throws {
-        // 1. Validation: Ask the entry if its responses are valid
-        // (Note: You could add a 'isValid' property to Entry too)
-        guard !entry.promptResponses.isEmpty else {
-            throw DomainError.incompleteRitual
-        }
-        
+        // 1. Validate
         guard entry.promptResponses.allSatisfy({ $0.isValid }) else {
-            throw DomainError.incompleteRitual
+            throw DomainError.invalidResponse
         }
 
-        // 2. Calculate the "Fact" of earned XP
+        // 2. XP Logic
         let earnedXP = RitualGamification.earnedXP(from: entry.promptResponses)
-        
-        // 3. Create the finalized Entry stamped with points
         let finalizedEntry = Entry(entry: entry, totalXpEarned: earnedXP)
 
-        // 4. Persistence
-        // We save the entry first so the 'History' is updated
+        // 3. Save Entry
         try await entryRepository.save(entry: finalizedEntry)
-        
-        // 5. Update the User's "XP Bucket"
-        // This triggers the level-up logic in the User profile
-//        try await userRepository.incrementTotalXP(userId: entry.userId, by: earnedXP)
+
+        // 4. Update Stats (The Scale-Friendly Way)
+        // First, calculate the new streak
+        let allEntries = try await entryRepository.fetchAllEntries()
+        let newStreak = StreakCalculator.calculateStreak(
+            from: allEntries.map { $0.dateCreated },
+            relativeTo: finalizedEntry.dateCreated
+        )
+
+        // Update the "Bucket" with both XP and the new Streak
+        try await statsRepository.incrementTotalXP(userId: entry.userId, by: earnedXP)
+        try await statsRepository.updateStreak(userId: entry.userId, newStreak: newStreak)
     }
 }

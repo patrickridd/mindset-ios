@@ -8,13 +8,13 @@
 import Foundation
 
 public enum DomainError: Error, LocalizedError {
-    case incompleteRitual
+    case invalidResponse
     case persistenceFailure(Error)
 
     public var errorDescription: String? {
         switch self {
-        case .incompleteRitual:
-            return "A ritual requires Gratitude, a Goal, and an Affirmation to be complete."
+        case .invalidResponse:
+            return "A valid response requires 3 characters or more"
         case .persistenceFailure(let error):
             return "We couldn't save your progress: \(error.localizedDescription)"
         }

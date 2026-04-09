@@ -28,6 +28,7 @@ final class AppDependencyContainer: ObservableObject {
     let serviceFactory: ServiceFactory
     let authService: AuthService
     let userRepository: UserRepository
+    let statsRepository: UserStatsRepository
     let entryRepository: EntryRepository
     let coordinator: MainCoordinator
     let viewFactory: AppViewFactory
@@ -55,7 +56,7 @@ final class AppDependencyContainer: ObservableObject {
         // --- Repositories ---
         self.entryRepository = serviceFactory.makeEntryRepository(modelContext: modelContext, authStateQuery: authService)
         self.userRepository = serviceFactory.makeUserRepository(modelContext: modelContext, authStateQuery: authService)
-
+        self.statsRepository = serviceFactory.makeStatsRepository(modelContext: modelContext, authStateQuery: authService)
         self.syncService = serviceFactory.makeSyncService(modelContext: modelContext, authService: authService)
     
         let appleSignInNonceStorage = AppleSignInNonceStorage()
@@ -66,7 +67,7 @@ final class AppDependencyContainer: ObservableObject {
             
         // --- Use Cases ---
         let getStreak = GetStreakUseCase(repository: entryRepository)
-        let addMindset = AddEntryUseCase(entryRepository: entryRepository, userRepository: userRepository)
+        let addMindset = AddEntryUseCase(entryRepository: entryRepository, statsRepository: statsRepository)
         let getYesterday = GetYesterdayGoalUseCase(repository: entryRepository)
 
         let deleteAccountUseCase = DeleteAccountUseCase(

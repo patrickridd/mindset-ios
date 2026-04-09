@@ -188,7 +188,7 @@ private struct PreviewFocusWrapper<Content: View>: View {
     let prompt = MindsetPrompt.todoToday
     
     // Minimal view model setup for preview
-    let viewModel = MindsetPracticeFlowViewModel(userRepository: MockUserRepository(), addEntryUseCase: AddEntryUseCase(entryRepository: MockEntryRepository(days: 11), userRepository: MockUserRepository()), subscriptionService: MockSubscriptionService(), getStreakUseCase: GetStreakUseCase(repository: MockEntryRepository(days: 11)), aiService: MockAIService(), logger: DebugLogger.shared, onNavigate: nil)
+    let viewModel = MindsetPracticeFlowViewModel(userRepository: MockUserRepository(), addEntryUseCase: AddEntryUseCase(entryRepository: MockEntryRepository(days: 11), statsRepository: MockUserStatsRepository()), subscriptionService: MockSubscriptionService(), getStreakUseCase: GetStreakUseCase(repository: MockEntryRepository(days: 11)), aiService: MockAIService(), logger: DebugLogger.shared, onNavigate: nil)
     
     // Seed answers so fields render with sample content
     viewModel.answers[prompt.id] = [

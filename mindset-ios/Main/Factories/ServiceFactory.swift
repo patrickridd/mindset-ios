@@ -136,6 +136,14 @@ struct ServiceFactory {
         return base
         #endif
     }
+    
+    func makeStatsRepository(modelContext: ModelContext, authStateQuery: AuthService) -> UserStatsRepository {
+        if config.useRealServices {
+            return MockUserStatsRepository()
+        } else {
+            return MockUserStatsRepository()
+        }
+    }
 
     func makeLocalUserRepository(modelContext: ModelContext) -> UserRepository {
         let base: any UserRepository
