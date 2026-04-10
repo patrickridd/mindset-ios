@@ -205,7 +205,8 @@ private extension DashboardView {
 #Preview {
     let entryRepository = MockEntryRepository(days: 1)
     let userRepository = MockUserRepository()
-    let appSyncService = AppSyncService(userLocal: userRepository, userRemote: userRepository, entryLocal: entryRepository, entryRemote: entryRepository, authService: MockAuthService(), logger: DebugLogger.shared)
+    let userStatsRepository = MockUserStatsRepository()
+    let appSyncService = AppSyncService(userLocal: userRepository, userRemote: userRepository, entryLocal: entryRepository, entryRemote: entryRepository, userStatsLocal: userStatsRepository, userStatsRemote: userStatsRepository, authService: MockAuthService(), logger: DebugLogger.shared)
     let viewModel = DashboardViewModel(
         userRepository: userRepository,
         entryRepository: entryRepository,

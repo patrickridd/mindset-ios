@@ -13,6 +13,8 @@ public final class AppSyncService: Sendable {
     private let userRemote: UserRepository
     private let entryLocal: EntryRepository
     private let entryRemote: EntryRepository
+    private let userStatsLocal: UserStatsRepository & UserStatsSyncable
+    private let userStatsRemote: UserStatsRepository & UserStatsSyncable
     private let authService: AuthService
     private let notificationCenter: NotificationCenter
     private let logger: AppLogger
@@ -22,6 +24,8 @@ public final class AppSyncService: Sendable {
         userRemote: UserRepository,
         entryLocal: EntryRepository,
         entryRemote: EntryRepository,
+        userStatsLocal: UserStatsRepository & UserStatsSyncable,
+        userStatsRemote: UserStatsRepository & UserStatsSyncable,
         authService: AuthService,
         notificationCenter: NotificationCenter = .default,
         logger: AppLogger
@@ -30,6 +34,8 @@ public final class AppSyncService: Sendable {
         self.userRemote = userRemote
         self.entryLocal = entryLocal
         self.entryRemote = entryRemote
+        self.userStatsLocal = userStatsLocal
+        self.userStatsRemote = userStatsRemote
         self.authService = authService
         self.notificationCenter = notificationCenter
         self.logger = logger
@@ -45,6 +51,7 @@ public final class AppSyncService: Sendable {
         await withTaskGroup(of: Void.self) { group in
             group.addTask { await self.syncUser(uid: uid) }
             group.addTask { await self.syncEntries(uid: uid) }
+            group.addTask { await self.syncStats(uid: uid) }
         }
     }
 }
@@ -105,6 +112,30 @@ extension AppSyncService {
         } else {
             logger.log("🔄 Sync: Local is newer. Updating cloud.")
             try await userRemote.saveUserProfile(local)
+        }
+    }
+
+    private enum SyncState {
+        case newUserCreation(uid: String)
+        case remoteOnly(remote: UserProfile)
+        case localOnly(local: UserProfile)
+        case resolve(local: UserProfile, remote: UserProfile)
+
+        init(localUser: UserProfile?, remoteUser: UserProfile?, uid: String) {
+            switch (localUser, remoteUser) {
+            // 1. Total Void: New User / First Sign In
+            case (nil, nil):
+                self = .newUserCreation(uid: uid)
+            // 2. New Device / Data Recovery: Remote exists, Local doesn't
+            case (nil, .some(let remoteUser)):
+                self = .remoteOnly(remote: remoteUser)
+            // 3. First-time Upload: Local exists, Remote doesn't (or document was deleted)
+            case (.some(let localUser), nil):
+                self = .localOnly(local: localUser)
+            // 4. Comparison: Both exist, may the newest timestamp win
+            case (.some(let localUser), .some(let remoteUser)):
+                self = .resolve(local: localUser, remote: remoteUser)
+            }
         }
     }
 }
@@ -188,26 +219,59 @@ extension AppSyncService {
     }
 }
 
-private enum SyncState {
-    case newUserCreation(uid: String)
-    case remoteOnly(remote: UserProfile)
-    case localOnly(local: UserProfile)
-    case resolve(local: UserProfile, remote: UserProfile)
+// MARK: - Stats Sync
+extension AppSyncService {
+    public func syncStats(uid: String) async {
+        do {
+            let localStats = try await userStatsLocal.fetchStats(userId: uid)
+            let remoteStats = try await userStatsRemote.fetchStats(userId: uid)
+            
+            switch (localStats, remoteStats) {
+            case (nil, nil):
+                logger.log("📊 Stats: No stats found anywhere. Waiting for first ritual.")
+                
+            case (nil, .some(let remote)):
+                logger.log("📊 Stats: Downloading stats from cloud.")
+                try await userStatsLocal.updateStats(userId: uid, xpDelta: remote.totalXP, newStreak: remote.currentStreak)
+                
+            case (.some(let local), nil):
+                logger.log("📊 Stats: Uploading local stats to cloud.")
+                try await userStatsRemote.updateStats(userId: uid, xpDelta: local.totalXP, newStreak: local.currentStreak)
 
-    init(localUser: UserProfile?, remoteUser: UserProfile?, uid: String) {
-        switch (localUser, remoteUser) {
-        // 1. Total Void: New User / First Sign In
-        case (nil, nil):
-            self = .newUserCreation(uid: uid)
-        // 2. New Device / Data Recovery: Remote exists, Local doesn't
-        case (nil, .some(let remoteUser)):
-            self = .remoteOnly(remote: remoteUser)
-        // 3. First-time Upload: Local exists, Remote doesn't (or document was deleted)
-        case (.some(let localUser), nil):
-            self = .localOnly(local: localUser)
-        // 4. Comparison: Both exist, may the newest timestamp win
-        case (.some(let localUser), .some(let remoteUser)):
-            self = .resolve(local: localUser, remote: remoteUser)
+            case (.some(let local), .some(let remote)):
+                try await resolveStatsConflict(uid: uid, local: local, remote: remote)
+            }
+        } catch {
+            logger.log("⚠️ Stats Sync failed: \(error.localizedDescription)")
+        }
+    }
+    
+    private func resolveStatsConflict(uid: String, local: UserStats, remote: UserStats) async throws {
+        let localDate = local.lastUpdated ?? .distantPast
+        let remoteDate = remote.lastUpdated ?? .distantPast
+        
+        let timeDiff = abs(remoteDate.timeIntervalSince(localDate))
+        if timeDiff < 1.0 { return }
+        
+        if remoteDate > localDate {
+            logger.log("🔄 Stats Sync: Cloud is newer. Overwriting local.")
+            
+            // We use overwriteStats to avoid 'double-adding' XP via deltas
+            try await userStatsLocal.overwriteStats(
+                userId: uid,
+                totalXP: remote.totalXP,
+                newStreak: remote.currentStreak,
+                lastUpdated: remoteDate // Preserve the original timestamp!
+            )
+        } else {
+            logger.log("🔄 Stats Sync: Local is newer. Overwriting cloud.")
+            
+            try await userStatsRemote.overwriteStats(
+                userId: uid,
+                totalXP: local.totalXP,
+                newStreak: local.currentStreak,
+                lastUpdated: localDate
+            )
         }
     }
 }

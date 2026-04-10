@@ -28,25 +28,34 @@ public final class MockUserStatsRepository: UserStatsRepository, @unchecked Send
     }
 }
 
+extension MockUserStatsRepository: UserStatsSyncable {
+    public func overwriteStats(userId: String, totalXP: Int, newStreak: Int, lastUpdated: Date) async throws {
+        try await store.overwriteStats(userId: userId, totalXP: totalXP, newStreak: newStreak, lastUpdated: lastUpdated)
+    }
+}
+
 actor MockUserStatsStore {
+    private var mockStats: [String: UserStats] = [:]
     private var mockXP: [String: Int] = [:]
     private var mockStreaks: [String: Int] = [:]
-
+    private var mockLastUpdated: [String: Date] = [:]
+    
     func incrementXP(userId: String, by amount: Int) {
-        let current = mockXP[userId] ?? 0
-        mockXP[userId] = current + amount
+        let current = mockStats[userId]?.totalXP ?? 0
+        mockStats[userId]?.totalXP = current + amount
     }
     
     public func updateStats(userId: String, xpDelta: Int, newStreak: Int) async throws {
         let current = mockXP[userId] ?? 0
-        mockXP[userId] = current + xpDelta
-        mockStreaks[userId] = newStreak
+        mockStats[userId] = UserStats(currentStreak: newStreak, totalXP: current + xpDelta, lastUpdated: Date())
     }
     
     func fetchStats(userId: String) -> UserStats {
-        let xp = mockXP[userId] ?? 0
-        let streak = mockStreaks[userId] ?? 0
-        return UserStats(currentStreak: streak, totalXP: xp)
+        mockStats[userId] ?? UserStats()
+    }
+
+    public func overwriteStats(userId: String, totalXP: Int, newStreak: Int, lastUpdated: Date) async throws {
+        mockStats[userId] = UserStats(currentStreak: newStreak, totalXP: totalXP, lastUpdated: lastUpdated)
     }
 }
 

@@ -167,8 +167,8 @@ struct ServiceFactory {
 
     // MARK: - UserStatsRepository creation
 
-    func makeUserStatsRepository(modelContext: ModelContext, authStateQuery: AuthService) -> UserStatsRepository {
-        let base: any UserStatsRepository
+    func makeUserStatsRepository(modelContext: ModelContext, authStateQuery: AuthService) -> UserStatsRepository & UserStatsSyncable {
+        let base: any UserStatsRepository & UserStatsSyncable
         if config.useRealServices {
             let local = SDUserStatsRepository(modelContext: modelContext, logger: logger)
             let remote = FirestoreUserStatsRepository(logger: logger)
@@ -177,6 +177,34 @@ struct ServiceFactory {
             base = MockUserStatsRepository()
         }
 
+        #if DEBUG
+        return UserStatsRepositoryDebugWrapper(wrapping: base)
+        #else
+        return base
+        #endif
+    }
+
+    func makeLocalUserStatsRepository(modelContext: ModelContext) -> UserStatsRepository & UserStatsSyncable {
+        let base: any UserStatsRepository & UserStatsSyncable
+        if config.useRealServices {
+            base = SDUserStatsRepository(modelContext: modelContext, logger: logger)
+        } else {
+            base = MockUserStatsRepository()
+        }
+        #if DEBUG
+        return UserStatsRepositoryDebugWrapper(wrapping: base)
+        #else
+        return base
+        #endif
+    }
+
+    func makeRemoteUserStatsRepository(authStateQuery: AuthStateQuery) -> UserStatsRepository & UserStatsSyncable {
+        let base: any UserStatsRepository & UserStatsSyncable
+        if config.useRealServices {
+            base = FirestoreUserStatsRepository(logger: logger)
+        } else {
+            base = MockUserStatsRepository()
+        }
         #if DEBUG
         return UserStatsRepositoryDebugWrapper(wrapping: base)
         #else
@@ -196,6 +224,8 @@ struct ServiceFactory {
             userRemote: makeRemoteUserRepository(authStateQuery: authService),
             entryLocal: makeLocalEntryRepository(modelContext: modelContext),
             entryRemote: makeRemoteEntryRepository(authStateQuery: authService),
+            userStatsLocal: makeLocalUserStatsRepository(modelContext: modelContext),
+            userStatsRemote: makeRemoteUserStatsRepository(authStateQuery: authService),
             authService: authService,
             logger: logger
         )

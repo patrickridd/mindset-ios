@@ -70,7 +70,7 @@ public struct MindsetHistoryView: View {
 
 #Preview {
     let mockEntryRepo = MockEntryRepository(days: 2)
-    let syncService = AppSyncService(userLocal: MockUserRepository(), userRemote: MockUserRepository(), entryLocal: mockEntryRepo, entryRemote: mockEntryRepo, authService: MockAuthService(), logger: DebugLogger.shared)
+    let syncService = AppSyncService(userLocal: MockUserRepository(), userRemote: MockUserRepository(), entryLocal: mockEntryRepo, entryRemote: mockEntryRepo, userStatsLocal: MockUserStatsRepository(), userStatsRemote: MockUserStatsRepository(), authService: MockAuthService(), logger: DebugLogger.shared)
     let viewModel = MindsetHistoryViewModel(entryRepository: mockEntryRepo, syncService: syncService, logger: DebugLogger.shared)
     MindsetHistoryView(viewModel: viewModel)
 }

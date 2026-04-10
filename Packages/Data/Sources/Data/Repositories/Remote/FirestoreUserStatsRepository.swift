@@ -51,3 +51,18 @@ public final class FirestoreUserStatsRepository: UserStatsRepository {
         ])
     }
 }
+
+extension FirestoreUserStatsRepository: UserStatsSyncable {
+    public func overwriteStats(userId: String, totalXP: Int, newStreak: Int, lastUpdated: Date) async throws {
+        let docRef = db.collection(collectionPath).document(userId)
+        
+        // We use absolute values here, not increments
+        try await docRef.setData([
+            "totalXP": totalXP,
+            "currentStreak": newStreak,
+            "lastUpdated": Timestamp(date: lastUpdated)
+        ], merge: true)
+        
+        logger.log("☁️ Firestore: Stats absolute overwrite completed.")
+    }
+}

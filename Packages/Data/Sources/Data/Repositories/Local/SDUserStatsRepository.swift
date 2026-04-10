@@ -52,3 +52,29 @@ public final class SDUserStatsRepository: UserStatsRepository {
         try await updateStats(userId: userId, xpDelta: amount, newStreak: currentStreak)
     }
 }
+
+extension SDUserStatsRepository: UserStatsSyncable {
+    @MainActor
+    public func overwriteStats(userId: String, totalXP: Int, newStreak: Int, lastUpdated: Date) async throws {
+        let descriptor = FetchDescriptor<SDUserStats>(
+            predicate: #Predicate<SDUserStats> { $0.userId == userId }
+        )
+        
+        if let existing = try modelContext.fetch(descriptor).first {
+            existing.totalXP = totalXP
+            existing.currentStreak = newStreak
+            existing.lastUpdated = lastUpdated
+            logger.log("🔄 SDStats: Overwritten with absolute values (Sync).")
+        } else {
+            let newStats = SDUserStats(
+                userId: userId,
+                currentStreak: newStreak,
+                totalXP: totalXP,
+                lastUpdated: lastUpdated
+            )
+            modelContext.insert(newStats)
+        }
+        
+        try modelContext.save()
+    }
+}
