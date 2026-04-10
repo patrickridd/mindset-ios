@@ -125,7 +125,7 @@ struct ServiceFactory {
         let base: any UserRepository
         if config.useRealServices {
             let local = makeLocalUserRepository(modelContext: modelContext)
-            let remote = makeRemoteUserRepository(authStateQuery: authStateQuery)
+            let remote =  FirestoreUserRepository(authStateQuery: authStateQuery, logger: logger)
             base = AppUserRepository(local: local, remote: remote, authStateQuery: authStateQuery, logger:  logger)
         } else {
             base = MockUserRepository()
@@ -135,14 +135,6 @@ struct ServiceFactory {
         #else
         return base
         #endif
-    }
-    
-    func makeStatsRepository(modelContext: ModelContext, authStateQuery: AuthService) -> UserStatsRepository {
-        if config.useRealServices {
-            return MockUserStatsRepository()
-        } else {
-            return MockUserStatsRepository()
-        }
     }
 
     func makeLocalUserRepository(modelContext: ModelContext) -> UserRepository {
@@ -173,6 +165,25 @@ struct ServiceFactory {
         #endif
     }
 
+    // MARK: - UserStatsRepository creation
+
+    func makeUserStatsRepository(modelContext: ModelContext, authStateQuery: AuthService) -> UserStatsRepository {
+        let base: any UserStatsRepository
+        if config.useRealServices {
+            let local = SDUserStatsRepository(modelContext: modelContext, logger: logger)
+            let remote = FirestoreUserStatsRepository(logger: logger)
+            base = AppUserStatsRepository(local: local, remote: remote, logger:  logger)
+        } else {
+            base = MockUserStatsRepository()
+        }
+
+        #if DEBUG
+        return UserStatsRepositoryDebugWrapper(wrapping: base)
+        #else
+        return base
+        #endif
+    }
+
     func makeLocalDataCleaners(modelContext: ModelContext) -> [LocalDataCleaner] {
         [SDUserRepository(modelContext: modelContext, logger: logger), SDEntryRepository(modelContext: modelContext, logger: logger)]
     }
@@ -189,5 +200,4 @@ struct ServiceFactory {
             logger: logger
         )
     }
-        
 }

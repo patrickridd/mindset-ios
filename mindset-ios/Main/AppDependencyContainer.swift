@@ -56,7 +56,7 @@ final class AppDependencyContainer: ObservableObject {
         // --- Repositories ---
         self.entryRepository = serviceFactory.makeEntryRepository(modelContext: modelContext, authStateQuery: authService)
         self.userRepository = serviceFactory.makeUserRepository(modelContext: modelContext, authStateQuery: authService)
-        self.statsRepository = serviceFactory.makeStatsRepository(modelContext: modelContext, authStateQuery: authService)
+        self.statsRepository = serviceFactory.makeUserStatsRepository(modelContext: modelContext, authStateQuery: authService)
         self.syncService = serviceFactory.makeSyncService(modelContext: modelContext, authService: authService)
     
         let appleSignInNonceStorage = AppleSignInNonceStorage()
