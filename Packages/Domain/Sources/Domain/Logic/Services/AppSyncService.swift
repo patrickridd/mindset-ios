@@ -51,7 +51,7 @@ public final class AppSyncService: Sendable {
         await withTaskGroup(of: Void.self) { group in
             group.addTask { await self.syncUser(uid: uid) }
             group.addTask { await self.syncEntries(uid: uid) }
-            group.addTask { await self.syncStats(uid: uid) }
+            group.addTask { await self.syncUserStats(uid: uid) }
         }
     }
 }
@@ -221,32 +221,32 @@ extension AppSyncService {
 
 // MARK: - Stats Sync
 extension AppSyncService {
-    public func syncStats(uid: String) async {
+    public func syncUserStats(uid: String) async {
         do {
             let localStats = try await userStatsLocal.fetchStats(userId: uid)
             let remoteStats = try await userStatsRemote.fetchStats(userId: uid)
             
             switch (localStats, remoteStats) {
             case (nil, nil):
-                logger.log("📊 Stats: No stats found anywhere. Waiting for first ritual.")
+                logger.log("📊 UserStats: No stats found anywhere. Waiting for first ritual.")
                 
             case (nil, .some(let remote)):
-                logger.log("📊 Stats: Downloading stats from cloud.")
+                logger.log("📊 UserStats: Downloading stats from cloud.")
                 try await userStatsLocal.updateStats(userId: uid, xpDelta: remote.totalXP, newStreak: remote.currentStreak)
                 
             case (.some(let local), nil):
-                logger.log("📊 Stats: Uploading local stats to cloud.")
+                logger.log("📊 UserStats: Uploading local stats to cloud.")
                 try await userStatsRemote.updateStats(userId: uid, xpDelta: local.totalXP, newStreak: local.currentStreak)
 
             case (.some(let local), .some(let remote)):
-                try await resolveStatsConflict(uid: uid, local: local, remote: remote)
+                try await resolveUserStatsConflict(uid: uid, local: local, remote: remote)
             }
         } catch {
-            logger.log("⚠️ Stats Sync failed: \(error.localizedDescription)")
+            logger.log("⚠️ UserStats Sync failed: \(error.localizedDescription)")
         }
     }
     
-    private func resolveStatsConflict(uid: String, local: UserStats, remote: UserStats) async throws {
+    private func resolveUserStatsConflict(uid: String, local: UserStats, remote: UserStats) async throws {
         let localDate = local.lastUpdated ?? .distantPast
         let remoteDate = remote.lastUpdated ?? .distantPast
         
@@ -254,7 +254,7 @@ extension AppSyncService {
         if timeDiff < 1.0 { return }
         
         if remoteDate > localDate {
-            logger.log("🔄 Stats Sync: Cloud is newer. Overwriting local.")
+            logger.log("🔄 UserStats Sync: Cloud is newer. Overwriting local.")
             
             // We use overwriteStats to avoid 'double-adding' XP via deltas
             try await userStatsLocal.overwriteStats(
@@ -264,7 +264,7 @@ extension AppSyncService {
                 lastUpdated: remoteDate // Preserve the original timestamp!
             )
         } else {
-            logger.log("🔄 Stats Sync: Local is newer. Overwriting cloud.")
+            logger.log("🔄 UserStats Sync: Local is newer. Overwriting cloud.")
             
             try await userStatsRemote.overwriteStats(
                 userId: uid,
