@@ -9,17 +9,17 @@ import Foundation
 
 /// A Codable representation of user metrics, including streaks and unlocked achievements.
 public struct UserStatsDTO: Codable {
-    public let streakCount: Int
+    public let currentStreak: Int
     public let totalXP: Int
-    public let lastRitualDate: Date?
+    public let lastUpdated: Date?
     public let badges: [String]
     public let archetype: String?
 
     /// Maps Domain ``UserStats`` to a DTO for Firebase storage.
     public init(from domain: UserStats) {
-        self.streakCount = domain.streakCount
+        self.currentStreak = domain.currentStreak
         self.totalXP = domain.totalXP
-        self.lastRitualDate = domain.lastRitualDate
+        self.lastUpdated = domain.lastUpdated
         self.badges = domain.badges
         self.archetype = domain.archetype
     }
@@ -27,9 +27,9 @@ public struct UserStatsDTO: Codable {
     /// Converts the DTO back into the Domain ``UserStats``.
     public func toDomain() -> UserStats {
         UserStats(
-            streakCount: streakCount,
+            currentStreak: currentStreak,
             totalXP: totalXP,
-            lastRitualDate: lastRitualDate,
+            lastUpdated: lastUpdated,
             badges: badges,
             archetype: archetype
         )

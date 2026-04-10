@@ -9,13 +9,13 @@ import SharedUtils
 import SwiftUI
 
 public struct AccountSecurityCallout: View {
-    private let streakCount: Int
+    private let currentStreak: Int
     private let onLinkAction: () -> Void
     
     @Environment(\.colorScheme) private var colorScheme
     
-    public init(streakCount: Int, onLinkAction: @escaping () -> Void) {
-        self.streakCount = streakCount
+    public init(currentStreak: Int, onLinkAction: @escaping () -> Void) {
+        self.currentStreak = currentStreak
         self.onLinkAction = onLinkAction
     }
     
@@ -38,7 +38,7 @@ public struct AccountSecurityCallout: View {
                 
                 // 2. Text Content
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Secure your \(streakCount)-day streak")
+                    Text("Secure your \(currentStreak)-day streak")
                         .font(MindsetFonts.bodyMedium)
                         .foregroundColor(MindsetColors.textPrimaryAdaptive(for: colorScheme))
                     
@@ -61,5 +61,5 @@ public struct AccountSecurityCallout: View {
 }
 
 #Preview {
-    AccountSecurityCallout(streakCount: 3) {}
+    AccountSecurityCallout(currentStreak: 3) {}
 }

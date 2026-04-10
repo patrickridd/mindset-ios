@@ -34,9 +34,11 @@ public struct AddEntryUseCase: Sendable {
             from: allEntries.map { $0.dateCreated },
             relativeTo: finalizedEntry.dateCreated
         )
-
-        // Update the "Bucket" with both XP and the new Streak
-        try await statsRepository.incrementTotalXP(userId: entry.userId, by: earnedXP)
-        try await statsRepository.updateStreak(userId: entry.userId, newStreak: newStreak)
+        let xpEarned = RitualGamification.earnedXP(from: entry.promptResponses)
+        try await statsRepository.updateStats(
+            userId: entry.userId,
+            xpDelta: xpEarned,
+            newStreak: newStreak
+        )
     }
 }

@@ -124,8 +124,8 @@ public final class MainCoordinator {
     func shouldShowAuth() async -> Bool {
         let isAnonymousAccountLinked = await authStateQuery.isAnonymousAccountLinked()
         let isOboardingComplete: Bool = await userProfileRepository.isOnboardingComplete()
-        let streakCount = (try? await getStreak.execute()) ?? 0
-        return !isAnonymousAccountLinked && (isOboardingComplete || streakCount > 0)
+        let currentStreak = (try? await getStreak.execute()) ?? 0
+        return !isAnonymousAccountLinked && (isOboardingComplete || currentStreak > 0)
     }
 
     // Navigation Actions

@@ -27,9 +27,9 @@ public final class SDUserProfile {
     public var aiCoachToneRaw: String?
     
     // Flattened Stats Data
-    public var streakCount: Int
+    public var currentStreak: Int
     public var totalXP: Int
-    public var lastRitualDate: Date?
+    public var lastUpdated: Date?
     public var archetype: String?
     // SwiftData can store simple [String] arrays natively
     public var badges: [String]
@@ -47,9 +47,9 @@ public final class SDUserProfile {
         responseToSetbackRaw: String?,
         mindsetGoalRaw: String?,
         aiCoachToneRaw: String?,
-        streakCount: Int = 0,
+        currentStreak: Int = 0,
         totalXP: Int = 0,
-        lastRitualDate: Date? = nil,
+        lastUpdated: Date? = nil,
         archetype: String? = nil,
         badges: [String] = []
     ) {
@@ -65,9 +65,9 @@ public final class SDUserProfile {
         self.responseToSetbackRaw = responseToSetbackRaw
         self.mindsetGoalRaw = mindsetGoalRaw
         self.aiCoachToneRaw = aiCoachToneRaw
-        self.streakCount = streakCount
+        self.currentStreak = currentStreak
         self.totalXP = totalXP
-        self.lastRitualDate = lastRitualDate
+        self.lastUpdated = lastUpdated
         self.archetype = archetype
         self.badges = badges
     }
@@ -86,9 +86,9 @@ public final class SDUserProfile {
         )
         
         let stats = UserStats(
-            streakCount: streakCount,
+            currentStreak: currentStreak,
             totalXP: totalXP,
-            lastRitualDate: lastRitualDate,
+            lastUpdated: lastUpdated,
             badges: badges,
             archetype: archetype
         )
@@ -120,9 +120,9 @@ public final class SDUserProfile {
             responseToSetbackRaw: domain.onboardingData.responseToSetback?.rawValue,
             mindsetGoalRaw: domain.onboardingData.mindsetGoal?.rawValue,
             aiCoachToneRaw: domain.onboardingData.aiCoachTone?.rawValue,
-            streakCount: domain.stats.streakCount,
+            currentStreak: domain.stats.currentStreak,
             totalXP: domain.stats.totalXP,
-            lastRitualDate: domain.stats.lastRitualDate,
+            lastUpdated: domain.stats.lastUpdated,
             archetype: domain.stats.archetype,
             badges: domain.stats.badges
         )
@@ -144,9 +144,9 @@ extension SDUserProfile {
         self.aiCoachToneRaw = domain.onboardingData.aiCoachTone?.rawValue
         
         // Stats
-        self.streakCount = domain.stats.streakCount
+        self.currentStreak = domain.stats.currentStreak
         self.totalXP = domain.stats.totalXP
-        self.lastRitualDate = domain.stats.lastRitualDate
+        self.lastUpdated = domain.stats.lastUpdated
         self.archetype = domain.stats.archetype
         self.badges = domain.stats.badges
     }

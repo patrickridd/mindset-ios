@@ -36,5 +36,4 @@ public struct GetStreakUseCase: Sendable {
             relativeTo: now
         )
     }
-
 }

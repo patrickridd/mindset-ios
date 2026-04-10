@@ -25,14 +25,14 @@ public final class DashboardViewModel {
     public var yesterdayGoal: String?
     public var recentEntries: [Entry] = []
     public var isLoading = false
-    public var streakCount: Int = 0  // Initialized to 0, fetched from UseCase
+    public var currentStreak: Int = 0  // Initialized to 0, fetched from UseCase
     public var totalRituals: Int = 0  // New property for the stats grid
     public var latestEntry: Entry?
 
     /// Determine if we should display AccountSecurityCallout to remind our User to sign-in and link their anonymous account
     public var shouldDisplayLinkAccountSection: Bool {
         guard let userProfile else { return true }
-        return userProfile.isAccountSecured == false && (streakCount > 0 || userProfile.isOnboardingComplete)
+        return userProfile.isAccountSecured == false && (currentStreak > 0 || userProfile.isOnboardingComplete)
     }
 
     // Dynamic Archetype based on the most recent ritual
@@ -109,7 +109,7 @@ public final class DashboardViewModel {
 
             // 4. Calculate the current streak using our dedicated UseCase
             // This handles the "today vs yesterday" logic automatically
-            self.streakCount = try await getStreakUseCase.execute()
+            self.currentStreak = try await getStreakUseCase.execute()
 
             // 5. Fetch Yesterday Bridge (last goal-oriented response)
             let bridgeResult = try await getYesterdayGoalUseCase.execute()

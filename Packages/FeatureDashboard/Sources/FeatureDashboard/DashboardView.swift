@@ -131,9 +131,9 @@ private extension DashboardView {
         HStack(spacing: MindsetLayout.spacing15) {
             statBox(
                 title: FeatureDashboardStrings.Streak.statLabel,
-                value: String(format: FeatureDashboardStrings.Streak.days, viewModel.streakCount),
+                value: String(format: FeatureDashboardStrings.Streak.days, viewModel.currentStreak),
                 icon: "flame.fill",
-                color: viewModel.streakCount > 0
+                color: viewModel.currentStreak > 0
                     ? MindsetColors.accentOrange
                     : MindsetColors.textSecondaryAdaptive(for: colorScheme)
             )
@@ -190,7 +190,7 @@ private extension DashboardView {
     var securitySection: some View {
         if viewModel.shouldDisplayLinkAccountSection {
             AccountSecurityCallout(
-                streakCount: viewModel.streakCount,
+                currentStreak: viewModel.currentStreak,
                 onLinkAction: {
                     viewModel.secureAccountButtonTapped()
                 }
