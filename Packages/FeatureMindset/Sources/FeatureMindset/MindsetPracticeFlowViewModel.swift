@@ -10,7 +10,6 @@ import Foundation
 import Observation
 import SharedLocalization
 
-@MainActor
 @Observable
 public final class MindsetPracticeFlowViewModel {
     private static let minimumAnswerLength = 3
