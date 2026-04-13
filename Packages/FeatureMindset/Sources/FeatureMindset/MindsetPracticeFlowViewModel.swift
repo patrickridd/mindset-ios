@@ -149,7 +149,7 @@ public final class MindsetPracticeFlowViewModel {
     
     public func saveEntry() async throws {
         do {
-            guard let userId = try await userRepository.fetchUserProfile()?.id else { return }
+            guard let userId = try await userRepository.fetchUser()?.id else { return }
             
             // Cleanly map prompts to our new PromptResponse model
             let currentResponses: [PromptResponse] = prompts.compactMap { prompt in
@@ -256,7 +256,7 @@ public final class MindsetPracticeFlowViewModel {
         self.isInterSlotTextFieldShimmering = false
 
         do {
-            let profile = try await userRepository.fetchUserProfile()
+            let profile = try await userRepository.fetchUser()
             self.prompts = promptEngine.fetchPrompts(for: profile, completedCount: 0)
         } catch {
             logger.log("❌ Ritual setup failed: \(error.localizedDescription)")

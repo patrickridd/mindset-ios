@@ -25,7 +25,7 @@ public final class FirestoreUserStatsRepository: UserStatsRepository {
         
         guard snapshot.exists else { return nil }
         
-        // Assuming you create a UserStatsDTO similar to your UserProfileDTO
+        // Assuming you create a UserStatsDTO similar to your UserDTO
         let dto = try snapshot.data(as: UserStatsDTO.self)
         return dto.toDomain()
     }

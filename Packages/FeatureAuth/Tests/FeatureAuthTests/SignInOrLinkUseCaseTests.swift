@@ -10,8 +10,8 @@ import Testing
 @MainActor
 struct SignInOrLinkUseCaseTests {
 
-    private static func emptyNamedProfile(id: String = "test-profile-id", userName: String = "") -> UserProfile {
-        UserProfile(
+    private static func emptyNamedProfile(id: String = "test-profile-id", userName: String = "") -> User {
+        User(
             id: id,
             userName: userName,
             isOnboardingComplete: true,

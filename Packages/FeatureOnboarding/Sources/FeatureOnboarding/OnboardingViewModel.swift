@@ -133,19 +133,19 @@ public final class OnboardingViewModel {
     }
 
     private func updateOrCreateNewAnonymousUser(isOnboardingComplete: Bool) async throws {
-        var user: UserProfile
+        var user: User
         // Check if user exists
-        if let userProfile = try? await userRepository.fetchUserProfile() {
+        if let userProfile = try? await userRepository.fetchUser() {
             user = userProfile
         } else {
             // Else sign-in user anonymously and use that new id
             let userId = try await signInService.signIn(with: .anonymous)
-            user = UserProfile.anonymousUser(id: userId)
+            user = User.anonymousUser(id: userId)
         }
 
         user.onboarding(isComplete: isOnboardingComplete)
         user.update(with: getOnboardingData())
-        try? await userRepository.saveUserProfile(user)
+        try? await userRepository.saveUser(user)
     }
 
     private func delayForAnalyzing() async {

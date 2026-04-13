@@ -19,12 +19,12 @@ public final class UserRepositoryDebugWrapper: UserRepository, @unchecked Sendab
         self.wrapped = service
     }
 
-    public func fetchUserProfile() async throws -> Domain.UserProfile? {
-        try await wrapped.fetchUserProfile()
+    public func fetchUser() async throws -> Domain.User? {
+        try await wrapped.fetchUser()
     }
 
-    public func saveUserProfile(_ profile: Domain.UserProfile) async throws {
-        try await wrapped.self.saveUserProfile(profile)
+    public func saveUser(_ profile: Domain.User) async throws {
+        try await wrapped.saveUser(profile)
     }
 
     public func isOnboardingComplete() async -> Bool {
@@ -38,7 +38,7 @@ public final class UserRepositoryDebugWrapper: UserRepository, @unchecked Sendab
         }
     }
 
-    public func deleteProfile() async throws {
-        try await wrapped.deleteProfile()
+    public func deleteUser() async throws {
+        try await wrapped.deleteUser()
     }
 }

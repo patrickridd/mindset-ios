@@ -12,7 +12,7 @@ public struct PromptEngine {
     /// - Parameters:
     ///   - profile: Reserved for future personalization; currently unused.
     ///   - completedCount: Reserved for future rotation across template variants.
-    public func fetchPrompts(for profile: UserProfile?, completedCount: Int) -> [Prompt] {
+    public func fetchPrompts(for profile: User?, completedCount: Int) -> [Prompt] {
         guard profile?.onboardingData.mindsetGoal != nil else {
             return PromptCatalog.morningStartTemplateDefinitions
         }
@@ -48,7 +48,7 @@ public struct PromptEngine {
         return selectedPrompts
     }
 
-    private func resolveCategories(for profile: UserProfile) -> [PromptCategory] {
+    private func resolveCategories(for profile: User) -> [PromptCategory] {
         // Prefer new headspace (MLP quiz Q1); fall back to legacy overwhelmedFrequency
         guard profile.onboardingData.mindsetGoal != nil else {
             return PromptCatalog.morningStartTemplateDefinitions.map { $0.category }

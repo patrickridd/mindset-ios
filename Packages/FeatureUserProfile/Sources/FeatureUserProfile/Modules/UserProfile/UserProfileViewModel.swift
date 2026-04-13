@@ -43,7 +43,7 @@ public final class UserProfileViewModel {
         userID = await authStateQuery.getCurrentUserID()
 
         // Get user profile from repository
-        if let profile = try? await userRepository.fetchUserProfile() {
+        if let profile = try? await userRepository.fetchUser() {
             displayName = profile.userName
         }
 

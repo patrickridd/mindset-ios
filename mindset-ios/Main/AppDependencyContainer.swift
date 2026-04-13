@@ -50,7 +50,7 @@ final class AppDependencyContainer: ObservableObject {
         // --- Persistence ---
         // Using try! is okay here since this is the Composition Root
         // and we want to know immediately if the DB schema is broken.
-        self.container = try! ModelContainer(for: SDUserProfile.self, SDEntry.self)
+        self.container = try! ModelContainer(for: SDUser.self, SDEntry.self)
         let modelContext: ModelContext = container.mainContext
 
         // --- Repositories ---

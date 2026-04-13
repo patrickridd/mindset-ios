@@ -151,7 +151,7 @@ home (dashboard, start ritual)
 ```
 Quiz Answers (Local)
     ↓
-UserProfile Created (SwiftData)
+Domain `User` persisted as `SDUser` (SwiftData)
     ↓
 Sign In with Apple (Firebase Auth)
     ↓

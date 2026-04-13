@@ -22,24 +22,24 @@ public final class SDUserRepository: UserRepository {
         self.notificationCenter = notificationCenter
     }
 
-    public func fetchUserProfile() async throws -> UserProfile? {
-        let descriptor = FetchDescriptor<SDUserProfile>()
+    public func fetchUser() async throws -> User? {
+        let descriptor = FetchDescriptor<SDUser>()
         return try modelContext.fetch(descriptor).first?.toDomain()
     }
 
-    public func saveUserProfile(_ profile: UserProfile) async throws {
+    public func saveUser(_ profile: User) async throws {
         let userId = profile.id
-        let descriptor = FetchDescriptor<SDUserProfile>(
-            predicate: #Predicate<SDUserProfile> { $0.id == userId }
+        let descriptor = FetchDescriptor<SDUser>(
+            predicate: #Predicate<SDUser> { $0.id == userId }
         )
         
         // Check if the object already exists in the database
         if let existingUser = try modelContext.fetch(descriptor).first {
-            logger.log("👤 Updating **Existing** `SDUserProfile`")
+            logger.log("👤 Updating **Existing** `SDUser`")
             existingUser.update(from: profile)
         } else {
-            let newUser = SDUserProfile.fromDomain(profile)
-            logger.log("👤 Creating **NEW** `SDUserProfile`")
+            let newUser = SDUser.fromDomain(profile)
+            logger.log("👤 Creating **NEW** `SDUser`")
             
             modelContext.insert(newUser)
         }
@@ -47,18 +47,18 @@ public final class SDUserRepository: UserRepository {
         try modelContext.save()
     }
 
-    public func deleteProfile() async throws {
-        try modelContext.delete(model: SDUserProfile.self)
+    public func deleteUser() async throws {
+        try modelContext.delete(model: SDUser.self)
         try modelContext.save()
     }
 
     public func isOnboardingComplete() async -> Bool {
-        (try? await fetchUserProfile()?.isOnboardingComplete) ?? false
+        (try? await fetchUser()?.isOnboardingComplete) ?? false
     }
 }
 
 extension SDUserRepository: LocalDataCleaner {
     public func purgeLocalCache() async throws {
-        try await deleteProfile()
+        try await deleteUser()
     }
 }

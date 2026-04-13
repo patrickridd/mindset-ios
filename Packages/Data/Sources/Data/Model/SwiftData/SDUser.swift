@@ -1,5 +1,5 @@
 //
-//  SDUserProfile.swift
+//  SDUser.swift
 //  Data
 //
 //  Created by patrick ridd on 1/9/26.
@@ -10,14 +10,14 @@ import Foundation
 import SwiftData
 
 @Model
-public final class SDUserProfile {
+public final class SDUser {
     @Attribute(.unique) public var id: String
     public var userName: String
     public var createdAt: Date
     public var lastUpdatedAt: Date
     public var isOnboardingComplete: Bool
     public var isAccountSecured: Bool
-    
+
     // Flattened Onboarding Data
     public var overwhelmFrequency: String
     public var headspaceRaw: String?
@@ -25,7 +25,7 @@ public final class SDUserProfile {
     public var responseToSetbackRaw: String?
     public var mindsetGoalRaw: String?
     public var aiCoachToneRaw: String?
-    
+
     // Flattened Stats Data
     public var currentStreak: Int
     public var totalXP: Int
@@ -74,17 +74,19 @@ public final class SDUserProfile {
 
     // MARK: - Mapping
 
-    /// Maps `SDUserProfile` to our Domain's ``UserProfile``
-    public func toDomain() -> UserProfile {
+    /// Maps `SDUser` to our Domain ``User``.
+    public func toDomain() -> User {
         let onboarding = OnboardingData(
             overwhelmFrequency: overwhelmFrequency,
             headspace: headspaceRaw.flatMap { OnboardingData.Headspace(rawValue: $0) },
             mentalMuscle: mentalMuscleRaw.flatMap { OnboardingData.MentalMuscle(rawValue: $0) },
-            responseToSetback: responseToSetbackRaw.flatMap { OnboardingData.ResponseToSetback(rawValue: $0) },
+            responseToSetback: responseToSetbackRaw.flatMap {
+                OnboardingData.ResponseToSetback(rawValue: $0)
+            },
             mindsetGoal: mindsetGoalRaw.flatMap { OnboardingData.MindsetGoal(rawValue: $0) },
             aiCoachTone: aiCoachToneRaw.flatMap { OnboardingData.AICoachTone(rawValue: $0) }
         )
-        
+
         let stats = UserStats(
             currentStreak: currentStreak,
             totalXP: totalXP,
@@ -92,8 +94,8 @@ public final class SDUserProfile {
             badges: badges,
             archetype: archetype
         )
-        
-        return UserProfile(
+
+        return User(
             id: id,
             createdAt: createdAt,
             lastUpdatedAt: lastUpdatedAt,
@@ -106,8 +108,8 @@ public final class SDUserProfile {
     }
 
     /// Use only for creation (Insert) into Swift Data.
-    public static func fromDomain(_ domain: UserProfile) -> SDUserProfile {
-        SDUserProfile(
+    public static func fromDomain(_ domain: User) -> SDUser {
+        SDUser(
             id: domain.id,
             userName: domain.userName,
             createdAt: domain.createdAt,
@@ -129,20 +131,20 @@ public final class SDUserProfile {
     }
 }
 
-extension SDUserProfile {
+extension SDUser {
     /// UPDATES the current instance using values from a Domain struct
-    func update(from domain: UserProfile) {
+    func update(from domain: User) {
         self.userName = domain.userName
         self.isAccountSecured = domain.isAccountSecured
         self.isOnboardingComplete = domain.isOnboardingComplete
-        
+
         // Onboarding
         self.headspaceRaw = domain.onboardingData.headspace?.rawValue
         self.mentalMuscleRaw = domain.onboardingData.mentalMuscle?.rawValue
         self.responseToSetbackRaw = domain.onboardingData.responseToSetback?.rawValue
         self.mindsetGoalRaw = domain.onboardingData.mindsetGoal?.rawValue
         self.aiCoachToneRaw = domain.onboardingData.aiCoachTone?.rawValue
-        
+
         // Stats
         self.currentStreak = domain.stats.currentStreak
         self.totalXP = domain.stats.totalXP

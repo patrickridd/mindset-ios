@@ -63,8 +63,8 @@ extension AppSyncService {
     public func syncUser(uid: String) async {
         do {
             // 1. Fetch current states from both worlds
-            let localUser = try await userLocal.fetchUserProfile()
-            let remoteUser = try await userRemote.fetchUserProfile()
+            let localUser = try await userLocal.fetchUser()
+            let remoteUser = try await userRemote.fetchUser()
 
             // 2. Identify the situation using your SyncState enum
             let state = SyncState(localUser: localUser, remoteUser: remoteUser, uid: uid)
@@ -73,18 +73,18 @@ extension AppSyncService {
             switch state {
             case .newUserCreation(let uid):
                 logger.log("✨ Provisioning brand new user anchor.")
-                let newProfile = UserProfile.anonymousUser(id: uid)
-                try await userLocal.saveUserProfile(newProfile)
-                try await userRemote.saveUserProfile(newProfile)
+                let newProfile = User.anonymousUser(id: uid)
+                try await userLocal.saveUser(newProfile)
+                try await userRemote.saveUser(newProfile)
 
             case .remoteOnly(let remote):
                 logger.log("☁️ Bootstrapping local store from Cloud.")
-                try await userLocal.saveUserProfile(remote)
+                try await userLocal.saveUser(remote)
                 notificationCenter.post(name: .databaseDidChange, object: nil)
 
             case .localOnly(let local):
                 logger.log("🛠 Uploading local profile to Cloud anchor.")
-                try await userRemote.saveUserProfile(local)
+                try await userRemote.saveUser(local)
 
             case .resolve(let local, let remote):
                 try await handleComparison(local: local, remote: remote)
@@ -96,7 +96,7 @@ extension AppSyncService {
         }
     }
     
-    private func handleComparison(local: UserProfile, remote: UserProfile) async throws {
+    private func handleComparison(local: User, remote: User) async throws {
         // Use a 1-second leeway to ignore nanosecond jitter between DBs
         let timeDiff = abs(remote.lastUpdatedAt.timeIntervalSince(local.lastUpdatedAt))
         
@@ -107,21 +107,21 @@ extension AppSyncService {
 
         if remote.lastUpdatedAt > local.lastUpdatedAt {
             logger.log("🔄 Sync: Cloud is newer. Updating local.")
-            try await userLocal.saveUserProfile(remote)
+            try await userLocal.saveUser(remote)
             notificationCenter.post(name: .databaseDidChange, object: nil)
         } else {
             logger.log("🔄 Sync: Local is newer. Updating cloud.")
-            try await userRemote.saveUserProfile(local)
+            try await userRemote.saveUser(local)
         }
     }
 
     private enum SyncState {
         case newUserCreation(uid: String)
-        case remoteOnly(remote: UserProfile)
-        case localOnly(local: UserProfile)
-        case resolve(local: UserProfile, remote: UserProfile)
+        case remoteOnly(remote: User)
+        case localOnly(local: User)
+        case resolve(local: User, remote: User)
 
-        init(localUser: UserProfile?, remoteUser: UserProfile?, uid: String) {
+        init(localUser: User?, remoteUser: User?, uid: String) {
             switch (localUser, remoteUser) {
             // 1. Total Void: New User / First Sign In
             case (nil, nil):

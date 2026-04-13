@@ -21,7 +21,7 @@ public final class FirestoreUserRepository: UserRepository {
         self.logger = logger
     }
 
-    public func fetchUserProfile() async throws -> UserProfile? {
+    public func fetchUser() async throws -> User? {
         guard let uid = await authStateQuery.getCurrentUserID() else {
             logger.log("📵 User not logged in. Cannot fetch remote user profile. Returning nil.")
             return nil
@@ -39,7 +39,7 @@ public final class FirestoreUserRepository: UserRepository {
             }
             
             // 2. Try to decode the data
-            let dto = try snapshot.data(as: UserProfileDTO.self)
+            let dto = try snapshot.data(as: UserDTO.self)
             return dto.toDomain()
             
         } catch {
@@ -51,8 +51,8 @@ public final class FirestoreUserRepository: UserRepository {
         }
     }
 
-    public func saveUserProfile(_ profile: UserProfile) async throws {
-        let dto = UserProfileDTO(from: profile)
+    public func saveUser(_ profile: User) async throws {
+        let dto = UserDTO(from: profile)
         
         // Use setData with merge: true to avoid accidentally overwriting 
         // fields if you ever add server-side properties (like 'isPremium')
@@ -61,7 +61,7 @@ public final class FirestoreUserRepository: UserRepository {
             .setData(from: dto, merge: true)
     }
 
-    public func deleteProfile() async throws {
+    public func deleteUser() async throws {
         guard let uid = await authStateQuery.getCurrentUserID() else {
             logger.log("📵 User not logged in. Cannot delete remote user profile")
             return
@@ -72,6 +72,6 @@ public final class FirestoreUserRepository: UserRepository {
     }
 
     public func isOnboardingComplete() async -> Bool {
-        (try? await fetchUserProfile()?.isOnboardingComplete) ?? false
+        (try? await fetchUser()?.isOnboardingComplete) ?? false
     }
 }

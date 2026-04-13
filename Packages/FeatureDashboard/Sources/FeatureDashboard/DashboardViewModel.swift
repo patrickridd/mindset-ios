@@ -21,7 +21,7 @@ public final class DashboardViewModel {
     private let notificationCenter: NotificationCenter
     
     // UI State
-    public var userProfile: UserProfile?
+    public var userProfile: User?
     public var yesterdayGoal: String?
     public var recentEntries: [Entry] = []
     public var isLoading = false
@@ -97,7 +97,7 @@ public final class DashboardViewModel {
 
         do {
             // 1. Fetch User Identity (Name and Primary Goal)
-            self.userProfile = try await userRepository.fetchUserProfile()
+            self.userProfile = try await userRepository.fetchUser()
 
             // 2. Fetch all entries to calculate totals and recent history
             let allEntries = try await entryRepository.fetchAllEntries()

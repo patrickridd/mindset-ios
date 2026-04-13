@@ -9,17 +9,17 @@ import Foundation
 
 @MainActor
 public final class MutableMockUserRepository: UserRepository {
-    public private(set) var profile: UserProfile?
+    public private(set) var profile: User?
 
-    public init(profile: UserProfile? = nil) {
+    public init(profile: User? = nil) {
         self.profile = profile
     }
 
-    public func fetchUserProfile() async throws -> UserProfile? {
+    public func fetchUser() async throws -> User? {
         profile
     }
 
-    public func saveUserProfile(_ newProfile: UserProfile) async throws {
+    public func saveUser(_ newProfile: User) async throws {
         profile = newProfile
     }
 
@@ -27,7 +27,7 @@ public final class MutableMockUserRepository: UserRepository {
         profile?.isOnboardingComplete ?? false
     }
 
-    public func deleteProfile() async throws {
+    public func deleteUser() async throws {
         profile = nil
     }
 }

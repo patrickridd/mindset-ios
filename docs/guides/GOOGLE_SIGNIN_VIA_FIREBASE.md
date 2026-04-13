@@ -82,7 +82,7 @@ struct MindsetApp: App {
         FirebaseApp.configure()
         
         // Then initialize your other services
-        container = try! ModelContainer(for: SDUserProfile.self, SDEntry.self)
+        container = try! ModelContainer(for: SDUser.self, SDEntry.self)
         userRepository = SDUserRepository(modelContext: container.mainContext)
         // ... rest of init
     }

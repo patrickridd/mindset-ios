@@ -14,7 +14,7 @@ import Foundation
 /// creating a new one. Preserves onboarding data, ritual history, and subscription state.
 ///
 /// After successful OAuth sign-in or link, a non-empty `fullName` on the credential is written to
-/// the local `UserProfile.userName` when that field is still empty (first secure-account moment).
+/// the local `User.userName` when that field is still empty (first secure-account moment).
 @MainActor
 public struct SignInOrLinkUseCase: Sendable {
     private let signInService: SignInService
@@ -62,7 +62,7 @@ public struct SignInOrLinkUseCase: Sendable {
             uid = try await signInService.signIn(with: credential)
         }
 
-        var userProfile = try await provisionUserProfile(uid: uid, credential: credential)
+        var userProfile = try await provisionUser(uid: uid, credential: credential)
         if !userProfile.isAccountSecured && isLinkable {
             await persistIsAccountSecured(for: &userProfile)
         }
@@ -70,17 +70,17 @@ public struct SignInOrLinkUseCase: Sendable {
         return uid
     }
 
-    private func provisionUserProfile(uid: String, credential: AuthCredential) async throws -> UserProfile {
+    private func provisionUser(uid: String, credential: AuthCredential) async throws -> User {
         // 1. Resolve the current state (Existing or New)
-        let existingProfile = try? await userRepository.fetchUserProfile()
-        
-        let profile: UserProfile
+        let existingProfile = try? await userRepository.fetchUser()
+
+        let profile: User
         if let existing = existingProfile {
             profile = existing
             logger.log("👤 Provisioning: Existing profile found for \(uid)")
         } else {
             let now = Date()
-            profile = UserProfile(
+            profile = User(
                 id: uid,
                 createdAt: now,
                 lastUpdatedAt: now,
@@ -93,29 +93,29 @@ public struct SignInOrLinkUseCase: Sendable {
 
         // 2. The "Synchronize" Action
         // This triggers the AppUserRepository's logic: Local Save + Background Remote Push
-        try await userRepository.saveUserProfile(profile)
+        try await userRepository.saveUser(profile)
         
         return profile
     }
 
-    /// Helper method to set the current ``UserProfile``'s ``isAccountSecured`` property to `TRUE` and persist it in Repository
-    private func persistIsAccountSecured(for userProfile: inout UserProfile) async {
+    /// Helper method to set the current ``User``'s ``isAccountSecured`` property to `TRUE` and persist it in Repository
+    private func persistIsAccountSecured(for userProfile: inout User) async {
         userProfile.isAccount(secured: true)
         logger.log("🔗 `isAccountSecured` saved to TRUE")
-        try? await userRepository.saveUserProfile(userProfile)
+        try? await userRepository.saveUser(userProfile)
     }
 
     private func persistOAuthDisplayNameIfNeeded(from credential: AuthCredential) async {
         guard case .oauth(_, _, _, let fullName) = credential,
               let trimmed = fullName?.trimmingCharacters(in: .whitespacesAndNewlines), !trimmed.isEmpty,
-              var profile = try? await userRepository.fetchUserProfile(),
+              var profile = try? await userRepository.fetchUser(),
               profile.userName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         else {
             return
         }
 
         profile.userName = trimmed
-        try? await userRepository.saveUserProfile(profile)
+        try? await userRepository.saveUser(profile)
     }
 
     private func isLinkableCredential(_ credential: AuthCredential) -> Bool {

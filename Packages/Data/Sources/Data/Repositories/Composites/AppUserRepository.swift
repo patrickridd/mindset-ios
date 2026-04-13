@@ -31,12 +31,12 @@ public final class AppUserRepository: UserRepository {
     
     // MARK: - UserRepository
 
-    public func fetchUserProfile() async throws -> UserProfile? {
+    public func fetchUser() async throws -> User? {
         // JUST return the local data.
-        try await localStore.fetchUserProfile()
+        try await localStore.fetchUser()
     }
 
-    public func saveUserProfile(_ profile: UserProfile) async throws {
+    public func saveUser(_ profile: User) async throws {
         // Cancel any background 'Sync' that might be trying to pull
         // older data from the cloud while we are trying to save NEW data.
         syncTask?.cancel()
@@ -47,14 +47,14 @@ public final class AppUserRepository: UserRepository {
         updatedProfile.lastUpdatedAt = Date()
         
         // Save locally (SwiftData) - INSTANT
-        try await localStore.saveUserProfile(updatedProfile)
+        try await localStore.saveUser(updatedProfile)
         
         // FIRE-AND-FORGET Remote Sync
         // We wrap this in a Task so it doesn't 'await' the network response.
         // Firebase SDK will internally queue this write even if the user is offline.
         Task {
             do {
-                try await remoteStore.saveUserProfile(updatedProfile)
+                try await remoteStore.saveUser(updatedProfile)
                 logger.log("☁️ Profile successfully queued/synced to Firestore")
             } catch {
                 // We log it, but we DON'T throw, because the local save was successful.
@@ -63,12 +63,12 @@ public final class AppUserRepository: UserRepository {
         }
     }
 
-    public func deleteProfile() async throws {
+    public func deleteUser() async throws {
         // 1. Kill the cloud first (while we still have Auth tokens)
-        try await remoteStore.deleteProfile()
+        try await remoteStore.deleteUser()
         
         // 2. Kill the local cache
-        try await localStore.deleteProfile()
+        try await localStore.deleteUser()
 
         logger.log("🗑️ AppUserRepository: Local and Remote profiles purged.")
     }

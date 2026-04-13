@@ -44,8 +44,8 @@ public final class StartViewModel {
         Task { @MainActor in
             do {
                 let userId = try await signInService.signIn(with: .anonymous)
-                let user = UserProfile.anonymousUser(id: userId)
-                try await userRepository.saveUserProfile(user)
+                let user = User.anonymousUser(id: userId)
+                try await userRepository.saveUser(user)
                 isGuestLoading = false
                 onGuestSignedIn()
             } catch {

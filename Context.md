@@ -8,8 +8,8 @@
 - **SharedUtils:** Contains AppLogger (Protocol) and HapticManager.
 - **Navigation:** `FeatureNavigation` — `MainCoordinator`, `MainCoordinatorView`, `MainTabView`. Only the app and coordinator import Feature modules; Features never import each other.
 - **Package dependency direction:** App → Feature* + Domain + Data. Domain has no dependency on Data or Feature. Data depends only on Domain (protocols). Feature modules depend on Domain (+ Data when needed) and optionally SharedUI/SharedUtils.
-- **Domain** (`Packages/Domain`): Entities, Models, Protocols, UseCases, Logic (PromptEngine, PromptLibrary), Services (AIAnalysisService), Mocks, Errors. Pure business logic; no UI, no framework types for persistence.
-- **Data** (`Packages/Data`): `SD*` types — Repositories (SDMindsetRepository, SDUserRepository), Services (GeminiAIService, RevenueCatSubscriptionService, FirebaseAuthService, FirebaseSyncService), Model (SDEntry, SDPromptResponse, SDUserProfile), AppConfig, UserDefault property wrapper.
+- **Domain** (`Packages/Domain`): Entities (including `User` — the signed-in app user aggregate), Models, Protocols, UseCases, Logic (PromptEngine, PromptLibrary), Services (AIAnalysisService), Mocks, Errors. Pure business logic; no UI, no framework types for persistence.
+- **Data** (`Packages/Data`): `SD*` types — Repositories (SDMindsetRepository, SDUserRepository), Services (GeminiAIService, RevenueCatSubscriptionService, FirebaseAuthService, FirebaseSyncService), Model (SDEntry, SDPromptResponse, SDUser), Firestore DTOs (e.g. `UserDTO`), AppConfig, UserDefault property wrapper.
 - **Feature modules:** FeatureDashboard, FeatureHistory, FeatureMindset, FeatureOnboarding, FeatureAuth, FeatureSubscription — each has View(s) and ViewModel(s). FeatureMindset has Components (e.g. AIReflectionCard) and Mocks for previews.
 - **Shared:** SharedUI (MindsetColors, MindsetFonts, MindsetLayout), SharedUtils (DebugLogger, HapticManager, InjectionBootstrap), SharedLocalization (common localized strings).
 

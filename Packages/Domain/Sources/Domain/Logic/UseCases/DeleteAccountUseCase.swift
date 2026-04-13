@@ -33,9 +33,9 @@ public struct DeleteAccountUseCase {
     }
 
     public func execute() async throws {
-        //  Delete Data (Order matters: Entries -> UserProfile -> Auth User)
+        //  Delete Data (Order matters: Entries -> Domain User -> Auth User)
         try await entryRepository.deleteAllEntries()
-        try await userRepository.deleteProfile()
+        try await userRepository.deleteUser()
         try await authService.deleteCurrentUser()
 
         clearNonce()

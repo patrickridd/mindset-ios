@@ -1,5 +1,5 @@
 //
-//  UserProfileDTO.swift
+//  UserDTO.swift
 //  Data
 //
 //  Created by patrick ridd on 3/18/26.
@@ -8,11 +8,11 @@
 import Domain
 import Foundation
 
-/// A lightweight, Codable representation of a ``UserProfile`` for remote storage.
+/// A lightweight, Codable representation of a ``User`` for remote storage.
 ///
 /// This DTO is used to serialize user data for Firestore. It maintains strict parity
 /// with the Domain model to ensure no data loss during synchronization.
-public struct UserProfileDTO: Codable {
+public struct UserDTO: Codable {
     public let id: String
     public let createdAt: Date
     public let lastUpdatedAt: Date
@@ -22,8 +22,8 @@ public struct UserProfileDTO: Codable {
     public let onboardingData: OnboardingDataDTO
     public let stats: UserStatsDTO
 
-    /// Maps a Domain ``UserProfile`` to a DTO for uploading.
-    public init(from domain: UserProfile) {
+    /// Maps a Domain ``User`` to a DTO for uploading.
+    public init(from domain: User) {
         self.id = domain.id
         self.createdAt = domain.createdAt
         self.lastUpdatedAt = domain.lastUpdatedAt
@@ -34,9 +34,9 @@ public struct UserProfileDTO: Codable {
         self.stats = UserStatsDTO(from: domain.stats)
     }
 
-    /// Converts the DTO back into a Domain ``UserProfile``.
-    public func toDomain() -> UserProfile {
-        UserProfile(
+    /// Converts the DTO back into a Domain ``User``.
+    public func toDomain() -> User {
+        User(
             id: id,
             createdAt: createdAt,
             lastUpdatedAt: lastUpdatedAt,

@@ -1,5 +1,5 @@
 //
-//  UserProfile.swift
+//  User.swift
 //  Domain
 //
 //  Created by patrick ridd on 1/9/26.
@@ -7,46 +7,44 @@
 
 import Foundation
 
-import Foundation
-
 /// The central domain entity representing a user's identity, progress, and preferences.
 ///
-/// `UserProfile` is the primary aggregate root for all user-specific data. It is designed
+/// `User` is the primary aggregate root for all user-specific data. It is designed
 /// to be local-first but cloud-syncable. The ``id`` field should correspond directly
 /// to the unique identifier provided by the authentication service (e.g., Firebase UID).
-public struct UserProfile: Sendable {
-    
+public struct User: Sendable {
+
     // MARK: - Identity
-    
+
     /// The unique identifier for the user.
     /// This matches the `uid` provided by the authentication provider.
     public let id: String
-    
+
     /// The timestamp indicating when the user's account was first created.
     public let createdAt: Date
-    
+
     /// Timestamp indicating when the user's account was last updated
     public var lastUpdatedAt: Date
-    
+
     /// The display name chosen by the user during onboarding.
     public var userName: String
-    
+
     /// A flag indicating if the user has linked their account to a permanent credential (e.g., Apple ID).
     /// Use this to trigger "Secure Your Account" callouts for anonymous users.
     public var isAccountSecured: Bool
-    
+
     /// Indicates whether the user has finished the initial setup flow.
     public var isOnboardingComplete: Bool
-    
+
     // MARK: - Composition
-    
+
     /// The raw responses and goals captured during the initial onboarding session.
     public var onboardingData: OnboardingData
-    
+
     /// Aggregate metrics including streaks, XP, and ritual history.
     public var stats: UserStats
 
-    /// Creates a new UserProfile.
+    /// Creates a new User.
     public init(
         id: String,
         createdAt: Date,
@@ -59,7 +57,7 @@ public struct UserProfile: Sendable {
     ) {
         self.id = id
         self.createdAt = createdAt
-        self.lastUpdatedAt = createdAt
+        self.lastUpdatedAt = lastUpdatedAt
         self.userName = userName
         self.isAccountSecured = isAccountSecured
         self.isOnboardingComplete = isOnboardingComplete
@@ -71,7 +69,7 @@ public struct UserProfile: Sendable {
     mutating public func update(with onboardingData: OnboardingData) {
         self.onboardingData = onboardingData
     }
-    
+
     /// Sets the completion status of the onboarding process.
     mutating public func onboarding(isComplete: Bool) {
         self.isOnboardingComplete = isComplete
@@ -81,7 +79,7 @@ public struct UserProfile: Sendable {
     mutating public func isAccount(secured: Bool) {
         self.isAccountSecured = secured
     }
-    
+
     public static func anonymousUser(
         id: String,
         createdAt: Date = .init(),
@@ -90,12 +88,13 @@ public struct UserProfile: Sendable {
         isAccountSecured: Bool = false,
         isOnboardingComplete: Bool = false
     ) -> Self {
-        self.init(id: id,
-             createdAt: createdAt,
-             lastUpdatedAt: createdAt,
-             userName: userName,
-             isAccountSecured: isAccountSecured,
-             isOnboardingComplete: isOnboardingComplete
+        self.init(
+            id: id,
+            createdAt: createdAt,
+            lastUpdatedAt: createdAt,
+            userName: userName,
+            isAccountSecured: isAccountSecured,
+            isOnboardingComplete: isOnboardingComplete
         )
     }
 }

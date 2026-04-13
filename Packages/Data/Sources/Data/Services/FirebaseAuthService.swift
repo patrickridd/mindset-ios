@@ -30,7 +30,7 @@ public final class FirebaseAuthService: AuthService, Sendable {
 
     // MARK: - Shared Helper Properties
 
-    fileprivate var currentUser: User? {
+    fileprivate var currentUser: FirebaseAuth.User? {
         Auth.auth().currentUser
     }
 

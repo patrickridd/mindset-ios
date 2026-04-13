@@ -6,8 +6,8 @@
 //
 
 public protocol UserRepository: Sendable {
-    func fetchUserProfile() async throws -> UserProfile?
-    func saveUserProfile(_ profile: UserProfile) async throws
-    func deleteProfile() async throws
+    func fetchUser() async throws -> User?
+    func saveUser(_ profile: User) async throws
+    func deleteUser() async throws
     func isOnboardingComplete() async -> Bool
 }

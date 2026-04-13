@@ -8,7 +8,7 @@
 import Foundation
 
 public final class MockUserRepository: UserRepository {
-    private let mockProfile: UserProfile
+    private let mockProfile: User
 
     public init(
         id: String = "mock-user-id",
@@ -18,7 +18,7 @@ public final class MockUserRepository: UserRepository {
         isAccountSecured: Bool = true,
         createdAt: Date = .init()
     ) {
-        self.mockProfile = UserProfile(
+        self.mockProfile = User(
             id: id,
             createdAt: createdAt,
             lastUpdatedAt: createdAt,
@@ -34,17 +34,17 @@ public final class MockUserRepository: UserRepository {
         mockProfile.isOnboardingComplete
     }
 
-    public func fetchUserProfile() async throws -> UserProfile? {
+    public func fetchUser() async throws -> User? {
         // Simulate a small network/DB delay
         try? await Task.sleep(for: .seconds(0.5))
         return mockProfile
     }
 
-    public func saveUserProfile(_ profile: UserProfile) async throws {
+    public func saveUser(_ profile: User) async throws {
         // No-op for mocks
     }
 
-    public func deleteProfile() async throws {
+    public func deleteUser() async throws {
         // No-op for mocks
     }
 }

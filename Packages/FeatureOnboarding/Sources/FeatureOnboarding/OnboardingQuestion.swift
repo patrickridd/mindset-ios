@@ -8,12 +8,12 @@
 import Domain
 import Foundation
 
-/// A single onboarding quiz question with options and mapping to UserProfile fields.
+/// A single onboarding quiz question with options and mapping to Domain ``User`` fields.
 public struct OnboardingQuestion: Sendable {
     public let id: Int
     public let questionText: String
     public let options: [String]
-    /// Maps option index to the value stored in UserProfile
+    /// Maps option index to the value stored in Domain ``User``
     public let logic: Logic
 
     public enum Logic: Sendable {

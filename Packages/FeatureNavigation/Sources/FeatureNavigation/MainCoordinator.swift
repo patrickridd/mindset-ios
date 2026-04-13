@@ -259,7 +259,7 @@ public final class MainCoordinator {
 
     public func refreshProfileTabTitle() {
         Task { @MainActor [userProfileRepository] in
-            let userName = (try? await userProfileRepository.fetchUserProfile()?.userName) ?? ""
+            let userName = (try? await userProfileRepository.fetchUser()?.userName) ?? ""
             let trimmed = userName.trimmingCharacters(in: .whitespacesAndNewlines)
             profileTabTitle = trimmed
         }
