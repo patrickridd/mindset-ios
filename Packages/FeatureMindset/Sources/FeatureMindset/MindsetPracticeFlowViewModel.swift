@@ -16,11 +16,13 @@ public final class MindsetPracticeFlowViewModel {
     private static let todayGoalsPromptId = MindsetPrompt.todoToday.id
 
     // Dependencies
+    private let ritualType: PromptType
     private let getStreakUseCase: GetStreakUseCase
     private let addEntryUseCase: AddEntryUseCase
     private let userRepository: UserRepository
+    private let entryRepository: EntryRepository
     private let subscriptionService: SubscriptionService
-    private let promptEngine = PromptEngine()
+    private let ritualGenerator: RitualGenerator
     private let aiService: AIAnalysisService
     private let logger: AppLogger
     
@@ -126,7 +128,6 @@ public final class MindsetPracticeFlowViewModel {
             return
         }
         
-        // Handle logical prompt completion
         isCurrentPromptSubmitted = true
         isAiThinking = true
         
@@ -136,7 +137,15 @@ public final class MindsetPracticeFlowViewModel {
             .joined(separator: "\n")
         
         do {
-            let reflection = try await aiService.generateFeedback(for: prompt, answer: combinedText)
+            // AI Tone Logic: Use onboardingData to inform the feedback
+            let user = try await userRepository.fetchUser()
+            let aiTone = user?.onboardingData.aiCoachTone ?? .sageReflective
+            
+            let reflection = try await aiService.generateFeedback(
+                for: prompt,
+                answer: combinedText,
+                aiTone: aiTone
+            )
             reflections[prompt.id] = reflection
         } catch {
             reflections[prompt.id] = "That's a thoughtful reflection. Keep going!"
@@ -212,23 +221,30 @@ public final class MindsetPracticeFlowViewModel {
     }
 
     public init(
+        ritualType: PromptType,
         userRepository: UserRepository,
+        entryRepository: EntryRepository,
         addEntryUseCase: AddEntryUseCase,
         subscriptionService: SubscriptionService,
         getStreakUseCase: GetStreakUseCase,
+        ritualGenerator: RitualGenerator,
         aiService: AIAnalysisService,
         logger: AppLogger,
         onNavigate: ((NavigationState) -> Void)?,
         onDismiss: (() -> Void)? = nil
     ) {
+        self.ritualType = ritualType
         self.userRepository = userRepository
+        self.entryRepository = entryRepository
         self.addEntryUseCase = addEntryUseCase
         self.subscriptionService = subscriptionService
         self.getStreakUseCase = getStreakUseCase
+        self.ritualGenerator = ritualGenerator
         self.aiService = aiService
         self.logger = logger
         self.onNavigate = onNavigate
         self.onDismiss = onDismiss
+        
         Task {
             self.isPro = await subscriptionService.checkSubscriptionStatus()
         }
@@ -243,27 +259,38 @@ public final class MindsetPracticeFlowViewModel {
 
     private func prepareRitual() async {
         isLoading = true
+        // UI Reset
         self.currentPromptIndex = 0
         self.currentSlotIndex = 0
         self.answers = [:]
         self.reflections = [:]
         self.isCurrentPromptSubmitted = false
-        self.maxProgressAchieved = 0.0
-        self.animatedPromptIds = []
-        self.isGeneratingPrompt = false
-        cancelInterSlotShimmerTask()
-        self.isInterSlotTextFieldShimmering = false
-
+        
         do {
-            let profile = try await userRepository.fetchUser()
-            self.prompts = promptEngine.fetchPrompts(for: profile, completedCount: 0)
-        } catch {
-            logger.log("❌ Ritual setup failed: \(error.localizedDescription)")
-            self.prompts = promptEngine.fetchPrompts(for: nil, completedCount: 0)
-        }
-        isLoading = false
+            // 1. Fetch current context
+            guard let user = try? await userRepository.fetchUser() else {
+                throw DomainError.userNotFound
+            }
 
-        await startPromptGeneration()
+            let history = try await entryRepository.fetchAllEntries()
+            
+            // 2. Generate the personalized ritual
+            let session = ritualGenerator.generateSession(
+                for: ritualType,
+                user: user,
+                history: history
+            )
+            
+            // 3. Set the prompts
+            self.prompts = session.prompts
+        } catch {
+            logger.log("❌ Ritual generation failed: \(error.localizedDescription)")
+            // Fallback to basic prompts if everything fails
+            self.prompts = [MindsetPrompt.gratitude, MindsetPrompt.todoToday]
+        }
+        
+        isLoading = false
+        await startPromptGenerationUI()
     }
 
     // MARK: - Navigation Logic
@@ -334,7 +361,7 @@ public final class MindsetPracticeFlowViewModel {
             currentPromptIndex += 1
             currentSlotIndex = 0
             Task {
-                await startPromptGeneration()
+                await startPromptGenerationUI()
             }
         } else {
             isRitualComplete = true
@@ -353,7 +380,7 @@ public final class MindsetPracticeFlowViewModel {
         animatedPromptIds.insert(key)
     }
 
-    private func startPromptGeneration() async {
+    private func startPromptGenerationUI() async {
         isGeneratingPrompt = true
         try? await Task.sleep(for: .seconds(1.0))
         isGeneratingPrompt = false

@@ -90,7 +90,15 @@ struct ServiceFactory {
             return MockAIService()
         }
     }
-    
+
+    func makeRitualGenerator() -> RitualGenerator {
+        if config.useRealServices {
+            return AppRitualGenerator()
+        } else {
+            return MockRitualGenerator()
+        }
+    }
+
     // MARK: - Entry Repository Creation
     
     func makeEntryRepository(modelContext: ModelContext, authStateQuery: AuthStateQuery) -> EntryRepository {

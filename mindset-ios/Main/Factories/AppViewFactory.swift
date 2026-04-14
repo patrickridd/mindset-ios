@@ -324,13 +324,18 @@ struct AppViewFactory: MainViewFactory {
         return AnyView(MindsetHistoryView(viewModel: viewModel))
     }
 
-    func makeMindsetRitualView() -> AnyView {
+    func makeMindsetRitualView(for promptType: PromptType) -> AnyView {
         let aiService = serviceFactory.makeAIService()
+        let ritualGenerator = serviceFactory.makeRitualGenerator()
+
         let viewModel = MindsetPracticeFlowViewModel(
+            ritualType: promptType,
             userRepository: userRepository,
+            entryRepository: entryRepository,
             addEntryUseCase: addEntryUseCase,
             subscriptionService: subscriptionService,
             getStreakUseCase: getStreakUseCase,
+            ritualGenerator: ritualGenerator,
             aiService: aiService,
             logger: logger,
             onNavigate: { state in

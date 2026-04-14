@@ -15,22 +15,22 @@ public enum MindsetPrompt: String, Prompt, Codable, CaseIterable, Hashable, Send
     case subtracterWho      // NEW: Loss Aversion (People)
     case eveningWins        // NEW: The "Peak-End" Review (3 Wins)
     case silverLining       // NEW: Cognitive Reframing
-    case sensorySnapshot01   // Evening: Grounding
-    case gratitudeMessage01   // Monthly/Deep: Social Connection
-    case kindness01
-    case savoring01
-    case bestPossibleSelf01
-    case signatureStrength01
-    case mementoMori01
+    case sensorySnapshot   // Evening: Grounding
+    case gratitudeMessage   // Monthly/Deep: Social Connection
+    case kindness
+    case savoring
+    case bestPossibleSelf
+    case signatureStrength
+    case mementoMori
     case gratitude01
-    case stoic01
-    case futureSelf01
+    case stoic
+    case futureSelf
     
     public var headline: String {
         switch self {
-        case .sensorySnapshot01: 
+        case .sensorySnapshot: 
             return "The Sensory Snapshot"
-        case .gratitudeMessage01: 
+        case .gratitudeMessage: 
             return "The Gratitude Message"
         case .gratitude:
             return "Morning Gratitude"
@@ -48,30 +48,30 @@ public enum MindsetPrompt: String, Prompt, Codable, CaseIterable, Hashable, Send
             return "Today's priorities"
         case .feel:
             return "Today's intention"
-        case .kindness01:
+        case .kindness:
             return "The Kindness Booster"
-        case .savoring01:
+        case .savoring:
             return "Present-Moment Savoring"
-        case .bestPossibleSelf01:
+        case .bestPossibleSelf:
             return "The Optimism Bridge"
-        case .signatureStrength01:
+        case .signatureStrength:
             return "Strength Deployment"
-        case .mementoMori01:
+        case .mementoMori:
             return "The Perspective Reset"
         case .gratitude01:
             return "The Gratitude Scan"
-        case .stoic01:
+        case .stoic:
             return "The Circle of Control"
-        case .futureSelf01:
+        case .futureSelf:
             return "The Intention Bridge"
         }
     }
 
     public var questionText: String {
         switch self {
-        case .sensorySnapshot01:
+        case .sensorySnapshot:
             return "Quiet the noise. What did your senses notice today?"
-        case .gratitudeMessage01:
+        case .gratitudeMessage:
             return "Think of someone who has made a positive impact on your life."
         case .gratitudeDeepDive:
             return "Focus on one positive thing and explore its roots."
@@ -89,30 +89,30 @@ public enum MindsetPrompt: String, Prompt, Codable, CaseIterable, Hashable, Send
             return "What are your top 3 things to get done today?"
         case .feel:
             return "How do you want to feel today and how could you accomplish that?"
-        case .kindness01:
+        case .kindness:
             return "What is one small, unexpected act of kindness you could perform for someone today?"
-        case .savoring01:
+        case .savoring:
             return "Identify one positive experience happening 'right now'. How can you intensify the joy of it?"
-        case .bestPossibleSelf01:
+        case .bestPossibleSelf:
             return "Imagine yourself 5 years from now where everything has gone as well as possible. What is that version of you doing today?"
-        case .signatureStrength01:
+        case .signatureStrength:
             return "Which of your core strengths (e.g., Curiosity, Bravery, Humor) can you use in a 'new way' today?"
-        case .mementoMori01:
+        case .mementoMori:
             return "If this were the final week of your life, what would you stop worrying about immediately?"
         case .gratitude01:
             return "What are three small things that went well in the last 24 hours?"
-        case .stoic01:
+        case .stoic:
             return "What is one thing you are currently worried about that is actually outside of your control?"
-        case .futureSelf01:
+        case .futureSelf:
             return "If you could only accomplish one thing today to feel proud of yourself, what would it be?"
         }
     }
 
     public var coachTip: String {
         switch self {
-        case .sensorySnapshot01:
+        case .sensorySnapshot:
             return "This isn't about grand events. The goal is 'micro-awareness'—the texture of your coffee cup or the rhythm of the rain."
-        case .gratitudeMessage01:
+        case .gratitudeMessage:
             return "You don't *have* to send this right now, but writing it as if they are reading it makes the emotional boost 10x stronger."
         case .gratitude:
             return "Name the feeling each one evokes — warmth, relief, joy — not just the object."
@@ -120,17 +120,17 @@ public enum MindsetPrompt: String, Prompt, Codable, CaseIterable, Hashable, Send
             return "Be specific enough that you'd know if each item were done by tonight."
         case .feel:
             return "Link one concrete action to the emotional state you want."
-        case .kindness01:
+        case .kindness:
             return "Research shows that 'clumping' five acts into one day creates a much higher happiness spike than spreading them out."
-        case .savoring01:
+        case .savoring:
             return "Try 'behavioral expression'—smile, take a deep breath, or tell someone nearby how much you're enjoying this."
-        case .bestPossibleSelf01:
+        case .bestPossibleSelf:
             return "Don't worry about the 'how' yet. Focus on the feeling of self-efficacy and reaching your goals."
-        case .signatureStrength01:
+        case .signatureStrength:
             return "Pick one strength and apply it to a task you usually find boring or difficult."
         case .gratitude01:
             return "Specificity is key. Instead of 'family', think 'the way my son laughed at breakfast'."
-        case .futureSelf01:
+        case .futureSelf:
             return "Choose the 'frog'—the task you're most likely to procrastinate on."
         case .gratitudeDeepDive:
             return "Think of this as a 'Slow-Mo' replay. Focusing on the 'Why' and 'Who' turns a fleeting thought into a lasting neural pathway."
@@ -142,13 +142,13 @@ public enum MindsetPrompt: String, Prompt, Codable, CaseIterable, Hashable, Send
             return "Size doesn't matter here. Answering a difficult email or choosing a healthy snack counts as a win. End your day on a high note."
         case .silverLining:
             return "This is the 'Aikido' of mindset. You’re not ignoring the friction; you’re using its energy to find a hidden lesson or a pivot point."
-        case .kindness01:
+        case .kindness:
             return "The 'Secret Sauce' of kindness is anonymity. Try to do it without the other person knowing it was you for an extra dopamine boost."
-        case .savoring01:
+        case .savoring:
             return "Savoring is 'Mindfulness with a Smile.' Don't just notice the moment; linger in it like you’re trying to memorize a melody."
-        case .mementoMori01:
+        case .mementoMori:
             return "Use the 'End of Life' lens to filter out the 'Small Stuff.' If it won't matter in a year, don't give it more than a minute of worry today."
-        case .stoic01:
+        case .stoic:
             return "Draw a line in the sand. On one side is your effort (Control); on the other is the outcome (External). Stay on your side of the line."
         default:
             return "Take a deep breath. There are no wrong answers here—only honest ones."
@@ -157,9 +157,9 @@ public enum MindsetPrompt: String, Prompt, Codable, CaseIterable, Hashable, Send
 
     public var scientificRationale: String {
         switch self {
-        case .sensorySnapshot01:
+        case .sensorySnapshot:
             return "Sensory grounding reduces ruminative 'brain chatter' and lowers evening cortisol."
-        case .gratitudeMessage01:
+        case .gratitudeMessage:
             return "The 'Gratitude Visit' exercise is the single most powerful intervention for increasing happiness (Seligman, 2005)."
         case .gratitudeDeepDive:
             return "Elaborative processing increases the neural impact of gratitude (Greater Good Science Center)."
@@ -175,21 +175,21 @@ public enum MindsetPrompt: String, Prompt, Codable, CaseIterable, Hashable, Send
             return "Clear daily intentions improve follow-through and reduce cognitive load."
         case .feel:
             return "Aligning behavior with desired affect supports self-regulation and mood."
-        case .kindness01:
+        case .kindness:
             return "Activates the pro-social happiness pathway (Lyubomirsky, 2005)."
-        case .savoring01:
+        case .savoring:
             return "Strengthens the ability to extract pleasure from everyday experiences (Bryant & Veroff)."
-        case .bestPossibleSelf01:
+        case .bestPossibleSelf:
             return "Linked to significant increases in optimism and health (King, 2001)."
-        case .signatureStrength01:
+        case .signatureStrength:
             return "Using signature strengths in new ways is proven to boost happiness for up to 6 months (Seligman)."
-        case .mementoMori01:
+        case .mementoMori:
             return "Reduces anxiety over trivialities and clarifies life values."
         case .gratitude01:
             return "Scanning for the positive rewires the brain's default mode network."
-        case .stoic01:
+        case .stoic:
             return "Reduces anxiety by narrowing focus to self-agency."
-        case .futureSelf01:
+        case .futureSelf:
             return "Increases self-efficacy and goal attainment through mental contrasting."
         }
     }
@@ -200,21 +200,21 @@ public enum MindsetPrompt: String, Prompt, Codable, CaseIterable, Hashable, Send
 
     public var category: PromptCategory {
         switch self {
-        case .gratitude, .gratitude01, .gratitudeDeepDive, .eveningWins, .silverLining, .subtracterWho, .subtracterWhat, .gratitudeMessage01:
+        case .gratitude, .gratitude01, .gratitudeDeepDive, .eveningWins, .silverLining, .subtracterWho, .subtracterWhat, .gratitudeMessage:
             return .gratitude
-        case .todoToday, .feel, .futureSelf01:
+        case .todoToday, .feel, .futureSelf:
             return .futureSelf
-        case .kindness01:
+        case .kindness:
             return .kindness
-        case .savoring01, .sensorySnapshot01:
+        case .savoring, .sensorySnapshot:
             return .savoring
-        case .bestPossibleSelf01:
+        case .bestPossibleSelf:
             return .bestPossibleSelf
-        case .signatureStrength01:
+        case .signatureStrength:
             return .signatureStrength
-        case .mementoMori01:
+        case .mementoMori:
             return .mementoMori
-        case .stoic01:
+        case .stoic:
             return .stoic
         }
     }
@@ -223,7 +223,7 @@ public enum MindsetPrompt: String, Prompt, Codable, CaseIterable, Hashable, Send
         switch self {
         case .gratitude, .todoToday, .feel, .gratitudeDeepDive:
             return true
-        case .sensorySnapshot01, .eveningWins, .silverLining:
+        case .sensorySnapshot, .eveningWins, .silverLining:
             return false // Evening vibe
         default:
             return true // Default to morning for variety
@@ -233,13 +233,13 @@ public enum MindsetPrompt: String, Prompt, Codable, CaseIterable, Hashable, Send
     /// This is the "Engine" that drives the MultiSlotPromptQuestionView
     public var slots: [SlotMetadata] {
         switch self {
-        case .sensorySnapshot01:
+        case .sensorySnapshot:
             return [
                 SlotMetadata(label: "SIGHT", placeholder: "Something beautiful you saw...", xpPoints: 10),
                 SlotMetadata(label: "SOUND", placeholder: "A pleasing sound or song...", xpPoints: 10),
                 SlotMetadata(label: "TOUCH", placeholder: "A comfort (e.g., cool air, soft bed)...", xpPoints: 10)
             ]
-        case .gratitudeMessage01:
+        case .gratitudeMessage:
             return [
                 SlotMetadata(label: "WHO", placeholder: "Their name...", xpPoints: 5),
                 SlotMetadata(label: "THE IMPACT", placeholder: "What did they do for you?", xpPoints: 20),
@@ -276,19 +276,19 @@ public enum MindsetPrompt: String, Prompt, Codable, CaseIterable, Hashable, Send
     public var type: PromptType {
         switch self {
             // Morning Rituals
-        case .gratitude, .todoToday, .feel, .futureSelf01, .bestPossibleSelf01, .subtracterWhat, .subtracterWho:
+        case .gratitude, .todoToday, .feel, .futureSelf, .bestPossibleSelf, .subtracterWhat, .subtracterWho:
             return .morning
             
             // Evening Rituals
-        case .eveningWins, .sensorySnapshot01, .silverLining, .mementoMori01, .gratitude01:
+        case .eveningWins, .sensorySnapshot, .silverLining, .mementoMori, .gratitude01:
             return .evening
             
             // Deep/Monthly Work
-        case .gratitudeMessage01, .gratitudeDeepDive, .signatureStrength01:
+        case .gratitudeMessage, .gratitudeDeepDive, .signatureStrength:
             return .deepWork
             
             // Anytime / General
-        case .kindness01, .savoring01, .stoic01:
+        case .kindness, .savoring, .stoic:
             return .anytime
         }
     }

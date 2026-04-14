@@ -99,10 +99,21 @@ private struct PreviewFocusWrapper<Content: View>: View {
 #Preview {
     // Stub prompt matching what the view expects
     let prompt = MindsetPrompt.todoToday
-    
+    let entryRepo = MockEntryRepository(days: 11)
     // Minimal view model setup for preview
-    let viewModel = MindsetPracticeFlowViewModel(userRepository: MockUserRepository(), addEntryUseCase: AddEntryUseCase(entryRepository: MockEntryRepository(days: 11), statsRepository: MockUserStatsRepository()), subscriptionService: MockSubscriptionService(), getStreakUseCase: GetStreakUseCase(repository: MockEntryRepository(days: 11)), aiService: MockAIService(), logger: DebugLogger.shared, onNavigate: nil)
     
+    let viewModel = MindsetPracticeFlowViewModel(
+        ritualType: prompt.type,
+        userRepository: MockUserRepository(),
+        entryRepository: entryRepo,
+        addEntryUseCase: AddEntryUseCase(entryRepository: entryRepo, statsRepository: MockUserStatsRepository()),
+        subscriptionService: MockSubscriptionService(),
+        getStreakUseCase: GetStreakUseCase(repository: entryRepo),
+        ritualGenerator: MockRitualGenerator(),
+        aiService: MockAIService(),
+        logger: DebugLogger.shared,
+        onNavigate: nil
+    )
     // Seed answers so fields render with sample content
     viewModel.answers[prompt.id] = [
         "Ship v1 onboarding",

@@ -8,7 +8,7 @@
 public final class MockAIService: AIAnalysisService {
     public init() {}
 
-    public func generateFeedback(for prompt: Prompt, answer: String) async throws -> String {
+    public func generateFeedback(for prompt: Prompt, answer: String, aiTone: OnboardingData.AICoachTone) async throws -> String {
         try? await Task.sleep(for: .seconds(0.85))  // Simulate AI "thinking"
 
         // Simple heuristic-based mock feedback

@@ -403,19 +403,19 @@ private extension MindsetPracticeFlowView {
 // MARK: - Preview
 
 #Preview("Morning Ritual") {
-    MindsetPracticeFlowView(
+    let entryRepo = MockEntryRepository(days: 11)
+    return MindsetPracticeFlowView(
         viewModel: MindsetPracticeFlowViewModel(
-            userRepository: Domain.MockUserRepository(),
-            addEntryUseCase: AddEntryUseCase(
-                entryRepository: MockEntryRepository(days: 7),
-                statsRepository: MockUserStatsRepository()
-            ),
-            subscriptionService: Domain.MockSubscriptionService(),
-            getStreakUseCase: GetStreakUseCase(repository: Domain.MockEntryRepository(days: 7)),
-            aiService: Domain.MockAIService(),
+            ritualType: .morning,
+            userRepository: MockUserRepository(),
+            entryRepository: entryRepo,
+            addEntryUseCase: AddEntryUseCase(entryRepository: entryRepo, statsRepository: MockUserStatsRepository()),
+            subscriptionService: MockSubscriptionService(),
+            getStreakUseCase: GetStreakUseCase(repository: entryRepo),
+            ritualGenerator: MockRitualGenerator(),
+            aiService: MockAIService(),
             logger: DebugLogger.shared,
-            onNavigate: { _ in },
-            onDismiss: {}
+            onNavigate: nil
         )
     )
 }

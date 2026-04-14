@@ -5,6 +5,7 @@
 //  Created by patrick ridd on 1/7/26.
 //
 
+import Domain
 import SwiftUI
 
 public protocol MainViewFactory {
@@ -16,7 +17,7 @@ public protocol MainViewFactory {
     func makeDashboardView() -> AnyView
     func makeMindsetHistoryView() -> AnyView
     func makeUserProfileView() -> AnyView
-    func makeMindsetRitualView() -> AnyView
+    func makeMindsetRitualView(for promptType: PromptType) -> AnyView
     func makeRitualSuccessView(archetype: String, xp: Int) -> AnyView
     func makeLoadingView() -> AnyView
 
@@ -54,8 +55,8 @@ public struct MainCoordinatorView: View {
             switch state {
             case .paywall:
                 factory.decoratePresentedView(factory.makePaywallView())
-            case .mindset:
-                factory.decoratePresentedView(factory.makeMindsetRitualView())
+            case .mindset(let promptType):
+                factory.decoratePresentedView(factory.makeMindsetRitualView(for: promptType))
             case .ritualSuccess(let archetype, let xp):
                 factory.decoratePresentedView(
                     factory.makeRitualSuccessView(archetype: archetype, xp: xp))

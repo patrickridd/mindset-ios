@@ -24,7 +24,7 @@ public final class MainCoordinator {
     /// Mindset is a full-screen overlay so MainTabView stays alive—avoids Dashboard reload on dismiss.
     public enum FullScreenState: Identifiable {
         case paywall
-        case mindset
+        case mindset(promptType: PromptType)
         case ritualSuccess(archetype: String, xp: Int)
 
         public var id: String {
@@ -193,7 +193,7 @@ public final class MainCoordinator {
     public func startMorningMindset() {
         mindsetPath = NavigationPath()  // Reset the path
         set(rootState: .mainTabView)
-        set(fullScreenState: .mindset)
+        set(fullScreenState: .mindset(promptType: .morning))
     }
 
     public func set(tab: Tab) {
