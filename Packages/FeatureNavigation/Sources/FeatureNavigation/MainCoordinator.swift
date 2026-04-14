@@ -190,10 +190,10 @@ public final class MainCoordinator {
         set(rootState: .mainTabView)
     }
 
-    public func startMorningMindset() {
+    public func startMindset(for promptType: PromptType) {
         mindsetPath = NavigationPath()  // Reset the path
         set(rootState: .mainTabView)
-        set(fullScreenState: .mindset(promptType: .morning))
+        set(fullScreenState: .mindset(promptType: promptType))
     }
 
     public func set(tab: Tab) {

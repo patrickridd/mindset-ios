@@ -213,8 +213,8 @@ struct AppViewFactory: MainViewFactory {
             getYesterdayGoalUseCase: getYesterdayGoalUseCase,
             syncService: syncService,
             logger: logger,
-            onStartMindset: {
-                coordinator.startMorningMindset()
+            onStartMindset: { promptType in
+                coordinator.startMindset(for: promptType)
             },
             onSeeHistory: {
                 coordinator.set(tab: .history)

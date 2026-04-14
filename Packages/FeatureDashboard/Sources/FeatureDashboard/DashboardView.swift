@@ -154,7 +154,7 @@ private extension DashboardView {
     var beginRitualButton: some View {
         Button(action: {
             HapticManager.action()
-            viewModel.startMindsetButtonTapped()
+            viewModel.startMindset(for: .morning)
         }) {
             HStack {
                 Text(FeatureDashboardStrings.CTA.beginMorningRitual)
@@ -214,7 +214,7 @@ private extension DashboardView {
         getYesterdayGoalUseCase: GetYesterdayGoalUseCase(repository: entryRepository),
         syncService: appSyncService,
         logger: DebugLogger.shared,
-        onStartMindset: {},
+        onStartMindset: { _ in },
         onSeeHistory: {},
         onSecureAccount: {}
     )

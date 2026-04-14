@@ -41,7 +41,7 @@ public final class DashboardViewModel {
     }
 
     // Navigation Actions
-    private let onStartMindset: () -> Void
+    private let onStartMindset: (PromptType) -> Void
     private let onSeeHistory: () -> Void
     private let onSecureAccount: () -> Void
     
@@ -53,7 +53,7 @@ public final class DashboardViewModel {
         syncService: AppSyncService,
         logger: AppLogger,
         notificationCenter: NotificationCenter = .default,
-        onStartMindset: @escaping () -> Void,
+        onStartMindset: @escaping (PromptType) -> Void,
         onSeeHistory: @escaping () -> Void,
         onSecureAccount: @escaping () -> Void
     ) {
@@ -123,8 +123,8 @@ public final class DashboardViewModel {
         isLoading = false
     }
 
-    func startMindsetButtonTapped() {
-        onStartMindset()
+    func startMindset(for promptType: PromptType) {
+        onStartMindset(promptType)
     }
 
     func seeHistoryBoxTapped() {
