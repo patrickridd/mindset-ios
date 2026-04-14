@@ -167,7 +167,7 @@ public final class OnboardingViewModel {
         return OnboardingData(overwhelmFrequency: overwhelmFrequency.rawValue, headspace: headspace, mentalMuscle: mentalMuscle, responseToSetback: responseToSetback, mindsetGoal: mindsetGoal, aiCoachTone: aiCoachTone)
     }
 
-    /// Legacy mapping for backward compatibility with PromptEngine
+    /// Legacy mapping for backward compatibility with RitualGenerator
     private func mapHeadspaceToOverwhelmed(_ headspace: OnboardingData.Headspace)
         -> OnboardingData.OverwhelmedFrequency
     {
