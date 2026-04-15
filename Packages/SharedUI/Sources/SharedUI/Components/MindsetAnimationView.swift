@@ -12,6 +12,7 @@ public struct MindsetAnimationView: View {
     let animation: MindsetAnimation
     let loopMode: LottieLoopMode
     let speed: Double
+    let contentMode: ContentMode
     let onCompleted: (() -> Void)?
 
     @State private var isPlaying = false
@@ -20,11 +21,13 @@ public struct MindsetAnimationView: View {
         animation: MindsetAnimation,
         loopMode: LottieLoopMode = .playOnce,
         speed: Double = 1.0,
+        contentMode: ContentMode = .fit,
         onCompleted: (() -> Void)? = nil
     ) {
         self.animation = animation
         self.loopMode = loopMode
         self.speed = speed
+        self.contentMode = contentMode
         self.onCompleted = onCompleted
     }
 
@@ -34,7 +37,7 @@ public struct MindsetAnimationView: View {
         }
         .configure { lottie in
             lottie.animationSpeed = speed
-            lottie.contentMode = .scaleAspectFit
+            lottie.contentMode = uiViewContentMode()
             lottie.configuration.renderingEngine = .mainThread
         }
         .playbackMode(
@@ -44,8 +47,17 @@ public struct MindsetAnimationView: View {
             if completed { onCompleted?() }
         }
         .resizable()
-        .scaledToFit()
+        .aspectRatio(contentMode: contentMode)
         .onAppear { isPlaying = true }
+    }
+
+    func uiViewContentMode() -> UIView.ContentMode {
+        switch self.contentMode {
+        case .fit:
+            return .scaleAspectFit
+        case .fill:
+            return .scaleToFill
+        }
     }
 }
 

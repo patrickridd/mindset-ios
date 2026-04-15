@@ -54,7 +54,7 @@ public final class MindsetPracticeFlowViewModel {
     public var isCurrentPromptSubmitted: Bool = false
     public var maxProgressAchieved: Double = 0.0
     public var isRitualCompleteAnimationDone: Bool = false
-
+    public var animationLoopMode: AnimationLoopMode = .playOnce
     public var onNavigate: ((NavigationState) -> Void)?
 
     public var isAiThinking: Bool = false
@@ -411,4 +411,21 @@ public final class MindsetPracticeFlowViewModel {
             onNavigate?(.paywall)
         }
     }
+}
+
+public enum AnimationLoopMode : Hashable {
+    /// Animation is played once then stops.
+    case playOnce
+    
+    /// Animation will loop from beginning to end until stopped.
+    case loop
+    
+    /// Animation will play forward, then backwards and loop until stopped.
+    case autoReverse
+    
+    /// Animation will loop from beginning to end up to defined amount of times.
+    case `repeat`(Float)
+    
+    /// Animation will play forward, then backwards a defined amount of times.
+    case repeatBackwards(Float)
 }

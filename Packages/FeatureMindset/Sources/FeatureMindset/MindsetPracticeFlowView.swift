@@ -6,6 +6,7 @@
 //
 
 import Domain
+import Lottie
 import SharedLocalization
 import SharedUI
 import SharedUtils
@@ -67,17 +68,36 @@ private extension MindsetPracticeFlowView {
         {
             initialLoadingOverlay
         } else if viewModel.displayRitualSuccessAnimation {
-            MindsetAnimationView(animation: .checkmarkSuccess, loopMode: .playOnce) {
-                // This triggers automatically when the .lottie file ends
+            successAnimationView
+        } else {
+            mainContentStack
+        }
+    }
+
+    var successAnimationView: some View {
+        ZStack {
+            // 1. The Background Confetti (Full Screen)
+            MindsetAnimationView(
+                animation: .confetti,
+                loopMode: adapt(animationLoopMode: viewModel.animationLoopMode),
+                contentMode: .fill // Uses the property you defined
+            )
+            .ignoresSafeArea() // Ensures confetti covers notches and home indicators
+            .allowsHitTesting(false) // Prevents the animation from intercepting taps
+            
+            // 2. The Success Checkmark (Centered Overlay)
+            MindsetAnimationView(
+                animation: .checkmarkSuccess,
+                loopMode: adapt(animationLoopMode: viewModel.animationLoopMode),
+                contentMode: .fit
+            ) {
+                // Triggers automatically when the checkmark .lottie file ends
                 withAnimation(.easeInOut(duration: 0.5)) {
                     viewModel.isRitualCompleteAnimationDone = true
                     viewModel.completeRitual()
                 }
             }
-
-            MindsetAnimationView(animation: .confetti, loopMode: .playOnce)
-        } else {
-            mainContentStack
+            .frame(maxWidth: 300)
         }
     }
 
@@ -400,6 +420,23 @@ private extension MindsetPracticeFlowView {
     }
 }
 
+extension MindsetPracticeFlowView {
+    func adapt(animationLoopMode: AnimationLoopMode) -> LottieLoopMode {
+        switch animationLoopMode {
+        case .playOnce:
+            return .playOnce
+        case .loop:
+            return .loop
+        case .autoReverse:
+            return .autoReverse
+        case .repeat(let float):
+            return .repeat(Float(float))
+        case .repeatBackwards(let float):
+            return .repeatBackwards(Float(float))
+        }
+    }
+}
+
 // MARK: - Preview
 
 #Preview("Morning Ritual") {
@@ -417,5 +454,27 @@ private extension MindsetPracticeFlowView {
             logger: DebugLogger.shared,
             onNavigate: nil
         )
+    )
+}
+
+#Preview("Success Screen") {
+    let entryRepo = MockEntryRepository(days: 11)
+    let viewModel = MindsetPracticeFlowViewModel(
+        ritualType: .morning,
+        userRepository: MockUserRepository(),
+        entryRepository: entryRepo,
+        addEntryUseCase: AddEntryUseCase(entryRepository: entryRepo, statsRepository: MockUserStatsRepository()),
+        subscriptionService: MockSubscriptionService(),
+        getStreakUseCase: GetStreakUseCase(repository: entryRepo),
+        ritualGenerator: MockRitualGenerator(),
+        aiService: MockAIService(),
+        logger: DebugLogger.shared,
+        onNavigate: nil
+    )
+    viewModel.isLoading = false
+    viewModel.animationLoopMode = .loop
+    viewModel.isRitualComplete = true
+    return MindsetPracticeFlowView(
+        viewModel: viewModel
     )
 }
