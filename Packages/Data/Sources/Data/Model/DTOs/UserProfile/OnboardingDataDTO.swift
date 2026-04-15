@@ -9,35 +9,31 @@ import Domain
 
 /// A Codable container for onboarding responses, used to configure AI coaching parameters.
 public struct OnboardingDataDTO: Codable {
-    public let overwhelmFrequency: String
 
     // MARK: - Quiz Results (MLP Configuration)
     public let headspace: String?
-    public let mentalMuscle: String?
+    public let targetEmotion: String?
     public let responseToSetback: String?
-    public let mindsetGoal: String?
+    public let planningStyle: String?
     public let aiCoachTone: String?
 
     /// Maps the Domain ``OnboardingData`` to a DTO for Firebase storage.
     public init(from domain: OnboardingData) {
-        self.overwhelmFrequency = domain.overwhelmFrequency
-        
         // We store the rawValue (String) to ensure Firestore compatibility
         self.headspace = domain.headspace?.rawValue
-        self.mentalMuscle = domain.mentalMuscle?.rawValue
+        self.targetEmotion = domain.targetEmotion?.rawValue
         self.responseToSetback = domain.responseToSetback?.rawValue
-        self.mindsetGoal = domain.mindsetGoal?.rawValue
+        self.planningStyle = domain.planningStyle?.rawValue
         self.aiCoachTone = domain.aiCoachTone?.rawValue
     }
 
     /// Converts the DTO back into the Domain ``OnboardingData``.
     public func toDomain() -> OnboardingData {
         OnboardingData(
-            overwhelmFrequency: overwhelmFrequency,
             headspace: OnboardingData.Headspace(rawValue: headspace ?? ""),
-            mentalMuscle: OnboardingData.MentalMuscle(rawValue: mentalMuscle ?? ""),
+            targetEmotion: OnboardingData.TargetEmotion(rawValue: targetEmotion ?? ""),
             responseToSetback: OnboardingData.ResponseToSetback(rawValue: responseToSetback ?? ""),
-            mindsetGoal: OnboardingData.MindsetGoal(rawValue: mindsetGoal ?? ""),
+            planningStyle: OnboardingData.PlanningStyle(rawValue: planningStyle ?? ""),
             aiCoachTone: OnboardingData.AICoachTone(rawValue: aiCoachTone ?? "")
         )
     }

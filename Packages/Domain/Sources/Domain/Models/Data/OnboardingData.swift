@@ -5,45 +5,50 @@
 //  Created by patrick ridd on 1/7/26.
 //
 
-public struct OnboardingData: Sendable {
-    public var overwhelmFrequency: String = ""
+import Foundation
 
-    // MARK: - Onboarding Quiz Results (MLP)
-
-    /// Q1: Sets prompt difficulty
+/// A 1:1 mapping of the 5-question onboarding quiz used to personalize the user experience.
+///
+/// This data informs the ``RitualGenerator`` on which psychological frameworks to prioritize
+/// and sets the baseline for the "Personalized Insight Engine."
+public struct OnboardingData: Codable, Sendable {
+    
+    // MARK: - Properties (Logic Mappings)
+    
+    /// Q1: The user's current mental state.
     public var headspace: Headspace?
-    /// Q2: Weights archetype (Stoic vs. Positive Psych)
-    public var mentalMuscle: MentalMuscle?
-    /// Q3: CBT vs. Stoic intervention needs
+    
+    /// Q2: Specific emotional targets for the Insight Engine.
+    public var targetEmotion: TargetEmotion?
+    
+    /// Q3: Instinctive reaction to adversity (CBT/Stoic Diagnostic).
     public var responseToSetback: ResponseToSetback?
-    /// Q4: Overall Mindset Goal
-    public var mindsetGoal: MindsetGoal?
-    /// Q5: AI feedback system prompt tone
+    
+    /// Q4: Preferred timing for goal setting (The "Intention Bridge").
+    public var planningStyle: PlanningStyle?
+    
+    /// Q5: Persona used for AI-generated feedback.
     public var aiCoachTone: AICoachTone?
 
-    public init(overwhelmFrequency: String, headspace: Headspace? = nil, mentalMuscle: MentalMuscle? = nil, responseToSetback: ResponseToSetback? = nil, mindsetGoal: MindsetGoal? = nil, aiCoachTone: AICoachTone? = nil) {
-        self.overwhelmFrequency = overwhelmFrequency
+    // MARK: - Initializer
+
+    public init(
+        headspace: Headspace? = nil,
+        targetEmotion: TargetEmotion? = nil,
+        responseToSetback: ResponseToSetback? = nil,
+        planningStyle: PlanningStyle? = nil,
+        aiCoachTone: AICoachTone? = nil
+    ) {
         self.headspace = headspace
-        self.mentalMuscle = mentalMuscle
+        self.targetEmotion = targetEmotion
         self.responseToSetback = responseToSetback
-        self.mindsetGoal = mindsetGoal
+        self.planningStyle = planningStyle
         self.aiCoachTone = aiCoachTone
     }
 
-    public init(overwhelmFrequency: String = "") {
-        self.overwhelmFrequency = overwhelmFrequency
-    }
-    
-    public enum OverwhelmedFrequency: String, Codable, CaseIterable, Sendable {
-        case rarely = "Rarely"
-        case sometimes = "Sometimes"
-        case often = "Often"
-        case always = "Always"
-    }
+    // MARK: - Nested Enums
 
-    // MARK: - Onboarding Enums
-
-    /// Q1: Difficulty of prompts
+    /// Q1: Headspace Logic
     public enum Headspace: String, Codable, CaseIterable, Sendable {
         case restless = "Restless"
         case focused = "Focused"
@@ -51,15 +56,15 @@ public struct OnboardingData: Sendable {
         case content = "Content"
     }
 
-    /// Q2: Archetype weighting (Stoic vs. Positive Psych)
-    public enum MentalMuscle: String, Codable, CaseIterable, Sendable {
-        case resilience = "Resilience"
-        case gratitude = "Gratitude"
-        case purpose = "Purpose"
-        case calm = "Calm"
+    /// Q2: Target Emotion Logic
+    public enum TargetEmotion: String, Codable, CaseIterable, Sendable {
+        case anxiety = "Anxiety & Stress"
+        case focus = "Lack of Focus"
+        case selfDoubt = "Self-Doubt"
+        case frustration = "Anger/Frustration"
     }
 
-    /// Q3: CBT vs. Stoic intervention needs
+    /// Q3: Response to Setback Logic
     public enum ResponseToSetback: String, Codable, CaseIterable, Sendable {
         case blameMyself = "Blame myself"
         case fixIt = "Fix it"
@@ -67,19 +72,18 @@ public struct OnboardingData: Sendable {
         case blameOthers = "Blame others"
     }
 
-    /// Q4: Mindset Current Goal
-    public enum MindsetGoal: String, Codable, CaseIterable, Sendable {
-        case happier = "Happier"
-        case resilient = "Resilience"
-        case purpose = "Purpose"
-        case balanced = "Balanced"
+    /// Q4: Planning Style Logic
+    public enum PlanningStyle: String, Codable, CaseIterable, Sendable {
+        case morning = "First thing in the morning"
+        case evening = "Last thing before bed"
+        case flexible = "I'm not sure yet"
     }
 
-    /// Q5: AI feedback tone
+    /// Q5: AI Coach Tone Logic
     public enum AICoachTone: String, Codable, CaseIterable, Sendable {
         case sageReflective = "The Sage (Reflective)"
         case cheerleaderWarm = "The Cheerleader (Warm)"
-        case therapistEmpathetic = "The Therapist (Empathetic & Insightful)"
+        case therapistEmpathetic = "The Therapist (Insightful)"
         case friendCasual = "The Friend (Casual)"
     }
 }

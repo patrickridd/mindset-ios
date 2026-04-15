@@ -154,29 +154,18 @@ public final class OnboardingViewModel {
 
     private func getOnboardingData() -> OnboardingData {
         let headspace = answers[.headspace].flatMap { OnboardingData.Headspace(rawValue: $0) }
-        let mentalMuscle = answers[.mentalMuscle].flatMap { OnboardingData.MentalMuscle(rawValue: $0) }
-        let responseToSetback = answers[.responseToSetback].flatMap {
-            OnboardingData.ResponseToSetback(rawValue: $0)
-        }
-        let mindsetGoal = answers[.mindsetGoal].flatMap { OnboardingData.MindsetGoal(rawValue: $0) }
+        let targetEmotion = answers[.targetEmotion].flatMap { OnboardingData.TargetEmotion(rawValue: $0) }
+        let responseToSetback = answers[.responseToSetback].flatMap { OnboardingData.ResponseToSetback(rawValue: $0) }
+        let planningStyle = answers[.planningStyle].flatMap { OnboardingData.PlanningStyle(rawValue: $0) }
         let aiCoachTone = answers[.aiCoachTone].flatMap { OnboardingData.AICoachTone(rawValue: $0) }
 
-        let overwhelmFrequency = headspace.map { mapHeadspaceToOverwhelmed($0) } ?? .sometimes
-        let primaryGoal = mentalMuscle?.rawValue ?? "Build a healthier mindset"
-
-        return OnboardingData(overwhelmFrequency: overwhelmFrequency.rawValue, headspace: headspace, mentalMuscle: mentalMuscle, responseToSetback: responseToSetback, mindsetGoal: mindsetGoal, aiCoachTone: aiCoachTone)
-    }
-
-    /// Legacy mapping for backward compatibility with RitualGenerator
-    private func mapHeadspaceToOverwhelmed(_ headspace: OnboardingData.Headspace)
-        -> OnboardingData.OverwhelmedFrequency
-    {
-        switch headspace {
-        case .overwhelmed: return .often
-        case .restless: return .sometimes
-        case .content: return .rarely
-        case .focused: return .sometimes
-        }
+        return OnboardingData(
+            headspace: headspace,
+            targetEmotion: targetEmotion,
+            responseToSetback: responseToSetback,
+            planningStyle: planningStyle,
+            aiCoachTone: aiCoachTone
+        )
     }
 
     public func skipOnboarding() {

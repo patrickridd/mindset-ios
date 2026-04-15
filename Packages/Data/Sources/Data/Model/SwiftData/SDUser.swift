@@ -18,20 +18,19 @@ public final class SDUser {
     public var isOnboardingComplete: Bool
     public var isAccountSecured: Bool
 
-    // Flattened Onboarding Data
-    public var overwhelmFrequency: String
+    // --- Refactored Onboarding Data (5-Question Logic) ---
+    // We keep these flat for SwiftData performance and reliability.
     public var headspaceRaw: String?
-    public var mentalMuscleRaw: String?
+    public var targetEmotionRaw: String?
     public var responseToSetbackRaw: String?
-    public var mindsetGoalRaw: String?
+    public var planningStyleRaw: String?
     public var aiCoachToneRaw: String?
 
-    // Flattened Stats Data
+    // --- Stats Data ---
     public var currentStreak: Int
     public var totalXP: Int
     public var lastUpdated: Date?
     public var archetype: String?
-    // SwiftData can store simple [String] arrays natively
     public var badges: [String]
 
     public init(
@@ -41,11 +40,10 @@ public final class SDUser {
         lastUpdatedAt: Date,
         isAccountSecured: Bool,
         isOnboardingComplete: Bool,
-        overwhelmFrequency: String,
         headspaceRaw: String?,
-        mentalMuscleRaw: String?,
+        targetEmotionRaw: String?,
         responseToSetbackRaw: String?,
-        mindsetGoalRaw: String?,
+        planningStyleRaw: String?,
         aiCoachToneRaw: String?,
         currentStreak: Int = 0,
         totalXP: Int = 0,
@@ -59,11 +57,10 @@ public final class SDUser {
         self.lastUpdatedAt = lastUpdatedAt
         self.isAccountSecured = isAccountSecured
         self.isOnboardingComplete = isOnboardingComplete
-        self.overwhelmFrequency = overwhelmFrequency
         self.headspaceRaw = headspaceRaw
-        self.mentalMuscleRaw = mentalMuscleRaw
+        self.targetEmotionRaw = targetEmotionRaw
         self.responseToSetbackRaw = responseToSetbackRaw
-        self.mindsetGoalRaw = mindsetGoalRaw
+        self.planningStyleRaw = planningStyleRaw
         self.aiCoachToneRaw = aiCoachToneRaw
         self.currentStreak = currentStreak
         self.totalXP = totalXP
@@ -77,13 +74,10 @@ public final class SDUser {
     /// Maps `SDUser` to our Domain ``User``.
     public func toDomain() -> User {
         let onboarding = OnboardingData(
-            overwhelmFrequency: overwhelmFrequency,
             headspace: headspaceRaw.flatMap { OnboardingData.Headspace(rawValue: $0) },
-            mentalMuscle: mentalMuscleRaw.flatMap { OnboardingData.MentalMuscle(rawValue: $0) },
-            responseToSetback: responseToSetbackRaw.flatMap {
-                OnboardingData.ResponseToSetback(rawValue: $0)
-            },
-            mindsetGoal: mindsetGoalRaw.flatMap { OnboardingData.MindsetGoal(rawValue: $0) },
+            targetEmotion: targetEmotionRaw.flatMap { OnboardingData.TargetEmotion(rawValue: $0) },
+            responseToSetback: responseToSetbackRaw.flatMap { OnboardingData.ResponseToSetback(rawValue: $0) },
+            planningStyle: planningStyleRaw.flatMap { OnboardingData.PlanningStyle(rawValue: $0) },
             aiCoachTone: aiCoachToneRaw.flatMap { OnboardingData.AICoachTone(rawValue: $0) }
         )
 
@@ -107,7 +101,6 @@ public final class SDUser {
         )
     }
 
-    /// Use only for creation (Insert) into Swift Data.
     public static func fromDomain(_ domain: User) -> SDUser {
         SDUser(
             id: domain.id,
@@ -116,11 +109,10 @@ public final class SDUser {
             lastUpdatedAt: domain.lastUpdatedAt,
             isAccountSecured: domain.isAccountSecured,
             isOnboardingComplete: domain.isOnboardingComplete,
-            overwhelmFrequency: domain.onboardingData.overwhelmFrequency,
             headspaceRaw: domain.onboardingData.headspace?.rawValue,
-            mentalMuscleRaw: domain.onboardingData.mentalMuscle?.rawValue,
+            targetEmotionRaw: domain.onboardingData.targetEmotion?.rawValue,
             responseToSetbackRaw: domain.onboardingData.responseToSetback?.rawValue,
-            mindsetGoalRaw: domain.onboardingData.mindsetGoal?.rawValue,
+            planningStyleRaw: domain.onboardingData.planningStyle?.rawValue,
             aiCoachToneRaw: domain.onboardingData.aiCoachTone?.rawValue,
             currentStreak: domain.stats.currentStreak,
             totalXP: domain.stats.totalXP,
@@ -132,17 +124,17 @@ public final class SDUser {
 }
 
 extension SDUser {
-    /// UPDATES the current instance using values from a Domain struct
     func update(from domain: User) {
         self.userName = domain.userName
         self.isAccountSecured = domain.isAccountSecured
         self.isOnboardingComplete = domain.isOnboardingComplete
+        self.lastUpdatedAt = Date()
 
-        // Onboarding
+        // Updated Onboarding
         self.headspaceRaw = domain.onboardingData.headspace?.rawValue
-        self.mentalMuscleRaw = domain.onboardingData.mentalMuscle?.rawValue
+        self.targetEmotionRaw = domain.onboardingData.targetEmotion?.rawValue
         self.responseToSetbackRaw = domain.onboardingData.responseToSetback?.rawValue
-        self.mindsetGoalRaw = domain.onboardingData.mindsetGoal?.rawValue
+        self.planningStyleRaw = domain.onboardingData.planningStyle?.rawValue
         self.aiCoachToneRaw = domain.onboardingData.aiCoachTone?.rawValue
 
         // Stats

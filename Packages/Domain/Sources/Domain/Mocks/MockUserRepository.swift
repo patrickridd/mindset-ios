@@ -14,7 +14,6 @@ public final class MockUserRepository: UserRepository {
         id: String = "mock-user-id",
         userName: String = "Patrick",
         isOnboardingComplete: Bool = true,
-        overwhelmedFrequency: OnboardingData.OverwhelmedFrequency = .often,
         isAccountSecured: Bool = true,
         createdAt: Date = .init()
     ) {
